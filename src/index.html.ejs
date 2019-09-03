@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Online Plasier</title>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <!-- Dependencies -->
+
+    <% for(var i=0; i < packages.length; i++) { %>
+    <script src="<%= packages[i].cdn %>" crossorigin="anonymous"></script>
+    <% } %>
+  </body>
+</html>
