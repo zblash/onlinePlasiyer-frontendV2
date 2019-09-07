@@ -1,12 +1,13 @@
 $bg-color: yellow;
 $border-color: red;
 
-.app {
-  font-family: helvetica, arial, sans-serif;
-  padding: 2em;
-  border: 5px solid $border-color;
+.header-wrapper {
+  padding: 5px;
+  border: 1px solid $border-color;
+  display: flex;
+}
 
-  p {
-    background-color: $bg-color;
-  }
+.category-wrapper {
+  border: 1px solid $border-color;
+  margin: 5px;
 }

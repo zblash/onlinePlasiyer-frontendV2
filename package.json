@@ -19,7 +19,7 @@
     "lint": "tslint './src/**/*.ts*' --format stylish --project . --force",
     "start": "yarn run start-dev",
     "start-dev": "webpack-dev-server --config=configs/webpack/dev.js",
-    "start-prod": "yarn run build && node express.js",
+    "start-prod": "node server.js",
     "test": "jest --watch --coverage --config=configs/jest.json"
   },
   "devDependencies": {
@@ -32,7 +32,9 @@
     "@types/react": "^16.9.2",
     "@types/react-dom": "^16.9.0",
     "@types/react-router-dom": "^4.3.5",
+    "@types/styled-jsx": "^2.2.8",
     "awesome-typescript-loader": "^5.2.1",
+    "axios": "^0.19.0",
     "babel-loader": "^8.0.6",
     "css-loader": "^3.2.0",
     "express": "^4.17.1",
@@ -44,6 +46,7 @@
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-hot-loader": "^4.12.12",
+    "react-router-dom": "^5.0.1",
     "rimraf": "^3.0.0",
     "sass-loader": "^7.3.1",
     "style-loader": "^1.0.0",
@@ -54,9 +57,11 @@
     "webpack-cli": "^3.3.7",
     "webpack-dev-middleware": "^3.7.0",
     "webpack-dev-server": "^3.8.0",
-    "webpack-merge": "^4.2.2",
-    "axios": "^0.19.0",
-    "react-router-dom": "^5.0.1"
+    "webpack-merge": "^4.2.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "react-images": "^1.0.0",
+    "react-skylight": "^0.5.1",
+    "styled-jsx": "^3.2.2"
+  }
 }

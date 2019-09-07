@@ -1,5 +1,8 @@
 import axios from 'axios';
+import { ROLE_MAP } from '~/utils/constants';
+import { UserResponse, CategoryResponse, OrderResponse } from '~/__types';
 const URL = 'http://localhost:8080';
+const API_URL = URL + '/api';
 
 type FetchPolicy =
   | 'cache-first'
@@ -7,8 +10,12 @@ type FetchPolicy =
   | 'network-only'
   | 'cache-only';
 class ApiService {
+  private token;
   public getToken(): string {
-    return `Bearer ${JSON.parse(localStorage.getItem('user')).token}`;
+    if (!this.token) {
+      this.token = localStorage.getItem('_auth');
+    }
+    return this.token;
   }
   private cache: Record<string, any> = {};
   public getCache() {
@@ -18,12 +25,12 @@ class ApiService {
     return URL;
   }
 
-  public get<ResponseType = any>(
+  private get<ResponseType = any>(
     route: string,
-    fetchPolicy: FetchPolicy = 'cache-first',
-    params = {}
+    params = {},
+    fetchPolicy: FetchPolicy = 'network-only'
   ): Promise<ResponseType> {
-    const url = URL + '/api' + route;
+    const url = API_URL + route;
     const urlCache = this.cache[route];
     const _get = () =>
       axios
@@ -53,12 +60,26 @@ class ApiService {
       }
     }
   }
-  public post<ResponseType = any, ParamsType = any>(
+  private post<ResponseType = any, ParamsType = any>(
     route: string,
-    params: ParamsType
+    params: ParamsType = {} as ParamsType
   ): Promise<ResponseType> {
     return axios
-      .post(URL + route, params, {
+      .post(API_URL + route, params, {
+        headers: {
+          Authorization: this.getToken(),
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(d => d.data);
+  }
+  private delete<ResponseType = any, ParamsType = any>(
+    route: string,
+    params: ParamsType = {} as ParamsType
+  ): Promise<ResponseType> {
+    return axios
+      .delete(API_URL + route, {
+        params,
         headers: {
           Authorization: this.getToken(),
           'Content-Type': 'application/json',
@@ -69,13 +90,62 @@ class ApiService {
   public login(username: string, password: string) {
     return axios
       .post(URL + '/signin', {
-        userName: username,
+        username: username,
         password,
       })
       .then(({ data }) => {
-        localStorage.setItem('user', JSON.stringify(data));
+        localStorage.setItem('_auth', `Bearer ${data.token}`);
         return data;
       });
+  }
+  public logout() {
+    localStorage.removeItem('_auth');
+  }
+  public signup(data: {
+    city: string;
+    details: string;
+    email: string;
+    name: string;
+    password: string;
+    role: keyof typeof ROLE_MAP;
+    state: string;
+    taxNumber: string;
+    username: string;
+  }) {
+    const _data = {
+      ...data,
+      roleType: ROLE_MAP[data.role],
+      role: undefined,
+    };
+    return axios.post(URL + '/sign-up', _data).then(d => d.data);
+  }
+
+  public getAuthUser: () => Promise<UserResponse> = () => {
+    return this.post('/users/getmyinfos');
+  };
+  public isLoggedIn = () => {
+    return Boolean(this.getToken());
+  };
+  public getCategoriesWithoutSub: () => Promise<CategoryResponse[]> = () => {
+    return this.get('/categories', {
+      filter: true,
+      sub: false,
+    });
+  };
+  public getAllCategories: () => Promise<CategoryResponse[]> = () => {
+    return this.get('/categories');
+  };
+  public deleteCategory(id: string) {
+    return this.delete(`/admin/categories/delete/${id}`);
+  }
+  public createCategory(params: any) {
+    return this.post('/categories/create', params);
+  }
+  public getOrders: () => Promise<OrderResponse[]> = () => {
+    return this.get('/orders');
+  };
+  public checkHealth() {
+    return axios.get(URL + '/health');
   }
 }
 

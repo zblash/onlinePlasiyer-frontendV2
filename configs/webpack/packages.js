@@ -39,3 +39,4 @@ const externalPackages = (mode => [
 ])('dev');
 
 module.exports = externalPackages;
+// module.exports = [];
