@@ -22,16 +22,16 @@ import { Portal } from '~/components/common';
 
    */
 
-type PopupProps = {
+interface PopupProps {
   show: boolean;
   onClose?: Function;
   children: JSX.Element;
   shouldRenderCloseIcon: boolean;
   hideOverlayClicked: boolean;
-};
-type PopupState = {
+}
+interface PopupState {
   isRender: boolean;
-};
+}
 
 interface SkyLightRefItems {
   show: Function;
@@ -39,18 +39,37 @@ interface SkyLightRefItems {
 }
 
 export default class Popup extends React.Component<PopupProps, PopupState> {
-  static defaultProps = {
+  public static defaultProps = {
     shouldRenderCloseIcon: true,
     hideOverlayClicked: true,
   };
+
+  private skylight: React.RefObject<SkyLightRefItems>;
+
   public constructor(props: PopupProps) {
     super(props);
     this.state = {
       isRender: props.show,
     };
+    this.skylight = React.createRef<SkyLightRefItems>();
   }
-  skylight = React.createRef<SkyLightRefItems>();
-  openPopup = () => {
+
+  public componentDidMount() {
+    this.togglePopup();
+    const { isRender } = this.state;
+    if (isRender) {
+      this.togglePopup();
+    }
+  }
+
+  public componentDidUpdate(prevProps: PopupProps) {
+    const { show } = this.props;
+    if (prevProps.show !== show) {
+      this.togglePopup();
+    }
+  }
+
+  private openPopup = () => {
     const { isRender } = this.state;
     if (!isRender) {
       this.setState({ isRender: true }, () => {
@@ -60,36 +79,32 @@ export default class Popup extends React.Component<PopupProps, PopupState> {
       this.skylight.current.show();
     }
   };
-  closePopup = () => {
+
+  private closePopup = () => {
     this.skylight.current.hide();
   };
-  _beforeClose = () => {
+
+  private _beforeClose = () => {
     const { onClose } = this.props;
     if (onClose) {
       onClose();
     }
   };
-  togglePopup = () => {
+
+  private togglePopup = () => {
     const { show } = this.props;
-    show ? this.openPopup() : this.closePopup();
+    if (show) {
+      this.openPopup();
+    } else {
+      this.closePopup();
+    }
   };
-  componentDidUpdate(prevProps: PopupProps) {
-    const { show } = this.props;
-    if (prevProps.show != show) {
-      this.togglePopup();
-    }
-  }
-  componentDidMount() {
-    const { show } = this.props;
-    const { isRender } = this.state;
-    if (isRender) {
-      show ? this.openPopup() : this.closePopup();
-    }
-  }
-  render() {
+
+  public render() {
     const { children, shouldRenderCloseIcon, hideOverlayClicked } = this.props;
     const { isRender } = this.state;
     const closeButtonStyle = !shouldRenderCloseIcon ? { display: 'none' } : {};
+
     return (
       <Portal>
         <SkyLight

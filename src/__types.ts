@@ -1,8 +1,4 @@
-import { ROLE_MAP } from '~/utils/constants';
-
-export type FirstArgument<T> = T extends (arg1: infer U, ...args: any[]) => any
-  ? U
-  : any;
+export type FirstArgument<T> = T extends (arg1: infer U, ...args: any[]) => any ? U : any;
 
 export interface AddressResponse {
   city: string;
@@ -10,12 +6,14 @@ export interface AddressResponse {
   state: string;
   id: number;
 }
-export type ActiveStatesResponse = {
+
+export interface ActiveStatesResponse {
   code: number;
   id: string;
   title: string;
-};
-export type UserResponse = {
+}
+
+export interface UserResponse {
   username: string;
   role: UserRole;
   name: string;
@@ -23,11 +21,13 @@ export type UserResponse = {
   address: AddressResponse;
   id: string;
   activeStates: ActiveStatesResponse[];
-};
+}
+
 export type SellerResponse = UserResponse & {
   status: number;
   taxNumber: string;
 };
+
 export interface CategoryResponse {
   id: string;
   name: string;
@@ -49,14 +49,14 @@ export interface OrderResponse {
     productTax: number;
     quantity: number;
     recommendedRetailPrice: number;
-    seller: SellerResponse;
     totalPrice: number;
     unitPrice: number;
-    unitType: 'KG';
+    sellerName: string;
+    unitType: 'KG' | 'KL' | 'AD';
     // TODO : uniqueType type
   }[];
   sellerName: string;
-  status: string;
+  status: 'FINISHED' | 'NEW' | 'CANCELLED' | 'PAID';
   // TODO : status type
   totalPrice: number;
   waybillDate: string;

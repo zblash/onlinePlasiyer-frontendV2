@@ -1,11 +1,12 @@
 import * as React from 'react';
+import { Redirect } from 'react-router-dom';
 import { getDisplayName } from '~/utils';
 import { Query, LoginForm } from '~/components/common';
 import services from '~/services';
 import { UserResponse, UserRole } from '~/__types';
 import { Popup } from '~/components/ui';
-import { Redirect } from 'react-router-dom';
 import { ApplicationContext } from '../context/application';
+
 const withRole = (
   WrappedComponent,
   {
@@ -14,11 +15,13 @@ const withRole = (
   }: {
     authorize?: UserRole[];
     showLoginPopup: boolean;
-  } = { showLoginPopup: true }
+  } = { showLoginPopup: true },
 ) => {
   class WithRequiredRoleHandler extends React.Component {
     static contextType = ApplicationContext;
+
     context!: React.ContextType<typeof ApplicationContext>;
+
     render() {
       const shouldAuth = showLoginPopup || Array.isArray(authorize);
       if (!shouldAuth) {
@@ -35,6 +38,7 @@ const withRole = (
           </Popup>
         );
       }
+
       return (
         <Query<UserResponse> query={services.getAuthUser}>
           {({ data, loading, error }) => {
@@ -43,11 +47,13 @@ const withRole = (
             }
             if (error) {
               console.log(error);
+
               return <div>Error (withRequiredRole)</div>;
             }
             if (Array.isArray(authorize) && !authorize.includes(data.role)) {
-              return <Redirect to='/' />;
+              return <Redirect to="/" />;
             }
+
             return <WrappedComponent {...this.props} />;
           }}
         </Query>
@@ -55,9 +61,8 @@ const withRole = (
     }
   }
 
-  (WithRequiredRoleHandler as any).displayName = `withMouse(${getDisplayName(
-    WrappedComponent
-  )})`;
+  (WithRequiredRoleHandler as any).displayName = `withMouse(${getDisplayName(WrappedComponent)})`;
+
   return WithRequiredRoleHandler;
 };
 

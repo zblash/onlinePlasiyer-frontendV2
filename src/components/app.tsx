@@ -12,9 +12,10 @@ import Profile from '~/components/pages/profile';
 import Page404 from '~/components/pages/404-component';
 import Categories from '~/components/pages/categories';
 import CategoryDetail from '~/components/pages/category-detail';
+
 interface IRoute {
   path: string;
-  component: React.ComponentClass;
+  component: React.ComponentClass | React.FunctionComponent;
   shouldLogin: boolean;
   authorize?: UserRole[];
 }
@@ -50,16 +51,18 @@ function App() {
       authorize: ['ADMIN'],
     },
   ];
+
   return (
-    <React.Fragment>
+    <>
       <Query query={() => services.checkHealth()}>
-        {({ data, loading, error }) => {
+        {({ loading, error }) => {
           if (loading) {
             return <h1>loading</h1>;
           }
           if (error) {
             return <h1>Sunucuda bir sorun olustu lutfen Bize bildir</h1>;
           }
+
           return (
             <Router>
               <Switch>
@@ -81,7 +84,7 @@ function App() {
           );
         }}
       </Query>
-    </React.Fragment>
+    </>
   );
 }
 

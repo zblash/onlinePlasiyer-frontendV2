@@ -1,16 +1,14 @@
 import * as React from 'react';
 import { Mutation, Query } from '~/components/common';
+import { CategoryResponse } from '~/__types';
 import services from '~/services';
-import { Popup } from '~/components/ui';
-export default class CreateCategory extends React.Component<
-  CreateCategoryProps,
-  CreateCategoryState
-> {
+
+export default class CreateCategory extends React.Component<CreateCategoryProps, CreateCategoryState> {
   constructor(props) {
     super(props);
     this.state = {
       categoryName: '',
-      parentId: 0,
+      parentId: null,
       uploadFile: null,
       isSub: false,
     };
@@ -19,12 +17,13 @@ export default class CreateCategory extends React.Component<
   render() {
     const { categoryName, isSub, uploadFile, parentId } = this.state;
     const { closePopup } = this.props;
+
     return (
       <div>
         <div>
           <label>Kategori Ismi</label>
           <input
-            type='text'
+            type="text"
             onChange={e => {
               this.setState({ categoryName: e.target.value });
             }}
@@ -33,7 +32,7 @@ export default class CreateCategory extends React.Component<
         <div>
           <label>Alt Categori mi ? </label>
           <input
-            type='checkbox'
+            type="checkbox"
             onChange={e => {
               this.setState({ isSub: e.target.checked });
             }}
@@ -52,12 +51,13 @@ export default class CreateCategory extends React.Component<
               if (error) {
                 return <p>Categoriler cekemedik</p>;
               }
+
               return (
                 <select
                   defaultValue={data[0].id}
                   onChange={e => {
                     this.setState({
-                      parentId: parseInt(e.target.value.split('_')[1], 10),
+                      parentId: e.target.value,
                     });
                   }}
                 >
@@ -73,12 +73,9 @@ export default class CreateCategory extends React.Component<
         )}
         <div>
           <label>Kategori Resmi</label>
-          <input
-            type='file'
-            onChange={e => this.setState({ uploadFile: e.target.files[0] })}
-          />
+          <input type="file" onChange={e => this.setState({ uploadFile: e.target.files[0] })} />
         </div>
-        <Mutation
+        <Mutation<CategoryResponse, Parameters<typeof services.createCategory>[0]>
           mutation={variable => services.createCategory(variable)}
           onComplated={() => {
             closePopup();
@@ -88,22 +85,18 @@ export default class CreateCategory extends React.Component<
             // TODO : show notification
           }}
         >
-          {(createCategory, { data, loading }) => {
+          {(createCategory, { loading }) => {
             return (
               <button
                 disabled={!categoryName || !uploadFile}
+                type="button"
                 onClick={() => {
-                  let form_data = new FormData();
-                  const data = {
+                  createCategory({
                     parentId,
                     name: categoryName,
-                    subCategory: isSub ? 1 : 0,
+                    isSub,
                     uploadfile: uploadFile,
-                  };
-                  for (const key in data) {
-                    form_data.append(key, data[key]);
-                  }
-                  createCategory(form_data);
+                  });
                 }}
               >
                 {loading ? '....Loading' : 'Ekle'}
@@ -115,12 +108,12 @@ export default class CreateCategory extends React.Component<
     );
   }
 }
-type CreateCategoryState = {
+interface CreateCategoryState {
   categoryName: string;
-  parentId: number;
+  parentId: string;
   isSub: boolean;
   uploadFile: File;
-};
-type CreateCategoryProps = {
+}
+interface CreateCategoryProps {
   closePopup: Function;
-};
+}

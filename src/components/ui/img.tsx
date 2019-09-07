@@ -1,19 +1,31 @@
 import * as React from 'react';
 import Carousel, { Modal, ModalGateway } from 'react-images';
+import cls from 'classnames';
+
 export default class Image extends React.Component<ImageProps, ImageState> {
-  static defaultProps = {
+  public static defaultProps = {
     zoomable: false,
   };
-  state = { modalIsOpen: false };
-  toggleModal = () => {
+
+  public constructor(props: ImageProps) {
+    super(props);
+    this.state = { modalIsOpen: false };
+  }
+
+  private toggleModal = () => {
     this.setState(state => ({ modalIsOpen: !state.modalIsOpen }));
   };
-  render() {
+
+  public render() {
     const { modalIsOpen } = this.state;
-    const { src, zoomable, alt } = this.props;
+    const { src, zoomable, extraClassName, alt } = this.props;
+
     return (
       <div>
         <img
+          className={cls(extraClassName, {
+            'cursor-pointer': zoomable,
+          })}
           src={src}
           alt={alt}
           onClick={() => {
@@ -33,11 +45,12 @@ export default class Image extends React.Component<ImageProps, ImageState> {
     );
   }
 }
-type ImageState = {
+interface ImageState {
   modalIsOpen: boolean;
-};
-type ImageProps = {
+}
+interface ImageProps {
+  extraClassName?: string;
   zoomable: boolean;
   src: string;
   alt: string;
-};
+}

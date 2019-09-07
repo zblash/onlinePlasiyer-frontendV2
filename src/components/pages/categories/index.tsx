@@ -3,21 +3,24 @@ import { RouteComponentProps } from 'react-router';
 import { Header, Query } from '~/components/common';
 import Category from './category';
 import services from '~/services';
-import CreateCategoryPopup from './create-category-popup';
+import CreateCategory from './create-category';
 import { Popup } from '~/components/ui';
 
-export default class AdminCategories extends React.Component<
-  AdminCategoriesProps,
-  AdminCategoriesState
-> {
-  state: AdminCategoriesState = {
-    shouldShowCreatePopup: false,
-  };
-  closeCreateCategoryPopup = () => {
+export default class AdminCategories extends React.Component<AdminCategoriesProps, AdminCategoriesState> {
+  public constructor(props: AdminCategoriesProps) {
+    super(props);
+    this.state = {
+      shouldShowCreatePopup: false,
+    };
+  }
+
+  private closeCreateCategoryPopup = () => {
     this.setState({ shouldShowCreatePopup: false });
   };
-  render() {
+
+  public render() {
     const { shouldShowCreatePopup } = this.state;
+
     return (
       <div>
         <Header />
@@ -29,10 +32,11 @@ export default class AdminCategories extends React.Component<
             if (error) {
               return <div>Error admin Categories</div>;
             }
-            console.log(data);
+
             return (
               <div>
                 <button
+                  type="button"
                   onClick={() => {
                     this.setState({ shouldShowCreatePopup: true });
                   }}
@@ -40,15 +44,17 @@ export default class AdminCategories extends React.Component<
                   create category
                 </button>
                 {data.map(category => (
-                  <Category key={category.id} {...category} />
-                ))}
-                <Popup
-                  show={shouldShowCreatePopup}
-                  onClose={this.closeCreateCategoryPopup}
-                >
-                  <CreateCategoryPopup
-                    closePopup={this.closeCreateCategoryPopup}
+                  <Category
+                    key={category.id}
+                    id={category.id}
+                    name={category.name}
+                    parentId={category.parentId}
+                    photoUrl={category.photoUrl}
+                    subCategory={category.subCategory}
                   />
+                ))}
+                <Popup show={shouldShowCreatePopup} onClose={this.closeCreateCategoryPopup}>
+                  <CreateCategory closePopup={this.closeCreateCategoryPopup} />
                 </Popup>
               </div>
             );
@@ -58,7 +64,7 @@ export default class AdminCategories extends React.Component<
     );
   }
 }
-type AdminCategoriesState = {
+interface AdminCategoriesState {
   shouldShowCreatePopup: boolean;
-};
+}
 type AdminCategoriesProps = {} & RouteComponentProps<{}>;
