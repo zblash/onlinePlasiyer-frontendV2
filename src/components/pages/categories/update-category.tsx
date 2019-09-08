@@ -114,6 +114,7 @@ export default class UpdateCategory extends React.Component<UpdateCategoryProps,
                       const file = event.target.files[0];
                       const reader = new FileReader();
                       reader.onload = e => {
+                        // @ts-ignore
                         this.setState({ photoSrc: e.target.result as string, uploadFile: file });
                       };
                       reader.readAsDataURL(file);
@@ -121,8 +122,8 @@ export default class UpdateCategory extends React.Component<UpdateCategoryProps,
                   }}
                 />
               </div>
-              <Mutation<CategoryResponse, Parameters<typeof services.updateCategory>[1]>
-                mutation={variable => services.updateCategory(categoryId, variable)}
+              <Mutation
+                mutation={services.updateCategory}
                 onComplated={() => {
                   closePopup();
                   // TODO : show notification
@@ -143,10 +144,13 @@ export default class UpdateCategory extends React.Component<UpdateCategoryProps,
                       type="button"
                       onClick={() => {
                         createCategory({
-                          isSub,
-                          name: categoryName,
-                          parentId,
-                          uploadfile: uploadFile,
+                          id: categoryId,
+                          params: {
+                            isSub,
+                            name: categoryName,
+                            parentId,
+                            uploadfile: uploadFile,
+                          },
                         });
                       }}
                     >

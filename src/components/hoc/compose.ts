@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { RouteComponentProps, WithRouterProps, WithRouterStatics } from 'react-router';
+import { RouteComponentProps } from 'react-router-dom';
 
 // TODO : gonderilen componentin propsunu istesin
 export default function compose(...funcs) {
@@ -8,6 +8,14 @@ export default function compose(...funcs) {
 
   // @ts-ignore
   return _funcs.reduce((a, b) => (...args) => a(b(...args)));
+}
+
+export type WithRouterProps<C extends React.ComponentType<any>> = C extends React.ComponentClass
+  ? { wrappedComponentRef?: React.Ref<InstanceType<C>> }
+  : {};
+
+export interface WithRouterStatics<C extends React.ComponentType<any>> {
+  WrappedComponent: C;
 }
 
 function composeResult<P extends RouteComponentProps<any>, C extends React.ComponentType<P>>(

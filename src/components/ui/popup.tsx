@@ -101,7 +101,7 @@ export default class Popup extends React.Component<PopupProps, PopupState> {
   };
 
   public render() {
-    const { children, shouldRenderCloseIcon, hideOverlayClicked } = this.props;
+    const { children, show, shouldRenderCloseIcon, hideOverlayClicked } = this.props;
     const { isRender } = this.state;
     const closeButtonStyle = !shouldRenderCloseIcon ? { display: 'none' } : {};
 
@@ -114,7 +114,8 @@ export default class Popup extends React.Component<PopupProps, PopupState> {
           ref={this.skylight}
           isVisible={false}
         >
-          {isRender ? children : null}
+          {/* {isRender ? children : null} */}
+          {show ? children : null}
         </SkyLight>
       </Portal>
     );

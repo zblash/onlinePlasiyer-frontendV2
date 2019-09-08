@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps } from 'react-router-dom';
 import { Header, Query } from '~/components/common';
 import Category from './category';
 import services from '~/services';

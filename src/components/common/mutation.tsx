@@ -6,6 +6,7 @@ interface MutationProps<T = any, TVars = any> {
   mutation: TMutation<T, TVars>;
   onError?: (e: Error) => void;
   onComplated?: (data: T) => void;
+  variables?: TVars;
 }
 interface MutationState<T = any> {
   data: T;
@@ -13,18 +14,21 @@ interface MutationState<T = any> {
   error: Error | null;
 }
 
-export default class Mutation<T = any, TVars = any> extends React.Component<MutationProps<T, TVars>, MutationState<T>> {
-  state = {
-    data: null,
-    loading: false,
-    error: null,
-  };
+export default class Mutation<TVars = any, T = any> extends React.Component<MutationProps<T, TVars>, MutationState<T>> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: null,
+      loading: false,
+      error: null,
+    };
+  }
 
   mutate = (p?: TVars) => {
     this.setState({ loading: true });
-    const { mutation, onError, onComplated } = this.props;
+    const { mutation, onError, onComplated, variables } = this.props;
 
-    return mutation(p || undefined)
+    return mutation(variables || p)
       .then(data => {
         this.setState({ loading: false, data });
         if (onComplated) {

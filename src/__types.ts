@@ -1,4 +1,4 @@
-export type FirstArgument<T> = T extends (arg1: infer U, ...args: any[]) => any ? U : any;
+import { userRoleArray, userTypeArray, publicUserRoleArray } from './utils/constants';
 
 export interface AddressResponse {
   city: string;
@@ -13,20 +13,17 @@ export interface ActiveStatesResponse {
   title: string;
 }
 
-export interface UserResponse {
+export interface UserCommonResponse {
   username: string;
-  role: UserRole;
+  role: UserRoleResponse;
   name: string;
   email: string;
   address: AddressResponse;
   id: string;
-  activeStates: ActiveStatesResponse[];
+  status?: boolean;
+  taxNumber?: string;
+  activeStates?: ActiveStatesResponse[];
 }
-
-export type SellerResponse = UserResponse & {
-  status: number;
-  taxNumber: string;
-};
 
 export interface CategoryResponse {
   id: string;
@@ -62,6 +59,10 @@ export interface OrderResponse {
   waybillDate: string;
 }
 
-export type UserRoleKey = 'admin' | 'merchant' | 'customer';
+export type UserRoleResponse = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';
 
-export type UserRole = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';
+export type UserRole = (typeof userRoleArray)[number];
+
+export type PublicUserRole = (typeof publicUserRoleArray)[number];
+
+export type UserType = (typeof userTypeArray)[number];

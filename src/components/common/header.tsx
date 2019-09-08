@@ -87,7 +87,8 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
                 <div className="mr-5">{data.name}</div>
                 {data.role === 'ADMIN' && (
                   <div>
-                    <NavLink to="/admin/categories/">Categories</NavLink>
+                    <NavLink to="/admin/categories/">Categories </NavLink>
+                    <NavLink to="/admin/users/">Users</NavLink>
                   </div>
                 )}
               </div>

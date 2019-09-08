@@ -75,8 +75,8 @@ export default class CreateCategory extends React.Component<CreateCategoryProps,
           <label>Kategori Resmi</label>
           <input type="file" onChange={e => this.setState({ uploadFile: e.target.files[0] })} />
         </div>
-        <Mutation<CategoryResponse, Parameters<typeof services.createCategory>[0]>
-          mutation={variable => services.createCategory(variable)}
+        <Mutation
+          mutation={services.createCategory}
           onComplated={() => {
             closePopup();
             // TODO : show notification

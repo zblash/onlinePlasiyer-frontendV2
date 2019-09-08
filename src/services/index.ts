@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { ROLE_MAP } from '~/utils/constants';
-import { UserResponse, CategoryResponse, OrderResponse } from '~/__types';
+import { UserCommonResponse, CategoryResponse, OrderResponse, UserType } from '~/__types';
 
 const URL = 'http://localhost:8080';
 const API_URL = `${URL}/api`;
@@ -145,7 +145,7 @@ class ApiService {
     return axios.post(`${URL}/sign-up`, _data).then(d => d.data);
   };
 
-  public getAuthUser: () => Promise<UserResponse> = () => {
+  public getAuthUser: () => Promise<UserCommonResponse> = () => {
     return this.post('/users/getmyinfos');
   };
 
@@ -172,15 +172,15 @@ class ApiService {
     return this.delete(`/categories/delete/${id}`);
   };
 
-  public updateCategory: (
-    id: string,
+  public updateCategory: (s: {
+    id: string;
     params: {
       parentId: string | null;
       name: string;
       isSub: boolean;
       uploadfile: null | File;
-    },
-  ) => Promise<CategoryResponse> = (id, params) => {
+    };
+  }) => Promise<CategoryResponse> = ({ id, params }) => {
     const formData = new FormData();
     const _data = {
       ...params,
@@ -213,6 +213,34 @@ class ApiService {
 
   public getOrders: () => Promise<OrderResponse[]> = () => {
     return this.get('/orders');
+  };
+
+  public getUsers: (type: UserType) => Promise<UserCommonResponse[]> = type => {
+    const userTypeRouteMap: Record<UserType, string> = {
+      'customers-active': '/users/customers/active',
+      'customers-all': '/users/customers/',
+      'customers-passive': '/users/customers/passive',
+      'merchants-active': '/users/merchant/active',
+      'merchants-passive': '/users/merchant/passive',
+      'merchants-all': '/users/merchant/',
+    };
+    if (!Object.keys(userTypeRouteMap).includes(type)) {
+      return Promise.reject(new Error('Type is not found'));
+    }
+
+    return this.get(userTypeRouteMap[type]);
+  };
+
+  public changeUserStatus: (s: { id: string; status: boolean }) => Promise<any> = ({ id, status }) => {
+    if (status) {
+      return this.post(`/users/setActive/${id}`);
+    }
+
+    return this.post(`/users/setPassive/${id}`);
+  };
+
+  public getCart: () => Promise<any> = () => {
+    return this.get('/cart');
   };
 
   public checkHealth: () => Promise<boolean> = () => {

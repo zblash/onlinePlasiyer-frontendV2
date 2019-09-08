@@ -49,7 +49,8 @@ class LoginForm extends React.Component<AppProps, AppState> {
           }
         }}
       >
-        {(login, { loading }) => {
+        {(login, s) => {
+          const { loading } = s;
           const formId = 'login-form';
 
           return (

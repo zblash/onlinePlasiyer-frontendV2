@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import { getDisplayName } from '~/utils';
 import { Query, LoginForm } from '~/components/common';
 import services from '~/services';
-import { UserResponse, UserRole } from '~/__types';
+import { UserCommonResponse, UserRoleResponse } from '~/__types';
 import { Popup } from '~/components/ui';
 import { ApplicationContext } from '../context/application';
 
@@ -13,7 +13,7 @@ const withRole = (
     authorize,
     showLoginPopup,
   }: {
-    authorize?: UserRole[];
+    authorize?: UserRoleResponse[];
     showLoginPopup: boolean;
   } = { showLoginPopup: true },
 ) => {
@@ -23,11 +23,14 @@ const withRole = (
     context!: React.ContextType<typeof ApplicationContext>;
 
     render() {
+      const { user } = this.context;
       const shouldAuth = showLoginPopup || Array.isArray(authorize);
+      // eslint-disable-next-line
+      const wrappedComponent = <WrappedComponent {...this.props} />;
       if (!shouldAuth) {
-        return <WrappedComponent {...this.props} />;
+        return wrappedComponent;
       }
-      if (!this.context.user.isLoggedIn) {
+      if (!user.isLoggedIn) {
         return (
           <Popup show shouldRenderCloseIcon={false} hideOverlayClicked={false}>
             <LoginForm
@@ -40,21 +43,19 @@ const withRole = (
       }
 
       return (
-        <Query<UserResponse> query={services.getAuthUser}>
+        <Query<UserCommonResponse> query={services.getAuthUser}>
           {({ data, loading, error }) => {
             if (loading) {
               return <div>Loading...(withRequiredRole)</div>;
             }
             if (error) {
-              console.log(error);
-
               return <div>Error (withRequiredRole)</div>;
             }
             if (Array.isArray(authorize) && !authorize.includes(data.role)) {
               return <Redirect to="/" />;
             }
 
-            return <WrappedComponent {...this.props} />;
+            return wrappedComponent;
           }}
         </Query>
       );

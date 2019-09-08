@@ -28,6 +28,7 @@
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
+    "@types/deep-equal": "^1.0.1",
     "@types/jest": "^24.0.18",
     "@types/node": "^12.7.2",
     "@types/react": "^16.9.2",
@@ -72,12 +73,14 @@
     "webpack-cli": "^3.3.7",
     "webpack-dev-middleware": "^3.7.0",
     "webpack-dev-server": "^3.8.0",
+    "@types/react-autocomplete": "^1.8.5",
+    "react-autocomplete": "^1.8.1",
+    "classnames": "^2.2.6",
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
-    "classnames": "^2.2.6",
+    "deep-equal": "^1.1.0",
     "react-images": "^1.0.0",
-    "react-router": "^5.0.1",
     "react-skylight": "^0.5.1",
     "styled-jsx": "^3.2.2"
   }

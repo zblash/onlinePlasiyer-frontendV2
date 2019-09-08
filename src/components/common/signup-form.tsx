@@ -1,16 +1,15 @@
 import * as React from 'react';
 import services from '~/services';
 import { Mutation } from '~/components/common';
-import { UserRoleKey } from '~/__types';
-import { ROLE_MAP } from '~/utils/constants';
-
+import { PublicUserRole } from '~/__types';
+import { publicUserRoleArray } from '~/utils/constants';
 interface AppState {
   city: string;
   details: string;
   email: string;
   name: string;
   password: string;
-  role: UserRoleKey;
+  role: PublicUserRole;
   state: string;
   taxNumber: string;
   username: string;
@@ -28,7 +27,7 @@ class SignUp extends React.Component<AppProps, AppState> {
       details: '',
       email: '',
       name: '',
-      role: 'admin',
+      role: 'customer',
       state: '',
       taxNumber: '',
       username: '',
@@ -85,8 +84,8 @@ class SignUp extends React.Component<AppProps, AppState> {
         </div>
         <div>
           <label>role :</label>
-          <select onChange={e => this.setState({ role: e.target.value as UserRoleKey })} defaultValue={role}>
-            {Object.keys(ROLE_MAP).map(_role => (
+          <select onChange={e => this.setState({ role: e.target.value as PublicUserRole })} defaultValue={role}>
+            {publicUserRoleArray.map(_role => (
               <option value={_role} key={_role}>
                 {_role}
               </option>
@@ -150,7 +149,7 @@ class SignUp extends React.Component<AppProps, AppState> {
         >
           {(login, { loading }) => {
             if (loading) {
-              return <button disabled>...Loading...</button>;
+              return <button type="button">...Loading...</button>;
             }
 
             return (
