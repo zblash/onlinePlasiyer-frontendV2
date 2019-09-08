@@ -3,11 +3,16 @@ import { Header } from '~/components/common';
 
 interface AppState {}
 interface AppProps {}
+
 class About extends React.Component<AppProps, AppState> {
-  state: AppState = {};
+  public constructor(props: AppProps) {
+    super(props);
+    this.state = {};
+  }
+
   public render() {
     return (
-      <div className='app'>
+      <div className="app">
         <Header />
         Profile
       </div>

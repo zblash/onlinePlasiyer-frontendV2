@@ -1,34 +1,39 @@
 import * as React from 'react';
+import JSXStyle from 'styled-jsx/style';
+import { NavLink } from 'react-router-dom';
 import services from '~/services';
 import { Popup } from '~/components/ui';
 import { LoginForm, Query, SignupForm } from '~/components/common';
 import { ApplicationContext } from '../context/application';
-import JSXStyle from 'styled-jsx/style';
-import { NavLink } from 'react-router-dom';
 
 export default class Header extends React.Component<HeaderProps, HeaderState> {
   static contextType = ApplicationContext;
+
   context!: React.ContextType<typeof ApplicationContext>;
-  state: HeaderState = {
-    shouldShowLoginPopup: false,
-    shouldShowSignupPopup: false,
-    shouldShowLogoutPopup: false,
-  };
+
+  constructor(props: HeaderProps) {
+    super(props);
+    this.state = {
+      shouldShowLoginPopup: false,
+      shouldShowSignupPopup: false,
+      shouldShowLogoutPopup: false,
+    };
+  }
+
   closeLoginPopup = () => this.setState({ shouldShowLoginPopup: false });
+
   closeLogoutPopup = () => this.setState({ shouldShowLogoutPopup: false });
+
   closeSignupPopup = () => this.setState({ shouldShowSignupPopup: false });
+
   render() {
     const {
       user: { isLoggedIn },
       userLogout,
     } = this.context;
-    const {
-      shouldShowLoginPopup,
-      shouldShowSignupPopup,
-      shouldShowLogoutPopup,
-    } = this.state;
+    const { shouldShowLoginPopup, shouldShowSignupPopup, shouldShowLogoutPopup } = this.state;
     const style = (
-      <JSXStyle id='header-style'>
+      <JSXStyle id="header-style">
         {`
           .flex{
             display:flex;
@@ -43,8 +48,8 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
       </JSXStyle>
     );
     const notAuthElements = (
-      <React.Fragment>
-        <button onClick={() => this.setState({ shouldShowLoginPopup: true })}>
+      <>
+        <button type="button" onClick={() => this.setState({ shouldShowLoginPopup: true })}>
           Login
         </button>
         <Popup show={shouldShowLoginPopup} onClose={this.closeLoginPopup}>
@@ -54,7 +59,7 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
             }}
           />
         </Popup>
-        <button onClick={() => this.setState({ shouldShowSignupPopup: true })}>
+        <button type="button" onClick={() => this.setState({ shouldShowSignupPopup: true })}>
           Signup
         </button>
         <Popup show={shouldShowSignupPopup} onClose={this.closeSignupPopup}>
@@ -64,10 +69,10 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
             }}
           />
         </Popup>
-      </React.Fragment>
+      </>
     );
     const authElements = (
-      <React.Fragment>
+      <>
         <Query query={() => services.getAuthUser()}>
           {({ data, loading, error }) => {
             if (loading) {
@@ -76,12 +81,14 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
             if (error) {
               return null;
             }
+
             return (
-              <div className='flex mr-5'>
-                <div className='mr-5'>{data.name}</div>
+              <div className="flex mr-5">
+                <div className="mr-5">{data.name}</div>
                 {data.role === 'ADMIN' && (
                   <div>
-                    <NavLink to='/admin/categories/'>Categories</NavLink>
+                    <NavLink to="/admin/categories/">Categories </NavLink>
+                    <NavLink to="/admin/users/">Users</NavLink>
                   </div>
                 )}
               </div>
@@ -90,6 +97,7 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
         </Query>
 
         <button
+          type="button"
           onClick={() => {
             this.setState({ shouldShowLogoutPopup: true });
           }}
@@ -100,6 +108,7 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
           <div>
             <h1>Cikmak Istiyormusun ?</h1>
             <button
+              type="button"
               onClick={() => {
                 this.closeLogoutPopup();
                 services.logout();
@@ -109,6 +118,7 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
               Evet
             </button>
             <button
+              type="button"
               onClick={() => {
                 this.setState({ shouldShowLogoutPopup: false });
               }}
@@ -117,10 +127,11 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
             </button>
           </div>
         </Popup>
-      </React.Fragment>
+      </>
     );
+
     return (
-      <div className='header-wrapper'>
+      <div className="header-wrapper">
         {!isLoggedIn ? notAuthElements : authElements}
         {style}
       </div>
@@ -128,9 +139,9 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
   }
 }
 
-type HeaderState = {
+interface HeaderState {
   shouldShowLogoutPopup: boolean;
   shouldShowLoginPopup: boolean;
   shouldShowSignupPopup: boolean;
-};
-type HeaderProps = {};
+}
+interface HeaderProps {}

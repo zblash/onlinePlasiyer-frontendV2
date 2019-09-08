@@ -1,34 +1,44 @@
 import * as React from 'react';
+import deepEqual from 'deep-equal';
 
-type TMutation<T, TArgs> = (pass?: TArgs) => Promise<T>;
-interface MutationProps<T = any, TVars = any> {
-  children: (mutation: TMutation<T, TVars>, s: { data: T; loading: boolean; error: Error }) => JSX.Element;
-  mutation: TMutation<T, TVars>;
+interface QueryProps<T, TVars> {
+  children: (s: { data: T; loading: boolean; error: Error }) => JSX.Element;
+  query: (v?: TVars) => Promise<T>;
   onError?: (e: Error) => void;
   onComplated?: (data: T) => void;
   variables?: TVars;
 }
-interface MutationState<T = any> {
+interface QueryState<T> {
   data: T;
   loading: boolean;
   error: Error | null;
 }
 
-export default class Mutation<TVars = any, T = any> extends React.Component<MutationProps<T, TVars>, MutationState<T>> {
+class Query<TVars = any, T = any> extends React.Component<QueryProps<T, TVars>, QueryState<T>> {
   constructor(props) {
     super(props);
     this.state = {
       data: null,
-      loading: false,
+      loading: true,
       error: null,
     };
   }
 
-  mutate = (p?: TVars) => {
-    this.setState({ loading: true });
-    const { mutation, onError, onComplated, variables } = this.props;
+  componentDidMount() {
+    this.getQuery();
+  }
 
-    return mutation(variables || p)
+  componentDidUpdate(prevProps) {
+    const { variables } = this.props;
+    if (!deepEqual(prevProps.variables, variables)) {
+      this.getQuery();
+    }
+  }
+
+  getQuery = () => {
+    const { query, variables, onError, onComplated } = this.props;
+
+    return query(variables)
       .then(data => {
         this.setState({ loading: false, data });
         if (onComplated) {
@@ -51,10 +61,12 @@ export default class Mutation<TVars = any, T = any> extends React.Component<Muta
     const { children } = this.props;
     const { data, loading, error } = this.state;
 
-    return children(this.mutate, {
+    return children({
       data,
       loading,
       error,
     });
   }
 }
+
+export default Query;

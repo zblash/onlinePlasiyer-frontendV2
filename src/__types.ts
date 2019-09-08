@@ -1,8 +1,4 @@
-import { ROLE_MAP } from '~/utils/constants';
-
-export type FirstArgument<T> = T extends (arg1: infer U, ...args: any[]) => any
-  ? U
-  : any;
+import { userRoleArray, userTypeArray, publicUserRoleArray } from './utils/constants';
 
 export interface AddressResponse {
   city: string;
@@ -10,24 +6,25 @@ export interface AddressResponse {
   state: string;
   id: number;
 }
-export type ActiveStatesResponse = {
+
+export interface ActiveStatesResponse {
   code: number;
   id: string;
   title: string;
-};
-export type UserResponse = {
+}
+
+export interface UserCommonResponse {
   username: string;
-  role: UserRole;
+  role: UserRoleResponse;
   name: string;
   email: string;
   address: AddressResponse;
   id: string;
-  activeStates: ActiveStatesResponse[];
-};
-export type SellerResponse = UserResponse & {
-  status: number;
-  taxNumber: string;
-};
+  status?: boolean;
+  taxNumber?: string;
+  activeStates?: ActiveStatesResponse[];
+}
+
 export interface CategoryResponse {
   id: string;
   name: string;
@@ -49,19 +46,23 @@ export interface OrderResponse {
     productTax: number;
     quantity: number;
     recommendedRetailPrice: number;
-    seller: SellerResponse;
     totalPrice: number;
     unitPrice: number;
-    unitType: 'KG';
+    sellerName: string;
+    unitType: 'KG' | 'KL' | 'AD';
     // TODO : uniqueType type
   }[];
   sellerName: string;
-  status: string;
+  status: 'FINISHED' | 'NEW' | 'CANCELLED' | 'PAID';
   // TODO : status type
   totalPrice: number;
   waybillDate: string;
 }
 
-export type UserRoleKey = 'admin' | 'merchant' | 'customer';
+export type UserRoleResponse = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';
 
-export type UserRole = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';
+export type UserRole = (typeof userRoleArray)[number];
+
+export type PublicUserRole = (typeof publicUserRoleArray)[number];
+
+export type UserType = (typeof userTypeArray)[number];

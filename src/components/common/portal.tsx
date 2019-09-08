@@ -1,12 +1,14 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+
 const modalRoot = document.getElementById('modal-root');
-type ModalProps = {
+interface ModalProps {
   wrapperClassName?: string;
-};
+}
 
 export default class Portal extends React.Component<ModalProps> {
   el: HTMLDivElement;
+
   constructor(props: ModalProps) {
     super(props);
     this.el = document.createElement('div');

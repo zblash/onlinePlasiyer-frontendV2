@@ -1,5 +1,6 @@
 import * as React from 'react';
 import services from '~/services';
+
 interface IApplicationContextStates {
   user: {
     isLoggedIn: boolean;
@@ -23,27 +24,28 @@ const initialValue: {
     userLogout: () => {},
   },
 };
-export const ApplicationContext = React.createContext<
-  IApplicationContextStates & IApplicationContextActions
->({ ...initialValue.state, ...initialValue.actions });
 
-class ApplicationContextProvider extends React.Component<
-  {},
-  IApplicationContextStates
-> {
-  state: IApplicationContextStates = Object.assign({}, initialValue.state);
+export const ApplicationContext = React.createContext<IApplicationContextStates & IApplicationContextActions>({
+  ...initialValue.state,
+  ...initialValue.actions,
+});
+
+class ApplicationContextProvider extends React.Component<{}, IApplicationContextStates> {
+  state: IApplicationContextStates = { ...initialValue.state };
+
   userLogin = () => {
     const { user } = this.state;
     this.setState({ user: { ...user, isLoggedIn: true } });
   };
+
   userLogout = () => {
     const { user } = this.state;
     this.setState({ user: { ...user, isLoggedIn: false } });
   };
+
   render() {
-    const _state: IApplicationContextStates = JSON.parse(
-      JSON.stringify(this.state)
-    );
+    const _state: IApplicationContextStates = JSON.parse(JSON.stringify(this.state));
+
     return (
       <ApplicationContext.Provider
         value={{

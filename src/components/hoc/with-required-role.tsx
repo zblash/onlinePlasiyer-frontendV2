@@ -1,30 +1,36 @@
 import * as React from 'react';
+import { Redirect } from 'react-router-dom';
 import { getDisplayName } from '~/utils';
 import { Query, LoginForm } from '~/components/common';
 import services from '~/services';
-import { UserResponse, UserRole } from '~/__types';
+import { UserCommonResponse, UserRoleResponse } from '~/__types';
 import { Popup } from '~/components/ui';
-import { Redirect } from 'react-router-dom';
 import { ApplicationContext } from '../context/application';
+
 const withRole = (
   WrappedComponent,
   {
     authorize,
     showLoginPopup,
   }: {
-    authorize?: UserRole[];
+    authorize?: UserRoleResponse[];
     showLoginPopup: boolean;
-  } = { showLoginPopup: true }
+  } = { showLoginPopup: true },
 ) => {
   class WithRequiredRoleHandler extends React.Component {
     static contextType = ApplicationContext;
+
     context!: React.ContextType<typeof ApplicationContext>;
+
     render() {
+      const { user } = this.context;
       const shouldAuth = showLoginPopup || Array.isArray(authorize);
+      // eslint-disable-next-line
+      const wrappedComponent = <WrappedComponent {...this.props} />;
       if (!shouldAuth) {
-        return <WrappedComponent {...this.props} />;
+        return wrappedComponent;
       }
-      if (!this.context.user.isLoggedIn) {
+      if (!user.isLoggedIn) {
         return (
           <Popup show shouldRenderCloseIcon={false} hideOverlayClicked={false}>
             <LoginForm
@@ -35,29 +41,29 @@ const withRole = (
           </Popup>
         );
       }
+
       return (
-        <Query<UserResponse> query={services.getAuthUser}>
+        <Query<UserCommonResponse> query={services.getAuthUser}>
           {({ data, loading, error }) => {
             if (loading) {
               return <div>Loading...(withRequiredRole)</div>;
             }
             if (error) {
-              console.log(error);
               return <div>Error (withRequiredRole)</div>;
             }
             if (Array.isArray(authorize) && !authorize.includes(data.role)) {
-              return <Redirect to='/' />;
+              return <Redirect to="/" />;
             }
-            return <WrappedComponent {...this.props} />;
+
+            return wrappedComponent;
           }}
         </Query>
       );
     }
   }
 
-  (WithRequiredRoleHandler as any).displayName = `withMouse(${getDisplayName(
-    WrappedComponent
-  )})`;
+  (WithRequiredRoleHandler as any).displayName = `withMouse(${getDisplayName(WrappedComponent)})`;
+
   return WithRequiredRoleHandler;
 };
 

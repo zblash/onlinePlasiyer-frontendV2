@@ -1,15 +1,19 @@
 import * as React from 'react';
-import { RouteComponentProps } from 'react-router';
-export default class AdminCategory extends React.Component<
-  AdminCategoryProps,
-  AdminCategoryState
-> {
-  render() {
-    const {
-      match: { params },
-    } = this.props;
-    return <div>Hello World{params.id}</div>;
-  }
-}
-type AdminCategoryState = {};
+import { RouteComponentProps } from 'react-router-dom';
+
+const AdminCategory: React.SFC<AdminCategoryProps> = props => {
+  const {
+    match: { params },
+  } = props;
+
+  return (
+    <div>
+      Hello
+      {params.id}
+    </div>
+  );
+};
+
 type AdminCategoryProps = {} & RouteComponentProps<{ id: string }>;
+
+export default AdminCategory;

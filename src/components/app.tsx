@@ -2,7 +2,7 @@ import * as React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import '~/assets/scss/app.scss';
 import { RouteChange, Query } from '~/components/common';
-import { UserRole } from '~/__types';
+import { UserRoleResponse } from '~/__types';
 import { withRequiredRole } from '~/components/hoc';
 import services from '~/services';
 
@@ -12,11 +12,14 @@ import Profile from '~/components/pages/profile';
 import Page404 from '~/components/pages/404-component';
 import Categories from '~/components/pages/categories';
 import CategoryDetail from '~/components/pages/category-detail';
+import Users from '~/components/pages/users';
+
 interface IRoute {
   path: string;
-  component: React.ComponentClass;
+  component: React.ComponentClass | React.FunctionComponent;
   shouldLogin: boolean;
-  authorize?: UserRole[];
+  authorize?: UserRoleResponse[];
+  disabled?: boolean;
 }
 function App() {
   const routes: IRoute[] = [
@@ -48,32 +51,43 @@ function App() {
       component: CategoryDetail,
       shouldLogin: true,
       authorize: ['ADMIN'],
+      disabled: true,
+    },
+    {
+      path: '/admin/users/',
+      component: Users,
+      shouldLogin: true,
+      authorize: ['ADMIN'],
     },
   ];
+
   return (
-    <React.Fragment>
+    <>
       <Query query={() => services.checkHealth()}>
-        {({ data, loading, error }) => {
+        {({ loading, error }) => {
           if (loading) {
-            return <h1>loading</h1>;
+            return <h1>Baglantilar Kontrol Ediliyor</h1>;
           }
           if (error) {
-            return <h1>Sunucuda bir sorun olustu lutfen Bize bildir</h1>;
+            return <h1>Sunucuda bir sorun olustu.Sorun bize ulasti en kisa surede cozulecek</h1>;
           }
+
           return (
             <Router>
               <Switch>
-                {routes.map(route => (
-                  <Route
-                    key={route.path}
-                    path={route.path}
-                    component={withRequiredRole(route.component, {
-                      authorize: route.authorize,
-                      showLoginPopup: route.shouldLogin,
-                    })}
-                    exact
-                  />
-                ))}
+                {routes.map(route =>
+                  route.disabled ? null : (
+                    <Route
+                      key={route.path}
+                      path={route.path}
+                      component={withRequiredRole(route.component, {
+                        authorize: route.authorize,
+                        showLoginPopup: route.shouldLogin,
+                      })}
+                      exact
+                    />
+                  ),
+                )}
                 <Route component={Page404} />
                 <RouteChange />
               </Switch>
@@ -81,7 +95,7 @@ function App() {
           );
         }}
       </Query>
-    </React.Fragment>
+    </>
   );
 }
 

@@ -1,7 +1,7 @@
 import * as React from 'react';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 import services from '~/services';
 import { Mutation } from '~/components/common';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from '~/components/hoc';
 import { ApplicationContext } from '../context/application';
 
@@ -16,12 +16,14 @@ type AppProps = {
 
 class LoginForm extends React.Component<AppProps, AppState> {
   static contextType = ApplicationContext;
+
   context!: React.ContextType<typeof ApplicationContext>;
 
   state = {
     username: '',
     password: '',
   };
+
   public render() {
     const {
       onError,
@@ -31,11 +33,10 @@ class LoginForm extends React.Component<AppProps, AppState> {
     } = this.props;
     const { username, password } = this.state;
     const { userLogin } = this.context;
+
     return (
       <Mutation
-        mutation={() =>
-          services.login(this.state.username, this.state.password)
-        }
+        mutation={() => services.login(this.state.username, this.state.password)}
         onError={e => {
           if (onError) {
             onError(e);
@@ -48,12 +49,14 @@ class LoginForm extends React.Component<AppProps, AppState> {
           }
         }}
       >
-        {(login, { loading }) => {
+        {(login, s) => {
+          const { loading } = s;
           const formId = 'login-form';
+
           return (
-            <React.Fragment>
+            <>
               <form
-                id='login-form'
+                id="login-form"
                 onSubmit={e => {
                   e.preventDefault();
                   login();
@@ -62,7 +65,7 @@ class LoginForm extends React.Component<AppProps, AppState> {
               <div>
                 <label>username :</label>
                 <input
-                  type='text'
+                  type="text"
                   form={formId}
                   onChange={e => {
                     this.setState({ username: e.target.value });
@@ -72,23 +75,19 @@ class LoginForm extends React.Component<AppProps, AppState> {
               <div>
                 <label>password :</label>
                 <input
-                  type='password'
+                  type="password"
                   form={formId}
                   onChange={e => {
                     this.setState({ password: e.target.value });
                   }}
                 />
               </div>
-              <button
-                type='submit'
-                form={formId}
-                disabled={!username || password.length < 4 || loading}
-              >
+              <button type="submit" form={formId} disabled={!username || password.length < 4 || loading}>
                 {loading ? 'Loading...' : 'Login'}
               </button>
               {pathname !== '/' && (
                 <button
-                  type='button'
+                  type="button"
                   onClick={() => {
                     history.push('/');
                   }}
@@ -96,7 +95,7 @@ class LoginForm extends React.Component<AppProps, AppState> {
                   Go Home
                 </button>
               )}
-            </React.Fragment>
+            </>
           );
         }}
       </Mutation>
