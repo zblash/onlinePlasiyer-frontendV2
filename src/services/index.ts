@@ -3,9 +3,6 @@ import { ROLE_MAP } from '~/utils/constants';
 import { UserCommonResponse, CategoryResponse, OrderResponse, UserType } from '~/__types';
 
 const URL = 'http://localhost:8080';
-const API_URL = `${URL}/api`;
-
-type FetchPolicy = 'cache-first' | 'cache-and-network' | 'network-only' | 'cache-only';
 
 class ApiService {
   private token;
@@ -19,94 +16,6 @@ class ApiService {
   }
 
   private cache: Record<string, any> = {};
-
-  // public getCache() {
-  //   return this.cache;
-  // }
-
-  private get<ResponseType = any>(
-    route: string,
-    params = {},
-    fetchPolicy: FetchPolicy = 'network-only',
-  ): Promise<ResponseType> {
-    const url = API_URL + route;
-    const urlCache = this.cache[route];
-    const _get: () => Promise<ResponseType> = () =>
-      axios
-        .get(url, {
-          headers: {
-            Authorization: this.getToken(),
-            'Content-Type': 'application/json',
-          },
-          params,
-        })
-        .then(d => {
-          this.cache[route] = d.data;
-
-          return d.data as ResponseType;
-        });
-    switch (fetchPolicy) {
-      case 'cache-and-network':
-        return _get();
-      case 'network-only':
-        return _get();
-      case 'cache-only':
-        return urlCache;
-      default: {
-        if (urlCache) {
-          return Promise.resolve(urlCache);
-        }
-
-        return _get();
-      }
-    }
-  }
-
-  private post<ResponseType = any, ParamsType = any>(
-    route: string,
-    // eslint-disable-next-line
-    params: ParamsType = {} as ParamsType,
-  ): Promise<ResponseType> {
-    return axios
-      .post(API_URL + route, params, {
-        headers: {
-          Authorization: this.getToken(),
-          'Content-Type': 'application/json',
-        },
-      })
-      .then(d => d.data);
-  }
-
-  private delete<ResponseType = any, ParamsType = any>(
-    route: string,
-    // eslint-disable-next-line
-    params: ParamsType = {} as ParamsType,
-  ): Promise<ResponseType> {
-    return axios
-      .delete(API_URL + route, {
-        params,
-        headers: {
-          Authorization: this.getToken(),
-          'Content-Type': 'application/json',
-        },
-      })
-      .then(d => d.data);
-  }
-
-  private put<ResponseType = any, ParamsType = any>(
-    route: string,
-    // eslint-disable-next-line
-    params: ParamsType = {} as ParamsType,
-  ): Promise<ResponseType> {
-    return axios
-      .put(API_URL + route, params, {
-        headers: {
-          Authorization: this.getToken(),
-          'Content-Type': 'application/json',
-        },
-      })
-      .then(d => d.data);
-  }
 
   public login = (username: string, password: string) => {
     return axios
@@ -154,10 +63,7 @@ class ApiService {
   };
 
   public getCategoriesWithoutSub: () => Promise<CategoryResponse[]> = () => {
-    return this.get('/categories', {
-      filter: true,
-      sub: false,
-    });
+    return this.get('/categories?filter=true&sub=false');
   };
 
   public getAllCategories: () => Promise<CategoryResponse[]> = () => {
@@ -211,10 +117,6 @@ class ApiService {
     return this.post('/categories/create', formData);
   };
 
-  public getOrders: () => Promise<OrderResponse[]> = () => {
-    return this.get('/orders');
-  };
-
   public getUsers: (type: UserType) => Promise<UserCommonResponse[]> = type => {
     const userTypeRouteMap: Record<UserType, string> = {
       'customers-active': '/users/customers/active',
@@ -239,12 +141,32 @@ class ApiService {
     return this.post(`/users/setPassive/${id}`);
   };
 
-  public getCart: () => Promise<any> = () => {
-    return this.get('/cart');
-  };
-
   public checkHealth: () => Promise<boolean> = () => {
     return axios.get(`${URL}/health`).then(() => true);
+  };
+
+  public checkProduct: ({ barcode: string }) => Promise<any> = ({ barcode }) => {
+    return this.post(`/products/checkProduct/${barcode}`);
+  };
+
+  public getProduct: ({ barcode: string }) => Promise<any> = ({ barcode }) => {
+    return this.get(`/products/barcode/${barcode}`);
+  };
+
+  public createProduct: (s: {
+    barcode: string;
+    categoryId: string;
+    name: string;
+    status?: boolean;
+    tax: number;
+    uploadfile: File;
+  }) => Promise<any> = params => {
+    const formData = new FormData();
+    Object.keys(params).forEach(key => {
+      formData.append(key, params[key]);
+    });
+
+    return this.post('/products/create', formData);
   };
 }
 

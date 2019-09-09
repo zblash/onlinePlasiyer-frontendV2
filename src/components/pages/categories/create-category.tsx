@@ -39,6 +39,7 @@ export default class CreateCategory extends React.Component<CreateCategoryProps,
           />
         </div>
         {isSub && (
+          // TODO : onComplate set initialData
           <Query query={services.getCategoriesWithoutSub}>
             {({ data, loading, error }) => {
               if (loading) {
@@ -51,6 +52,8 @@ export default class CreateCategory extends React.Component<CreateCategoryProps,
               if (error) {
                 return <p>Categoriler cekemedik</p>;
               }
+
+              // TODO : kategori bos degilse
 
               return (
                 <select

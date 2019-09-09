@@ -4,7 +4,6 @@ import '~/assets/scss/app.scss';
 import { RouteChange, Query } from '~/components/common';
 import { UserRoleResponse } from '~/__types';
 import { withRequiredRole } from '~/components/hoc';
-import services from '~/services';
 
 import Home from '~/components/pages/home';
 import About from '~/components/pages/about';
@@ -13,6 +12,7 @@ import Page404 from '~/components/pages/404-component';
 import Categories from '~/components/pages/categories';
 import CategoryDetail from '~/components/pages/category-detail';
 import Users from '~/components/pages/users';
+import CreateProduct from '~/components/pages/create-products';
 
 interface IRoute {
   path: string;
@@ -59,11 +59,17 @@ function App() {
       shouldLogin: true,
       authorize: ['ADMIN'],
     },
+    {
+      path: '/products/create/:barcode?',
+      component: CreateProduct,
+      shouldLogin: true,
+      authorize: ['ADMIN', 'MERCHANT'],
+    },
   ];
 
   return (
     <>
-      <Query query={() => services.checkHealth()}>
+      <Query route="/health">
         {({ loading, error }) => {
           if (loading) {
             return <h1>Baglantilar Kontrol Ediliyor</h1>;

@@ -1,11 +1,10 @@
 import { UserType, PublicUserRole, UserRoleResponse } from '~/__types';
+import { stringLitArray } from '.';
 
 export const ROLE_MAP: Record<PublicUserRole, UserRoleResponse> = {
   customer: 'CUSTOMER',
   merchant: 'MERCHANT',
 };
-
-const stringLitArray = <L extends string>(arr: L[]) => arr;
 
 export const userRoleArray = stringLitArray(['admin', 'merchant', 'customer']);
 
@@ -28,3 +27,5 @@ export const userTypeMap: Record<UserType, string> = {
   'merchants-all': 'All Merchants',
   'merchants-passive': 'Passive Merchants',
 };
+
+export const NONE_IMAGE_SRC = 'http://clipart-library.com//image_gallery/515068.png';

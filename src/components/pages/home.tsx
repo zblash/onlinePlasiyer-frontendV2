@@ -2,7 +2,6 @@ import * as React from 'react';
 import { hot } from 'react-hot-loader';
 import JSXStyle from 'styled-jsx/style';
 import { Header, Query } from '~/components/common';
-import services from '~/services';
 
 interface AppState {}
 
@@ -18,12 +17,6 @@ class Home extends React.Component<{}, AppState> {
             }
           `}
         </JSXStyle>
-        <Query query={services.getCart}>
-          {({ data }) => {
-            console.log(data);
-            return null;
-          }}
-        </Query>
       </div>
     );
   }

@@ -41,9 +41,11 @@ export default class Mutation<TVars = any, T = any> extends React.Component<Muta
         this.setState({ loading: false, error });
         if (onError) {
           onError(error);
+        } else {
+          throw error;
         }
 
-        return error;
+        return undefined;
       });
   };
 

@@ -1,20 +1,34 @@
 import * as React from 'react';
 import deepEqual from 'deep-equal';
+import { CacheContext } from '~/components/context/cache';
+import { FetchPolicy, QueryEndpoints } from '~/components/context/cache/helpers';
 
-interface QueryProps<T, TVars> {
+interface QueryProps<T, TVariables> {
   children: (s: { data: T; loading: boolean; error: Error }) => JSX.Element;
-  query: (v?: TVars) => Promise<T>;
-  onError?: (e: Error) => void;
   onComplated?: (data: T) => void;
-  variables?: TVars;
+  onError?: (e: Error) => void;
+  variables?: TVariables;
+  route: QueryEndpoints;
+  fetchPolicy: FetchPolicy;
 }
-interface QueryState<T> {
-  data: T;
+
+interface QueryState {
+  data: any;
   loading: boolean;
   error: Error | null;
 }
 
-class Query<TVars = any, T = any> extends React.Component<QueryProps<T, TVars>, QueryState<T>> {
+class Query<T = any, TVars = any> extends React.Component<QueryProps<T, TVars>, QueryState> {
+  static defaultProps: {
+    fetchPolicy: FetchPolicy;
+  } = {
+    fetchPolicy: 'cache-first',
+  };
+
+  static contextType = CacheContext;
+
+  context!: React.ContextType<typeof CacheContext>;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -36,9 +50,10 @@ class Query<TVars = any, T = any> extends React.Component<QueryProps<T, TVars>, 
   }
 
   getQuery = () => {
-    const { query, variables, onError, onComplated } = this.props;
+    const { get } = this.context;
+    const { route, variables, onError, onComplated, fetchPolicy } = this.props;
 
-    return query(variables)
+    return get(route, variables, fetchPolicy)
       .then(data => {
         this.setState({ loading: false, data });
         if (onComplated) {
