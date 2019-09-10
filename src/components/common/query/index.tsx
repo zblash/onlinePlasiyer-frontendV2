@@ -1,14 +1,15 @@
 import * as React from 'react';
 import deepEqual from 'deep-equal';
-import { CacheContext } from '~/components/context/cache';
-import { FetchPolicy, QueryEndpoints } from '~/components/context/cache/helpers';
+import { CacheContext } from '~/context/cache';
+import { FetchPolicy } from '~/context/cache/helpers';
 
 interface QueryProps<T, TVariables> {
   children: (s: { data: T; loading: boolean; error: Error }) => JSX.Element;
   onComplated?: (data: T) => void;
+  onUpdate?: (data: T) => void;
   onError?: (e: Error) => void;
   variables?: TVariables;
-  route: QueryEndpoints;
+  query: (variables: TVariables) => Promise<T>;
   fetchPolicy: FetchPolicy;
 }
 
@@ -29,6 +30,10 @@ class Query<T = any, TVars = any> extends React.Component<QueryProps<T, TVars>, 
 
   context!: React.ContextType<typeof CacheContext>;
 
+  private _id: string = `${Math.random()}`;
+
+  private _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -39,6 +44,7 @@ class Query<T = any, TVars = any> extends React.Component<QueryProps<T, TVars>, 
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.getQuery();
   }
 
@@ -49,21 +55,51 @@ class Query<T = any, TVars = any> extends React.Component<QueryProps<T, TVars>, 
     }
   }
 
+  componentWillUnmount() {
+    this.setState({ data: null, loading: true, error: null });
+    this._isMounted = false;
+    const { removeListener } = this.context;
+    removeListener(this._id);
+  }
+
+  _safeSetState = data => {
+    if (this._isMounted) {
+      this.setState(data);
+    }
+  };
+
   getQuery = () => {
     const { get } = this.context;
-    const { route, variables, onError, onComplated, fetchPolicy } = this.props;
+    const { query, variables, onError, onComplated, fetchPolicy, onUpdate } = this.props;
 
-    return get(route, variables, fetchPolicy)
+    return get({
+      query,
+      variables,
+      listener: {
+        id: this._id,
+        onDataChange: data => {
+          if (this._isMounted && onUpdate) {
+            onUpdate(data);
+          }
+          this._safeSetState({ data });
+        },
+      },
+      fetchPolicy,
+    })
       .then(data => {
-        this.setState({ loading: false, data });
+        this._safeSetState({ loading: false, data });
         if (onComplated) {
           onComplated(data);
+        }
+
+        if (onUpdate) {
+          onUpdate(data);
         }
 
         return data;
       })
       .catch(error => {
-        this.setState({ loading: false, error });
+        this._safeSetState({ loading: false, error });
         if (onError) {
           onError(error);
         }

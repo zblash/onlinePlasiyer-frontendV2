@@ -1,11 +1,11 @@
 import * as React from 'react';
 import JSXStyle from 'styled-jsx/style';
 import { NavLink } from 'react-router-dom';
-import services from '~/services';
 import { Popup } from '~/components/ui';
 import { LoginForm, Query, SignupForm } from '~/components/common';
-import { ApplicationContext } from '../context/application';
+import { ApplicationContext } from '~/context/application';
 import { isUserAdmin, isUserMerchant } from '~/utils';
+import { queryEndpoints } from '~/services';
 
 export default class Header extends React.Component<HeaderProps, HeaderState> {
   static contextType = ApplicationContext;
@@ -74,7 +74,7 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
     );
     const authElements = (
       <>
-        <Query route="/users/getmyinfos">
+        <Query query={queryEndpoints.getAuthUser}>
           {({ data: user, loading, error }) => {
             if (loading) {
               return <div>User Name Loading</div>;
@@ -119,7 +119,7 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
               type="button"
               onClick={() => {
                 this.closeLogoutPopup();
-                services.logout();
+                // TODO : logout function
                 userLogout();
               }}
             >

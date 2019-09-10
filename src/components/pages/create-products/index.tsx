@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { Query } from '~/components/common';
-import services from '~/services';
 import { isUserMerchant } from '~/utils';
+import { queryEndpoints } from '~/services';
 import CreateProductByRole from './create-product-by-role';
+import CreateSpecifyProduct from './create-specify-product';
 
 const CreateProduct: React.SFC<CreateProductProps> = props => {
   const {
@@ -36,7 +37,7 @@ const CreateProduct: React.SFC<CreateProductProps> = props => {
   }
 
   return (
-    <Query query={services.getProduct} variables={{ barcode: params.barcode }}>
+    <Query query={queryEndpoints.getProductByBarcode} variables={{ barcode: params.barcode }}>
       {({ data: getProduct, error: getProductError, loading: getProductLoading }) => {
         if (getProductLoading) {
           return null;
@@ -44,7 +45,7 @@ const CreateProduct: React.SFC<CreateProductProps> = props => {
         const hasBarcode = !getProductError && getProduct;
 
         return (
-          <Query query={services.getAuthUser}>
+          <Query query={queryEndpoints.getAuthUser}>
             {({ data: user, loading, error }) => {
               if (error || loading) {
                 return null;
@@ -52,7 +53,7 @@ const CreateProduct: React.SFC<CreateProductProps> = props => {
 
               if (hasBarcode) {
                 if (isUserMerchant(user)) {
-                  return <p>Merchant</p>;
+                  return <CreateSpecifyProduct barcode={barcode} userId={user.id} />;
                 }
 
                 return <p>Redirect</p>;

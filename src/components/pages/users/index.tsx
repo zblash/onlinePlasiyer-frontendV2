@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Header, Query, Mutation } from '~/components/common';
+import { Header, Query } from '~/components/common';
 import { UserType } from '~/__types';
-import services from '~/services';
 import { userTypeMap } from '~/utils/constants';
+import { queryEndpoints } from '~/services';
 
-const Users: React.SFC<UsersProps> = props => {
+const Users: React.SFC<UsersProps> = () => {
   const [userType, setUserType] = React.useState<UserType>('merchants-all');
 
   return (
@@ -20,7 +20,7 @@ const Users: React.SFC<UsersProps> = props => {
           );
         })}
       </select>
-      <Query query={services.getUsers} variables={userType} onComplated={() => {}}>
+      <Query query={queryEndpoints.getUsers} variables={{ type: userType }}>
         {({ data, loading, error }) => {
           if (loading) {
             return <div>loading users</div>;
@@ -50,7 +50,7 @@ const Users: React.SFC<UsersProps> = props => {
                         <td>{user.email}</td>
                         <td>{user.taxNumber}</td>
                         <td>
-                          <Mutation
+                          {/* <Mutation
                             mutation={services.changeUserStatus}
                             variables={{
                               id: user.id,
@@ -67,7 +67,7 @@ const Users: React.SFC<UsersProps> = props => {
                                 {user.status ? 'Engelle' : 'Onayla'}
                               </button>
                             )}
-                          </Mutation>
+                          </Mutation> */}
                         </td>
                       </tr>
                     );

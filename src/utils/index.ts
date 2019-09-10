@@ -45,4 +45,8 @@ function narrowObject(
 
 const stringLitArray = <L extends string>(arr: L[]) => arr;
 
-export { getDisplayName, isUserAdmin, isUserMerchant, narrowObject, stringLitArray, isArray, isObject };
+function getKeyByValue(obj, value): string {
+  return Object.keys(obj).find(key => obj[key] === value);
+}
+
+export { getDisplayName, isUserAdmin, isUserMerchant, narrowObject, stringLitArray, isArray, isObject, getKeyByValue };

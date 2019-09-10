@@ -1,8 +1,7 @@
 import * as React from 'react';
-import services from '~/services';
-import { Mutation } from '~/components/common';
 import { PublicUserRole } from '~/__types';
 import { publicUserRoleArray } from '~/utils/constants';
+
 interface AppState {
   city: string;
   details: string;
@@ -134,7 +133,7 @@ class SignUp extends React.Component<AppProps, AppState> {
             }}
           />
         </div>
-        <Mutation
+        {/* <Mutation
           mutation={() => services.signup(this.state)}
           onError={e => {
             if (onError) {
@@ -164,7 +163,7 @@ class SignUp extends React.Component<AppProps, AppState> {
               </button>
             );
           }}
-        </Mutation>
+        </Mutation> */}
       </div>
     );
   }

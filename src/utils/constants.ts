@@ -1,4 +1,4 @@
-import { UserType, PublicUserRole, UserRoleResponse } from '~/__types';
+import { UserType, PublicUserRole, UserRoleResponse, UnitTypeResponse } from '~/__types';
 import { stringLitArray } from '.';
 
 export const ROLE_MAP: Record<PublicUserRole, UserRoleResponse> = {
@@ -9,6 +9,14 @@ export const ROLE_MAP: Record<PublicUserRole, UserRoleResponse> = {
 export const userRoleArray = stringLitArray(['admin', 'merchant', 'customer']);
 
 export const publicUserRoleArray = stringLitArray(['merchant', 'customer']);
+
+export const UNIT_TYPES_ARRAY = stringLitArray(['KG', 'KL', 'AD']);
+
+export const UNIT_TYPE_MAP: Record<UnitTypeResponse, string> = {
+  AD: 'Adet',
+  KG: 'Kilo',
+  KL: 'koli',
+};
 
 export const userTypeArray = stringLitArray([
   'customers-all',

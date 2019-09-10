@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Mutation } from '~/components/common';
-import services from '~/services';
+import { queryEndpoints, mutationEndPoints } from '~/services';
 
 export default class DeleteCategory extends React.Component<DeleteCategoryProps, DeleteCategoryState> {
   public constructor(props: DeleteCategoryProps) {
@@ -16,14 +16,23 @@ export default class DeleteCategory extends React.Component<DeleteCategoryProps,
         <h3>Eminmisin</h3>
         <p>Tekrar Geri getiremezsin</p>
         <Mutation
-          mutation={() => services.deleteCategory(categoryId)}
+          mutation={mutationEndPoints.deleteCategory}
+          refetchQueries={[
+            {
+              query: queryEndpoints.getCategories,
+              variables: {
+                filter: false,
+              },
+            },
+          ]}
+          variables={{ id: categoryId }}
           onComplated={() => {
             closePopup();
           }}
         >
           {(removeCategory, { loading }) => {
             return (
-              <button onClick={removeCategory} type="button" disabled={loading}>
+              <button onClick={() => removeCategory()} type="button" disabled={loading}>
                 Evet
               </button>
             );
@@ -41,8 +50,9 @@ export default class DeleteCategory extends React.Component<DeleteCategoryProps,
     );
   }
 }
-type DeleteCategoryState = {};
-type DeleteCategoryProps = {
+interface DeleteCategoryState {}
+
+interface DeleteCategoryProps {
   closePopup: Function;
   categoryId: string;
-};
+}

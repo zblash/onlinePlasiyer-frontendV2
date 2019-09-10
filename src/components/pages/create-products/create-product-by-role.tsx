@@ -2,9 +2,9 @@ import * as React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router-dom';
 import { UserRoleResponse } from '~/__types';
 import { Query, Mutation } from '~/components/common';
-import services from '~/services';
 import { Img } from '~/components/ui';
 import { NONE_IMAGE_SRC } from '~/utils/constants';
+import { queryEndpoints, mutationEndPoints } from '~/services';
 
 interface ReducerState {
   categoryId: string;
@@ -71,7 +71,7 @@ const CreateProductByRole: React.SFC<CreateProductByRoleProps> = props => {
         />
       </div>
       <Query
-        query={services.getAllCategories}
+        query={queryEndpoints.getCategories}
         onComplated={d => {
           if (d.length > 0) {
             dispatch({ type: 'set-category-id', payload: d[0].id });
@@ -146,7 +146,7 @@ const CreateProductByRole: React.SFC<CreateProductByRoleProps> = props => {
         />
       </div>
       <Mutation
-        mutation={services.createProduct}
+        mutation={mutationEndPoints.createProduct}
         onComplated={() => {
           history.replace('/products/create');
         }}

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { render } from 'react-dom';
 import App from '~/components/app';
-import { ApplicationContextProvider, CacheContextProvider } from './components/context';
-import { getToken } from './components/context/cache/helpers';
+import { ApplicationContextProvider, CacheContextProvider } from '~/context';
+import { getToken } from './services';
 
 const rootEl = document.getElementById('root');
 

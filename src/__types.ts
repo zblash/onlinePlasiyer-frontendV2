@@ -1,10 +1,17 @@
-import { userRoleArray, userTypeArray, publicUserRoleArray } from './utils/constants';
+import { userRoleArray, userTypeArray, publicUserRoleArray, UNIT_TYPES_ARRAY } from './utils/constants';
 
 export interface AddressResponse {
   city: string;
   details: string;
   state: string;
   id: number;
+}
+
+export interface AdressStateResponse {
+  cityTitle: string;
+  code: 0;
+  id: string;
+  title: string;
 }
 
 export interface ActiveStatesResponse {
@@ -49,8 +56,7 @@ export interface OrderResponse {
     totalPrice: number;
     unitPrice: number;
     sellerName: string;
-    unitType: 'KG' | 'KL' | 'AD';
-    // TODO : uniqueType type
+    unitType: UnitTypeResponse;
   }[];
   sellerName: string;
   status: 'FINISHED' | 'NEW' | 'CANCELLED' | 'PAID';
@@ -66,3 +72,5 @@ export type UserRole = (typeof userRoleArray)[number];
 export type PublicUserRole = (typeof publicUserRoleArray)[number];
 
 export type UserType = (typeof userTypeArray)[number];
+
+export type UnitTypeResponse = (typeof UNIT_TYPES_ARRAY)[number];

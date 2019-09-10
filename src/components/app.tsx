@@ -13,6 +13,7 @@ import Categories from '~/components/pages/categories';
 import CategoryDetail from '~/components/pages/category-detail';
 import Users from '~/components/pages/users';
 import CreateProduct from '~/components/pages/create-products';
+import { queryEndpoints } from '~/services';
 
 interface IRoute {
   path: string;
@@ -21,88 +22,93 @@ interface IRoute {
   authorize?: UserRoleResponse[];
   disabled?: boolean;
 }
-function App() {
-  const routes: IRoute[] = [
-    {
-      path: '/',
-      component: Home,
-      shouldLogin: false,
-    },
-    {
-      path: '/about',
-      component: About,
-      shouldLogin: false,
-      authorize: ['ADMIN', 'CUSTOMER', 'MERCHANT'],
-    },
-    {
-      path: '/profile',
-      component: Profile,
-      shouldLogin: true,
-      authorize: ['ADMIN', 'MERCHANT'],
-    },
-    {
-      path: '/admin/categories',
-      component: Categories,
-      shouldLogin: true,
-      authorize: ['ADMIN'],
-    },
-    {
-      path: '/admin/category/:id',
-      component: CategoryDetail,
-      shouldLogin: true,
-      authorize: ['ADMIN'],
-      disabled: true,
-    },
-    {
-      path: '/admin/users/',
-      component: Users,
-      shouldLogin: true,
-      authorize: ['ADMIN'],
-    },
-    {
-      path: '/products/create/:barcode?',
-      component: CreateProduct,
-      shouldLogin: true,
-      authorize: ['ADMIN', 'MERCHANT'],
-    },
-  ];
 
-  return (
-    <>
-      <Query route="/health">
+class App extends React.Component {
+  componentWillUnmount() {}
+
+  render() {
+    const routes: IRoute[] = [
+      {
+        path: '/',
+        component: Home,
+        shouldLogin: false,
+      },
+      {
+        path: '/about',
+        component: About,
+        shouldLogin: false,
+        authorize: ['ADMIN', 'CUSTOMER', 'MERCHANT'],
+      },
+      {
+        path: '/profile',
+        component: Profile,
+        shouldLogin: true,
+        authorize: ['ADMIN', 'MERCHANT'],
+      },
+      {
+        path: '/admin/categories',
+        component: Categories,
+        shouldLogin: true,
+        authorize: ['ADMIN'],
+      },
+      {
+        path: '/admin/category/:id',
+        component: CategoryDetail,
+        shouldLogin: true,
+        authorize: ['ADMIN'],
+        disabled: true,
+      },
+      {
+        path: '/admin/users/',
+        component: Users,
+        shouldLogin: true,
+        authorize: ['ADMIN'],
+      },
+      {
+        path: '/products/create/:barcode?',
+        component: CreateProduct,
+        shouldLogin: true,
+        authorize: ['ADMIN', 'MERCHANT'],
+      },
+    ];
+    const app = (
+      <Router>
+        <Switch>
+          {routes.map(route =>
+            route.disabled ? null : (
+              <Route
+                key={route.path}
+                path={route.path}
+                component={withRequiredRole(route.component, {
+                  authorize: route.authorize,
+                  showLoginPopup: route.shouldLogin,
+                })}
+                exact
+              />
+            ),
+          )}
+          <Route component={Page404} />
+          <RouteChange />
+        </Switch>
+      </Router>
+    );
+
+    return (
+      <Query query={queryEndpoints.checkHealth}>
         {({ loading, error }) => {
           if (loading) {
-            return <h1>Baglantilar Kontrol Ediliyor</h1>;
-          }
-          if (error) {
-            return <h1>Sunucuda bir sorun olustu.Sorun bize ulasti en kisa surede cozulecek</h1>;
+            return <h1>Baglanti kontrol ediliyor</h1>;
           }
 
-          return (
-            <Router>
-              <Switch>
-                {routes.map(route =>
-                  route.disabled ? null : (
-                    <Route
-                      key={route.path}
-                      path={route.path}
-                      component={withRequiredRole(route.component, {
-                        authorize: route.authorize,
-                        showLoginPopup: route.shouldLogin,
-                      })}
-                      exact
-                    />
-                  ),
-                )}
-                <Route component={Page404} />
-                <RouteChange />
-              </Switch>
-            </Router>
-          );
+          if (error) {
+            return <h1>Baglanti Gerceklestiremedik en kisa surede duzelecek</h1>;
+          }
+
+          return app;
         }}
       </Query>
-    </>
-  );
+    );
+  }
 }
 
 export default App;

@@ -1,12 +1,14 @@
 import * as React from 'react';
+import { CacheContext } from '~/context/cache';
 
-type TMutation<T, TArgs> = (pass?: TArgs) => Promise<T>;
-interface MutationProps<T = any, TVars = any> {
-  children: (mutation: TMutation<T, TVars>, s: { data: T; loading: boolean; error: Error }) => JSX.Element;
-  mutation: TMutation<T, TVars>;
+type TMutation<T, TVariables> = (pass?: TVariables) => Promise<T>;
+interface MutationProps<T = any, TVariables = any> {
+  children: (mutation: TMutation<T, TVariables>, s: { data: T; loading: boolean; error: Error }) => JSX.Element;
   onError?: (e: Error) => void;
   onComplated?: (data: T) => void;
-  variables?: TVars;
+  mutation: TMutation<T, TVariables>;
+  variables?: TVariables;
+  refetchQueries?: { query: (vars?: any) => Promise<any>; variables?: any }[];
 }
 interface MutationState<T = any> {
   data: T;
@@ -14,7 +16,13 @@ interface MutationState<T = any> {
   error: Error | null;
 }
 
-export default class Mutation<TVars = any, T = any> extends React.Component<MutationProps<T, TVars>, MutationState<T>> {
+export default class Mutation<T = any, TVars = any> extends React.Component<MutationProps<T, TVars>, MutationState<T>> {
+  static contextType = CacheContext;
+
+  context!: React.ContextType<typeof CacheContext>;
+
+  private _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -24,29 +32,46 @@ export default class Mutation<TVars = any, T = any> extends React.Component<Muta
     };
   }
 
-  mutate = (p?: TVars) => {
-    this.setState({ loading: true });
-    const { mutation, onError, onComplated, variables } = this.props;
+  componentDidMount() {
+    this._isMounted = true;
+  }
 
-    return mutation(variables || p)
-      .then(data => {
-        this.setState({ loading: false, data });
-        if (onComplated) {
-          onComplated(data);
-        }
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
 
-        return data;
+  mutate: TMutation<T, TVars> = vars => {
+    if (this._isMounted) {
+      this.setState({ loading: true });
+      const { onError, refetchQueries, onComplated, mutation, variables } = this.props;
+      const { mutate } = this.context;
+
+      return mutate({
+        mutation,
+        refetchQueries,
+        variables: variables || vars,
       })
-      .catch(error => {
-        this.setState({ loading: false, error });
-        if (onError) {
-          onError(error);
-        } else {
-          throw error;
-        }
+        .then(data => {
+          this.setState({ loading: false, data });
+          if (onComplated) {
+            onComplated(data);
+          }
 
-        return undefined;
-      });
+          return data;
+        })
+        .catch(error => {
+          this.setState({ loading: false, error });
+          if (onError) {
+            onError(error);
+          } else {
+            throw error;
+          }
+
+          return undefined;
+        });
+    }
+
+    return Promise.resolve({});
   };
 
   render() {

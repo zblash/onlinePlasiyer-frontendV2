@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { Mutation, Query } from '~/components/common';
-import { CategoryResponse } from '~/__types';
-import services from '~/services';
+import { Query } from '~/components/common';
+import { queryEndpoints } from '~/services';
 
 export default class CreateCategory extends React.Component<CreateCategoryProps, CreateCategoryState> {
   constructor(props) {
@@ -40,7 +39,7 @@ export default class CreateCategory extends React.Component<CreateCategoryProps,
         </div>
         {isSub && (
           // TODO : onComplate set initialData
-          <Query query={services.getCategoriesWithoutSub}>
+          <Query query={queryEndpoints.getCategoriesWithoutSub}>
             {({ data, loading, error }) => {
               if (loading) {
                 return (
@@ -78,7 +77,7 @@ export default class CreateCategory extends React.Component<CreateCategoryProps,
           <label>Kategori Resmi</label>
           <input type="file" onChange={e => this.setState({ uploadFile: e.target.files[0] })} />
         </div>
-        <Mutation
+        {/* <Mutation
           mutation={services.createCategory}
           onComplated={() => {
             closePopup();
@@ -106,7 +105,7 @@ export default class CreateCategory extends React.Component<CreateCategoryProps,
               </button>
             );
           }}
-        </Mutation>
+        </Mutation> */}
       </div>
     );
   }

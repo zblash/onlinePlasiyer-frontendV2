@@ -2,10 +2,10 @@ import * as React from 'react';
 import { Redirect } from 'react-router-dom';
 import { getDisplayName } from '~/utils';
 import { Query, LoginForm } from '~/components/common';
-import services from '~/services';
-import { UserCommonResponse, UserRoleResponse } from '~/__types';
+import { UserRoleResponse } from '~/__types';
 import { Popup } from '~/components/ui';
-import { ApplicationContext } from '../context/application';
+import { ApplicationContext } from '~/context/application';
+import { queryEndpoints } from '~/services';
 
 const withRole = (
   WrappedComponent,
@@ -43,7 +43,7 @@ const withRole = (
       }
 
       return (
-        <Query<UserCommonResponse> query={services.getAuthUser}>
+        <Query query={queryEndpoints.getAuthUser}>
           {({ data, loading, error }) => {
             if (loading) {
               return <div>Loading...(withRequiredRole)</div>;
