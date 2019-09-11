@@ -3,8 +3,8 @@ import { CacheContext } from '~/context/cache';
 
 type TMutation<T, TVariables> = (pass?: TVariables) => Promise<T>;
 interface MutationProps<T = any, TVariables = any> {
-  children: (mutation: TMutation<T, TVariables>, s: { data: T; loading: boolean; error: Error }) => JSX.Element;
-  onError?: (e: Error) => void;
+  children: (mutation: TMutation<T, TVariables>, s: { data: T; loading: boolean; error: any }) => JSX.Element;
+  onError?: (e: any) => void;
   onComplated?: (data: T) => void;
   mutation: TMutation<T, TVariables>;
   variables?: TVariables;
@@ -13,7 +13,7 @@ interface MutationProps<T = any, TVariables = any> {
 interface MutationState<T = any> {
   data: T;
   loading: boolean;
-  error: Error | null;
+  error: any | null;
 }
 
 export default class Mutation<T = any, TVars = any> extends React.Component<MutationProps<T, TVars>, MutationState<T>> {

@@ -67,7 +67,7 @@ export default class UpdateCategory extends React.Component<UpdateCategoryProps,
                 />
               </div>
               {isSub && (
-                <Query query={queryEndpoints.getCategoriesWithoutSub}>
+                <Query query={queryEndpoints.getCategories} variables={{ type: 'sub' }}>
                   {({ data: _mainCategories, loading: _mainCategoriesLoading, error: _mainCategoriesError }) => {
                     if (_mainCategoriesLoading) {
                       return (

@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { Query } from '~/components/common';
-import { queryEndpoints } from '~/services';
+import { Query, Mutation } from '~/components/common';
+import { queryEndpoints, mutationEndPoints } from '~/services';
+import { deleteOrAddCategoryRefetchCategories } from '.';
 
 export default class CreateCategory extends React.Component<CreateCategoryProps, CreateCategoryState> {
   constructor(props) {
@@ -39,7 +40,7 @@ export default class CreateCategory extends React.Component<CreateCategoryProps,
         </div>
         {isSub && (
           // TODO : onComplate set initialData
-          <Query query={queryEndpoints.getCategoriesWithoutSub}>
+          <Query query={queryEndpoints.getCategories} variables={{ type: 'main' }}>
             {({ data, loading, error }) => {
               if (loading) {
                 return (
@@ -77,8 +78,15 @@ export default class CreateCategory extends React.Component<CreateCategoryProps,
           <label>Kategori Resmi</label>
           <input type="file" onChange={e => this.setState({ uploadFile: e.target.files[0] })} />
         </div>
-        {/* <Mutation
-          mutation={services.createCategory}
+        <Mutation
+          mutation={mutationEndPoints.createCategory}
+          refetchQueries={deleteOrAddCategoryRefetchCategories}
+          variables={{
+            parentId,
+            name: categoryName,
+            isSub,
+            uploadfile: uploadFile,
+          }}
           onComplated={() => {
             closePopup();
             // TODO : show notification
@@ -93,19 +101,14 @@ export default class CreateCategory extends React.Component<CreateCategoryProps,
                 disabled={!categoryName || !uploadFile}
                 type="button"
                 onClick={() => {
-                  createCategory({
-                    parentId,
-                    name: categoryName,
-                    isSub,
-                    uploadfile: uploadFile,
-                  });
+                  createCategory();
                 }}
               >
                 {loading ? '....Loading' : 'Ekle'}
               </button>
             );
           }}
-        </Mutation> */}
+        </Mutation>
       </div>
     );
   }

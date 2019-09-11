@@ -6,6 +6,24 @@ import CreateCategory from './create-category';
 import { Popup } from '~/components/ui';
 import { queryEndpoints } from '~/services';
 
+export const deleteOrAddCategoryRefetchCategories = [
+  {
+    query: queryEndpoints.getCategories,
+  },
+  {
+    query: queryEndpoints.getCategories,
+    variables: {
+      type: 'main',
+    },
+  },
+  {
+    query: queryEndpoints.getCategories,
+    variables: {
+      type: 'sub',
+    },
+  },
+];
+
 export default class AdminCategories extends React.Component<AdminCategoriesProps, AdminCategoriesState> {
   public constructor(props: AdminCategoriesProps) {
     super(props);

@@ -119,7 +119,6 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
               type="button"
               onClick={() => {
                 this.closeLogoutPopup();
-                // TODO : logout function
                 userLogout();
               }}
             >

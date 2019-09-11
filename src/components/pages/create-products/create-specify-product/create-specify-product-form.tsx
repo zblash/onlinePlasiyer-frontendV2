@@ -1,6 +1,19 @@
 import * as React from 'react';
-import { UNIT_TYPE_MAP, UNIT_TYPES_ARRAY } from '~/utils/constants';
-import { UnitTypeResponse } from '~/__types';
+import MultiSelect from '@kenshooui/react-multi-select';
+import { UNIT_TYPE_MAP } from '~/utils/constants';
+import { UnitTypeResponse, AddressStateResponse } from '~/__types';
+import { Query, Mutation } from '~/components/common';
+import { queryEndpoints, mutationEndPoints } from '~/services';
+
+const initialState: CreateSpecifyProductFormState = {
+  contents: 0,
+  quantity: 0,
+  recommendedRetailPrice: 0,
+  totalPrice: 0,
+  unitPrice: 0,
+  unitType: 'KG',
+  selectedStateIds: [],
+};
 
 export default class CreateSpecifyProductForm extends React.Component<
   CreateSpecifyProductFormProps,
@@ -8,15 +21,7 @@ export default class CreateSpecifyProductForm extends React.Component<
 > {
   public constructor(props: CreateSpecifyProductFormProps) {
     super(props);
-    this.state = {
-      contents: null,
-      quantity: null,
-      recommendedRetailPrice: null,
-      totalPrice: null,
-      unitPrice: null,
-      unitType: 'KG',
-      selectedStateIds: [],
-    };
+    this.state = { ...initialState };
   }
 
   public render() {
@@ -29,6 +34,15 @@ export default class CreateSpecifyProductForm extends React.Component<
       recommendedRetailPrice,
       selectedStateIds,
     } = this.state;
+    const { barcode } = this.props;
+    const hasMutation =
+      unitType &&
+      unitPrice > 0 &&
+      totalPrice > 0 &&
+      quantity > 0 &&
+      contents > 0 &&
+      recommendedRetailPrice > 0 &&
+      selectedStateIds.length > 0;
 
     return (
       <div>
@@ -36,6 +50,7 @@ export default class CreateSpecifyProductForm extends React.Component<
           <label>Contents</label>
           <input
             type="number"
+            value={contents}
             onChange={e => {
               this.setState({ contents: parseInt(e.target.value, 10) });
             }}
@@ -46,6 +61,7 @@ export default class CreateSpecifyProductForm extends React.Component<
           <label>Quantity</label>
           <input
             type="number"
+            value={quantity}
             onChange={e => {
               this.setState({ quantity: parseInt(e.target.value, 10) });
             }}
@@ -55,18 +71,47 @@ export default class CreateSpecifyProductForm extends React.Component<
           <label>Recommended Retail Price</label>
           <input
             type="number"
+            value={recommendedRetailPrice}
             onChange={e => {
               this.setState({ recommendedRetailPrice: parseInt(e.target.value, 10) });
             }}
           />
         </div>
 
-        {/* state list*/}
+        <div>
+          <label>Ilce Sec</label>
+          <Query query={queryEndpoints.getAuthUserActiveStates}>
+            {({ data: getState, loading: getStateLoading, error: getStateError }) => {
+              if (getStateLoading) {
+                return <div>Loading getState</div>;
+              }
+              if (getStateError) {
+                return <div>Error getState</div>;
+              }
+
+              return (
+                <div>
+                  <MultiSelect
+                    items={getState.map(state => ({
+                      ...state,
+                      label: `${state.title} (${state.cityTitle.toLowerCase()})`,
+                    }))}
+                    selectedItems={selectedStateIds}
+                    onChange={selectedIds => {
+                      this.setState({ selectedStateIds: selectedIds });
+                    }}
+                  />
+                </div>
+              );
+            }}
+          </Query>
+        </div>
 
         <div>
           <label>Total Price</label>
           <input
             type="number"
+            value={totalPrice}
             onChange={e => {
               this.setState({ totalPrice: parseInt(e.target.value, 10) });
             }}
@@ -77,6 +122,7 @@ export default class CreateSpecifyProductForm extends React.Component<
           <label>Unit Price</label>
           <input
             type="number"
+            value={unitPrice}
             onChange={e => {
               this.setState({ unitPrice: parseInt(e.target.value, 10) });
             }}
@@ -90,13 +136,55 @@ export default class CreateSpecifyProductForm extends React.Component<
             }}
             defaultValue={unitType}
           >
-            {UNIT_TYPES_ARRAY.map(_unitType => (
+            {Object.keys(UNIT_TYPE_MAP).map(_unitType => (
               <option value={_unitType} key={_unitType}>
                 {UNIT_TYPE_MAP[_unitType]}
               </option>
             ))}
           </select>
         </div>
+        <Mutation
+          mutation={mutationEndPoints.createSpecifyProductForAuthUser}
+          onComplated={() => {
+            this.setState({ ...initialState, unitType });
+          }}
+          variables={{
+            barcode,
+            contents,
+            quantity,
+            recommendedRetailPrice,
+            stateIds: selectedStateIds.map(_state => _state.id),
+            totalPrice,
+            unitPrice,
+            unitType,
+          }}
+        >
+          {(
+            createSpecifyProductForAuthUser,
+            { loading: createSpecifyProductForAuthUserLoading, error: createSpecifyProductForAuthUserError },
+          ) => {
+            if (createSpecifyProductForAuthUserLoading) {
+              return <div>Loading createSpecifyProductForAuthUser</div>;
+            }
+            if (createSpecifyProductForAuthUserError) {
+              return <div>Error createSpecifyProductForAuthUser</div>;
+            }
+
+            return (
+              <button
+                type="button"
+                disabled={
+                  createSpecifyProductForAuthUserLoading || createSpecifyProductForAuthUserError || !hasMutation
+                }
+                onClick={() => {
+                  createSpecifyProductForAuthUser();
+                }}
+              >
+                Ekle
+              </button>
+            );
+          }}
+        </Mutation>
       </div>
     );
   }
@@ -108,6 +196,8 @@ interface CreateSpecifyProductFormState {
   totalPrice: number;
   unitPrice: number;
   unitType: UnitTypeResponse;
-  selectedStateIds: string[];
+  selectedStateIds: AddressStateResponse[];
 }
-interface CreateSpecifyProductFormProps {}
+interface CreateSpecifyProductFormProps {
+  barcode: string;
+}

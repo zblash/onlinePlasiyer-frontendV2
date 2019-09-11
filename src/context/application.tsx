@@ -54,6 +54,7 @@ class ApplicationContextProvider extends React.Component<IApplicationProviderPro
   userLogout = () => {
     const { user } = this.state;
     this.setState({ user: { ...user, isLoggedIn: false } });
+    localStorage.removeItem('_auth');
   };
 
   render() {

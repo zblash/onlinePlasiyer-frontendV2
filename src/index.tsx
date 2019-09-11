@@ -4,6 +4,10 @@ import App from '~/components/app';
 import { ApplicationContextProvider, CacheContextProvider } from '~/context';
 import { getToken } from './services';
 
+// package styles
+
+import '@kenshooui/react-multi-select/dist/style.css';
+
 const rootEl = document.getElementById('root');
 
 render(

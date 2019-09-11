@@ -17,10 +17,12 @@
     "build": "yarn run clean-dist && webpack -p --config=configs/webpack/prod.js",
     "clean-dist": "rimraf dist/*",
     "lint": "eslint --fix './src/**/*.ts*' './tests/**/*.test.ts*' --cache --cache-location configs/.eslintcache",
+    "tsc-check": "tsc --noEmit --skipLibCheck",
     "prettier": "prettier  --ignore-path ./configs/.prettierignore --write **/*.ts*",
     "start-dev": "webpack-dev-server --config=configs/webpack/dev.js",
     "start-prod": "node server.js",
-    "test": "jest --watch --coverage --config=configs/jest.json"
+    "Todo:test": "jest --watch --coverage --config=configs/jest.json",
+    "test": ""
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
@@ -40,6 +42,7 @@
     "axios": "^0.19.0",
     "babel-eslint": "10.x",
     "babel-loader": "^8.0.6",
+    "classnames": "^2.2.6",
     "css-loader": "^3.2.0",
     "eslint": "6.x",
     "eslint-config-airbnb": "^18.0.1",
@@ -51,9 +54,9 @@
     "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-react": "7.x",
     "eslint-plugin-react-hooks": "1.x",
-    "express": "^4.17.1",
     "file-loader": "^4.2.0",
     "html-webpack-plugin": "^3.2.0",
+    "husky": "^3.0.5",
     "image-webpack-loader": "^5.0.0",
     "jest": "^24.9.0",
     "node-sass": "^4.12.0",
@@ -72,15 +75,19 @@
     "webpack-cli": "^3.3.7",
     "webpack-dev-middleware": "^3.7.0",
     "webpack-dev-server": "^3.8.0",
-    "@types/react-autocomplete": "^1.8.5",
-    "react-autocomplete": "^1.8.1",
-    "classnames": "^2.2.6",
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
+    "@kenshooui/react-multi-select": "^1.1.5",
     "deep-equal": "^1.1.0",
+    "express": "^4.17.1",
     "react-images": "^1.0.0",
     "react-skylight": "^0.5.1",
     "styled-jsx": "^3.2.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "yarn lint && yarn tsc-check && yarn test"
+    }
   }
 }

@@ -1,7 +1,15 @@
-import { UserCommonResponse } from '~/__types';
+import { UserCommonResponse, UserRoleResponse } from '~/__types';
 
 const isArray = (o: any) => Array.isArray(o);
 const isObject = (o: any) => !isArray(o) && typeof o === 'object' && o !== null && o !== undefined;
+
+function objectKeys<K extends string>(obj: Record<K, any>): K[] {
+  return Object.keys(obj) as K[];
+}
+
+function objectValues<K>(obj: Record<string, K>): K[] {
+  return Object.keys(obj).map(_key => obj[_key]) as K[];
+}
 
 function getDisplayName(WrappedComponent): string {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
@@ -13,6 +21,10 @@ function isUserAdmin(user: UserCommonResponse) {
 
 function isUserMerchant(user: UserCommonResponse) {
   return user.role === 'MERCHANT';
+}
+
+function isPublicRole(role: UserRoleResponse) {
+  return role === 'MERCHANT' || role === 'CUSTOMER';
 }
 
 function narrowObject(
@@ -49,4 +61,16 @@ function getKeyByValue(obj, value): string {
   return Object.keys(obj).find(key => obj[key] === value);
 }
 
-export { getDisplayName, isUserAdmin, isUserMerchant, narrowObject, stringLitArray, isArray, isObject, getKeyByValue };
+export {
+  getDisplayName,
+  isUserAdmin,
+  isUserMerchant,
+  narrowObject,
+  stringLitArray,
+  isArray,
+  isObject,
+  getKeyByValue,
+  isPublicRole,
+  objectKeys,
+  objectValues,
+};

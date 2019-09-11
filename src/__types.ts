@@ -1,23 +1,27 @@
-import { userRoleArray, userTypeArray, publicUserRoleArray, UNIT_TYPES_ARRAY } from './utils/constants';
-
-export interface AddressResponse {
-  city: string;
-  details: string;
-  state: string;
-  id: number;
-}
-
-export interface AdressStateResponse {
+export interface AddressStateResponse {
   cityTitle: string;
   code: 0;
   id: string;
   title: string;
 }
 
-export interface ActiveStatesResponse {
-  code: number;
+export interface AddressCityResponse {
+  code: 0;
   id: string;
   title: string;
+}
+
+interface SpecifyProductResponse {
+  id: string;
+  totalPrice: number;
+  unitPrice: number;
+  quantity: number;
+  contents: number;
+  unitType: UnitTypeResponse;
+  recommendedRetailPrice: number;
+  productName: string;
+  sellerName: string;
+  states: string[];
 }
 
 export interface UserCommonResponse {
@@ -25,11 +29,10 @@ export interface UserCommonResponse {
   role: UserRoleResponse;
   name: string;
   email: string;
-  address: AddressResponse;
   id: string;
   status?: boolean;
   taxNumber?: string;
-  activeStates?: ActiveStatesResponse[];
+  activeStates?: AddressStateResponse[];
 }
 
 export interface CategoryResponse {
@@ -67,10 +70,14 @@ export interface OrderResponse {
 
 export type UserRoleResponse = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';
 
-export type UserRole = (typeof userRoleArray)[number];
+export type UserType =
+  | 'customers-active'
+  | 'customers-all'
+  | 'customers-passive'
+  | 'merchants-active'
+  | 'merchants-all'
+  | 'merchants-passive';
 
-export type PublicUserRole = (typeof publicUserRoleArray)[number];
+export type PublicUserRole = 'MERCHANT' | 'CUSTOMER';
 
-export type UserType = (typeof userTypeArray)[number];
-
-export type UnitTypeResponse = (typeof UNIT_TYPES_ARRAY)[number];
+export type UnitTypeResponse = 'KG' | 'KL' | 'AD';

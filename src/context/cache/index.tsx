@@ -1,11 +1,29 @@
 import * as React from 'react';
+import deepEqual from 'deep-equal';
 import { isArray, getKeyByValue } from '~/utils';
 import { cacheHelper, getRouteId, FetchPolicy } from './helpers';
 import { queryEndpoints } from '~/services';
 
+export interface IRouteCache {
+  id: string;
+  props?: {
+    [key: string]: IRouteCache | IRouteCache[];
+  };
+}
+
+export interface IRouteResponse {
+  usedIds: string[];
+  cache: IRouteCache | IRouteCache[];
+}
+
+export interface CacheHelperResponse {
+  route: IRouteResponse['cache'];
+  cache: Record<string, any>;
+}
+
 interface IApplicationContextStates {
   dataCache: Record<string, any>;
-  routeCache: Record<string, string[]>;
+  routeCache: Record<string, IRouteResponse>;
 }
 interface IApplicationContextActions {
   get: (s: {
@@ -94,15 +112,10 @@ class CacheContextProvider extends React.Component<{}, IApplicationContextStates
               this.setState(
                 {
                   dataCache: { ...dataCache, ..._cache.cache },
-                  routeCache: { ...routeCache, [routeId]: _cache.route },
+                  routeCache: { ...routeCache, [routeId]: { cache: _cache.route, usedIds: Object.keys(_cache.cache) } },
                 },
                 () => {
-                  Object.keys(this._changeListener).forEach(key => {
-                    const item = this._changeListener[key];
-                    if (this.hasRouteData(item.routeId)) {
-                      item.listner(this.getDataByRoute(item.routeId));
-                    }
-                  });
+                  this.updateQueries(_cache.cache, dataCache, listener ? listener.id : '##');
                 },
               );
             }
@@ -144,12 +157,7 @@ class CacheContextProvider extends React.Component<{}, IApplicationContextStates
               dataCache: { ...dataCache, ..._cache.cache },
             },
             () => {
-              Object.keys(this._changeListener).forEach(key => {
-                const item = this._changeListener[key];
-                if (this.hasRouteData(item.routeId)) {
-                  item.listner(this.getDataByRoute(item.routeId));
-                }
-              });
+              this.updateQueries(_cache.cache, dataCache);
             },
           );
         }
@@ -164,6 +172,39 @@ class CacheContextProvider extends React.Component<{}, IApplicationContextStates
     const data = routeCache[routeId];
 
     return Boolean(data);
+  };
+
+  // TODO : refactor code
+  updateQueries = (
+    newResponseCache: CacheHelperResponse['cache'],
+    oldAppCache: CacheHelperResponse['cache'],
+    currentQueryId: string = '##',
+  ) => {
+    const { routeCache } = this.state;
+    Object.keys(this._changeListener).forEach(_queryId => {
+      const item = this._changeListener[_queryId];
+      const updatedIds = Object.keys(newResponseCache);
+      const routeResult = routeCache[item.routeId];
+      if (this.hasRouteData(item.routeId) && routeResult && _queryId !== currentQueryId) {
+        const routeIds = routeResult.usedIds;
+        const newCacheIdsForQuery = updatedIds.filter(_id => routeIds.includes(_id));
+        if (newCacheIdsForQuery.length > 0) {
+          let hasChangedData = false;
+          for (let index = 0; index < newCacheIdsForQuery.length; index += 1) {
+            const _id = newCacheIdsForQuery[index];
+            const oldCacheForId = oldAppCache[_id];
+            const newCacheForId = newResponseCache[_id];
+            hasChangedData = !deepEqual(newCacheForId, oldCacheForId);
+            if (hasChangedData) {
+              break;
+            }
+          }
+          if (hasChangedData) {
+            item.listner(this.getDataByRoute(item.routeId));
+          }
+        }
+      }
+    });
   };
 
   readCache = _routeCache => {
@@ -195,13 +236,13 @@ class CacheContextProvider extends React.Component<{}, IApplicationContextStates
   getDataByRoute = (routeId: string) => {
     const { routeCache } = this.state;
 
-    const data = routeCache[routeId];
+    const data = routeCache[routeId].cache;
 
     if (!data) {
       throw new Error('Data yok');
     }
 
-    if (isArray(data)) {
+    if (Array.isArray(data)) {
       return data.map(routeChildCache => this.readCache(routeChildCache));
     }
 

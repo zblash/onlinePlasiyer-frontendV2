@@ -78,10 +78,11 @@ class Query<T = any, TVars = any> extends React.Component<QueryProps<T, TVars>, 
       listener: {
         id: this._id,
         onDataChange: data => {
+          const { error } = this.state;
           if (this._isMounted && onUpdate) {
             onUpdate(data);
           }
-          this._safeSetState({ data });
+          this._safeSetState({ data, error: data ? null : error });
         },
       },
       fetchPolicy,

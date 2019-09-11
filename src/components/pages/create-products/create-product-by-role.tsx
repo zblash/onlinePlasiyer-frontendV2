@@ -148,12 +148,20 @@ const CreateProductByRole: React.SFC<CreateProductByRoleProps> = props => {
       <Mutation
         mutation={mutationEndPoints.createProduct}
         onComplated={() => {
-          history.replace('/products/create');
+          if (role === 'ADMIN') {
+            history.replace('/products/create');
+          }
         }}
         variables={{
           barcode,
           ...state,
         }}
+        refetchQueries={[
+          {
+            query: queryEndpoints.getProductByBarcode,
+            variables: { barcode },
+          },
+        ]}
       >
         {(create, { loading }) => {
           if (loading) {

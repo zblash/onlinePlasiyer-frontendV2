@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { UNIT_TYPES_ARRAY, UNIT_TYPE_MAP } from '~/utils/constants';
-import { UnitTypeResponse } from '~/__types';
 import { Query } from '~/components/common';
 import { queryEndpoints } from '~/services';
 import AddActiveState from '../add-active-state';
@@ -24,6 +22,7 @@ export default class CreateSpecifyPruduct extends React.Component<
 
   public render() {
     const { shouldShowAddActiveStatePopup } = this.state;
+    const { barcode } = this.props;
 
     return (
       <Query
@@ -53,7 +52,11 @@ export default class CreateSpecifyPruduct extends React.Component<
 
           return (
             <>
-              <CreateSpecifyPruductForm />
+              <CreateSpecifyPruductForm barcode={barcode} />
+              <hr />
+              <button type="button" onClick={() => this.setState({ shouldShowAddActiveStatePopup: true })}>
+                Ilce Ekle
+              </button>
               <Popup show={shouldShowAddActiveStatePopup} onClose={this.onClosePopup}>
                 {addActiveStateElement}
               </Popup>

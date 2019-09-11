@@ -1,8 +1,8 @@
 import { isArray, narrowObject, isObject } from '~/utils';
-import { UserType } from '~/__types';
 import { queryEndpoints, mutationEndPoints } from '~/services';
+import { CacheHelperResponse, IRouteCache } from '.';
 
-function cacheHelper(obj: any, id?: string) {
+function cacheHelper(obj: any, id?: string): CacheHelperResponse {
   let cache = {};
   if (typeof obj !== 'object') {
     return null;
@@ -11,14 +11,14 @@ function cacheHelper(obj: any, id?: string) {
     return null;
   }
 
-  let route;
+  let route: CacheHelperResponse['route'];
   if (isArray(obj)) {
     route = [];
     (obj as any[]).forEach(value => {
       const cacheItem = cacheHelper(value);
       if (cacheItem) {
         cache = { ...cache, ...cacheItem.cache };
-        route.push(cacheItem.route);
+        (route as IRouteCache[]).push(cacheItem.route as IRouteCache);
       }
     });
   } else {
@@ -26,6 +26,7 @@ function cacheHelper(obj: any, id?: string) {
     route = {
       id: _id,
     };
+    const _route = route as IRouteCache;
     cache[_id] = cache[_id] || {};
     Object.keys(obj).forEach(key => {
       const value = obj[key];
@@ -44,8 +45,7 @@ function cacheHelper(obj: any, id?: string) {
             cache = { ...cache, ...newCache.cache };
             newRoute.push(newCache.route);
           });
-
-          route.props = { ...route.props, [key]: newRoute };
+          _route.props = { ..._route.props, [key]: newRoute };
         } else {
           cache[_id][key] = value;
         }
@@ -56,7 +56,7 @@ function cacheHelper(obj: any, id?: string) {
           ...cache,
           ...newCache.cache,
         };
-        route.props = { ...route.props, [key]: newCache.route };
+        _route.props = { ..._route.props, [key]: newCache.route };
       } else {
         cache[_id][key] = value;
       }
@@ -67,10 +67,6 @@ function cacheHelper(obj: any, id?: string) {
 }
 
 const getRouteId = (route: string, variables?: Record<string, any>) => route + JSON.stringify(narrowObject(variables));
-
-interface UsersVariables {
-  type: UserType;
-}
 
 export type QueryEndpoints = keyof typeof queryEndpoints;
 
