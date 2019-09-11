@@ -2,7 +2,8 @@ import * as React from 'react';
 import SkyLight from 'react-skylight';
 import { Portal } from '~/components/common';
 
-/*   closeButtonStyle: PropTypes.object,
+/*
+  closeButtonStyle: PropTypes.object,
   dialogStyles: PropTypes.object,
   onCloseClicked: PropTypes.func,
   onOverlayClicked: PropTypes.func,
@@ -13,25 +14,14 @@ import { Portal } from '~/components/common';
   titleStyle: PropTypes.object,
   closeOnEsc: PropTypes.bool,
   className: PropTypes.string,
-   closeButton: PropTypes.any,
-     afterClose: PropTypes.func,
+  closeButton: PropTypes.any,
+  afterClose: PropTypes.func,
   afterOpen: PropTypes.func,
   beforeClose: PropTypes.func,
   beforeOpen: PropTypes.func,
   hideOnOverlayClicked: PropTypes.bool,
 
    */
-
-interface PopupProps {
-  show: boolean;
-  onClose?: Function;
-  children: JSX.Element;
-  shouldRenderCloseIcon: boolean;
-  hideOverlayClicked: boolean;
-}
-interface PopupState {
-  isRender: boolean;
-}
 
 interface SkyLightRefItems {
   show: Function;
@@ -42,6 +32,7 @@ export default class Popup extends React.Component<PopupProps, PopupState> {
   public static defaultProps = {
     shouldRenderCloseIcon: true,
     hideOverlayClicked: true,
+    closeOnEsc: true,
   };
 
   private skylight: React.RefObject<SkyLightRefItems>;
@@ -101,8 +92,8 @@ export default class Popup extends React.Component<PopupProps, PopupState> {
   };
 
   public render() {
-    const { children, show, shouldRenderCloseIcon, hideOverlayClicked } = this.props;
-    const { isRender } = this.state;
+    const { children, show, shouldRenderCloseIcon, hideOverlayClicked, closeOnEsc } = this.props;
+    // const { isRender } = this.state;
     const closeButtonStyle = !shouldRenderCloseIcon ? { display: 'none' } : {};
 
     return (
@@ -110,6 +101,7 @@ export default class Popup extends React.Component<PopupProps, PopupState> {
         <SkyLight
           beforeClose={this._beforeClose}
           hideOnOverlayClicked={hideOverlayClicked}
+          closeOnEsc={closeOnEsc}
           closeButtonStyle={closeButtonStyle}
           ref={this.skylight}
           isVisible={false}
@@ -120,4 +112,15 @@ export default class Popup extends React.Component<PopupProps, PopupState> {
       </Portal>
     );
   }
+}
+
+interface PopupProps {
+  show: boolean;
+  onClose?: Function;
+  shouldRenderCloseIcon: boolean;
+  hideOverlayClicked: boolean;
+  closeOnEsc: boolean;
+}
+interface PopupState {
+  isRender: boolean;
 }

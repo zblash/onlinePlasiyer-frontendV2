@@ -1,5 +1,4 @@
 import * as React from 'react';
-import services from '~/services';
 
 interface IApplicationContextStates {
   user: {
@@ -16,7 +15,7 @@ const initialValue: {
 } = {
   state: {
     user: {
-      isLoggedIn: services.isLoggedIn(),
+      isLoggedIn: false,
     },
   },
   actions: {
@@ -25,13 +24,27 @@ const initialValue: {
   },
 };
 
+interface IApplicationProviderProps {
+  isLoggedIn: boolean;
+}
+
 export const ApplicationContext = React.createContext<IApplicationContextStates & IApplicationContextActions>({
   ...initialValue.state,
   ...initialValue.actions,
 });
 
-class ApplicationContextProvider extends React.Component<{}, IApplicationContextStates> {
-  state: IApplicationContextStates = { ...initialValue.state };
+class ApplicationContextProvider extends React.Component<IApplicationProviderProps, IApplicationContextStates> {
+  constructor(props: IApplicationProviderProps) {
+    super(props);
+
+    this.state = {
+      ...initialValue.state,
+      user: {
+        ...initialValue.state.user,
+        isLoggedIn: props.isLoggedIn,
+      },
+    };
+  }
 
   userLogin = () => {
     const { user } = this.state;
@@ -41,20 +54,21 @@ class ApplicationContextProvider extends React.Component<{}, IApplicationContext
   userLogout = () => {
     const { user } = this.state;
     this.setState({ user: { ...user, isLoggedIn: false } });
+    localStorage.removeItem('_auth');
   };
 
   render() {
-    const _state: IApplicationContextStates = JSON.parse(JSON.stringify(this.state));
+    const { children } = this.props;
 
     return (
       <ApplicationContext.Provider
         value={{
-          ..._state,
+          ...this.state,
           userLogin: this.userLogin,
           userLogout: this.userLogout,
         }}
       >
-        {this.props.children}
+        {children}
       </ApplicationContext.Provider>
     );
   }

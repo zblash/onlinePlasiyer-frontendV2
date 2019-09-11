@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import services from '~/services';
-import { Mutation } from '~/components/common';
 import { compose } from '~/components/hoc';
-import { ApplicationContext } from '../context/application';
+import { ApplicationContext } from '~/context/application';
+import { Mutation } from '.';
+import { mutationEndPoints, queryEndpoints } from '~/services';
 
 interface AppState {
   username: string;
@@ -19,10 +19,13 @@ class LoginForm extends React.Component<AppProps, AppState> {
 
   context!: React.ContextType<typeof ApplicationContext>;
 
-  state = {
-    username: '',
-    password: '',
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: '',
+      password: '',
+    };
+  }
 
   public render() {
     const {
@@ -36,12 +39,21 @@ class LoginForm extends React.Component<AppProps, AppState> {
 
     return (
       <Mutation
-        mutation={() => services.login(this.state.username, this.state.password)}
+        mutation={mutationEndPoints.login}
+        variables={{
+          username,
+          password,
+        }}
         onError={e => {
           if (onError) {
             onError(e);
           }
         }}
+        refetchQueries={[
+          {
+            query: queryEndpoints.getAuthUser,
+          },
+        ]}
         onComplated={() => {
           userLogin();
           if (onLoggedIn) {

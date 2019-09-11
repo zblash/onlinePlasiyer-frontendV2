@@ -1,15 +1,17 @@
-import { UserType, PublicUserRole, UserRoleResponse } from '~/__types';
+import { UserType, UserRoleResponse, UnitTypeResponse } from '~/__types';
+import { stringLitArray } from '.';
 
-export const ROLE_MAP: Record<PublicUserRole, UserRoleResponse> = {
-  customer: 'CUSTOMER',
-  merchant: 'MERCHANT',
+export const ROLE_MAP: Record<UserRoleResponse, string> = {
+  ADMIN: 'admin',
+  CUSTOMER: 'customer',
+  MERCHANT: 'merchant',
 };
 
-const stringLitArray = <L extends string>(arr: L[]) => arr;
-
-export const userRoleArray = stringLitArray(['admin', 'merchant', 'customer']);
-
-export const publicUserRoleArray = stringLitArray(['merchant', 'customer']);
+export const UNIT_TYPE_MAP: Record<UnitTypeResponse, string> = {
+  AD: 'Adet',
+  KG: 'Kilo',
+  KL: 'koli',
+};
 
 export const userTypeArray = stringLitArray([
   'customers-all',
@@ -28,3 +30,5 @@ export const userTypeMap: Record<UserType, string> = {
   'merchants-all': 'All Merchants',
   'merchants-passive': 'Passive Merchants',
 };
+
+export const NONE_IMAGE_SRC = 'http://clipart-library.com//image_gallery/515068.png';

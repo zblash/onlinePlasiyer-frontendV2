@@ -1,16 +1,18 @@
 import * as React from 'react';
-import services from '~/services';
-import { Mutation } from '~/components/common';
-import { PublicUserRole } from '~/__types';
-import { publicUserRoleArray } from '~/utils/constants';
+import { UserRoleResponse } from '~/__types';
+import { ROLE_MAP } from '~/utils/constants';
+import { mutationEndPoints, queryEndpoints } from '~/services';
+import { Mutation, Query } from '.';
+import { isPublicRole, objectKeys } from '~/utils';
+
 interface AppState {
-  city: string;
+  cityId: string;
   details: string;
   email: string;
   name: string;
   password: string;
-  role: PublicUserRole;
-  state: string;
+  role: UserRoleResponse;
+  stateId: string;
   taxNumber: string;
   username: string;
 }
@@ -23,12 +25,12 @@ class SignUp extends React.Component<AppProps, AppState> {
   constructor(props: AppProps) {
     super(props);
     this.state = {
-      city: '',
+      cityId: '',
       details: '',
       email: '',
       name: '',
-      role: 'customer',
-      state: '',
+      role: 'CUSTOMER',
+      stateId: '',
       taxNumber: '',
       username: '',
       password: '',
@@ -37,7 +39,7 @@ class SignUp extends React.Component<AppProps, AppState> {
 
   public render() {
     const { onSignup, onError } = this.props;
-    const { city, details, password, email, name, role, state, taxNumber, username } = this.state;
+    const { cityId, details, password, email, name, role, stateId, taxNumber, username } = this.state;
 
     return (
       <div>
@@ -84,36 +86,78 @@ class SignUp extends React.Component<AppProps, AppState> {
         </div>
         <div>
           <label>role :</label>
-          <select onChange={e => this.setState({ role: e.target.value as PublicUserRole })} defaultValue={role}>
-            {publicUserRoleArray.map(_role => (
-              <option value={_role} key={_role}>
-                {_role}
-              </option>
-            ))}
+          <select onChange={e => this.setState({ role: e.target.value as UserRoleResponse })} defaultValue={role}>
+            {objectKeys(ROLE_MAP).map(_role =>
+              isPublicRole(_role) ? (
+                <option value={_role} key={_role}>
+                  {ROLE_MAP[_role]}
+                </option>
+              ) : null,
+            )}
           </select>
         </div>
+        <Query
+          query={queryEndpoints.getCities}
+          onUpdate={d => {
+            this.setState({ cityId: d.length > 0 ? d[0].id : null });
+          }}
+        >
+          {({ data: getCitiesData, loading: getCitiesLoading, error: getCitiesError }) => {
+            if (getCitiesLoading) {
+              return <div>Loading getCities</div>;
+            }
+            if (getCitiesError) {
+              return <div>Error getCities</div>;
+            }
+            if (getCitiesData.length === 0) {
+              return <div>Sehir bulunamadi</div>;
+            }
 
-        <div>
-          <label>City :</label>
-          <input
-            type="text"
-            value={city}
-            onChange={e => {
-              this.setState({ city: e.target.value });
-            }}
-          />
-        </div>
+            return (
+              <div>
+                <select
+                  defaultValue={getCitiesData[0].id}
+                  onChange={e => {
+                    this.setState({ cityId: e.target.value, stateId: null });
+                  }}
+                >
+                  {getCitiesData.map(city => (
+                    <option key={city.id} value={city.id}>
+                      {city.title}
+                    </option>
+                  ))}
+                </select>
+                {cityId && (
+                  <Query query={queryEndpoints.getStatesByCityId} variables={{ cityId }}>
+                    {({ data: getState, loading: getStateLoading, error: getStateError }) => {
+                      if (getStateLoading) {
+                        return <div>Loading getState</div>;
+                      }
+                      if (getStateError) {
+                        return <div>Error getState</div>;
+                      }
 
-        <div>
-          <label>State :</label>
-          <input
-            type="text"
-            value={state}
-            onChange={e => {
-              this.setState({ state: e.target.value });
-            }}
-          />
-        </div>
+                      return (
+                        <select
+                          defaultValue={getState[0].id}
+                          onChange={e => {
+                            this.setState({ stateId: e.target.value });
+                          }}
+                        >
+                          {getState.map(city => (
+                            <option key={city.id} value={city.id}>
+                              {city.title}
+                            </option>
+                          ))}
+                        </select>
+                      );
+                    }}
+                  </Query>
+                )}
+              </div>
+            );
+          }}
+        </Query>
         <div>
           <label>Tax Number :</label>
           <input
@@ -135,7 +179,8 @@ class SignUp extends React.Component<AppProps, AppState> {
           />
         </div>
         <Mutation
-          mutation={() => services.signup(this.state)}
+          mutation={mutationEndPoints.signup}
+          variables={{ ...this.state }}
           onError={e => {
             if (onError) {
               onError(e);
@@ -147,7 +192,7 @@ class SignUp extends React.Component<AppProps, AppState> {
             }
           }}
         >
-          {(login, { loading }) => {
+          {(signup, { loading }) => {
             if (loading) {
               return <button type="button">...Loading...</button>;
             }
@@ -156,9 +201,11 @@ class SignUp extends React.Component<AppProps, AppState> {
               <button
                 type="button"
                 disabled={
-                  !city || !details || !password || !email || !name || !role || !state || !taxNumber || !username
+                  !cityId || !details || !password || !email || !name || !role || !stateId || !taxNumber || !username
                 }
-                onClick={login}
+                onClick={() => {
+                  signup();
+                }}
               >
                 Signup
               </button>

@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { Query, Mutation } from '~/components/common';
-import services from '~/services';
 import { Img } from '~/components/ui';
-import { CategoryResponse } from '~/__types';
+import { queryEndpoints, mutationEndPoints } from '~/services';
 
 export default class UpdateCategory extends React.Component<UpdateCategoryProps, UpdateCategoryState> {
   public constructor(props: UpdateCategoryProps) {
@@ -25,8 +24,9 @@ export default class UpdateCategory extends React.Component<UpdateCategoryProps,
     const { categoryName, isSub, uploadFile, parentId, photoSrc } = this.state;
 
     return (
-      <Query<CategoryResponse>
-        query={() => services.getCategory(categoryId)}
+      <Query
+        query={queryEndpoints.getCategoryByID}
+        variables={{ id: categoryId }}
         onComplated={d => {
           this.setState({
             categoryName: d.name,
@@ -67,7 +67,7 @@ export default class UpdateCategory extends React.Component<UpdateCategoryProps,
                 />
               </div>
               {isSub && (
-                <Query query={services.getCategoriesWithoutSub}>
+                <Query query={queryEndpoints.getCategories} variables={{ type: 'sub' }}>
                   {({ data: _mainCategories, loading: _mainCategoriesLoading, error: _mainCategoriesError }) => {
                     if (_mainCategoriesLoading) {
                       return (
@@ -123,7 +123,7 @@ export default class UpdateCategory extends React.Component<UpdateCategoryProps,
                 />
               </div>
               <Mutation
-                mutation={services.updateCategory}
+                mutation={mutationEndPoints.updateCategory}
                 onComplated={() => {
                   closePopup();
                   // TODO : show notification

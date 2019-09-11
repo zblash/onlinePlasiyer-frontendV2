@@ -2,9 +2,27 @@ import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { Header, Query } from '~/components/common';
 import Category from './category';
-import services from '~/services';
 import CreateCategory from './create-category';
 import { Popup } from '~/components/ui';
+import { queryEndpoints } from '~/services';
+
+export const deleteOrAddCategoryRefetchCategories = [
+  {
+    query: queryEndpoints.getCategories,
+  },
+  {
+    query: queryEndpoints.getCategories,
+    variables: {
+      type: 'main',
+    },
+  },
+  {
+    query: queryEndpoints.getCategories,
+    variables: {
+      type: 'sub',
+    },
+  },
+];
 
 export default class AdminCategories extends React.Component<AdminCategoriesProps, AdminCategoriesState> {
   public constructor(props: AdminCategoriesProps) {
@@ -24,7 +42,7 @@ export default class AdminCategories extends React.Component<AdminCategoriesProp
     return (
       <div>
         <Header />
-        <Query query={() => services.getAllCategories()}>
+        <Query query={queryEndpoints.getCategories}>
           {({ data, loading, error }) => {
             if (loading) {
               return <div>Loading admin Categories</div>;

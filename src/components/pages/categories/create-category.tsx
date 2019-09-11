@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Mutation, Query } from '~/components/common';
-import { CategoryResponse } from '~/__types';
-import services from '~/services';
+import { Query, Mutation } from '~/components/common';
+import { queryEndpoints, mutationEndPoints } from '~/services';
+import { deleteOrAddCategoryRefetchCategories } from '.';
 
 export default class CreateCategory extends React.Component<CreateCategoryProps, CreateCategoryState> {
   constructor(props) {
@@ -39,7 +39,8 @@ export default class CreateCategory extends React.Component<CreateCategoryProps,
           />
         </div>
         {isSub && (
-          <Query query={services.getCategoriesWithoutSub}>
+          // TODO : onComplate set initialData
+          <Query query={queryEndpoints.getCategories} variables={{ type: 'main' }}>
             {({ data, loading, error }) => {
               if (loading) {
                 return (
@@ -51,6 +52,8 @@ export default class CreateCategory extends React.Component<CreateCategoryProps,
               if (error) {
                 return <p>Categoriler cekemedik</p>;
               }
+
+              // TODO : kategori bos degilse
 
               return (
                 <select
@@ -76,7 +79,14 @@ export default class CreateCategory extends React.Component<CreateCategoryProps,
           <input type="file" onChange={e => this.setState({ uploadFile: e.target.files[0] })} />
         </div>
         <Mutation
-          mutation={services.createCategory}
+          mutation={mutationEndPoints.createCategory}
+          refetchQueries={deleteOrAddCategoryRefetchCategories}
+          variables={{
+            parentId,
+            name: categoryName,
+            isSub,
+            uploadfile: uploadFile,
+          }}
           onComplated={() => {
             closePopup();
             // TODO : show notification
@@ -91,12 +101,7 @@ export default class CreateCategory extends React.Component<CreateCategoryProps,
                 disabled={!categoryName || !uploadFile}
                 type="button"
                 onClick={() => {
-                  createCategory({
-                    parentId,
-                    name: categoryName,
-                    isSub,
-                    uploadfile: uploadFile,
-                  });
+                  createCategory();
                 }}
               >
                 {loading ? '....Loading' : 'Ekle'}

@@ -1,10 +1,11 @@
 import * as React from 'react';
 import JSXStyle from 'styled-jsx/style';
 import { NavLink } from 'react-router-dom';
-import services from '~/services';
 import { Popup } from '~/components/ui';
 import { LoginForm, Query, SignupForm } from '~/components/common';
-import { ApplicationContext } from '../context/application';
+import { ApplicationContext } from '~/context/application';
+import { isUserAdmin, isUserMerchant } from '~/utils';
+import { queryEndpoints } from '~/services';
 
 export default class Header extends React.Component<HeaderProps, HeaderState> {
   static contextType = ApplicationContext;
@@ -73,8 +74,8 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
     );
     const authElements = (
       <>
-        <Query query={() => services.getAuthUser()}>
-          {({ data, loading, error }) => {
+        <Query query={queryEndpoints.getAuthUser}>
+          {({ data: user, loading, error }) => {
             if (loading) {
               return <div>User Name Loading</div>;
             }
@@ -84,13 +85,20 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
 
             return (
               <div className="flex mr-5">
-                <div className="mr-5">{data.name}</div>
-                {data.role === 'ADMIN' && (
+                <div className="mr-5">{user.name}</div>
+                {user.role === 'ADMIN' && (
                   <div>
-                    <NavLink to="/admin/categories/">Categories </NavLink>
-                    <NavLink to="/admin/users/">Users</NavLink>
+                    <NavLink to="/admin/categories/" className="mr-10">
+                      Categories
+                    </NavLink>
+                    <NavLink to="/admin/users/" className="mr-10">
+                      Users
+                    </NavLink>
                   </div>
                 )}
+                {isUserAdmin(user) || isUserMerchant(user) ? (
+                  <NavLink to="/products/create/">Add Product</NavLink>
+                ) : null}
               </div>
             );
           }}
@@ -111,7 +119,6 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
               type="button"
               onClick={() => {
                 this.closeLogoutPopup();
-                services.logout();
                 userLogout();
               }}
             >
