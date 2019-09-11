@@ -21,8 +21,7 @@
     "prettier": "prettier  --ignore-path ./configs/.prettierignore --write **/*.ts*",
     "start-dev": "webpack-dev-server --config=configs/webpack/dev.js",
     "start-prod": "node server.js",
-    "Todo:test": "jest --watch --coverage --config=configs/jest.json",
-    "test": ""
+    "test": "jest --coverage --config=configs/jest.json"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",

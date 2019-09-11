@@ -13,7 +13,7 @@
       "~/*": ["src/*"]
     }
   },
-  "include": ["./src/**/*"],
+  "include": ["./src/**/*", "./tests/**/*.tsx"],
   "awesomeTypescriptLoaderOptions": {
     "reportFiles": ["./src/**/*"]
   },
