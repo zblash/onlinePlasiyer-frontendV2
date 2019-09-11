@@ -24,9 +24,7 @@ interface IRoute {
 }
 
 class App extends React.Component {
-  componentWillUnmount() {}
-
-  render() {
+  public render() {
     const routes: IRoute[] = [
       {
         path: '/',
