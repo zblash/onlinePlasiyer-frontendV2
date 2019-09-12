@@ -1,13 +1,17 @@
 import axios from 'axios';
 import { ApiCall, URL } from '~/services/api-calls';
-import { UserType, UserCommonResponse, AddressStateResponse, AddressCityResponse } from '~/__types';
+import {
+  UserType,
+  UserCommonResponse,
+  IAddressStateResponse,
+  IAddressCityResponse,
+  CategoryResponse,
+  IProductResponse,
+  ISpecifyProductResponse,
+} from '~/__types';
 
 export class QueryEndpoints {
-  getCategories = ({
-    type,
-  }: {
-    type?: 'sub' | 'main' | 'all';
-  } = {}) => {
+  public getCategories: (s: { type?: 'sub' | 'main' | 'all' }) => Promise<CategoryResponse[]> = ({ type } = {}) => {
     if (type !== 'all' && type) {
       return ApiCall.get(`/categories?filter=true&sub=${type === 'sub' ? 'true' : 'false'}`);
     }
@@ -15,13 +19,26 @@ export class QueryEndpoints {
     return ApiCall.get('/categories');
   };
 
-  getCategoryByID = ({ id }: { id: string }) => ApiCall.get(`/categories/${id}`);
+  public getCategoryByID: (s: { id: string }) => Promise<CategoryResponse> = ({ id }) =>
+    ApiCall.get(`/categories/${id}`);
 
-  getCategoriesWithoutSub = () => ApiCall.get('/categories?filter=true&sub=false');
+  public getCategoriesWithoutSub = () => ApiCall.get('/categories?filter=true&sub=false');
 
-  getProductByBarcode = ({ barcode }: { barcode: string }) => ApiCall.get(`/products/barcode/${barcode}`);
+  public getProductByBarcode: (s: { barcode: string }) => Promise<IProductResponse> = ({ barcode }) =>
+    ApiCall.get(`/products/barcode/${barcode}`);
 
-  getUsers = ({ type }: { type: UserType }) => {
+  public getProductById: (s: { id: string }) => Promise<IProductResponse> = ({ id }) => ApiCall.get(`/products/${id}`);
+
+  public getAllSpecifyProductsByProductId: (s: { productId: string }) => Promise<ISpecifyProductResponse[]> = ({
+    productId,
+  }) => ApiCall.get(`/products/specify/product/${productId}`);
+
+  public getAllProducts: () => Promise<IProductResponse[]> = () => ApiCall.get(`/products/`);
+
+  public getAllProductsByCategoryId: (s: { categoryId: string }) => Promise<IProductResponse[]> = ({ categoryId }) =>
+    ApiCall.get(`/products/category/${categoryId}`);
+
+  public getUsers = ({ type }: { type: UserType }) => {
     const userTypeRouteMap: Record<UserType, string> = {
       'customers-active': '/users/customers/active',
       'customers-all': '/users/customers/',
@@ -37,16 +54,17 @@ export class QueryEndpoints {
     return ApiCall.get(userTypeRouteMap[type]);
   };
 
-  getAuthUser: () => Promise<UserCommonResponse> = () => ApiCall.get('/users/getmyinfos');
+  public getAuthUser: () => Promise<UserCommonResponse> = () => ApiCall.get('/users/getmyinfos');
 
-  getAuthUserActiveStates: () => Promise<AddressStateResponse[]> = () => ApiCall.get('/users/activeStates');
+  public getAuthUserActiveStates: () => Promise<IAddressStateResponse[]> = () => ApiCall.get('/users/activeStates');
 
-  checkHealth = () => axios.get(URL.concat('/health')).then(() => ({ id: 'he', status: true }));
+  public checkHealth = () => axios.get(URL.concat('/health')).then(() => ({ id: 'he', status: true }));
 
-  getCities: () => Promise<AddressCityResponse[]> = () => ApiCall.get('/definitions/cities');
+  public getCities: () => Promise<IAddressCityResponse[]> = () =>
+    axios.get(URL.concat('/definitions/cities')).then(({ data }) => data);
 
-  getStatesByCityId: (s: { cityId: string }) => Promise<AddressStateResponse[]> = ({ cityId }) =>
-    ApiCall.get(`/definitions/cities/${cityId}/states`);
+  public getStatesByCityId: (s: { cityId: string }) => Promise<IAddressStateResponse[]> = ({ cityId }) =>
+    axios.get(URL.concat(`/definitions/cities/${cityId}/states`)).then(({ data }) => data);
 
-  getStates: () => Promise<any> = () => ApiCall.get('/definitions/states');
+  public getStates: () => Promise<any> = () => axios.get(URL.concat('/definitions/states')).then(({ data }) => data);
 }

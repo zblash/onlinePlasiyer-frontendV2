@@ -1,17 +1,27 @@
-export interface AddressStateResponse {
+export interface IAddressStateResponse {
   cityTitle: string;
   code: 0;
   id: string;
   title: string;
 }
 
-export interface AddressCityResponse {
+export interface IAddressCityResponse {
   code: 0;
   id: string;
   title: string;
 }
 
-interface SpecifyProductResponse {
+export interface IProductResponse {
+  active: boolean;
+  barcode: string;
+  categoryName: string;
+  id: string;
+  name: string;
+  photoUrl: string;
+  tax: number;
+}
+
+export interface ISpecifyProductResponse {
   id: string;
   totalPrice: number;
   unitPrice: number;
@@ -22,6 +32,7 @@ interface SpecifyProductResponse {
   productName: string;
   sellerName: string;
   states: string[];
+  productId: 'string';
 }
 
 export interface UserCommonResponse {
@@ -32,7 +43,7 @@ export interface UserCommonResponse {
   id: string;
   status?: boolean;
   taxNumber?: string;
-  activeStates?: AddressStateResponse[];
+  activeStates?: IAddressStateResponse[];
 }
 
 export interface CategoryResponse {

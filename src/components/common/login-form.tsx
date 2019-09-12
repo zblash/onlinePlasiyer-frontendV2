@@ -1,25 +1,24 @@
 import * as React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { compose } from '~/components/hoc';
 import { ApplicationContext } from '~/context/application';
 import { Mutation } from '.';
 import { mutationEndPoints, queryEndpoints } from '~/services';
 
-interface AppState {
+interface IAppState {
   username: string;
   password: string;
 }
 type AppProps = {
   onLoggedIn?: Function;
   onError?: (e: any) => void;
-} & RouteComponentProps<any>;
+} & RouteComponentProps;
 
-class LoginForm extends React.Component<AppProps, AppState> {
-  static contextType = ApplicationContext;
+class LoginForm extends React.Component<AppProps, IAppState> {
+  public static contextType = ApplicationContext;
 
-  context!: React.ContextType<typeof ApplicationContext>;
+  public context!: React.ContextType<typeof ApplicationContext>;
 
-  constructor(props) {
+  public constructor(props) {
     super(props);
     this.state = {
       username: '',
@@ -115,4 +114,4 @@ class LoginForm extends React.Component<AppProps, AppState> {
   }
 }
 
-export default compose(withRouter)(LoginForm);
+export default withRouter(LoginForm);

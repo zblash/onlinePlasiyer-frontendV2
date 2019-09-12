@@ -1,18 +1,18 @@
+import './style-header.scss';
 import * as React from 'react';
-import JSXStyle from 'styled-jsx/style';
 import { NavLink } from 'react-router-dom';
 import { Popup } from '~/components/ui';
 import { LoginForm, Query, SignupForm } from '~/components/common';
 import { ApplicationContext } from '~/context/application';
-import { isUserAdmin, isUserMerchant } from '~/utils';
+import { isUserAdmin, isUserMerchant, isUserCustomer } from '~/utils';
 import { queryEndpoints } from '~/services';
 
-export default class Header extends React.Component<HeaderProps, HeaderState> {
-  static contextType = ApplicationContext;
+export default class Header extends React.Component<IHeaderProps, IHeaderState> {
+  public static contextType = ApplicationContext;
 
-  context!: React.ContextType<typeof ApplicationContext>;
+  public context!: React.ContextType<typeof ApplicationContext>;
 
-  constructor(props: HeaderProps) {
+  public constructor(props: IHeaderProps) {
     super(props);
     this.state = {
       shouldShowLoginPopup: false,
@@ -21,33 +21,18 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
     };
   }
 
-  closeLoginPopup = () => this.setState({ shouldShowLoginPopup: false });
+  public closeLoginPopup = () => this.setState({ shouldShowLoginPopup: false });
 
-  closeLogoutPopup = () => this.setState({ shouldShowLogoutPopup: false });
+  public closeLogoutPopup = () => this.setState({ shouldShowLogoutPopup: false });
 
-  closeSignupPopup = () => this.setState({ shouldShowSignupPopup: false });
+  public closeSignupPopup = () => this.setState({ shouldShowSignupPopup: false });
 
-  render() {
+  public render() {
     const {
       user: { isLoggedIn },
       userLogout,
     } = this.context;
     const { shouldShowLoginPopup, shouldShowSignupPopup, shouldShowLogoutPopup } = this.state;
-    const style = (
-      <JSXStyle id="header-style">
-        {`
-          .flex{
-            display:flex;
-          }
-          .mr-5{
-            margin-right:5px;
-          }
-          .header-logged-user-name{
-            margin-right: 5px;
-          }
-        `}
-      </JSXStyle>
-    );
     const notAuthElements = (
       <>
         <button type="button" onClick={() => this.setState({ shouldShowLoginPopup: true })}>
@@ -86,16 +71,24 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
             return (
               <div className="flex mr-5">
                 <div className="mr-5">{user.name}</div>
-                {user.role === 'ADMIN' && (
-                  <div>
+                {isUserAdmin(user) && (
+                  <>
                     <NavLink to="/admin/categories/" className="mr-10">
                       Categories
                     </NavLink>
                     <NavLink to="/admin/users/" className="mr-10">
                       Users
                     </NavLink>
-                  </div>
+                  </>
                 )}
+                {(isUserAdmin(user) || isUserCustomer(user)) && (
+                  <>
+                    <NavLink to="/admin/products/" className="mr-10">
+                      View Product
+                    </NavLink>
+                  </>
+                )}
+
                 {isUserAdmin(user) || isUserMerchant(user) ? (
                   <NavLink to="/products/create/">Add Product</NavLink>
                 ) : null}
@@ -137,18 +130,13 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
       </>
     );
 
-    return (
-      <div className="header-wrapper">
-        {!isLoggedIn ? notAuthElements : authElements}
-        {style}
-      </div>
-    );
+    return <div className="header-wrapper">{!isLoggedIn ? notAuthElements : authElements}</div>;
   }
 }
 
-interface HeaderState {
+interface IHeaderState {
   shouldShowLogoutPopup: boolean;
   shouldShowLoginPopup: boolean;
   shouldShowSignupPopup: boolean;
 }
-interface HeaderProps {}
+interface IHeaderProps {}

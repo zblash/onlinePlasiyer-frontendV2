@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { ApiCall, URL } from '~/services/api-calls';
-import { UserRoleResponse, UnitTypeResponse } from '~/__types';
+import { UserRoleResponse, UnitTypeResponse, IProductResponse } from '~/__types';
 
 export class MutationEndpoints {
-  deleteCategory: (s: { id: string }) => Promise<any> = ({ id }) => ApiCall.delete(`/categories/delete/${id}`);
+  public deleteCategory: (s: { id: string }) => Promise<any> = ({ id }) => ApiCall.delete(`/categories/delete/${id}`);
 
-  updateCategory = ({
+  public updateCategory = ({
     id,
     params,
   }: {
@@ -82,14 +82,14 @@ export class MutationEndpoints {
     return ApiCall.post('/products/specify/create', { ...params, stateList: params.stateIds, stateIds: undefined });
   };
 
-  login = (s: { username: string; password: string }) =>
+  public login = (s: { username: string; password: string }) =>
     axios.post(`${URL}/signin`, s).then(({ data }) => {
       localStorage.setItem('_auth', `Bearer ${data.token}`);
 
       return data;
     });
 
-  signup = (data: {
+  public signup = (data: {
     cityId: string;
     details: string;
     email: string;
@@ -109,7 +109,10 @@ export class MutationEndpoints {
     return axios.post(`${URL}/sign-up`, _data).then(d => d.data);
   };
 
-  addActiveStatesForAuthUser = ({ stateIds }: { stateIds: string[] }) => {
+  public addActiveStatesForAuthUser = ({ stateIds }: { stateIds: string[] }) => {
     return ApiCall.post('/users/addActiveState', stateIds);
   };
+
+  public deleteProduct: (s: { id: string }) => Promise<IProductResponse> = ({ id }) =>
+    ApiCall.delete(`/products/delete/${id}`);
 }

@@ -5,7 +5,7 @@ import { mutationEndPoints, queryEndpoints } from '~/services';
 import { Mutation, Query } from '.';
 import { isPublicRole, objectKeys } from '~/utils';
 
-interface AppState {
+interface IAppState {
   cityId: string;
   details: string;
   email: string;
@@ -16,13 +16,13 @@ interface AppState {
   taxNumber: string;
   username: string;
 }
-interface AppProps {
+interface IAppProps {
   onSignup?: Function;
   onError?: (e: any) => void;
 }
 
-class SignUp extends React.Component<AppProps, AppState> {
-  constructor(props: AppProps) {
+class SignUp extends React.Component<IAppProps, IAppState> {
+  public constructor(props: IAppProps) {
     super(props);
     this.state = {
       cityId: '',
@@ -98,7 +98,7 @@ class SignUp extends React.Component<AppProps, AppState> {
         </div>
         <Query
           query={queryEndpoints.getCities}
-          onUpdate={d => {
+          onComplated={d => {
             this.setState({ cityId: d.length > 0 ? d[0].id : null });
           }}
         >
@@ -116,7 +116,6 @@ class SignUp extends React.Component<AppProps, AppState> {
             return (
               <div>
                 <select
-                  defaultValue={getCitiesData[0].id}
                   onChange={e => {
                     this.setState({ cityId: e.target.value, stateId: null });
                   }}
@@ -128,7 +127,13 @@ class SignUp extends React.Component<AppProps, AppState> {
                   ))}
                 </select>
                 {cityId && (
-                  <Query query={queryEndpoints.getStatesByCityId} variables={{ cityId }}>
+                  <Query
+                    query={queryEndpoints.getStatesByCityId}
+                    variables={{ cityId }}
+                    onComplated={d => {
+                      this.setState({ stateId: d.length > 0 ? d[0].id : null });
+                    }}
+                  >
                     {({ data: getState, loading: getStateLoading, error: getStateError }) => {
                       if (getStateLoading) {
                         return <div>Loading getState</div>;

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Header, Query } from '~/components/common';
+import { Query } from '~/components/common';
 import Category from './category';
 import CreateCategory from './create-category';
 import { Popup } from '~/components/ui';
@@ -41,7 +41,6 @@ export default class AdminCategories extends React.Component<AdminCategoriesProp
 
     return (
       <div>
-        <Header />
         <Query query={queryEndpoints.getCategories}>
           {({ data, loading, error }) => {
             if (loading) {

@@ -1,29 +1,34 @@
 import * as React from 'react';
 import { CacheContext } from '~/context/cache';
+import { IQueryRequiredProp } from './query';
 
 type TMutation<T, TVariables> = (pass?: TVariables) => Promise<T>;
-interface MutationProps<T = any, TVariables = any> {
+
+interface IMutationProps<T, TVariables> {
   children: (mutation: TMutation<T, TVariables>, s: { data: T; loading: boolean; error: any }) => JSX.Element;
   onError?: (e: any) => void;
   onComplated?: (data: T) => void;
   mutation: TMutation<T, TVariables>;
   variables?: TVariables;
-  refetchQueries?: { query: (vars?: any) => Promise<any>; variables?: any }[];
+  refetchQueries?: IQueryRequiredProp<any, any>[];
 }
-interface MutationState<T = any> {
+interface IMutationState<T = any> {
   data: T;
   loading: boolean;
   error: any | null;
 }
 
-export default class Mutation<T = any, TVars = any> extends React.Component<MutationProps<T, TVars>, MutationState<T>> {
-  static contextType = CacheContext;
+export default class Mutation<T = any, TVars = any> extends React.Component<
+  IMutationProps<T, TVars>,
+  IMutationState<T>
+> {
+  public static contextType = CacheContext;
 
-  context!: React.ContextType<typeof CacheContext>;
+  public context!: React.ContextType<typeof CacheContext>;
 
   private _isMounted = false;
 
-  constructor(props) {
+  public constructor(props) {
     super(props);
     this.state = {
       data: null,
@@ -32,15 +37,15 @@ export default class Mutation<T = any, TVars = any> extends React.Component<Muta
     };
   }
 
-  componentDidMount() {
+  public componentDidMount() {
     this._isMounted = true;
   }
 
-  componentWillUnmount() {
+  public componentWillUnmount() {
     this._isMounted = false;
   }
 
-  mutate: TMutation<T, TVars> = vars => {
+  public mutate: TMutation<T, TVars> = vars => {
     if (this._isMounted) {
       this.setState({ loading: true });
       const { onError, refetchQueries, onComplated, mutation, variables } = this.props;
@@ -74,7 +79,7 @@ export default class Mutation<T = any, TVars = any> extends React.Component<Muta
     return Promise.resolve({});
   };
 
-  render() {
+  public render() {
     const { children } = this.props;
     const { data, loading, error } = this.state;
 

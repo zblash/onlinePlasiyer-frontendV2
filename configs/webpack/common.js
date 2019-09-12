@@ -31,18 +31,11 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [
-          'style-loader',
-          { loader: 'css-loader', options: { importLoaders: 1 } },
-        ],
+        use: ['style-loader', { loader: 'css-loader', options: { importLoaders: 1 } }],
       },
       {
         test: /\.scss$/,
-        loaders: [
-          'style-loader',
-          { loader: 'css-loader', options: { importLoaders: 1 } },
-          'sass-loader',
-        ],
+        loaders: ['style-loader', { loader: 'css-loader', options: { importLoaders: 1 } }, 'sass-loader'],
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i,

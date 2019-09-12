@@ -3,17 +3,17 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import '~/assets/scss/app.scss';
 import { RouteChange, Query } from '~/components/common';
 import { UserRoleResponse } from '~/__types';
-import { withRequiredRole } from '~/components/hoc';
+import { queryEndpoints } from '~/services';
+import { withRequiredRole } from './hoc/with-required-role';
+import { withHeader } from './hoc/with-header';
 
-import Home from '~/components/pages/home';
-import About from '~/components/pages/about';
-import Profile from '~/components/pages/profile';
+import Home from './pages/home';
 import Page404 from '~/components/pages/404-component';
 import Categories from '~/components/pages/categories';
 import CategoryDetail from '~/components/pages/category-detail';
-import Users from '~/components/pages/users';
 import CreateProduct from '~/components/pages/create-products';
-import { queryEndpoints } from '~/services';
+import Users from '~/components/pages/users';
+import Products from '~/components/pages/products';
 
 interface IRoute {
   path: string;
@@ -28,43 +28,37 @@ class App extends React.Component {
     const routes: IRoute[] = [
       {
         path: '/',
-        component: Home,
+        component: withHeader(Home),
         shouldLogin: false,
-      },
-      {
-        path: '/about',
-        component: About,
-        shouldLogin: false,
-        authorize: ['ADMIN', 'CUSTOMER', 'MERCHANT'],
-      },
-      {
-        path: '/profile',
-        component: Profile,
-        shouldLogin: true,
-        authorize: ['ADMIN', 'MERCHANT'],
       },
       {
         path: '/admin/categories',
-        component: Categories,
+        component: withHeader(Categories),
         shouldLogin: true,
         authorize: ['ADMIN'],
       },
       {
         path: '/admin/category/:id',
-        component: CategoryDetail,
+        component: withHeader(CategoryDetail),
         shouldLogin: true,
         authorize: ['ADMIN'],
         disabled: true,
       },
       {
         path: '/admin/users/',
-        component: Users,
+        component: withHeader(Users),
         shouldLogin: true,
         authorize: ['ADMIN'],
       },
       {
+        path: '/admin/products/',
+        component: withHeader(Products),
+        shouldLogin: true,
+        authorize: ['ADMIN', 'CUSTOMER'],
+      },
+      {
         path: '/products/create/:barcode?',
-        component: CreateProduct,
+        component: withHeader(CreateProduct),
         shouldLogin: true,
         authorize: ['ADMIN', 'MERCHANT'],
       },

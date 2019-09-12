@@ -4,6 +4,9 @@ import { isArray, getKeyByValue } from '~/utils';
 import { cacheHelper, getRouteId, FetchPolicy } from './helpers';
 import { queryEndpoints } from '~/services';
 
+type TQuery = (vars: any) => Promise<any>;
+type TRefetchQueries = { query: (vars?: any) => Promise<any>; variables?: any }[];
+
 export interface IRouteCache {
   id: string;
   props?: {
@@ -16,18 +19,18 @@ export interface IRouteResponse {
   cache: IRouteCache | IRouteCache[];
 }
 
-export interface CacheHelperResponse {
+export interface ICacheHelperResponse {
   route: IRouteResponse['cache'];
   cache: Record<string, any>;
 }
 
-interface IApplicationContextStates {
+interface IApplicationContextState {
   dataCache: Record<string, any>;
   routeCache: Record<string, IRouteResponse>;
 }
 interface IApplicationContextActions {
   get: (s: {
-    query: (vars: any) => Promise<any>;
+    query: TQuery;
     variables: any;
     fetchPolicy: FetchPolicy;
     listener?: {
@@ -39,13 +42,13 @@ interface IApplicationContextActions {
   mutate: (s: {
     mutation: (vars: any) => Promise<any>;
     variables: any;
-    refetchQueries?: { query: (vars?: any) => Promise<any>; variables?: any }[];
+    refetchQueries?: TRefetchQueries;
   }) => Promise<any>;
 
   removeListener: (id: string) => void;
 }
 const initialValue: {
-  state: IApplicationContextStates;
+  state: IApplicationContextState;
   actions: IApplicationContextActions;
 } = {
   state: {
@@ -64,19 +67,19 @@ export const CacheContext = React.createContext<IApplicationContextActions>({
   ...initialValue.actions,
 });
 
-class CacheContextProvider extends React.Component<{}, IApplicationContextStates> {
+class CacheContextProvider extends React.Component<{}, IApplicationContextState> {
   private _proccessTimer: Record<string, Promise<any>>;
 
   private _changeListener: Record<string, { listner: (data: any) => void; routeId: string }>;
 
-  constructor(props) {
+  public constructor(props) {
     super(props);
     this.state = { ...initialValue.state };
     this._proccessTimer = {};
     this._changeListener = {};
   }
 
-  getRouteEndpoint = (query: any) => {
+  private getRouteEndpoint = (query: any) => {
     const route = getKeyByValue(queryEndpoints, query);
 
     if (!queryEndpoints[route]) {
@@ -86,7 +89,7 @@ class CacheContextProvider extends React.Component<{}, IApplicationContextStates
     return route;
   };
 
-  get: IApplicationContextActions['get'] = props => {
+  public get: IApplicationContextActions['get'] = props => {
     const { query, variables, listener, fetchPolicy } = props;
     const routeId = getRouteId(this.getRouteEndpoint(query), variables);
     if (fetchPolicy === 'cache-only' || fetchPolicy === 'cache-first' || fetchPolicy === 'cache-and-network') {
@@ -98,15 +101,17 @@ class CacheContextProvider extends React.Component<{}, IApplicationContextStates
         this._changeListener[listener.id] = { routeId, listner: listener.onDataChange };
       }
 
-      if (this.hasRouteData(routeId) && fetchPolicy === 'cache-first') {
-        return Promise.resolve(this.getDataByRoute(routeId));
-      }
+      if (hasRouteData && fetchPolicy === 'cache-first') {
+        const routeResult = this.getDataByRoute(routeId);
 
+        return Promise.resolve(routeResult);
+      }
       const apiCall = () =>
         query(variables)
           .then(data => {
             this._proccessTimer[routeId] = undefined;
-            const { dataCache, routeCache } = this.state;
+            const _state = this.state;
+            const { dataCache, routeCache } = _state;
             const _cache = cacheHelper(data);
             if (_cache) {
               this.setState(
@@ -115,7 +120,7 @@ class CacheContextProvider extends React.Component<{}, IApplicationContextStates
                   routeCache: { ...routeCache, [routeId]: { cache: _cache.route, usedIds: Object.keys(_cache.cache) } },
                 },
                 () => {
-                  this.updateQueries(_cache.cache, dataCache, listener ? listener.id : '##');
+                  this.updateQueries(_cache, _state, listener ? listener.id : '##');
                 },
               );
             }
@@ -138,26 +143,18 @@ class CacheContextProvider extends React.Component<{}, IApplicationContextStates
     return query(variables);
   };
 
-  mutate: IApplicationContextActions['mutate'] = ({ variables, mutation, refetchQueries }) =>
+  public mutate: IApplicationContextActions['mutate'] = ({ variables, mutation, refetchQueries }) =>
     mutation(variables).then(data => {
-      let queryWait: Promise<any> = Promise.resolve('');
-      if (isArray(refetchQueries)) {
-        queryWait = Promise.all(
-          refetchQueries.map(({ query, variables: refetchVars }) =>
-            this.get({ query, variables: refetchVars, fetchPolicy: 'cache-and-network' }),
-          ),
-        );
-      }
-      queryWait.then(() => {
-        const { dataCache } = this.state;
+      const _state = this.state;
+      this.refetchQuerys(refetchQueries).then(() => {
         const _cache = cacheHelper(data);
         if (_cache) {
           this.setState(
-            {
-              dataCache: { ...dataCache, ..._cache.cache },
-            },
+            prevState => ({
+              dataCache: { ...prevState.dataCache, ..._cache.cache },
+            }),
             () => {
-              this.updateQueries(_cache.cache, dataCache);
+              this.updateQueries(_cache, _state);
             },
           );
         }
@@ -166,7 +163,17 @@ class CacheContextProvider extends React.Component<{}, IApplicationContextStates
       return data;
     });
 
-  hasRouteData = (routeId: string) => {
+  public refetchQuerys = async (refetchQueries: TRefetchQueries) => {
+    if (isArray(refetchQueries)) {
+      await Promise.all(
+        refetchQueries.map(({ query, variables: refetchVars }) =>
+          this.get({ query, variables: refetchVars, fetchPolicy: 'cache-and-network' }),
+        ),
+      );
+    }
+  };
+
+  public hasRouteData = (routeId: string) => {
     const { routeCache } = this.state;
 
     const data = routeCache[routeId];
@@ -175,29 +182,31 @@ class CacheContextProvider extends React.Component<{}, IApplicationContextStates
   };
 
   // TODO : refactor code
-  updateQueries = (
-    newResponseCache: CacheHelperResponse['cache'],
-    oldAppCache: CacheHelperResponse['cache'],
+  public updateQueries = (
+    newResponseCache: ICacheHelperResponse,
+    oldAppState: IApplicationContextState,
     currentQueryId: string = '##',
   ) => {
     const { routeCache } = this.state;
     Object.keys(this._changeListener).forEach(_queryId => {
       const item = this._changeListener[_queryId];
-      const updatedIds = Object.keys(newResponseCache);
+      const newResponseCacheAllIds = Object.keys(newResponseCache.cache);
       const routeResult = routeCache[item.routeId];
-      if (this.hasRouteData(item.routeId) && routeResult && _queryId !== currentQueryId) {
-        const routeIds = routeResult.usedIds;
-        const newCacheIdsForQuery = updatedIds.filter(_id => routeIds.includes(_id));
-        if (newCacheIdsForQuery.length > 0) {
-          let hasChangedData = false;
+      if (this.hasRouteData(item.routeId) && _queryId !== currentQueryId) {
+        const routeUsedIds = routeResult.usedIds;
+        const newCacheIdsForQuery = newResponseCacheAllIds.filter(_id => routeUsedIds.includes(_id));
+        // TODO: update for optimize
+        const isResultEmptyArray = newResponseCacheAllIds.length === 0;
+        if (newCacheIdsForQuery.length > 0 || isResultEmptyArray) {
+          let hasChangedData = !deepEqual(oldAppState.routeCache[item.routeId], routeResult);
           for (let index = 0; index < newCacheIdsForQuery.length; index += 1) {
-            const _id = newCacheIdsForQuery[index];
-            const oldCacheForId = oldAppCache[_id];
-            const newCacheForId = newResponseCache[_id];
-            hasChangedData = !deepEqual(newCacheForId, oldCacheForId);
             if (hasChangedData) {
               break;
             }
+            const _id = newCacheIdsForQuery[index];
+            const oldCacheForId = oldAppState.dataCache[_id];
+            const newCacheForId = newResponseCache[_id];
+            hasChangedData = !deepEqual(newCacheForId, oldCacheForId);
           }
           if (hasChangedData) {
             item.listner(this.getDataByRoute(item.routeId));
@@ -207,7 +216,7 @@ class CacheContextProvider extends React.Component<{}, IApplicationContextStates
     });
   };
 
-  readCache = _routeCache => {
+  public readCache = _routeCache => {
     const { dataCache } = this.state;
     const currentItem = dataCache[_routeCache.id];
     if (!currentItem) {
@@ -233,7 +242,7 @@ class CacheContextProvider extends React.Component<{}, IApplicationContextStates
     return resultObjec;
   };
 
-  getDataByRoute = (routeId: string) => {
+  public getDataByRoute = (routeId: string) => {
     const { routeCache } = this.state;
 
     const data = routeCache[routeId].cache;
@@ -249,11 +258,17 @@ class CacheContextProvider extends React.Component<{}, IApplicationContextStates
     return this.readCache(data);
   };
 
-  removeListener = id => {
+  public removeListener = id => {
     delete this._changeListener[id];
   };
 
-  render() {
+  public getCacheDataById = id => {
+    const { dataCache } = this.state;
+
+    return dataCache[id];
+  };
+
+  public render() {
     const { children } = this.props;
 
     return (

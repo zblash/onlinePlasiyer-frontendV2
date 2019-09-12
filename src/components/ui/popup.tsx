@@ -28,7 +28,7 @@ interface SkyLightRefItems {
   hide: Function;
 }
 
-export default class Popup extends React.Component<PopupProps, PopupState> {
+export default class Popup extends React.Component<IPopupProps, PopupState> {
   public static defaultProps = {
     shouldRenderCloseIcon: true,
     hideOverlayClicked: true,
@@ -37,7 +37,7 @@ export default class Popup extends React.Component<PopupProps, PopupState> {
 
   private skylight: React.RefObject<SkyLightRefItems>;
 
-  public constructor(props: PopupProps) {
+  public constructor(props: IPopupProps) {
     super(props);
     this.state = {
       isRender: props.show,
@@ -53,7 +53,7 @@ export default class Popup extends React.Component<PopupProps, PopupState> {
     }
   }
 
-  public componentDidUpdate(prevProps: PopupProps) {
+  public componentDidUpdate(prevProps: IPopupProps) {
     const { show } = this.props;
     if (prevProps.show !== show) {
       this.togglePopup();
@@ -78,7 +78,7 @@ export default class Popup extends React.Component<PopupProps, PopupState> {
   private _beforeClose = () => {
     const { onClose } = this.props;
     if (onClose) {
-      onClose();
+      onClose(false);
     }
   };
 
@@ -114,9 +114,9 @@ export default class Popup extends React.Component<PopupProps, PopupState> {
   }
 }
 
-interface PopupProps {
+interface IPopupProps {
   show: boolean;
-  onClose?: Function;
+  onClose?: (s: false) => void;
   shouldRenderCloseIcon: boolean;
   hideOverlayClicked: boolean;
   closeOnEsc: boolean;

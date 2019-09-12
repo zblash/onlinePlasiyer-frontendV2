@@ -3,8 +3,8 @@ import { Query, Mutation } from '~/components/common';
 import { queryEndpoints, mutationEndPoints } from '~/services';
 import { deleteOrAddCategoryRefetchCategories } from '.';
 
-export default class CreateCategory extends React.Component<CreateCategoryProps, CreateCategoryState> {
-  constructor(props) {
+export default class CreateCategory extends React.Component<ICreateCategoryProps, ICreateCategoryState> {
+  public constructor(props) {
     super(props);
     this.state = {
       categoryName: '',
@@ -14,7 +14,7 @@ export default class CreateCategory extends React.Component<CreateCategoryProps,
     };
   }
 
-  render() {
+  public render() {
     const { categoryName, isSub, uploadFile, parentId } = this.state;
     const { closePopup } = this.props;
 
@@ -57,13 +57,15 @@ export default class CreateCategory extends React.Component<CreateCategoryProps,
 
               return (
                 <select
-                  defaultValue={data[0].id}
                   onChange={e => {
                     this.setState({
                       parentId: e.target.value,
                     });
                   }}
                 >
+                  <option disabled value="">
+                    Select Category
+                  </option>
                   {data.map(category => (
                     <option key={category.id} value={category.id}>
                       {category.name}
@@ -98,7 +100,7 @@ export default class CreateCategory extends React.Component<CreateCategoryProps,
           {(createCategory, { loading }) => {
             return (
               <button
-                disabled={!categoryName || !uploadFile}
+                disabled={!categoryName || !uploadFile || (isSub && !parentId)}
                 type="button"
                 onClick={() => {
                   createCategory();
@@ -113,12 +115,12 @@ export default class CreateCategory extends React.Component<CreateCategoryProps,
     );
   }
 }
-interface CreateCategoryState {
+interface ICreateCategoryState {
   categoryName: string;
   parentId: string;
   isSub: boolean;
   uploadFile: File;
 }
-interface CreateCategoryProps {
+interface ICreateCategoryProps {
   closePopup: Function;
 }
