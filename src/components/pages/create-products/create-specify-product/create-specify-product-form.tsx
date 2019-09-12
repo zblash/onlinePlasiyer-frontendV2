@@ -1,7 +1,7 @@
 import * as React from 'react';
 import MultiSelect from '@kenshooui/react-multi-select';
 import { UNIT_TYPE_MAP } from '~/utils/constants';
-import { UnitTypeResponse, AddressStateResponse } from '~/__types';
+import { UnitTypeResponse, IAddressStateResponse } from '~/__types';
 import { Query, Mutation } from '~/components/common';
 import { queryEndpoints, mutationEndPoints } from '~/services';
 
@@ -196,7 +196,7 @@ interface CreateSpecifyProductFormState {
   totalPrice: number;
   unitPrice: number;
   unitType: UnitTypeResponse;
-  selectedStateIds: AddressStateResponse[];
+  selectedStateIds: IAddressStateResponse[];
 }
 interface CreateSpecifyProductFormProps {
   barcode: string;

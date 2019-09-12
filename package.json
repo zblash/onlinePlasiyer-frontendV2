@@ -2,16 +2,6 @@
   "name": "react-webpack-typescript-starter",
   "version": "0.0.1",
   "description": "",
-  "keywords": [
-    "react",
-    "webpack",
-    "typescript",
-    "babel",
-    "sass",
-    "hmr",
-    "starter",
-    "boilerplate"
-  ],
   "license": "MIT",
   "scripts": {
     "build": "yarn run clean-dist && webpack -p --config=configs/webpack/prod.js",
@@ -34,7 +24,6 @@
     "@types/react": "^16.9.2",
     "@types/react-dom": "^16.9.0",
     "@types/react-router-dom": "^4.3.5",
-    "@types/styled-jsx": "^2.2.8",
     "@typescript-eslint/eslint-plugin": "1.x",
     "@typescript-eslint/parser": "1.x",
     "awesome-typescript-loader": "^5.2.1",
@@ -81,8 +70,7 @@
     "deep-equal": "^1.1.0",
     "express": "^4.17.1",
     "react-images": "^1.0.0",
-    "react-skylight": "^0.5.1",
-    "styled-jsx": "^3.2.2"
+    "react-skylight": "^0.5.1"
   },
   "husky": {
     "hooks": {

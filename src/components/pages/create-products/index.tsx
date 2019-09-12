@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { Query } from '~/components/common';
-import { isUserMerchant } from '~/utils';
+import { isUserMerchant, isBarcodeCorrectSize } from '~/utils';
 import { queryEndpoints } from '~/services';
 import CreateProductByRole from './create-product-by-role';
 import CreateSpecifyProduct from './create-specify-product';
@@ -25,7 +25,7 @@ const CreateProduct: React.SFC<CreateProductProps> = props => {
         />
         <button
           type="button"
-          disabled={barcode.length < 10 || barcode.length > 100}
+          disabled={!isBarcodeCorrectSize(barcode)}
           onClick={() => {
             history.replace(`/products/create/${barcode}`);
           }}

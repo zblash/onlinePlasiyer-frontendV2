@@ -5,6 +5,7 @@ import { Query, Mutation } from '~/components/common';
 import { Img } from '~/components/ui';
 import { NONE_IMAGE_SRC } from '~/utils/constants';
 import { queryEndpoints, mutationEndPoints } from '~/services';
+import { isBarcodeCorrectSize } from '~/utils';
 
 interface ReducerState {
   categoryId: string;
@@ -55,7 +56,7 @@ const CreateProductByRole: React.SFC<CreateProductByRoleProps> = props => {
   const [state, dispatch] = React.useReducer(reducer, initialVars);
   const [photoSrc, setPhotoSrc] = React.useState(NONE_IMAGE_SRC);
 
-  if (barcode.length < 10 || barcode.length > 100) {
+  if (!isBarcodeCorrectSize(barcode)) {
     return <Redirect to="/products/create/" />;
   }
 
@@ -158,8 +159,7 @@ const CreateProductByRole: React.SFC<CreateProductByRoleProps> = props => {
         }}
         refetchQueries={[
           {
-            query: queryEndpoints.getProductByBarcode,
-            variables: { barcode },
+            query: queryEndpoints.getAllProducts,
           },
         ]}
       >

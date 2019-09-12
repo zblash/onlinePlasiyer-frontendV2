@@ -7,8 +7,8 @@ import { Popup } from '~/components/ui';
 import { ApplicationContext } from '~/context/application';
 import { queryEndpoints } from '~/services';
 
-const withRole = (
-  WrappedComponent,
+const withRequiredRole = <T, C>(
+  WrappedComponent: React.ComponentClass<T> | React.FunctionComponent<T>,
   {
     authorize,
     showLoginPopup,
@@ -17,54 +17,51 @@ const withRole = (
     showLoginPopup: boolean;
   } = { showLoginPopup: true },
 ) => {
-  class WithRequiredRoleHandler extends React.Component {
-    static contextType = ApplicationContext;
+  const WithRequiredRoleHoc: React.SFC<React.ComponentProps<typeof WrappedComponent>> = props => {
+    const { user, userLogout } = React.useContext(ApplicationContext);
 
-    context!: React.ContextType<typeof ApplicationContext>;
-
-    render() {
-      const { user } = this.context;
-      const shouldAuth = showLoginPopup || Array.isArray(authorize);
-      // eslint-disable-next-line
-      const wrappedComponent = <WrappedComponent {...this.props} />;
-      if (!shouldAuth) {
-        return wrappedComponent;
-      }
-      if (!user.isLoggedIn) {
-        return (
-          <Popup show shouldRenderCloseIcon={false} hideOverlayClicked={false}>
-            <LoginForm
-              onLoggedIn={() => {
-                location.reload();
-              }}
-            />
-          </Popup>
-        );
-      }
-
+    const shouldAuth = showLoginPopup || Array.isArray(authorize);
+    const wrappedElement = <WrappedComponent {...props} />;
+    if (!shouldAuth) {
+      return wrappedElement;
+    }
+    if (!user.isLoggedIn) {
       return (
-        <Query query={queryEndpoints.getAuthUser}>
-          {({ data, loading, error }) => {
-            if (loading) {
-              return <div>Loading...(withRequiredRole)</div>;
-            }
-            if (error) {
-              return <div>Error (withRequiredRole)</div>;
-            }
-            if (Array.isArray(authorize) && !authorize.includes(data.role)) {
-              return <Redirect to="/" />;
-            }
-
-            return wrappedComponent;
-          }}
-        </Query>
+        <Popup show shouldRenderCloseIcon={false} hideOverlayClicked={false}>
+          <LoginForm />
+        </Popup>
       );
     }
-  }
 
-  (WithRequiredRoleHandler as any).displayName = `withMouse(${getDisplayName(WrappedComponent)})`;
+    return (
+      <Query
+        query={queryEndpoints.getAuthUser}
+        onError={error => {
+          if (error.status === 500) {
+            userLogout();
+          }
+        }}
+      >
+        {({ data, loading, error }) => {
+          if (loading) {
+            return <div>Loading...(withRequiredRole)</div>;
+          }
+          if (error) {
+            return <div>Error (withRequiredRole)</div>;
+          }
+          if (Array.isArray(authorize) && !authorize.includes(data.role)) {
+            return <Redirect to="/" />;
+          }
 
-  return WithRequiredRoleHandler;
+          return wrappedElement;
+        }}
+      </Query>
+    );
+  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (WithRequiredRoleHoc as any).displayName = `withMouse(${getDisplayName(WrappedComponent)})`;
+
+  return WithRequiredRoleHoc;
 };
 
-export default withRole;
+export { withRequiredRole };

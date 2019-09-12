@@ -18,10 +18,10 @@ export default class Image extends React.Component<ImageProps, ImageState> {
 
   public render() {
     const { modalIsOpen } = this.state;
-    const { src, zoomable, extraClassName, alt } = this.props;
+    const { src, zoomable, extraClassName, extraWrapperClassName, alt } = this.props;
 
     return (
-      <div>
+      <div className={extraWrapperClassName}>
         <img
           className={cls(extraClassName, {
             'cursor-pointer': zoomable,
@@ -50,6 +50,7 @@ interface ImageState {
 }
 interface ImageProps {
   extraClassName?: string;
+  extraWrapperClassName?: string;
   zoomable: boolean;
   src: string;
   alt: string;

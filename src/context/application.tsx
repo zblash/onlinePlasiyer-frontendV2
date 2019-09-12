@@ -34,7 +34,7 @@ export const ApplicationContext = React.createContext<IApplicationContextStates 
 });
 
 class ApplicationContextProvider extends React.Component<IApplicationProviderProps, IApplicationContextStates> {
-  constructor(props: IApplicationProviderProps) {
+  public constructor(props: IApplicationProviderProps) {
     super(props);
 
     this.state = {
@@ -46,18 +46,18 @@ class ApplicationContextProvider extends React.Component<IApplicationProviderPro
     };
   }
 
-  userLogin = () => {
+  public userLogin = () => {
     const { user } = this.state;
     this.setState({ user: { ...user, isLoggedIn: true } });
   };
 
-  userLogout = () => {
+  public userLogout = () => {
     const { user } = this.state;
     this.setState({ user: { ...user, isLoggedIn: false } });
     localStorage.removeItem('_auth');
   };
 
-  render() {
+  public render() {
     const { children } = this.props;
 
     return (

@@ -2,7 +2,7 @@ import * as React from 'react';
 import MultiSelect from '@kenshooui/react-multi-select';
 import { Query, Mutation } from '~/components/common';
 import { queryEndpoints, mutationEndPoints } from '~/services';
-import { AddressStateResponse } from '~/__types';
+import { IAddressStateResponse } from '~/__types';
 
 export default class AddActiveState extends React.Component<AddActiveStateProps, AddActiveStateState> {
   public constructor(props: AddActiveStateProps) {
@@ -142,6 +142,6 @@ export default class AddActiveState extends React.Component<AddActiveStateProps,
 
 interface AddActiveStateState {
   selectedCityId: string;
-  selectedStateIds: AddressStateResponse[];
+  selectedStateIds: IAddressStateResponse[];
 }
 interface AddActiveStateProps {}

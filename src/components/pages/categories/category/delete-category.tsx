@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Mutation } from '~/components/common';
 import { mutationEndPoints } from '~/services';
-import { deleteOrAddCategoryRefetchCategories } from '.';
+import { deleteOrAddCategoryRefetchCategories } from '..';
 
 export default class DeleteCategory extends React.Component<DeleteCategoryProps, DeleteCategoryState> {
   public constructor(props: DeleteCategoryProps) {

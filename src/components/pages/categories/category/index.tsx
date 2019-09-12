@@ -6,7 +6,7 @@ import DeleteCategory from './delete-category';
 
 // eslint-disable-next-line
 export default class Category extends React.Component<CategoryProps, ICategoryState> {
-  constructor(props: CategoryProps) {
+  public constructor(props: CategoryProps) {
     super(props);
     this.state = {
       shouldShowUpdatePopup: false,
@@ -14,13 +14,13 @@ export default class Category extends React.Component<CategoryProps, ICategorySt
     };
   }
 
-  closeUpdatePopup = () => this.setState({ shouldShowUpdatePopup: false });
+  public closeUpdatePopup = () => this.setState({ shouldShowUpdatePopup: false });
 
-  openUpdatePopup = () => this.setState({ shouldShowUpdatePopup: true });
+  public openUpdatePopup = () => this.setState({ shouldShowUpdatePopup: true });
 
-  closeDeletePopup = () => this.setState({ shouldShowDeletePopup: false });
+  public closeDeletePopup = () => this.setState({ shouldShowDeletePopup: false });
 
-  openDeletePopup = () => this.setState({ shouldShowDeletePopup: true });
+  public openDeletePopup = () => this.setState({ shouldShowDeletePopup: true });
 
   public render() {
     const { shouldShowDeletePopup, shouldShowUpdatePopup } = this.state;

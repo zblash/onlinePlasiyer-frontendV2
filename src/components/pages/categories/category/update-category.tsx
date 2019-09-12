@@ -3,8 +3,8 @@ import { Query, Mutation } from '~/components/common';
 import { Img } from '~/components/ui';
 import { queryEndpoints, mutationEndPoints } from '~/services';
 
-export default class UpdateCategory extends React.Component<UpdateCategoryProps, UpdateCategoryState> {
-  public constructor(props: UpdateCategoryProps) {
+export default class UpdateCategory extends React.Component<IUpdateCategoryProps, IUpdateCategoryState> {
+  public constructor(props: IUpdateCategoryProps) {
     super(props);
     this.state = {
       categoryName: '',
@@ -67,7 +67,7 @@ export default class UpdateCategory extends React.Component<UpdateCategoryProps,
                 />
               </div>
               {isSub && (
-                <Query query={queryEndpoints.getCategories} variables={{ type: 'sub' }}>
+                <Query query={queryEndpoints.getCategories} variables={{ type: 'main' }}>
                   {({ data: _mainCategories, loading: _mainCategoriesLoading, error: _mainCategoriesError }) => {
                     if (_mainCategoriesLoading) {
                       return (
@@ -87,13 +87,15 @@ export default class UpdateCategory extends React.Component<UpdateCategoryProps,
 
                     return (
                       <select
-                        defaultValue={_cleanMainCategories[0].id}
                         onChange={e => {
                           this.setState({
                             parentId: e.target.value,
                           });
                         }}
                       >
+                        <option disabled value="">
+                          Select Category
+                        </option>
                         {_cleanMainCategories.map(category => (
                           <option key={category.id} value={category.id}>
                             {category.name}
@@ -136,10 +138,13 @@ export default class UpdateCategory extends React.Component<UpdateCategoryProps,
                   return (
                     <button
                       disabled={
-                        categoryName === data.name &&
-                        photoSrc === data.photoUrl &&
-                        isSub === data.subCategory &&
-                        parentId === data.parentId
+                        (categoryName === data.name &&
+                          photoSrc === data.photoUrl &&
+                          isSub === data.subCategory &&
+                          parentId === data.parentId) ||
+                        !categoryName ||
+                        !uploadFile ||
+                        (isSub && !parentId)
                       }
                       type="button"
                       onClick={() => {
@@ -167,7 +172,7 @@ export default class UpdateCategory extends React.Component<UpdateCategoryProps,
   }
 }
 
-interface UpdateCategoryState {
+interface IUpdateCategoryState {
   categoryName: string;
   parentId: string;
   isSub: boolean;
@@ -175,7 +180,7 @@ interface UpdateCategoryState {
   photoSrc: string;
 }
 
-interface UpdateCategoryProps {
+interface IUpdateCategoryProps {
   categoryId: string;
   closePopup: Function;
 }

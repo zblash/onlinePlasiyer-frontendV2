@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Header, Query } from '~/components/common';
+import { Query } from '~/components/common';
 import { UserType } from '~/__types';
 import { userTypeMap } from '~/utils/constants';
 import { queryEndpoints } from '~/services';
@@ -10,7 +10,6 @@ const Users: React.SFC<UsersProps> = () => {
 
   return (
     <div>
-      <Header />
       <select onChange={e => setUserType(e.target.value as UserType)} defaultValue={userType}>
         {Object.keys(userTypeMap).map(_userType => {
           return (

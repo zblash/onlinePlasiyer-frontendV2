@@ -1,8 +1,8 @@
 import { isArray, narrowObject, isObject } from '~/utils';
 import { queryEndpoints, mutationEndPoints } from '~/services';
-import { CacheHelperResponse, IRouteCache } from '.';
+import { ICacheHelperResponse, IRouteCache } from '.';
 
-function cacheHelper(obj: any, id?: string): CacheHelperResponse {
+function cacheHelper(obj: any, id?: string): ICacheHelperResponse {
   let cache = {};
   if (typeof obj !== 'object') {
     return null;
@@ -11,7 +11,7 @@ function cacheHelper(obj: any, id?: string): CacheHelperResponse {
     return null;
   }
 
-  let route: CacheHelperResponse['route'];
+  let route: ICacheHelperResponse['route'];
   if (isArray(obj)) {
     route = [];
     (obj as any[]).forEach(value => {

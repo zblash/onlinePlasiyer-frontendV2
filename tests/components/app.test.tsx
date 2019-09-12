@@ -1,5 +1,7 @@
+import { isArray } from '~/utils/deneme';
+
 describe('Example Test', () => {
   test('true is equal true', () => {
-    expect(true).toEqual(true);
+    expect(isArray([])).toEqual(true);
   });
 });
