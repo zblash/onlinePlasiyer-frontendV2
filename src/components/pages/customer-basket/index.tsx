@@ -81,6 +81,28 @@ const CustomerBasket: React.SFC<ICustomerBasketProps> = props => {
                   );
                 }}
               </Mutation>
+              <Mutation
+                mutation={mutationEndPoints.cardCheckout}
+                refetchQueries={[refetchFactory(queryEndpoints.getCard)]}
+              >
+                {(cardCheckout, { loading: cardCheckoutLoading, error: cardCheckoutError }) => {
+                  if (cardCheckoutError) {
+                    return <div>Error cardCheckout</div>;
+                  }
+
+                  return (
+                    <button
+                      type="button"
+                      disabled={cardCheckoutLoading || cardCheckoutError}
+                      onClick={() => {
+                        cardCheckout();
+                      }}
+                    >
+                      {cardCheckoutLoading ? 'Loading...' : 'sepeti onayla'}
+                    </button>
+                  );
+                }}
+              </Mutation>
             </div>
           );
         }}
