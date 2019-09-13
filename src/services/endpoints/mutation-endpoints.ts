@@ -122,4 +122,6 @@ export class MutationEndpoints {
 
   public deleteProduct: (s: { id: string }) => Promise<IProductResponse> = ({ id }) =>
     ApiCall.delete(`/products/delete/${id}`);
+
+  public clearCard: () => Promise<any> = () => ApiCall.post('/cart/clear/');
 }

@@ -1,7 +1,9 @@
+import './style-customer-basket.scss';
 import * as React from 'react';
 import { Query, Mutation } from '~/components/common';
 import { queryEndpoints, mutationEndPoints } from '~/services';
 import { Img } from '~/components/ui';
+import { refetchFactory } from '~/services/endpoints/query-endpoints';
 
 const CustomerBasket: React.SFC<ICustomerBasketProps> = props => {
   return (
@@ -18,29 +20,67 @@ const CustomerBasket: React.SFC<ICustomerBasketProps> = props => {
           return (
             <div>
               {customerCard.items.map(cardItem => (
-                <div key={cardItem.id}>
-                  <Img src={cardItem.productPhotoUrl} alt={cardItem.productName} />
-                  <Mutation mutation={mutationEndPoints.removeItemFromCard} variables={{ id: cardItem.id }}>
-                    {(removeFromCard, { loading: removeFromCardLoading, error: removeFromCardError }) => {
-                      if (removeFromCardError) {
-                        return <div>Error removeFromCard</div>;
-                      }
+                <div key={cardItem.id} className="card-item-wrapper">
+                  <div className="start-item">
+                    <Img src={cardItem.productPhotoUrl} extraClassName="product-image" alt={cardItem.productName} />
+                    <div>
+                      <div>name : {cardItem.productName}</div>
+                      <div>seller : {cardItem.sellerName}</div>
+                      <div>total price : {cardItem.totalPrice}</div>
+                      <div>unitType : {cardItem.unitType}</div>
+                      <div>unit price : {cardItem.unitPrice}</div>
+                    </div>
+                  </div>
+                  <div>
+                    <Mutation
+                      mutation={mutationEndPoints.removeItemFromCard}
+                      variables={{ id: cardItem.id }}
+                      refetchQueries={[refetchFactory(queryEndpoints.getCard)]}
+                    >
+                      {(removeFromCard, { loading: removeFromCardLoading, error: removeFromCardError }) => {
+                        if (removeFromCardError) {
+                          return <div>Error removeFromCard</div>;
+                        }
 
-                      return (
-                        <button
-                          type="button"
-                          disabled={removeFromCardLoading || removeFromCardError}
-                          onClick={() => {
-                            removeFromCard();
-                          }}
-                        >
-                          {removeFromCardLoading ? 'Loading...' : 'Sil'}
-                        </button>
-                      );
-                    }}
-                  </Mutation>
+                        return (
+                          <button
+                            type="button"
+                            disabled={removeFromCardLoading || removeFromCardError}
+                            onClick={() => {
+                              removeFromCard();
+                            }}
+                          >
+                            {removeFromCardLoading ? 'Loading...' : 'Sil'}
+                          </button>
+                        );
+                      }}
+                    </Mutation>
+                  </div>
                 </div>
               ))}
+              <div>Sepet toplami {customerCard.totalPrice} TL</div>
+              <Mutation
+                mutation={mutationEndPoints.clearCard}
+                refetchQueries={[refetchFactory(queryEndpoints.getCard)]}
+              >
+                {(clearCard, { loading: clearCardLoading, error: clearCardError }) => {
+                  if (clearCardError) {
+                    return <div>Error clearCard</div>;
+                  }
+
+                  return (
+                    <button
+                      type="button"
+                      disabled={clearCardLoading || clearCardError}
+                      onClick={() => {
+                        clearCard();
+                      }}
+                    >
+                      {clearCardLoading ? 'Loading...' : 'karti temizle'}
+                    </button>
+                  );
+                }}
+              </Mutation>
             </div>
           );
         }}
