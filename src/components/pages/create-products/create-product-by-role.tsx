@@ -6,8 +6,9 @@ import { Img } from '~/components/ui';
 import { NONE_IMAGE_SRC } from '~/utils/constants';
 import { queryEndpoints, mutationEndPoints } from '~/services';
 import { isBarcodeCorrectSize } from '~/utils';
+import { refetchFactory } from '~/services/endpoints/query-endpoints';
 
-interface ReducerState {
+interface IReducerState {
   categoryId: string;
   name: string;
   status?: boolean;
@@ -29,7 +30,7 @@ type ReducerAction =
       payload: File;
     };
 
-const reducer: React.Reducer<ReducerState, ReducerAction> = (state, action) => {
+const reducer: React.Reducer<IReducerState, ReducerAction> = (state, action) => {
   switch (action.type) {
     case 'set-category-id':
       return { ...state, categoryId: action.payload };
@@ -45,7 +46,7 @@ const reducer: React.Reducer<ReducerState, ReducerAction> = (state, action) => {
       return state;
   }
 };
-const initialVars: ReducerState = {
+const initialVars: IReducerState = {
   categoryId: null,
   name: null,
   tax: null,
@@ -157,11 +158,7 @@ const CreateProductByRole: React.SFC<CreateProductByRoleProps> = props => {
           barcode,
           ...state,
         }}
-        refetchQueries={[
-          {
-            query: queryEndpoints.getAllProducts,
-          },
-        ]}
+        refetchQueries={[refetchFactory(queryEndpoints.getAllProductsByCategoryId, { categoryId: state.categoryId })]}
       >
         {(create, { loading }) => {
           if (loading) {

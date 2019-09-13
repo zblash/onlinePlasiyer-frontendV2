@@ -5,11 +5,13 @@ import { isUserMerchant, isBarcodeCorrectSize } from '~/utils';
 import { queryEndpoints } from '~/services';
 import CreateProductByRole from './create-product-by-role';
 import CreateSpecifyProduct from './create-specify-product';
+import { IWithAuthUserComponentProps, withAuthUser } from '~/components/hoc/with-auth-user';
 
 const CreateProduct: React.SFC<CreateProductProps> = props => {
   const {
     match: { params },
     history,
+    user,
   } = props;
   const [barcode, setBarcode] = React.useState(params.barcode || '');
 
@@ -36,6 +38,10 @@ const CreateProduct: React.SFC<CreateProductProps> = props => {
     );
   }
 
+  if (!user) {
+    return null;
+  }
+
   return (
     <Query query={queryEndpoints.getProductByBarcode} variables={{ barcode: params.barcode }}>
       {({ data: getProduct, error: getProductError, loading: getProductLoading }) => {
@@ -43,31 +49,20 @@ const CreateProduct: React.SFC<CreateProductProps> = props => {
           return null;
         }
         const hasBarcode = !getProductError && getProduct;
+        if (hasBarcode) {
+          if (isUserMerchant(user)) {
+            return <CreateSpecifyProduct barcode={barcode} userId={user.id} />;
+          }
+          // TODO : redirect for admin
+          return <p>Redirect</p>;
+        }
 
-        return (
-          <Query query={queryEndpoints.getAuthUser}>
-            {({ data: user, loading, error }) => {
-              if (error || loading) {
-                return null;
-              }
-
-              if (hasBarcode) {
-                if (isUserMerchant(user)) {
-                  return <CreateSpecifyProduct barcode={barcode} userId={user.id} />;
-                }
-
-                return <p>Redirect</p>;
-              }
-
-              return <CreateProductByRole role={user.role} barcode={barcode} history={history} />;
-            }}
-          </Query>
-        );
+        return <CreateProductByRole role={user.role} barcode={barcode} history={history} />;
       }}
     </Query>
   );
 };
 
-type CreateProductProps = {} & RouteComponentProps<{ barcode: string }>;
+type CreateProductProps = {} & RouteComponentProps<{ barcode: string }> & IWithAuthUserComponentProps;
 
-export default CreateProduct;
+export default withAuthUser(CreateProduct);

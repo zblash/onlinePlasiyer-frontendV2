@@ -32,10 +32,32 @@ export interface ISpecifyProductResponse {
   productName: string;
   sellerName: string;
   states: string[];
-  productId: 'string';
+  productId: string;
 }
 
-export interface UserCommonResponse {
+export interface ICardItemResponse {
+  id: string;
+  productBarcode: string;
+  productName: string;
+  productPhotoUrl: string;
+  productPrice: number;
+  productTax: number;
+  quantity: number;
+  recommendedRetailPrice: number;
+  sellerName: string;
+  totalPrice: number;
+  unitPrice: number;
+  unitType: UnitTypeResponse;
+}
+
+export interface ICardResponse {
+  id: string;
+  items: ICardItemResponse[];
+  quantity: number;
+  totalPrice: number;
+}
+
+export interface IUserCommonResponse {
   username: string;
   role: UserRoleResponse;
   name: string;
@@ -46,37 +68,12 @@ export interface UserCommonResponse {
   activeStates?: IAddressStateResponse[];
 }
 
-export interface CategoryResponse {
+export interface ICategoryResponse {
   id: string;
   name: string;
   parentId: string | null;
   photoUrl: string;
   subCategory: boolean;
-}
-
-export interface OrderResponse {
-  buyerName: string;
-  id: string;
-  orderDate: string;
-  orderItems: {
-    id: string;
-    price: number;
-    productBarcode: string;
-    productName: string;
-    productPhotoUrl: string;
-    productTax: number;
-    quantity: number;
-    recommendedRetailPrice: number;
-    totalPrice: number;
-    unitPrice: number;
-    sellerName: string;
-    unitType: UnitTypeResponse;
-  }[];
-  sellerName: string;
-  status: 'FINISHED' | 'NEW' | 'CANCELLED' | 'PAID';
-  // TODO : status type
-  totalPrice: number;
-  waybillDate: string;
 }
 
 export type UserRoleResponse = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';

@@ -1,8 +1,11 @@
+import './style-login-form.scss';
 import * as React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import cls from 'classnames';
 import { ApplicationContext } from '~/context/application';
-import { Mutation } from '.';
 import { mutationEndPoints, queryEndpoints } from '~/services';
+import { refetchFactory } from '~/services/endpoints/query-endpoints';
+import { Mutation } from '~/components/common';
 
 interface IAppState {
   username: string;
@@ -48,11 +51,7 @@ class LoginForm extends React.Component<AppProps, IAppState> {
             onError(e);
           }
         }}
-        refetchQueries={[
-          {
-            query: queryEndpoints.getAuthUser,
-          },
-        ]}
+        refetchQueries={[refetchFactory(queryEndpoints.getAuthUser)]}
         onComplated={() => {
           userLogin();
           if (onLoggedIn) {
@@ -60,8 +59,7 @@ class LoginForm extends React.Component<AppProps, IAppState> {
           }
         }}
       >
-        {(login, s) => {
-          const { loading } = s;
+        {(login, { loading, error }) => {
           const formId = 'login-form';
 
           return (
@@ -93,6 +91,14 @@ class LoginForm extends React.Component<AppProps, IAppState> {
                   }}
                 />
               </div>
+              <span
+                className={cls({
+                  hidden: !error,
+                  'login-error-text': error,
+                })}
+              >
+                UUps hata olustu
+              </span>
               <button type="submit" form={formId} disabled={!username || password.length < 4 || loading}>
                 {loading ? 'Loading...' : 'Login'}
               </button>

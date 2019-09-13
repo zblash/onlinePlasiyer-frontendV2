@@ -1,4 +1,4 @@
-import { UserCommonResponse, UserRoleResponse } from '~/__types';
+import { IUserCommonResponse, UserRoleResponse } from '~/__types';
 
 const isArray = (o: any) => Array.isArray(o);
 const isObject = (o: any) => !isArray(o) && typeof o === 'object' && o !== null && o !== undefined;
@@ -18,7 +18,7 @@ function getDisplayName(WrappedComponent): string {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
 
-function isUserAdmin(user: UserCommonResponse) {
+function isUserAdmin(user: IUserCommonResponse) {
   if (user) {
     return user.role === 'ADMIN';
   }
@@ -26,7 +26,7 @@ function isUserAdmin(user: UserCommonResponse) {
   return false;
 }
 
-function isUserCustomer(user: UserCommonResponse) {
+function isUserCustomer(user: IUserCommonResponse) {
   if (user) {
     return user.role === 'CUSTOMER';
   }
@@ -34,7 +34,7 @@ function isUserCustomer(user: UserCommonResponse) {
   return false;
 }
 
-function isUserMerchant(user: UserCommonResponse) {
+function isUserMerchant(user: IUserCommonResponse) {
   if (user) {
     return user.role === 'MERCHANT';
   }

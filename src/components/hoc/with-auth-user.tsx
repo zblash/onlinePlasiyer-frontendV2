@@ -3,11 +3,12 @@ import { getDisplayName } from '~/utils';
 import { Query } from '~/components/common';
 import { ApplicationContext } from '~/context/application';
 import { queryEndpoints } from '~/services';
-import { UserCommonResponse } from '~/__types';
+import { IUserCommonResponse } from '~/__types';
 
 export interface IWithAuthUserComponentProps {
-  user: UserCommonResponse;
+  user: IUserCommonResponse;
   isLoggedIn: boolean;
+  isUserLoading: boolean;
 }
 
 function withAuthUser<P extends IWithAuthUserComponentProps, C extends React.ComponentType<P>>(
@@ -32,13 +33,17 @@ function withAuthUser<P extends IWithAuthUserComponentProps, C extends React.Com
         }}
       >
         {({ data, loading, error }) => {
-          if (loading || error) {
+          if (loading) {
             // @ts-ignore
-            return <WrappedComponent {...props} user={null} isLoggedIn={false} />;
+            return <WrappedComponent {...props} user={null} isLoggedIn={false} isUserLoading />;
+          }
+          if (error) {
+            // @ts-ignore
+            return <WrappedComponent {...props} user={null} isLoggedIn={false} isUserLoading={false} />;
           }
 
           // @ts-ignore
-          return <WrappedComponent {...props} user={data} isLoggedIn />;
+          return <WrappedComponent {...props} user={data} isLoggedIn isUserLoading={false} />;
         }}
       </Query>
     );

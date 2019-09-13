@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { ApiCall, URL } from '~/services/api-calls';
-import { UserRoleResponse, UnitTypeResponse, IProductResponse } from '~/__types';
+import { UserRoleResponse, UnitTypeResponse, IProductResponse, ICardResponse } from '~/__types';
 
 export class MutationEndpoints {
   public deleteCategory: (s: { id: string }) => Promise<any> = ({ id }) => ApiCall.delete(`/categories/delete/${id}`);
@@ -32,7 +32,7 @@ export class MutationEndpoints {
     return ApiCall.put(`/categories/update/${id}`, formData);
   };
 
-  createCategory = (params: { parentId: string | null; name: string; isSub: boolean; uploadfile: File }) => {
+  public createCategory = (params: { parentId: string | null; name: string; isSub: boolean; uploadfile: File }) => {
     const formData = new FormData();
     const _data = {
       ...params,
@@ -45,7 +45,7 @@ export class MutationEndpoints {
     return ApiCall.post('/categories/create', formData);
   };
 
-  changeStatus = ({ id, status }: { id: string; status: boolean }) => {
+  public changeStatus = ({ id, status }: { id: string; status: boolean }) => {
     if (status) {
       return ApiCall.post(`/users/setActive/${id}`);
     }
@@ -53,7 +53,7 @@ export class MutationEndpoints {
     return ApiCall.post(`/users/setPassive/${id}`);
   };
 
-  createProduct = (params: {
+  public createProduct = (params: {
     barcode: string;
     categoryId: string;
     name: string;
@@ -69,7 +69,12 @@ export class MutationEndpoints {
     return ApiCall.post('/products/create', formData);
   };
 
-  createSpecifyProductForAuthUser = (params: {
+  public addToCard: (s: { specifyProductId: string; quantity: number }) => Promise<ICardResponse> = ({
+    specifyProductId,
+    quantity,
+  }) => ApiCall.post('/cart/addItem', { productId: specifyProductId, quantity });
+
+  public createSpecifyProductForAuthUser = (params: {
     barcode: string;
     contents: number;
     quantity: number;
@@ -112,6 +117,8 @@ export class MutationEndpoints {
   public addActiveStatesForAuthUser = ({ stateIds }: { stateIds: string[] }) => {
     return ApiCall.post('/users/addActiveState', stateIds);
   };
+
+  public removeItemFromCard: (s: { id: string }) => Promise<any> = ({ id }) => ApiCall.post(`/cart/removeItem/${id}`);
 
   public deleteProduct: (s: { id: string }) => Promise<IProductResponse> = ({ id }) =>
     ApiCall.delete(`/products/delete/${id}`);

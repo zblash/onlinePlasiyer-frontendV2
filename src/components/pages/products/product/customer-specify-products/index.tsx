@@ -2,7 +2,7 @@ import './style-customer-specify-products.scss';
 import * as React from 'react';
 import { queryEndpoints } from '~/services';
 import { Query } from '~/components/common';
-import { UNIT_TYPE_MAP } from '~/utils/constants';
+import SpecifyProduct from './specify-product';
 
 const CustomerSpecifyProduct: React.SFC<ICustomerSpecifyProductProps> = props => {
   const { productId, productName } = props;
@@ -26,16 +26,8 @@ const CustomerSpecifyProduct: React.SFC<ICustomerSpecifyProductProps> = props =>
 
           return (
             <div className="scrollable">
-              {specifyProducts.map(specProdcut => (
-                <div key={specProdcut.id} className="specify-product-wrapper">
-                  <div>contents : {specProdcut.contents}</div>
-                  <div>quantity : {specProdcut.quantity}</div>
-                  <div>recommendedRetailPrice : {specProdcut.recommendedRetailPrice}</div>
-                  <div>sellerName : {specProdcut.sellerName}</div>
-                  <div>totalPrice : {specProdcut.totalPrice}</div>
-                  <div>unitPrice : {specProdcut.unitPrice}</div>
-                  <div>unit type : {UNIT_TYPE_MAP[specProdcut.unitType]}</div>
-                </div>
+              {specifyProducts.map(specProduct => (
+                <SpecifyProduct specProduct={specProduct} key={specProduct.id} />
               ))}
             </div>
           );

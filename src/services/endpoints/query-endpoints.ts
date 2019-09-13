@@ -2,16 +2,24 @@ import axios from 'axios';
 import { ApiCall, URL } from '~/services/api-calls';
 import {
   UserType,
-  UserCommonResponse,
+  IUserCommonResponse,
   IAddressStateResponse,
   IAddressCityResponse,
-  CategoryResponse,
+  ICategoryResponse,
   IProductResponse,
   ISpecifyProductResponse,
+  ICardResponse,
 } from '~/__types';
 
+export function refetchFactory<T, TVar>(query: (s: TVar) => Promise<T>, variables?: TVar) {
+  return {
+    query,
+    variables,
+  };
+}
+
 export class QueryEndpoints {
-  public getCategories: (s: { type?: 'sub' | 'main' | 'all' }) => Promise<CategoryResponse[]> = ({ type } = {}) => {
+  public getCategories: (s: { type?: 'sub' | 'main' | 'all' }) => Promise<ICategoryResponse[]> = ({ type } = {}) => {
     if (type !== 'all' && type) {
       return ApiCall.get(`/categories?filter=true&sub=${type === 'sub' ? 'true' : 'false'}`);
     }
@@ -19,7 +27,7 @@ export class QueryEndpoints {
     return ApiCall.get('/categories');
   };
 
-  public getCategoryByID: (s: { id: string }) => Promise<CategoryResponse> = ({ id }) =>
+  public getCategoryByID: (s: { id: string }) => Promise<ICategoryResponse> = ({ id }) =>
     ApiCall.get(`/categories/${id}`);
 
   public getCategoriesWithoutSub = () => ApiCall.get('/categories?filter=true&sub=false');
@@ -34,6 +42,8 @@ export class QueryEndpoints {
   }) => ApiCall.get(`/products/specify/product/${productId}`);
 
   public getAllProducts: () => Promise<IProductResponse[]> = () => ApiCall.get(`/products/`);
+
+  public getCard: () => Promise<ICardResponse> = () => ApiCall.get(`/cart/`);
 
   public getAllProductsByCategoryId: (s: { categoryId: string }) => Promise<IProductResponse[]> = ({ categoryId }) =>
     ApiCall.get(`/products/category/${categoryId}`);
@@ -54,7 +64,7 @@ export class QueryEndpoints {
     return ApiCall.get(userTypeRouteMap[type]);
   };
 
-  public getAuthUser: () => Promise<UserCommonResponse> = () => ApiCall.get('/users/getmyinfos');
+  public getAuthUser: () => Promise<IUserCommonResponse> = () => ApiCall.get('/users/getmyinfos');
 
   public getAuthUserActiveStates: () => Promise<IAddressStateResponse[]> = () => ApiCall.get('/users/activeStates');
 
