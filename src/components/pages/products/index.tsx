@@ -52,7 +52,7 @@ const Products: React.SFC<IAdminProductsProps> = props => {
             return (
               <div>
                 {getAllProducts.map(product => {
-                  return <Product key={product.id} productId={product.id} categoryId={categoryId} />;
+                  return <Product key={product.id} product={product} categoryId={categoryId} />;
                 })}
               </div>
             );

@@ -7,3 +7,15 @@
 .header-logged-user-name {
   margin-right: 5px;
 }
+
+.auth-element-wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  > .end-item {
+    display: flex;
+    > button{
+      margin-left:10px;
+    }
+  }
+}

@@ -14,6 +14,7 @@ import CategoryDetail from '~/components/pages/category-detail';
 import CreateProduct from '~/components/pages/create-products';
 import Users from '~/components/pages/users';
 import Products from '~/components/pages/products';
+import CustomerBasket from '~/components/pages/customer-basket';
 
 interface IRoute {
   path: string;
@@ -61,6 +62,12 @@ class App extends React.Component {
         component: withHeader(CreateProduct),
         shouldLogin: true,
         authorize: ['ADMIN', 'MERCHANT'],
+      },
+      {
+        path: '/customer/basket',
+        component: withHeader(CustomerBasket),
+        shouldLogin: true,
+        authorize: ['CUSTOMER'],
       },
     ];
     const app = (

@@ -5,9 +5,10 @@ import { Popup } from '~/components/ui';
 import { LoginForm, Query, SignupForm } from '~/components/common';
 import { ApplicationContext } from '~/context/application';
 import { isUserAdmin, isUserMerchant, isUserCustomer } from '~/utils';
-import { queryEndpoints } from '~/services';
+import { withAuthUser, IWithAuthUserComponentProps } from '~/components/hoc/with-auth-user';
+import CustomerBasketIcon from './basket-icon';
 
-export default class Header extends React.Component<IHeaderProps, IHeaderState> {
+class Header extends React.Component<IHeaderProps, IHeaderState> {
   public static contextType = ApplicationContext;
 
   public context!: React.ContextType<typeof ApplicationContext>;
@@ -33,6 +34,7 @@ export default class Header extends React.Component<IHeaderProps, IHeaderState> 
       userLogout,
     } = this.context;
     const { shouldShowLoginPopup, shouldShowSignupPopup, shouldShowLogoutPopup } = this.state;
+    const { user } = this.props;
     const notAuthElements = (
       <>
         <button type="button" onClick={() => this.setState({ shouldShowLoginPopup: true })}>
@@ -57,54 +59,43 @@ export default class Header extends React.Component<IHeaderProps, IHeaderState> 
         </Popup>
       </>
     );
-    const authElements = (
+    const authElements = user ? (
       <>
-        <Query query={queryEndpoints.getAuthUser}>
-          {({ data: user, loading, error }) => {
-            if (loading) {
-              return <div>User Name Loading</div>;
-            }
-            if (error) {
-              return null;
-            }
+        <div className="auth-element-wrapper">
+          <div className="flex mr-5">
+            <div className="mr-5">{user.name}</div>
+            {isUserAdmin(user) && (
+              <>
+                <NavLink to="/admin/categories/" className="mr-10">
+                  Categories
+                </NavLink>
+                <NavLink to="/admin/users/" className="mr-10">
+                  Users
+                </NavLink>
+              </>
+            )}
+            {(isUserAdmin(user) || isUserCustomer(user)) && (
+              <>
+                <NavLink to="/admin/products/" className="mr-10">
+                  View Product
+                </NavLink>
+              </>
+            )}
 
-            return (
-              <div className="flex mr-5">
-                <div className="mr-5">{user.name}</div>
-                {isUserAdmin(user) && (
-                  <>
-                    <NavLink to="/admin/categories/" className="mr-10">
-                      Categories
-                    </NavLink>
-                    <NavLink to="/admin/users/" className="mr-10">
-                      Users
-                    </NavLink>
-                  </>
-                )}
-                {(isUserAdmin(user) || isUserCustomer(user)) && (
-                  <>
-                    <NavLink to="/admin/products/" className="mr-10">
-                      View Product
-                    </NavLink>
-                  </>
-                )}
-
-                {isUserAdmin(user) || isUserMerchant(user) ? (
-                  <NavLink to="/products/create/">Add Product</NavLink>
-                ) : null}
-              </div>
-            );
-          }}
-        </Query>
-
-        <button
-          type="button"
-          onClick={() => {
-            this.setState({ shouldShowLogoutPopup: true });
-          }}
-        >
-          Logout
-        </button>
+            {isUserAdmin(user) || isUserMerchant(user) ? <NavLink to="/products/create/">Add Product</NavLink> : null}
+          </div>
+          <div className="end-item">
+            {isUserCustomer(user) && <CustomerBasketIcon />}
+            <button
+              type="button"
+              onClick={() => {
+                this.setState({ shouldShowLogoutPopup: true });
+              }}
+            >
+              Logout
+            </button>
+          </div>
+        </div>
         <Popup show={shouldShowLogoutPopup} onClose={this.closeLogoutPopup}>
           <div>
             <h1>Cikmak Istiyormusun ?</h1>
@@ -128,6 +119,8 @@ export default class Header extends React.Component<IHeaderProps, IHeaderState> 
           </div>
         </Popup>
       </>
+    ) : (
+      <div>Loading</div>
     );
 
     return <div className="header-wrapper">{!isLoggedIn ? notAuthElements : authElements}</div>;
@@ -139,4 +132,6 @@ interface IHeaderState {
   shouldShowLoginPopup: boolean;
   shouldShowSignupPopup: boolean;
 }
-interface IHeaderProps {}
+interface IHeaderProps extends IWithAuthUserComponentProps {}
+
+export default withAuthUser(Header);

@@ -3,9 +3,11 @@ import deepEqual from 'deep-equal';
 import { isArray, getKeyByValue } from '~/utils';
 import { cacheHelper, getRouteId, FetchPolicy } from './helpers';
 import { queryEndpoints } from '~/services';
+import { IQueryRequiredProp } from '~/components/common/query';
 
 type TQuery = (vars: any) => Promise<any>;
-type TRefetchQueries = { query: (vars?: any) => Promise<any>; variables?: any }[];
+
+type IQueryProps = IQueryRequiredProp<any, any>;
 
 export interface IRouteCache {
   id: string;
@@ -42,7 +44,7 @@ interface IApplicationContextActions {
   mutate: (s: {
     mutation: (vars: any) => Promise<any>;
     variables: any;
-    refetchQueries?: TRefetchQueries;
+    refetchQueries?: IQueryProps[];
   }) => Promise<any>;
 
   removeListener: (id: string) => void;
@@ -146,8 +148,8 @@ class CacheContextProvider extends React.Component<{}, IApplicationContextState>
   public mutate: IApplicationContextActions['mutate'] = ({ variables, mutation, refetchQueries }) =>
     mutation(variables).then(data => {
       const _state = this.state;
+      const _cache = cacheHelper(data);
       this.refetchQuerys(refetchQueries).then(() => {
-        const _cache = cacheHelper(data);
         if (_cache) {
           this.setState(
             prevState => ({
@@ -163,7 +165,7 @@ class CacheContextProvider extends React.Component<{}, IApplicationContextState>
       return data;
     });
 
-  public refetchQuerys = async (refetchQueries: TRefetchQueries) => {
+  public refetchQuerys = async (refetchQueries: IQueryProps[]) => {
     if (isArray(refetchQueries)) {
       await Promise.all(
         refetchQueries.map(({ query, variables: refetchVars }) =>

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CategoryResponse } from '~/__types';
+import { ICategoryResponse } from '~/__types';
 import { Img, Popup } from '~/components/ui';
 import UpdateCategory from './update-category';
 import DeleteCategory from './delete-category';
@@ -52,4 +52,4 @@ interface ICategoryState {
   shouldShowDeletePopup: boolean;
   shouldShowUpdatePopup: boolean;
 }
-type CategoryProps = {} & CategoryResponse;
+type CategoryProps = {} & ICategoryResponse;

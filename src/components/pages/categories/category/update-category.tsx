@@ -137,15 +137,15 @@ export default class UpdateCategory extends React.Component<IUpdateCategoryProps
                 {(createCategory, { loading: updateCategoryLoading }) => {
                   return (
                     <button
-                      disabled={
-                        (categoryName === data.name &&
-                          photoSrc === data.photoUrl &&
-                          isSub === data.subCategory &&
-                          parentId === data.parentId) ||
-                        !categoryName ||
-                        !uploadFile ||
-                        (isSub && !parentId)
-                      }
+                      // disabled={
+                      //   (categoryName === data.name &&
+                      //     photoSrc === data.photoUrl &&
+                      //     isSub === data.subCategory &&
+                      //     parentId === data.parentId) ||
+                      //   !categoryName ||
+                      //   !uploadFile ||
+                      //   (isSub && !parentId)
+                      // }
                       type="button"
                       onClick={() => {
                         createCategory({

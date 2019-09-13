@@ -3,6 +3,7 @@ import MultiSelect from '@kenshooui/react-multi-select';
 import { Query, Mutation } from '~/components/common';
 import { queryEndpoints, mutationEndPoints } from '~/services';
 import { IAddressStateResponse } from '~/__types';
+import { refetchFactory } from '~/services/endpoints/query-endpoints';
 
 export default class AddActiveState extends React.Component<AddActiveStateProps, AddActiveStateState> {
   public constructor(props: AddActiveStateProps) {
@@ -107,7 +108,7 @@ export default class AddActiveState extends React.Component<AddActiveStateProps,
               <Mutation
                 mutation={mutationEndPoints.addActiveStatesForAuthUser}
                 variables={{ stateIds: selectedStateIds.map(_state => _state.id) }}
-                refetchQueries={[{ query: queryEndpoints.getAuthUserActiveStates }]}
+                refetchQueries={[refetchFactory(queryEndpoints.getAuthUserActiveStates)]}
               >
                 {(addState, { loading: addStateLoading, error: addStateError }) => {
                   if (addStateLoading) {

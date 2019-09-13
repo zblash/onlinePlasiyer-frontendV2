@@ -5,23 +5,12 @@ import Category from './category';
 import CreateCategory from './create-category';
 import { Popup } from '~/components/ui';
 import { queryEndpoints } from '~/services';
+import { refetchFactory } from '~/services/endpoints/query-endpoints';
 
 export const deleteOrAddCategoryRefetchCategories = [
-  {
-    query: queryEndpoints.getCategories,
-  },
-  {
-    query: queryEndpoints.getCategories,
-    variables: {
-      type: 'main',
-    },
-  },
-  {
-    query: queryEndpoints.getCategories,
-    variables: {
-      type: 'sub',
-    },
-  },
+  refetchFactory(queryEndpoints.getCategories, { type: 'all' }),
+  refetchFactory(queryEndpoints.getCategories, { type: 'main' }),
+  refetchFactory(queryEndpoints.getCategories, { type: 'sub' }),
 ];
 
 export default class AdminCategories extends React.Component<AdminCategoriesProps, AdminCategoriesState> {

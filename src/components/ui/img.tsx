@@ -2,12 +2,12 @@ import * as React from 'react';
 import Carousel, { Modal, ModalGateway } from 'react-images';
 import cls from 'classnames';
 
-export default class Image extends React.Component<ImageProps, ImageState> {
+export default class Image extends React.Component<IImageProps, IImageState> {
   public static defaultProps = {
     zoomable: false,
   };
 
-  public constructor(props: ImageProps) {
+  public constructor(props: IImageProps) {
     super(props);
     this.state = { modalIsOpen: false };
   }
@@ -45,10 +45,10 @@ export default class Image extends React.Component<ImageProps, ImageState> {
     );
   }
 }
-interface ImageState {
+interface IImageState {
   modalIsOpen: boolean;
 }
-interface ImageProps {
+interface IImageProps {
   extraClassName?: string;
   extraWrapperClassName?: string;
   zoomable: boolean;

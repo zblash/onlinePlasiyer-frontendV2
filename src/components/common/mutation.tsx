@@ -57,7 +57,7 @@ export default class Mutation<T = any, TVars = any> extends React.Component<
         variables: variables || vars,
       })
         .then(data => {
-          this.setState({ loading: false, data });
+          this.setState({ loading: false, data, error: null });
           if (onComplated) {
             onComplated(data);
           }
