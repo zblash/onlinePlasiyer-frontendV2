@@ -84,8 +84,8 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
       },
       {
         title: 'Orders',
-        to: '/merchant/orders',
-        shouldRender: isUserMerchant(user),
+        to: '/orders',
+        shouldRender: isUserMerchant(user) || isUserCustomer(user),
       },
       {
         title: 'View Product',
@@ -111,7 +111,7 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
             </Nav.Link>
           ))}
           <div className="ml-auto">
-            <div className="end-item">
+            <div className="end-item flex">
               {isUserCustomer(user) && <CustomerBasketIcon />}
               <button
                 className="btn nav-btn"
