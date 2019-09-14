@@ -5,7 +5,7 @@ import Category from './category';
 import CreateCategory from './create-category';
 import { queryEndpoints } from '~/services';
 import { refetchFactory } from '~/services/endpoints/query-endpoints';
-import {CardGroup, Modal} from 'react-bootstrap';
+import { CardGroup, Modal } from 'react-bootstrap';
 
 export const deleteOrAddCategoryRefetchCategories = [
   refetchFactory(queryEndpoints.getCategories),
@@ -39,7 +39,6 @@ export default class AdminCategories extends React.Component<AdminCategoriesProp
               return <div>Error admin Categories</div>;
             }
 
-            // @ts-ignore
             return (
               <div>
                 <button
