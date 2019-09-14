@@ -6,7 +6,7 @@ import Order from './order';
 import OrderDetail from './order-detail';
 import { RouteComponentProps } from 'react-router';
 
-const MerchantOrders: React.SFC<IMerchantOrdersProps> = props => {
+const Orders: React.SFC<IMerchantOrdersProps> = props => {
   const {
     match: {
       params: { id },
@@ -30,7 +30,7 @@ const MerchantOrders: React.SFC<IMerchantOrdersProps> = props => {
           return (
             <div>
               {orders.map(order => (
-                <Order order={order} />
+                <Order order={order} key={order.id} />
               ))}
             </div>
           );
@@ -41,4 +41,4 @@ const MerchantOrders: React.SFC<IMerchantOrdersProps> = props => {
 };
 interface IMerchantOrdersProps extends RouteComponentProps<{ id: string }> {}
 
-export default MerchantOrders;
+export default Orders;
