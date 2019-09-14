@@ -1,0 +1,19 @@
+.order-wrapper {
+  border: 2px solid #ddd;
+  margin-bottom: 4px;
+  padding: 5px;
+  display: flex;
+  justify-content: space-between;
+  > .start-items {
+  }
+  > .end-items {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    > div {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+}
