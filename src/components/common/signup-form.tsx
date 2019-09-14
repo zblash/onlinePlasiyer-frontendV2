@@ -4,6 +4,7 @@ import { ROLE_MAP } from '~/utils/constants';
 import { mutationEndPoints, queryEndpoints } from '~/services';
 import { Mutation, Query } from '.';
 import { isPublicRole, objectKeys } from '~/utils';
+import {Modal} from "react-bootstrap";
 
 interface IAppState {
   cityId: string;
@@ -42,10 +43,15 @@ class SignUp extends React.Component<IAppProps, IAppState> {
     const { cityId, details, password, email, name, role, stateId, taxNumber, username } = this.state;
 
     return (
-      <div>
         <div>
+        <Modal.Header closeButton>
+            <Modal.Title className="text-dark">Register</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <div className="form-group">
           <label>Name :</label>
           <input
+            className="form-control"
             type="text"
             value={name}
             onChange={e => {
@@ -53,9 +59,10 @@ class SignUp extends React.Component<IAppProps, IAppState> {
             }}
           />
         </div>
-        <div>
+        <div className="form-group">
           <label>Username :</label>
           <input
+            className="form-control"
             type="text"
             value={username}
             onChange={e => {
@@ -64,9 +71,10 @@ class SignUp extends React.Component<IAppProps, IAppState> {
           />
         </div>
 
-        <div>
+        <div className="form-group">
           <label>Email :</label>
           <input
+            className="form-control"
             type="text"
             value={email}
             onChange={e => {
@@ -74,9 +82,10 @@ class SignUp extends React.Component<IAppProps, IAppState> {
             }}
           />
         </div>
-        <div>
+        <div className="form-group">
           <label>Password :</label>
           <input
+            className="form-control"
             type="password"
             value={password}
             onChange={e => {
@@ -84,9 +93,9 @@ class SignUp extends React.Component<IAppProps, IAppState> {
             }}
           />
         </div>
-        <div>
-          <label>role :</label>
-          <select onChange={e => this.setState({ role: e.target.value as UserRoleResponse })} defaultValue={role}>
+        <div className="form-group">
+          <label>Role Type :</label>
+          <select className="form-control" onChange={e => this.setState({ role: e.target.value as UserRoleResponse })} defaultValue={role}>
             {objectKeys(ROLE_MAP).map(_role =>
               isPublicRole(_role) ? (
                 <option value={_role} key={_role}>
@@ -114,8 +123,10 @@ class SignUp extends React.Component<IAppProps, IAppState> {
             }
 
             return (
-              <div>
+              <div className="form-group">
+                  <label>City :</label>
                 <select
+                  className="form-control"
                   onChange={e => {
                     this.setState({ cityId: e.target.value, stateId: null });
                   }}
@@ -143,7 +154,10 @@ class SignUp extends React.Component<IAppProps, IAppState> {
                       }
 
                       return (
-                        <select
+                          <div className="form-group">
+                              <label>State :</label>
+                              <select
+                                  className="form-control"
                           defaultValue={getState[0].id}
                           onChange={e => {
                             this.setState({ stateId: e.target.value });
@@ -155,6 +169,7 @@ class SignUp extends React.Component<IAppProps, IAppState> {
                             </option>
                           ))}
                         </select>
+                          </div>
                       );
                     }}
                   </Query>
@@ -163,26 +178,27 @@ class SignUp extends React.Component<IAppProps, IAppState> {
             );
           }}
         </Query>
-        <div>
-          <label>Tax Number :</label>
-          <input
-            type="text"
-            value={taxNumber}
-            onChange={e => {
-              this.setState({ taxNumber: e.target.value });
-            }}
-          />
-        </div>
-
-        <div>
+        <div className="form-group">
           <label>Details :</label>
           <textarea
+            className="form-control"
             value={details}
             onChange={e => {
               this.setState({ details: e.target.value });
             }}
           />
         </div>
+         <div className="form-group">
+                <label>Tax Number :</label>
+                <input
+                    className="form-control"
+                    type="text"
+                    value={taxNumber}
+                    onChange={e => {
+                        this.setState({ taxNumber: e.target.value });
+                    }}
+                />
+         </div>
         <Mutation
           mutation={mutationEndPoints.signup}
           variables={{ ...this.state }}
@@ -199,11 +215,12 @@ class SignUp extends React.Component<IAppProps, IAppState> {
         >
           {(signup, { loading }) => {
             if (loading) {
-              return <button type="button">...Loading...</button>;
+              return <button className="btn btn-warning" type="button">...Loading...</button>;
             }
 
             return (
               <button
+                className="btn btn-success"
                 type="button"
                 disabled={
                   !cityId || !details || !password || !email || !name || !role || !stateId || !taxNumber || !username
@@ -217,6 +234,7 @@ class SignUp extends React.Component<IAppProps, IAppState> {
             );
           }}
         </Mutation>
+      </Modal.Body>
       </div>
     );
   }

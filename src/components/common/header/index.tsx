@@ -2,7 +2,7 @@ import './style-header.scss';
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';
-import { Form, Nav } from 'react-bootstrap';
+import {Form, Modal, Nav} from 'react-bootstrap';
 import { Popup } from '~/components/ui';
 import { LoginForm, SignupForm } from '~/components/common';
 import { ApplicationContext } from '~/context/application';
@@ -46,13 +46,13 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
             <button className="btn nav-btn" type="button" onClick={() => this.setState({ shouldShowLoginPopup: true })}>
               Login
             </button>
-            <Popup show={shouldShowLoginPopup} onClose={this.closeLoginPopup}>
+            <Modal show={shouldShowLoginPopup} onHide={this.closeLoginPopup}>
               <LoginForm
                 onLoggedIn={() => {
                   this.closeLoginPopup();
                 }}
               />
-            </Popup>
+            </Modal>
             <button
               className="btn nav-btn"
               type="button"
@@ -60,13 +60,13 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
             >
               Signup
             </button>
-            <Popup show={shouldShowSignupPopup} onClose={this.closeSignupPopup}>
+            <Modal show={shouldShowSignupPopup} onHide={this.closeSignupPopup}>
               <SignupForm
                 onSignup={() => {
                   this.closeSignupPopup();
                 }}
               />
-            </Popup>
+            </Modal>
           </div>
         </Navbar.Collapse>
       </Navbar>
