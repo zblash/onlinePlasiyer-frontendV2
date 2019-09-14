@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';
 import { Form, Nav } from 'react-bootstrap';
 import { Popup } from '~/components/ui';
-import { LoginForm, Query, SignupForm } from '~/components/common';
+import { LoginForm, SignupForm } from '~/components/common';
 import { ApplicationContext } from '~/context/application';
 import { isUserAdmin, isUserMerchant, isUserCustomer } from '~/utils';
 import { withAuthUser, IWithAuthUserComponentProps } from '~/components/hoc/with-auth-user';
@@ -71,31 +71,45 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
         </Navbar.Collapse>
       </Navbar>
     );
+    const links = [
+      {
+        title: 'Categories',
+        to: '/admin/categories',
+        shouldRender: isUserAdmin(user),
+      },
+      {
+        title: 'Users',
+        to: '/admin/users',
+        shouldRender: isUserAdmin(user),
+      },
+      {
+        title: 'Orders',
+        to: '/merchant/orders',
+        shouldRender: isUserMerchant(user),
+      },
+      {
+        title: 'View Product',
+        to: '/products',
+        shouldRender: isUserAdmin(user) || isUserCustomer(user),
+      },
+      {
+        title: 'Add Product',
+        to: '/products/create',
+        shouldRender: isUserAdmin(user) || isUserMerchant(user),
+      },
+    ].filter(link => link.shouldRender);
     const authElements = user ? (
       <Navbar bg="blue" variant="dark" expand="lg">
-        <Navbar.Brand href="#home">ONLINE PLASIYER</Navbar.Brand>
+        <Navbar.Brand>
+          <NavLink to="/">ONLINE PLASIYER</NavLink>
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="mr-auto">
-            {isUserAdmin(user) && (
-              <>
-                <NavLink to="/admin/categories/" className="mr-10">
-                  Categories
-                </NavLink>
-                <NavLink to="/admin/users/" className="mr-10">
-                  Users
-                </NavLink>
-              </>
-            )}
-            {(isUserAdmin(user) || isUserCustomer(user)) && (
-              <>
-                <NavLink to="/admin/products/" className="mr-10">
-                  View Product
-                </NavLink>
-              </>
-            )}
-            {isUserAdmin(user) || isUserMerchant(user) ? <NavLink to="/products/create/">Add Product</NavLink> : null}
-          </Nav>
+          {links.map(link => (
+            <Nav.Link as={NavLink} to={link.to} key={link.to}>
+              {link.title}
+            </Nav.Link>
+          ))}
           <div className="ml-auto">
             <div className="end-item">
               {isUserCustomer(user) && <CustomerBasketIcon />}

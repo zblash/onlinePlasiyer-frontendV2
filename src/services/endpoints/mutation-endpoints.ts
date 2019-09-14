@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { ApiCall, URL } from '~/services/api-calls';
-import { UserRoleResponse, UnitTypeResponse, IProductResponse, ICardResponse } from '~/__types';
+import { UserRoleResponse, UnitTypeResponse, IProductResponse, ICardResponse, TOrderStatus } from '~/__types';
 
 export class MutationEndpoints {
   public deleteCategory: (s: { id: string }) => Promise<any> = ({ id }) => ApiCall.delete(`/categories/delete/${id}`);
@@ -126,4 +126,12 @@ export class MutationEndpoints {
   public clearCard: () => Promise<any> = () => ApiCall.post('/cart/clear/');
 
   public cardCheckout: () => Promise<any> = () => ApiCall.post('/cart/checkout/');
+
+  public updateOrders: (s: {
+    id: string;
+    discount?: number;
+    paidPrice?: number;
+    status: TOrderStatus;
+    waybillDate?: Date;
+  }) => Promise<any> = params => ApiCall.post(`/orders/update/${params.id}`, { ...params, id: undefined });
 }
