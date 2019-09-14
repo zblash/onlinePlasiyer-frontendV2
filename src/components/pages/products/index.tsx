@@ -26,6 +26,7 @@ const Products: React.SFC<IAdminProductsProps> = props => {
 
           return (
             <select
+              className="form-input"
               onChange={e => {
                 setCategoryId(e.target.value);
               }}

@@ -31,10 +31,10 @@ export default class Category extends React.Component<CategoryProps, ICategorySt
         <p>{categoryName}</p>
         <Img src={photoUrl} alt={categoryName} zoomable extraClassName="w-10 h-10" />
         <p>{subCategory ? 'Sub category' : 'Main category'}</p>
-        <button onClick={this.openUpdatePopup} type="button">
+        <button className="btn btn-primary" onClick={this.openUpdatePopup} type="button">
           Duzenle
         </button>
-        <button onClick={this.openDeletePopup} type="button">
+        <button className="btn btn-danger" onClick={this.openDeletePopup} type="button">
           Sil
         </button>
 
