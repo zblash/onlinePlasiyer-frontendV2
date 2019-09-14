@@ -27,7 +27,7 @@ export default class Category extends React.Component<CategoryProps, ICategorySt
     const { id, name: categoryName, photoUrl, subCategory } = this.props;
 
     return (
-      <div className="category-wrapper">
+      <div className="item-wrapper">
         <p>{categoryName}</p>
         <Img src={photoUrl} alt={categoryName} zoomable extraClassName="w-10 h-10" />
         <p>{subCategory ? 'Sub category' : 'Main category'}</p>

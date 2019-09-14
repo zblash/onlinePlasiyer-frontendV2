@@ -17,23 +17,28 @@ const CreateProduct: React.SFC<CreateProductProps> = props => {
 
   if (!params.barcode) {
     return (
-      <div>
-        <label>barcode girin</label>
-        <input
-          type="text"
-          onChange={e => {
-            setBarcode(e.target.value);
-          }}
-        />
-        <button
-          type="button"
-          disabled={!isBarcodeCorrectSize(barcode)}
-          onClick={() => {
-            history.replace(`/products/create/${barcode}`);
-          }}
-        >
-          Kontrol Et
-        </button>
+      <div className="container">
+        <div className="form_box">
+          <div className="form-group">
+            <input
+              className="form-control"
+              type="text"
+              onChange={e => {
+                setBarcode(e.target.value);
+              }}
+            />
+          </div>
+          <button
+            type="button"
+            className="btn btn-dark ds"
+            disabled={!isBarcodeCorrectSize(barcode)}
+            onClick={() => {
+              history.replace(`/products/create/${barcode}`);
+            }}
+          >
+            Kontrol Et
+          </button>
+        </div>
       </div>
     );
   }

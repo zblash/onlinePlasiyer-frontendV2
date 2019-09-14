@@ -7,7 +7,7 @@ const Products: React.SFC<IAdminProductsProps> = props => {
   const [categoryId, setCategoryId] = React.useState(null);
 
   return (
-    <div>
+    <div className="container-fluid">
       <Query
         query={queryEndpoints.getCategories}
         onComplated={data => {
@@ -25,18 +25,21 @@ const Products: React.SFC<IAdminProductsProps> = props => {
           }
 
           return (
-            <select
-              className="form-input"
-              onChange={e => {
-                setCategoryId(e.target.value);
-              }}
-            >
-              {categories.map(city => (
-                <option key={city.id} value={city.id}>
-                  {city.name}
-                </option>
-              ))}
-            </select>
+            <div className="form-group product-category-select">
+              <label>Category</label>
+              <select
+                className="form-control"
+                onChange={e => {
+                  setCategoryId(e.target.value);
+                }}
+              >
+                {categories.map(city => (
+                  <option key={city.id} value={city.id}>
+                    {city.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           );
         }}
       </Query>

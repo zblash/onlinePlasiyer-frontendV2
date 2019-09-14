@@ -29,7 +29,7 @@ export default class AdminCategories extends React.Component<AdminCategoriesProp
     const { shouldShowCreatePopup } = this.state;
 
     return (
-      <div>
+      <div className="container-fluid">
         <Query query={queryEndpoints.getCategories}>
           {({ data, loading, error }) => {
             if (loading) {
@@ -42,6 +42,7 @@ export default class AdminCategories extends React.Component<AdminCategoriesProp
             return (
               <div>
                 <button
+                  className="btn btn-success"
                   type="button"
                   onClick={() => {
                     this.setState({ shouldShowCreatePopup: true });

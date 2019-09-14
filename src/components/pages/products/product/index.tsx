@@ -19,7 +19,7 @@ const Product: React.SFC<IProductProps> = props => {
         <Img src={product.photoUrl} alt={product.name} extraWrapperClassName="product-image" />
         <div className="item-config">
           <p>Name : {product.name}</p>
-          <p>Category Name : {product.categoryName}</p>
+          <p>Category Name : {product.categoryName}</p>-
           <p>Status: {product.active ? 'Active' : 'Passive'}</p>
           <p>barcode : {product.barcode}</p>
           <p>Tax : {product.tax}</p>
@@ -29,7 +29,9 @@ const Product: React.SFC<IProductProps> = props => {
         <div className="buttons">
           {isUserAdmin(user) && (
             <>
-              <button className="btn btn-primary" type="button">Duzenle (invalid)</button>
+              <button className="btn btn-primary" type="button">
+                Duzenle (invalid)
+              </button>
               <Mutation
                 mutation={mutationEndPoints.deleteProduct}
                 variables={{ id: product.id }}

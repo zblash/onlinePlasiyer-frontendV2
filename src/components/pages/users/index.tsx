@@ -9,16 +9,23 @@ const Users: React.SFC<UsersProps> = () => {
   const [userType, setUserType] = React.useState<UserType>('merchants-all');
 
   return (
-    <div>
-      <select onChange={e => setUserType(e.target.value as UserType)} defaultValue={userType}>
-        {Object.keys(userTypeMap).map(_userType => {
-          return (
-            <option value={_userType} key={_userType}>
-              {userTypeMap[_userType]}
-            </option>
-          );
-        })}
-      </select>
+    <div className="container-fluid">
+      <div className="form-group product-category-select">
+        <label>User Types</label>
+        <select
+          className="form-control"
+          onChange={e => setUserType(e.target.value as UserType)}
+          defaultValue={userType}
+        >
+          {Object.keys(userTypeMap).map(_userType => {
+            return (
+              <option value={_userType} key={_userType}>
+                {userTypeMap[_userType]}
+              </option>
+            );
+          })}
+        </select>
+      </div>
       <Query query={queryEndpoints.getUsers} variables={{ type: userType }}>
         {({ data, loading, error }) => {
           if (loading) {
@@ -30,14 +37,14 @@ const Users: React.SFC<UsersProps> = () => {
 
           return (
             <>
-              <table>
+              <table className="table table-dark">
                 <thead>
                   <tr>
-                    <th>Kullanici Adi</th>
-                    <th>Isim</th>
-                    <th>E-mail</th>
-                    <th>Vergi No.</th>
-                    <th>Islemler</th>
+                    <th scope="col">Kullanici Adi</th>
+                    <th scope="col">Isim</th>
+                    <th scope="col">E-mail</th>
+                    <th scope="col">Vergi No.</th>
+                    <th scope="col">Islemler</th>
                   </tr>
                 </thead>
                 <tbody>
