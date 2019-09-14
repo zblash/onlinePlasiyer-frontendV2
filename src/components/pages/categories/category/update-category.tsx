@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Query, Mutation } from '~/components/common';
 import { Img } from '~/components/ui';
 import { queryEndpoints, mutationEndPoints } from '~/services';
+import { Modal } from 'react-bootstrap';
 
 export default class UpdateCategory extends React.Component<IUpdateCategoryProps, IUpdateCategoryState> {
   public constructor(props: IUpdateCategoryProps) {
@@ -46,8 +47,10 @@ export default class UpdateCategory extends React.Component<IUpdateCategoryProps
 
           return (
             <div>
-              <div>
-                <label>Kategori Ismi</label>
+              <Modal.Header closeButton>
+                <Modal.Title className="text-dark">Kategori duzenleme</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
                 <input
                   type="text"
                   onChange={e => {
@@ -55,75 +58,75 @@ export default class UpdateCategory extends React.Component<IUpdateCategoryProps
                   }}
                   value={categoryName}
                 />
-              </div>
-              <div>
-                <label>Alt Categori mi ? </label>
-                <input
-                  type="checkbox"
-                  onChange={e => {
-                    this.setState({ isSub: e.target.checked });
-                  }}
-                  checked={isSub}
-                />
-              </div>
-              {isSub && (
-                <Query query={queryEndpoints.getCategories} variables={{ type: 'main' }}>
-                  {({ data: _mainCategories, loading: _mainCategoriesLoading, error: _mainCategoriesError }) => {
-                    if (_mainCategoriesLoading) {
+                <div>
+                  <label>Alt Categori mi ? </label>
+                  <input
+                    type="checkbox"
+                    onChange={e => {
+                      this.setState({ isSub: e.target.checked });
+                    }}
+                    checked={isSub}
+                  />
+                </div>
+                {isSub && (
+                  <Query query={queryEndpoints.getCategories} variables={{ type: 'main' }}>
+                    {({ data: _mainCategories, loading: _mainCategoriesLoading, error: _mainCategoriesError }) => {
+                      if (_mainCategoriesLoading) {
+                        return (
+                          <select>
+                            <option>Loading</option>
+                          </select>
+                        );
+                      }
+                      if (_mainCategoriesError) {
+                        return <p>Categoriler cekemedik</p>;
+                      }
+                      const _cleanMainCategories = _mainCategories.filter(c => c.id !== categoryId);
+
+                      if (_cleanMainCategories.length === 0) {
+                        return <div>Maalesef suan bir category bulamadik</div>;
+                      }
+
                       return (
-                        <select>
-                          <option>Loading</option>
+                        <select
+                          onChange={e => {
+                            this.setState({
+                              parentId: e.target.value,
+                            });
+                          }}
+                        >
+                          <option disabled value="">
+                            Select Category
+                          </option>
+                          {_cleanMainCategories.map(category => (
+                            <option key={category.id} value={category.id}>
+                              {category.name}
+                            </option>
+                          ))}
                         </select>
                       );
-                    }
-                    if (_mainCategoriesError) {
-                      return <p>Categoriler cekemedik</p>;
-                    }
-                    const _cleanMainCategories = _mainCategories.filter(c => c.id !== categoryId);
-
-                    if (_cleanMainCategories.length === 0) {
-                      return <div>Maalesef suan bir category bulamadik</div>;
-                    }
-
-                    return (
-                      <select
-                        onChange={e => {
-                          this.setState({
-                            parentId: e.target.value,
-                          });
-                        }}
-                      >
-                        <option disabled value="">
-                          Select Category
-                        </option>
-                        {_cleanMainCategories.map(category => (
-                          <option key={category.id} value={category.id}>
-                            {category.name}
-                          </option>
-                        ))}
-                      </select>
-                    );
-                  }}
-                </Query>
-              )}
-              <div>
-                <Img src={photoSrc} alt={data.name} extraClassName="w-10 h-10" zoomable />
-                <label>Degistir</label>
-                <input
-                  type="file"
-                  onChange={event => {
-                    if (event.target.files && event.target.files[0]) {
-                      const file = event.target.files[0];
-                      const reader = new FileReader();
-                      reader.onload = e => {
-                        // @ts-ignore
-                        this.setState({ photoSrc: e.target.result as string, uploadFile: file });
-                      };
-                      reader.readAsDataURL(file);
-                    }
-                  }}
-                />
-              </div>
+                    }}
+                  </Query>
+                )}
+                <div>
+                  <Img src={photoSrc} alt={data.name} extraClassName="w-10 h-10" zoomable />
+                  <label>Degistir</label>
+                  <input
+                    type="file"
+                    onChange={event => {
+                      if (event.target.files && event.target.files[0]) {
+                        const file = event.target.files[0];
+                        const reader = new FileReader();
+                        reader.onload = e => {
+                          // @ts-ignore
+                          this.setState({ photoSrc: e.target.result as string, uploadFile: file });
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                  />
+                </div>
+              </Modal.Body>
               <Mutation
                 mutation={mutationEndPoints.updateCategory}
                 onComplated={() => {
@@ -137,15 +140,6 @@ export default class UpdateCategory extends React.Component<IUpdateCategoryProps
                 {(createCategory, { loading: updateCategoryLoading }) => {
                   return (
                     <button
-                      // disabled={
-                      //   (categoryName === data.name &&
-                      //     photoSrc === data.photoUrl &&
-                      //     isSub === data.subCategory &&
-                      //     parentId === data.parentId) ||
-                      //   !categoryName ||
-                      //   !uploadFile ||
-                      //   (isSub && !parentId)
-                      // }
                       type="button"
                       onClick={() => {
                         createCategory({
