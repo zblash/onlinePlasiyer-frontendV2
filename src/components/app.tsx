@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import '~/assets/scss/app.scss';
 import { RouteChange, Query } from '~/components/common';
 import { UserRoleResponse } from '~/__types';

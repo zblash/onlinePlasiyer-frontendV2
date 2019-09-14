@@ -1,6 +1,8 @@
 import './style-header.scss';
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
+import Navbar from 'react-bootstrap/Navbar';
+import { Form, Nav } from 'react-bootstrap';
 import { Popup } from '~/components/ui';
 import { LoginForm, Query, SignupForm } from '~/components/common';
 import { ApplicationContext } from '~/context/application';
@@ -36,34 +38,45 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
     const { shouldShowLoginPopup, shouldShowSignupPopup, shouldShowLogoutPopup } = this.state;
     const { user } = this.props;
     const notAuthElements = (
-      <>
-        <button type="button" onClick={() => this.setState({ shouldShowLoginPopup: true })}>
-          Login
-        </button>
-        <Popup show={shouldShowLoginPopup} onClose={this.closeLoginPopup}>
-          <LoginForm
-            onLoggedIn={() => {
-              this.closeLoginPopup();
-            }}
-          />
-        </Popup>
-        <button type="button" onClick={() => this.setState({ shouldShowSignupPopup: true })}>
-          Signup
-        </button>
-        <Popup show={shouldShowSignupPopup} onClose={this.closeSignupPopup}>
-          <SignupForm
-            onSignup={() => {
-              this.closeSignupPopup();
-            }}
-          />
-        </Popup>
-      </>
+      <Navbar bg="blue" variant="dark" expand="lg">
+        <Navbar.Brand href="#home">ONLINE PLASIYER</Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <div className="ml-auto">
+            <button className="btn nav-btn" type="button" onClick={() => this.setState({ shouldShowLoginPopup: true })}>
+              Login
+            </button>
+            <Popup show={shouldShowLoginPopup} onClose={this.closeLoginPopup}>
+              <LoginForm
+                onLoggedIn={() => {
+                  this.closeLoginPopup();
+                }}
+              />
+            </Popup>
+            <button
+              className="btn nav-btn"
+              type="button"
+              onClick={() => this.setState({ shouldShowSignupPopup: true })}
+            >
+              Signup
+            </button>
+            <Popup show={shouldShowSignupPopup} onClose={this.closeSignupPopup}>
+              <SignupForm
+                onSignup={() => {
+                  this.closeSignupPopup();
+                }}
+              />
+            </Popup>
+          </div>
+        </Navbar.Collapse>
+      </Navbar>
     );
     const authElements = user ? (
-      <>
-        <div className="auth-element-wrapper">
-          <div className="flex mr-5">
-            <div className="mr-5">{user.name}</div>
+      <Navbar bg="blue" variant="dark" expand="lg">
+        <Navbar.Brand href="#home">ONLINE PLASIYER</Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="mr-auto">
             {isUserAdmin(user) && (
               <>
                 <NavLink to="/admin/categories/" className="mr-10">
@@ -81,49 +94,51 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
                 </NavLink>
               </>
             )}
-
             {isUserAdmin(user) || isUserMerchant(user) ? <NavLink to="/products/create/">Add Product</NavLink> : null}
+          </Nav>
+          <div className="ml-auto">
+            <div className="end-item">
+              {isUserCustomer(user) && <CustomerBasketIcon />}
+              <button
+                className="btn nav-btn"
+                type="button"
+                onClick={() => {
+                  this.setState({ shouldShowLogoutPopup: true });
+                }}
+              >
+                Logout
+              </button>
+            </div>
+            <Popup show={shouldShowLogoutPopup} onClose={this.closeLogoutPopup}>
+              <div>
+                <h1>Cikmak Istiyormusun ?</h1>
+                <button
+                  type="button"
+                  onClick={() => {
+                    this.closeLogoutPopup();
+                    userLogout();
+                  }}
+                >
+                  Evet
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    this.setState({ shouldShowLogoutPopup: false });
+                  }}
+                >
+                  Hayir
+                </button>
+              </div>
+            </Popup>
           </div>
-          <div className="end-item">
-            {isUserCustomer(user) && <CustomerBasketIcon />}
-            <button
-              type="button"
-              onClick={() => {
-                this.setState({ shouldShowLogoutPopup: true });
-              }}
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-        <Popup show={shouldShowLogoutPopup} onClose={this.closeLogoutPopup}>
-          <div>
-            <h1>Cikmak Istiyormusun ?</h1>
-            <button
-              type="button"
-              onClick={() => {
-                this.closeLogoutPopup();
-                userLogout();
-              }}
-            >
-              Evet
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                this.setState({ shouldShowLogoutPopup: false });
-              }}
-            >
-              Hayir
-            </button>
-          </div>
-        </Popup>
-      </>
+        </Navbar.Collapse>
+      </Navbar>
     ) : (
       <div>Loading</div>
     );
 
-    return <div className="header-wrapper">{!isLoggedIn ? notAuthElements : authElements}</div>;
+    return <div>{!isLoggedIn ? notAuthElements : authElements}</div>;
   }
 }
 

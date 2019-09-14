@@ -29,7 +29,7 @@ const Product: React.SFC<IProductProps> = props => {
         <div className="buttons">
           {isUserAdmin(user) && (
             <>
-              <button type="button">Duzenle (invalid)</button>
+              <button className="btn btn-primary" type="button">Duzenle (invalid)</button>
               <Mutation
                 mutation={mutationEndPoints.deleteProduct}
                 variables={{ id: product.id }}
@@ -45,6 +45,7 @@ const Product: React.SFC<IProductProps> = props => {
 
                   return (
                     <button
+                      className="btn btn-danger"
                       type="button"
                       disabled={deleteProductLoading || deleteProductError}
                       onClick={() => {
