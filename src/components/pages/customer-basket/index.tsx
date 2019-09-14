@@ -71,7 +71,7 @@ const CustomerBasket: React.SFC<ICustomerBasketProps> = props => {
                   return (
                     <button
                       type="button"
-                      disabled={clearCardLoading || clearCardError}
+                      disabled={clearCardLoading || clearCardError || customerCard.items.length <= 0}
                       onClick={() => {
                         clearCard();
                       }}
@@ -93,7 +93,7 @@ const CustomerBasket: React.SFC<ICustomerBasketProps> = props => {
                   return (
                     <button
                       type="button"
-                      disabled={cardCheckoutLoading || cardCheckoutError}
+                      disabled={cardCheckoutLoading || cardCheckoutError || customerCard.items.length <= 0}
                       onClick={() => {
                         cardCheckout();
                       }}

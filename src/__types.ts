@@ -89,3 +89,32 @@ export type UserType =
 export type PublicUserRole = 'MERCHANT' | 'CUSTOMER';
 
 export type UnitTypeResponse = 'KG' | 'KL' | 'AD';
+
+export type TOrderStatus = 'NEW' | 'FINISHED' | 'PAID' | 'CANCELLED';
+
+export interface IOrderItems {
+  price: number;
+  id: string;
+  productBarcode: string;
+  productName: string;
+  productPhotoUrl: string;
+  productPrice: number;
+  productTax: number;
+  quantity: number;
+  recommendedRetailPrice: number;
+  sellerName: string;
+  totalPrice: number;
+  unitPrice: number;
+  unitType: UnitTypeResponse;
+}
+
+export interface IOrder {
+  buyerName: string;
+  id: string;
+  orderDate: string;
+  orderItems: IOrderItems[];
+  sellerName: string;
+  status: TOrderStatus;
+  totalPrice: number;
+  waybillDate: string | null;
+}
