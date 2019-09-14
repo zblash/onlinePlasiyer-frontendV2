@@ -1,4 +1,4 @@
-import { UserType, UserRoleResponse, UnitTypeResponse } from '~/__types';
+import { UserType, UserRoleResponse, UnitTypeResponse, TOrderStatus } from '~/__types';
 import { stringLitArray } from '.';
 
 export const ROLE_MAP: Record<UserRoleResponse, string> = {
@@ -11,6 +11,13 @@ export const UNIT_TYPE_MAP: Record<UnitTypeResponse, string> = {
   AD: 'Adet',
   KG: 'Kilo',
   KL: 'koli',
+};
+
+export const ORDER_STATUS_MAP: Record<TOrderStatus, string> = {
+  CANCELLED: 'Iptal edildi',
+  FINISHED: 'Bitti',
+  NEW: 'Yeni',
+  PAID: 'Bekliyor',
 };
 
 export const userTypeArray = stringLitArray([

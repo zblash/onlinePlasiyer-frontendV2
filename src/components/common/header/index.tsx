@@ -2,7 +2,7 @@ import './style-header.scss';
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Popup } from '~/components/ui';
-import { LoginForm, Query, SignupForm } from '~/components/common';
+import { LoginForm, SignupForm } from '~/components/common';
 import { ApplicationContext } from '~/context/application';
 import { isUserAdmin, isUserMerchant, isUserCustomer } from '~/utils';
 import { withAuthUser, IWithAuthUserComponentProps } from '~/components/hoc/with-auth-user';
@@ -71,6 +71,13 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
                 </NavLink>
                 <NavLink to="/admin/users/" className="mr-10">
                   Users
+                </NavLink>
+              </>
+            )}
+            {isUserMerchant(user) && (
+              <>
+                <NavLink to="/merchant/orders/" className="mr-10">
+                  Orders
                 </NavLink>
               </>
             )}

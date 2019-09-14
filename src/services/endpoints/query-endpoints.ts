@@ -9,6 +9,7 @@ import {
   IProductResponse,
   ISpecifyProductResponse,
   ICardResponse,
+  IOrder,
 } from '~/__types';
 
 export function refetchFactory<T, TVar>(query: (s: TVar) => Promise<T>, variables?: TVar) {
@@ -76,5 +77,8 @@ export class QueryEndpoints {
   public getStatesByCityId: (s: { cityId: string }) => Promise<IAddressStateResponse[]> = ({ cityId }) =>
     axios.get(URL.concat(`/definitions/cities/${cityId}/states`)).then(({ data }) => data);
 
-  public getStates: () => Promise<any> = () => axios.get(URL.concat('/definitions/states')).then(({ data }) => data);
+  public getStates: () => Promise<IAddressStateResponse[]> = () =>
+    axios.get(URL.concat('/definitions/states')).then(({ data }) => data);
+
+  public getAllOrders: () => Promise<IOrder[]> = () => ApiCall.get('/orders');
 }
