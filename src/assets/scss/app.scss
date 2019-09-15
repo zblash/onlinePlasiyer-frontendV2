@@ -62,7 +62,7 @@ body {
 }
 
 .btn-dark {
-  background-color: #212121!important;
+  background-color: #212121 !important;
 }
 
 .modal-body label {
@@ -138,4 +138,14 @@ a:hover {
 
 a:active {
   text-decoration: none;
+}
+
+.clickable-box-not-click {
+  opacity: 1;
+  transition: opacity 500ms 0ms;
+}
+
+.clickable-box-click {
+  transition: opacity 500ms 0ms;
+  opacity: 0.5;
 }
