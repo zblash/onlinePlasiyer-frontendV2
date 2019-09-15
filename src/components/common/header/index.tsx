@@ -2,7 +2,7 @@ import './style-header.scss';
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';
-import {Card, Form, Modal, Nav} from 'react-bootstrap';
+import { Card, Form, Modal, Nav } from 'react-bootstrap';
 import { Popup } from '~/components/ui';
 import { LoginForm, SignupForm } from '~/components/common';
 import { ApplicationContext } from '~/context/application';
@@ -100,184 +100,160 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
     ].filter(link => link.shouldRender);
     const authElements = user ? (
       <>
-      <Navbar bg="blue" variant="dark" expand="lg">
-        <Navbar.Brand>
-          <NavLink to="/">ONLINE PLASIYER</NavLink>
-        </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          {links.map(link => (
-            <Nav.Link as={NavLink} to={link.to} key={link.to}>
-              {link.title}
-            </Nav.Link>
-          ))}
-          <div className="ml-auto">
-            <div className="end-item flex">
-              {isUserCustomer(user) && <CustomerBasketIcon />}
-              <button
-                className="btn nav-btn"
-                type="button"
-                onClick={() => {
-                  this.setState({ shouldShowLogoutPopup: true });
-                }}
-              >
-                Logout
-              </button>
-            </div>
-            <Popup show={shouldShowLogoutPopup} onClose={this.closeLogoutPopup}>
-              <div>
-                <h1>Cikmak Istiyormusun ?</h1>
+        <Navbar bg="blue" variant="dark" expand="lg">
+          <Navbar.Brand>
+            <NavLink to="/">ONLINE PLASIYER</NavLink>
+          </Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            {links.map(link => (
+              <Nav.Link as={NavLink} to={link.to} key={link.to}>
+                {link.title}
+              </Nav.Link>
+            ))}
+            <div className="ml-auto">
+              <div className="end-item flex">
+                {isUserCustomer(user) && <CustomerBasketIcon />}
                 <button
+                  className="btn nav-btn"
                   type="button"
                   onClick={() => {
-                    this.closeLogoutPopup();
-                    userLogout();
+                    this.setState({ shouldShowLogoutPopup: true });
                   }}
                 >
-                  Evet
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    this.setState({ shouldShowLogoutPopup: false });
-                  }}
-                >
-                  Hayir
+                  Logout
                 </button>
               </div>
-            </Popup>
-          </div>
-        </Navbar.Collapse>
-      </Navbar>
+              <Popup show={shouldShowLogoutPopup} onClose={this.closeLogoutPopup}>
+                <div>
+                  <h1>Cikmak Istiyormusun ?</h1>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      this.closeLogoutPopup();
+                      userLogout();
+                    }}
+                  >
+                    Evet
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      this.setState({ shouldShowLogoutPopup: false });
+                    }}
+                  >
+                    Hayir
+                  </button>
+                </div>
+              </Popup>
+            </div>
+          </Navbar.Collapse>
+        </Navbar>
         {isUserCustomer(user) && (
-            <>
-        <div className="mb-2"/>
-        <div className="container-fluid">
-        <div className="row">
-        <div className="col-1">
-          <Card>
-            <Card.Img variant="top" src="asadsd.jpg" />
-            <Card.Body>
-              <Card.Text>
-                Deneme
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </div>
-        <div className="col-1">
-          <Card>
-            <Card.Img variant="top" src="asadsd.jpg" />
-            <Card.Body>
-              <Card.Text>
-                Deneme
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </div>
-        <div className="col-1">
-          <Card>
-            <Card.Img variant="top" src="asadsd.jpg" />
-            <Card.Body>
-              <Card.Text>
-                Deneme
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </div>
-        <div className="col-1">
-          <Card>
-            <Card.Img variant="top" src="asadsd.jpg" />
-            <Card.Body>
-              <Card.Text>
-                Deneme
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </div>
-        <div className="col-1">
-          <Card>
-            <Card.Img variant="top" src="asadsd.jpg" />
-            <Card.Body>
-              <Card.Text>
-                Deneme
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </div>
-        <div className="col-1">
-          <Card>
-            <Card.Img variant="top" src="asadsd.jpg" />
-            <Card.Body>
-              <Card.Text>
-                Deneme
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </div>
-        <div className="col-1">
-          <Card>
-            <Card.Img variant="top" src="asadsd.jpg" />
-            <Card.Body>
-              <Card.Text>
-                Deneme
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </div>
-        <div className="col-1">
-          <Card>
-            <Card.Img variant="top" src="asadsd.jpg" />
-            <Card.Body>
-              <Card.Text>
-                Deneme
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </div>
-        <div className="col-1">
-          <Card>
-            <Card.Img variant="top" src="asadsd.jpg" />
-            <Card.Body>
-              <Card.Text>
-                Deneme
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </div>
-        <div className="col-1">
-          <Card>
-            <Card.Img variant="top" src="asadsd.jpg" />
-            <Card.Body>
-              <Card.Text>
-                Deneme
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </div>
-        <div className="col-1">
-          <Card>
-            <Card.Img variant="top" src="asadsd.jpg" />
-            <Card.Body>
-              <Card.Text>
-                Deneme
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </div>
-        <div className="col-1">
-          <Card>
-            <Card.Img variant="top" src="asadsd.jpg" />
-            <Card.Body>
-              <Card.Text>
-                Deneme
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </div>
-        </div>
-        </div>
-              </>
-          )}
+          <>
+            <div className="mb-2" />
+            <div className="container-fluid">
+              <div className="row">
+                <div className="col-1">
+                  <Card>
+                    <Card.Img variant="top" src="asadsd.jpg" />
+                    <Card.Body>
+                      <Card.Text>Deneme</Card.Text>
+                    </Card.Body>
+                  </Card>
+                </div>
+                <div className="col-1">
+                  <Card>
+                    <Card.Img variant="top" src="asadsd.jpg" />
+                    <Card.Body>
+                      <Card.Text>Deneme</Card.Text>
+                    </Card.Body>
+                  </Card>
+                </div>
+                <div className="col-1">
+                  <Card>
+                    <Card.Img variant="top" src="asadsd.jpg" />
+                    <Card.Body>
+                      <Card.Text>Deneme</Card.Text>
+                    </Card.Body>
+                  </Card>
+                </div>
+                <div className="col-1">
+                  <Card>
+                    <Card.Img variant="top" src="asadsd.jpg" />
+                    <Card.Body>
+                      <Card.Text>Deneme</Card.Text>
+                    </Card.Body>
+                  </Card>
+                </div>
+                <div className="col-1">
+                  <Card>
+                    <Card.Img variant="top" src="asadsd.jpg" />
+                    <Card.Body>
+                      <Card.Text>Deneme</Card.Text>
+                    </Card.Body>
+                  </Card>
+                </div>
+                <div className="col-1">
+                  <Card>
+                    <Card.Img variant="top" src="asadsd.jpg" />
+                    <Card.Body>
+                      <Card.Text>Deneme</Card.Text>
+                    </Card.Body>
+                  </Card>
+                </div>
+                <div className="col-1">
+                  <Card>
+                    <Card.Img variant="top" src="asadsd.jpg" />
+                    <Card.Body>
+                      <Card.Text>Deneme</Card.Text>
+                    </Card.Body>
+                  </Card>
+                </div>
+                <div className="col-1">
+                  <Card>
+                    <Card.Img variant="top" src="asadsd.jpg" />
+                    <Card.Body>
+                      <Card.Text>Deneme</Card.Text>
+                    </Card.Body>
+                  </Card>
+                </div>
+                <div className="col-1">
+                  <Card>
+                    <Card.Img variant="top" src="asadsd.jpg" />
+                    <Card.Body>
+                      <Card.Text>Deneme</Card.Text>
+                    </Card.Body>
+                  </Card>
+                </div>
+                <div className="col-1">
+                  <Card>
+                    <Card.Img variant="top" src="asadsd.jpg" />
+                    <Card.Body>
+                      <Card.Text>Deneme</Card.Text>
+                    </Card.Body>
+                  </Card>
+                </div>
+                <div className="col-1">
+                  <Card>
+                    <Card.Img variant="top" src="asadsd.jpg" />
+                    <Card.Body>
+                      <Card.Text>Deneme</Card.Text>
+                    </Card.Body>
+                  </Card>
+                </div>
+                <div className="col-1">
+                  <Card>
+                    <Card.Img variant="top" src="asadsd.jpg" />
+                    <Card.Body>
+                      <Card.Text>Deneme</Card.Text>
+                    </Card.Body>
+                  </Card>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </>
     ) : (
       <div>Loading</div>

@@ -1,7 +1,7 @@
 import * as React from 'react';
+import { NavLink } from 'react-router-dom';
 import { IOrder } from '~/__types';
 import { ORDER_STATUS_MAP } from '~/utils/constants';
-import { NavLink } from 'react-router-dom';
 import { withAuthUser, IWithAuthUserComponentProps } from '~/components/hoc/with-auth-user';
 import { isUserCustomer, isUserMerchant } from '~/utils';
 

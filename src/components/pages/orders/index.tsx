@@ -1,10 +1,10 @@
 import './style-merchant-orders.scss';
 import * as React from 'react';
+import { RouteComponentProps } from 'react-router';
 import { queryEndpoints } from '~/services';
 import { Query } from '~/components/common';
 import Order from './order';
 import OrderDetail from './order-detail';
-import { RouteComponentProps } from 'react-router';
 
 const Orders: React.SFC<IMerchantOrdersProps> = props => {
   const {
@@ -27,6 +27,7 @@ const Orders: React.SFC<IMerchantOrdersProps> = props => {
           if (id && order) {
             return <OrderDetail order={order} />;
           }
+
           return (
             <div>
               {orders.map(order => (

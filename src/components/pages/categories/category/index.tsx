@@ -1,7 +1,7 @@
 import * as React from 'react';
+import { Card, Button, Modal } from 'react-bootstrap';
 import { ICategoryResponse } from '~/__types';
 import { Img, Popup } from '~/components/ui';
-import { Card, Button, Modal } from 'react-bootstrap';
 import UpdateCategory from './update-category';
 import DeleteCategory from './delete-category';
 

@@ -1,8 +1,8 @@
 import * as React from 'react';
+import { Modal } from 'react-bootstrap';
 import { Query, Mutation } from '~/components/common';
 import { Img } from '~/components/ui';
 import { queryEndpoints, mutationEndPoints } from '~/services';
-import { Modal } from 'react-bootstrap';
 
 export default class UpdateCategory extends React.Component<IUpdateCategoryProps, IUpdateCategoryState> {
   public constructor(props: IUpdateCategoryProps) {
@@ -52,14 +52,14 @@ export default class UpdateCategory extends React.Component<IUpdateCategoryProps
               </Modal.Header>
               <Modal.Body>
                 <div className="form-group">
-                <input
-                  className="form-control"
-                  type="text"
-                  onChange={e => {
-                    this.setState({ categoryName: e.target.value });
-                  }}
-                  value={categoryName}
-                />
+                  <input
+                    className="form-control"
+                    type="text"
+                    onChange={e => {
+                      this.setState({ categoryName: e.target.value });
+                    }}
+                    value={categoryName}
+                  />
                 </div>
                 <div className="form-group">
                   <Img src={photoSrc} alt={data.name} extraClassName="w-10 h-10" zoomable />
@@ -82,58 +82,58 @@ export default class UpdateCategory extends React.Component<IUpdateCategoryProps
                 </div>
                 <div className="form-check">
                   <input
-                      className="form-check-input"
-                      type="checkbox"
-                      onChange={e => {
-                        this.setState({ isSub: e.target.checked });
-                      }}
-                      checked={isSub}
+                    className="form-check-input"
+                    type="checkbox"
+                    onChange={e => {
+                      this.setState({ isSub: e.target.checked });
+                    }}
+                    checked={isSub}
                   />
                   <label>Alt Categori mi ? </label>
                 </div>
                 {isSub && (
-                    <Query query={queryEndpoints.getCategories} variables={{ type: 'main' }}>
-                      {({ data: _mainCategories, loading: _mainCategoriesLoading, error: _mainCategoriesError }) => {
-                        if (_mainCategoriesLoading) {
-                          return (
-                              <select>
-                                <option>Loading</option>
-                              </select>
-                          );
-                        }
-                        if (_mainCategoriesError) {
-                          return <p>Categoriler cekemedik</p>;
-                        }
-                        const _cleanMainCategories = _mainCategories.filter(c => c.id !== categoryId);
-
-                        if (_cleanMainCategories.length === 0) {
-                          return <div>Maalesef suan bir category bulamadik</div>;
-                        }
-
+                  <Query query={queryEndpoints.getCategories} variables={{ type: 'main' }}>
+                    {({ data: _mainCategories, loading: _mainCategoriesLoading, error: _mainCategoriesError }) => {
+                      if (_mainCategoriesLoading) {
                         return (
-                            <div className="form-group">
-                              <label>Ust kategoriyi secin</label>
-                              <select
-                                  className="form-control"
-                                  onChange={e => {
-                                    this.setState({
-                                      parentId: e.target.value,
-                                    });
-                                  }}
-                              >
-                                <option disabled value="">
-                                  Select Category
-                                </option>
-                                {_cleanMainCategories.map(category => (
-                                    <option key={category.id} value={category.id}>
-                                      {category.name}
-                                    </option>
-                                ))}
-                              </select>
-                            </div>
+                          <select>
+                            <option>Loading</option>
+                          </select>
                         );
-                      }}
-                    </Query>
+                      }
+                      if (_mainCategoriesError) {
+                        return <p>Categoriler cekemedik</p>;
+                      }
+                      const _cleanMainCategories = _mainCategories.filter(c => c.id !== categoryId);
+
+                      if (_cleanMainCategories.length === 0) {
+                        return <div>Maalesef suan bir category bulamadik</div>;
+                      }
+
+                      return (
+                        <div className="form-group">
+                          <label>Ust kategoriyi secin</label>
+                          <select
+                            className="form-control"
+                            onChange={e => {
+                              this.setState({
+                                parentId: e.target.value,
+                              });
+                            }}
+                          >
+                            <option disabled value="">
+                              Select Category
+                            </option>
+                            {_cleanMainCategories.map(category => (
+                              <option key={category.id} value={category.id}>
+                                {category.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      );
+                    }}
+                  </Query>
                 )}
               </Modal.Body>
               <Mutation

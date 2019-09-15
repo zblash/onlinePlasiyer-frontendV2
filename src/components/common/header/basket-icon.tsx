@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
 import { queryEndpoints } from '~/services';
 import { Query } from '~/components/common';
-import { Button } from 'react-bootstrap';
 
 const CustomerBasketIcon: React.SFC<ICustomerBasketProps> = props => {
   const { history } = props;
+
   return (
     <div>
       <Query query={queryEndpoints.getCard}>

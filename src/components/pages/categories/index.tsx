@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+import { CardGroup, Modal } from 'react-bootstrap';
 import { Query } from '~/components/common';
 import Category from './category';
 import CreateCategory from './create-category';
 import { queryEndpoints } from '~/services';
 import { refetchFactory } from '~/services/endpoints/query-endpoints';
-import { CardGroup, Modal } from 'react-bootstrap';
 
 export const deleteOrAddCategoryRefetchCategories = [
   refetchFactory(queryEndpoints.getCategories),

@@ -12,6 +12,7 @@ const OrderDetail: React.SFC<IOrderDetailProps> = props => {
   if (!user) {
     return null;
   }
+
   return (
     <div>
       {isUserCustomer(user) && <div>satici : {order.sellerName}</div>}
@@ -21,6 +22,7 @@ const OrderDetail: React.SFC<IOrderDetailProps> = props => {
       <h2>Items</h2>
       {order.orderItems.map((oi, index) => {
         const photoUrl = oi.productPhotoUrl;
+
         return (
           <div key={oi.id} className="card-item-wrapper">
             <div className="start-item">

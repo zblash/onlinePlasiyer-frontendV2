@@ -37,92 +37,96 @@ export default class CreateCategory extends React.Component<ICreateCategoryProps
           </div>
           <div className="form-group">
             <label>Kategori Resmi</label>
-            <input className="form-control-file" type="file" onChange={e => this.setState({ uploadFile: e.target.files[0] })} />
+            <input
+              className="form-control-file"
+              type="file"
+              onChange={e => this.setState({ uploadFile: e.target.files[0] })}
+            />
           </div>
-            <div className="form-check">
-                <input
-                    className="form-check-input"
-                    type="checkbox"
-                    onChange={e => {
-                        this.setState({ isSub: e.target.checked });
-                    }}
-                />
-                <label className="form-check-label">Alt Categori mi ? </label>
-            </div>
-            {isSub && (
-                // TODO : onComplate set initialData
-                <Query query={queryEndpoints.getCategories} variables={{ type: 'main' }}>
-                    {({ data, loading, error }) => {
-                        if (loading) {
-                            return (
-                                <select>
-                                    <option>Loading</option>
-                                </select>
-                            );
-                        }
-                        if (error) {
-                            return <p>Categoriler cekemedik</p>;
-                        }
+          <div className="form-check">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              onChange={e => {
+                this.setState({ isSub: e.target.checked });
+              }}
+            />
+            <label className="form-check-label">Alt Categori mi ? </label>
+          </div>
+          {isSub && (
+            // TODO : onComplate set initialData
+            <Query query={queryEndpoints.getCategories} variables={{ type: 'main' }}>
+              {({ data, loading, error }) => {
+                if (loading) {
+                  return (
+                    <select>
+                      <option>Loading</option>
+                    </select>
+                  );
+                }
+                if (error) {
+                  return <p>Categoriler cekemedik</p>;
+                }
 
-                        // TODO : kategori bos degilse
+                // TODO : kategori bos degilse
 
-                        return (
-                            <div className="form-group">
-                                <label>Ust kategoriyi secin</label>
-                                <select
-                                    className="form-control"
-                                    onChange={e => {
-                                        this.setState({
-                                            parentId: e.target.value,
-                                        });
-                                    }}
-                                >
-                                    <option disabled value="">
-                                        Select Category
-                                    </option>
-                                    {data.map(category => (
-                                        <option key={category.id} value={category.id}>
-                                            {category.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        );
-                    }}
-                </Query>
-            )}
-        <Mutation
-          mutation={mutationEndPoints.createCategory}
-          refetchQueries={deleteOrAddCategoryRefetchCategories}
-          variables={{
-            parentId,
-            name: categoryName,
-            isSub,
-            uploadfile: uploadFile,
-          }}
-          onComplated={() => {
-            closePopup();
-            // TODO : show notification
-          }}
-          onError={() => {
-            // TODO : show notification
-          }}
-        >
-          {(createCategory, { loading }) => {
-            return (
-              <button
-                className="btn btn-success"
-                disabled={!categoryName || !uploadFile || (isSub && !parentId)}
-                type="button"
-                onClick={() => {
-                  createCategory();
-                }}
-              >
-                {loading ? '....Loading' : 'Ekle'}
-              </button>
-            );
-          }}
-        </Mutation>
+                return (
+                  <div className="form-group">
+                    <label>Ust kategoriyi secin</label>
+                    <select
+                      className="form-control"
+                      onChange={e => {
+                        this.setState({
+                          parentId: e.target.value,
+                        });
+                      }}
+                    >
+                      <option disabled value="">
+                        Select Category
+                      </option>
+                      {data.map(category => (
+                        <option key={category.id} value={category.id}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                );
+              }}
+            </Query>
+          )}
+          <Mutation
+            mutation={mutationEndPoints.createCategory}
+            refetchQueries={deleteOrAddCategoryRefetchCategories}
+            variables={{
+              parentId,
+              name: categoryName,
+              isSub,
+              uploadfile: uploadFile,
+            }}
+            onComplated={() => {
+              closePopup();
+              // TODO : show notification
+            }}
+            onError={() => {
+              // TODO : show notification
+            }}
+          >
+            {(createCategory, { loading }) => {
+              return (
+                <button
+                  className="btn btn-success"
+                  disabled={!categoryName || !uploadFile || (isSub && !parentId)}
+                  type="button"
+                  onClick={() => {
+                    createCategory();
+                  }}
+                >
+                  {loading ? '....Loading' : 'Ekle'}
+                </button>
+              );
+            }}
+          </Mutation>
         </Modal.Body>
       </div>
     );
