@@ -9,6 +9,7 @@ import { ApplicationContext } from '~/context/application';
 import { isUserAdmin, isUserMerchant, isUserCustomer } from '~/utils';
 import { withAuthUser, IWithAuthUserComponentProps } from '~/components/hoc/with-auth-user';
 import CustomerBasketIcon from './basket-icon';
+import CategoryCards from './category-cards';
 
 class Header extends React.Component<IHeaderProps, IHeaderState> {
   public static contextType = ApplicationContext;
@@ -149,111 +150,7 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
             </div>
           </Navbar.Collapse>
         </Navbar>
-        {isUserCustomer(user) && (
-          <>
-            <div className="mb-2" />
-            <div className="container-fluid">
-              <div className="row">
-                <div className="col-1">
-                  <Card>
-                    <Card.Img variant="top" src="asadsd.jpg" />
-                    <Card.Body>
-                      <Card.Text>Deneme</Card.Text>
-                    </Card.Body>
-                  </Card>
-                </div>
-                <div className="col-1">
-                  <Card>
-                    <Card.Img variant="top" src="asadsd.jpg" />
-                    <Card.Body>
-                      <Card.Text>Deneme</Card.Text>
-                    </Card.Body>
-                  </Card>
-                </div>
-                <div className="col-1">
-                  <Card>
-                    <Card.Img variant="top" src="asadsd.jpg" />
-                    <Card.Body>
-                      <Card.Text>Deneme</Card.Text>
-                    </Card.Body>
-                  </Card>
-                </div>
-                <div className="col-1">
-                  <Card>
-                    <Card.Img variant="top" src="asadsd.jpg" />
-                    <Card.Body>
-                      <Card.Text>Deneme</Card.Text>
-                    </Card.Body>
-                  </Card>
-                </div>
-                <div className="col-1">
-                  <Card>
-                    <Card.Img variant="top" src="asadsd.jpg" />
-                    <Card.Body>
-                      <Card.Text>Deneme</Card.Text>
-                    </Card.Body>
-                  </Card>
-                </div>
-                <div className="col-1">
-                  <Card>
-                    <Card.Img variant="top" src="asadsd.jpg" />
-                    <Card.Body>
-                      <Card.Text>Deneme</Card.Text>
-                    </Card.Body>
-                  </Card>
-                </div>
-                <div className="col-1">
-                  <Card>
-                    <Card.Img variant="top" src="asadsd.jpg" />
-                    <Card.Body>
-                      <Card.Text>Deneme</Card.Text>
-                    </Card.Body>
-                  </Card>
-                </div>
-                <div className="col-1">
-                  <Card>
-                    <Card.Img variant="top" src="asadsd.jpg" />
-                    <Card.Body>
-                      <Card.Text>Deneme</Card.Text>
-                    </Card.Body>
-                  </Card>
-                </div>
-                <div className="col-1">
-                  <Card>
-                    <Card.Img variant="top" src="asadsd.jpg" />
-                    <Card.Body>
-                      <Card.Text>Deneme</Card.Text>
-                    </Card.Body>
-                  </Card>
-                </div>
-                <div className="col-1">
-                  <Card>
-                    <Card.Img variant="top" src="asadsd.jpg" />
-                    <Card.Body>
-                      <Card.Text>Deneme</Card.Text>
-                    </Card.Body>
-                  </Card>
-                </div>
-                <div className="col-1">
-                  <Card>
-                    <Card.Img variant="top" src="asadsd.jpg" />
-                    <Card.Body>
-                      <Card.Text>Deneme</Card.Text>
-                    </Card.Body>
-                  </Card>
-                </div>
-                <div className="col-1">
-                  <Card>
-                    <Card.Img variant="top" src="asadsd.jpg" />
-                    <Card.Body>
-                      <Card.Text>Deneme</Card.Text>
-                    </Card.Body>
-                  </Card>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
+        {isUserCustomer(user) && <CategoryCards />}
       </>
     ) : (
       <div>Loading</div>
