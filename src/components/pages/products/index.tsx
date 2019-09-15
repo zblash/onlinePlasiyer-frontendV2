@@ -2,11 +2,22 @@ import * as React from 'react';
 import { Query } from '~/components/common';
 import { queryEndpoints } from '~/services';
 import Product from './product';
+import {RouteComponentProps} from "react-router";
+import {IWithAuthUserComponentProps} from "~/components/hoc/with-auth-user";
 
-const Products: React.SFC<IProductsProps> = props => {
+const Products: React.SFC<ProductsProps> = props => {
+  const {
+        match: { params }
+  } = props;
   const [categoryId, setCategoryId] = React.useState(null);
+
   return (
-    <div className="container-fluid">
+      <div className="container-fluid">
+    {params.categoryId&& (
+        setCategoryId(params.categoryId)
+    )}
+
+      {!params.categoryId && (
       <Query
         query={queryEndpoints.getCategories}
         onComplated={data => {
@@ -42,6 +53,7 @@ const Products: React.SFC<IProductsProps> = props => {
           );
         }}
       </Query>
+      )}
       {categoryId && (
         <Query query={queryEndpoints.getAllProductsByCategoryId} variables={{ categoryId }}>
           {({ data: getAllProducts, loading: getAllProductsLoading, error: getAllProductsError }) => {
@@ -65,6 +77,6 @@ const Products: React.SFC<IProductsProps> = props => {
     </div>
   );
 };
-interface IProductsProps {}
+type ProductsProps = {} & RouteComponentProps<{ categoryId: string }> & IWithAuthUserComponentProps;
 
 export default Products;

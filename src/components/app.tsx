@@ -54,7 +54,7 @@ class App extends React.Component {
         authorize: ['ADMIN'],
       },
       {
-        path: '/products/',
+        path: '/products/:categoryId?',
         component: withHeader(Products),
         shouldLogin: true,
         authorize: ['ADMIN', 'CUSTOMER'],

@@ -2,7 +2,7 @@ import './style-header.scss';
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';
-import {Form, Modal, Nav} from 'react-bootstrap';
+import {Card, Form, Modal, Nav} from 'react-bootstrap';
 import { Popup } from '~/components/ui';
 import { LoginForm, SignupForm } from '~/components/common';
 import { ApplicationContext } from '~/context/application';
@@ -99,6 +99,7 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
       },
     ].filter(link => link.shouldRender);
     const authElements = user ? (
+      <>
       <Navbar bg="blue" variant="dark" expand="lg">
         <Navbar.Brand>
           <NavLink to="/">ONLINE PLASIYER</NavLink>
@@ -148,6 +149,136 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
           </div>
         </Navbar.Collapse>
       </Navbar>
+        {isUserCustomer(user) && (
+            <>
+        <div className="mb-2"/>
+        <div className="container-fluid">
+        <div className="row">
+        <div className="col-1">
+          <Card>
+            <Card.Img variant="top" src="asadsd.jpg" />
+            <Card.Body>
+              <Card.Text>
+                Deneme
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </div>
+        <div className="col-1">
+          <Card>
+            <Card.Img variant="top" src="asadsd.jpg" />
+            <Card.Body>
+              <Card.Text>
+                Deneme
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </div>
+        <div className="col-1">
+          <Card>
+            <Card.Img variant="top" src="asadsd.jpg" />
+            <Card.Body>
+              <Card.Text>
+                Deneme
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </div>
+        <div className="col-1">
+          <Card>
+            <Card.Img variant="top" src="asadsd.jpg" />
+            <Card.Body>
+              <Card.Text>
+                Deneme
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </div>
+        <div className="col-1">
+          <Card>
+            <Card.Img variant="top" src="asadsd.jpg" />
+            <Card.Body>
+              <Card.Text>
+                Deneme
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </div>
+        <div className="col-1">
+          <Card>
+            <Card.Img variant="top" src="asadsd.jpg" />
+            <Card.Body>
+              <Card.Text>
+                Deneme
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </div>
+        <div className="col-1">
+          <Card>
+            <Card.Img variant="top" src="asadsd.jpg" />
+            <Card.Body>
+              <Card.Text>
+                Deneme
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </div>
+        <div className="col-1">
+          <Card>
+            <Card.Img variant="top" src="asadsd.jpg" />
+            <Card.Body>
+              <Card.Text>
+                Deneme
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </div>
+        <div className="col-1">
+          <Card>
+            <Card.Img variant="top" src="asadsd.jpg" />
+            <Card.Body>
+              <Card.Text>
+                Deneme
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </div>
+        <div className="col-1">
+          <Card>
+            <Card.Img variant="top" src="asadsd.jpg" />
+            <Card.Body>
+              <Card.Text>
+                Deneme
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </div>
+        <div className="col-1">
+          <Card>
+            <Card.Img variant="top" src="asadsd.jpg" />
+            <Card.Body>
+              <Card.Text>
+                Deneme
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </div>
+        <div className="col-1">
+          <Card>
+            <Card.Img variant="top" src="asadsd.jpg" />
+            <Card.Body>
+              <Card.Text>
+                Deneme
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </div>
+        </div>
+        </div>
+              </>
+          )}
+      </>
     ) : (
       <div>Loading</div>
     );
