@@ -16,7 +16,7 @@ import CreateProduct from '~/components/pages/create-products';
 import Users from '~/components/pages/users';
 import Products from '~/components/pages/products';
 import CustomerBasket from '~/components/pages/customer-basket';
-import MerchantOrders from '~/components/pages/merchant-orders';
+import Orders from '~/components/pages/orders';
 
 interface IRoute {
   path: string;
@@ -54,16 +54,16 @@ class App extends React.Component {
         authorize: ['ADMIN'],
       },
       {
-        path: '/admin/products/',
-        component: withHeader(Products),
-        shouldLogin: true,
-        authorize: ['ADMIN', 'CUSTOMER'],
-      },
-      {
         path: '/products/create/:barcode?',
         component: withHeader(CreateProduct),
         shouldLogin: true,
         authorize: ['ADMIN', 'MERCHANT'],
+      },
+      {
+        path: '/products/:categoryId?',
+        component: withHeader(Products),
+        shouldLogin: true,
+        authorize: ['ADMIN', 'CUSTOMER'],
       },
       {
         path: '/customer/basket',
@@ -72,10 +72,10 @@ class App extends React.Component {
         authorize: ['CUSTOMER'],
       },
       {
-        path: '/merchant/orders/:id?',
-        component: withHeader(MerchantOrders),
+        path: '/orders/:id?',
+        component: withHeader(Orders),
         shouldLogin: true,
-        authorize: ['MERCHANT'],
+        authorize: ['MERCHANT', 'CUSTOMER'],
       },
     ];
     const app = (

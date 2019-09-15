@@ -1,9 +1,12 @@
 import * as React from 'react';
-import { NavLink } from 'react-router-dom';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
 import { queryEndpoints } from '~/services';
 import { Query } from '~/components/common';
 
 const CustomerBasketIcon: React.SFC<ICustomerBasketProps> = props => {
+  const { history } = props;
+
   return (
     <div>
       <Query query={queryEndpoints.getCard}>
@@ -15,12 +18,23 @@ const CustomerBasketIcon: React.SFC<ICustomerBasketProps> = props => {
             return <div>Error customerCard</div>;
           }
 
-          return <NavLink to="/customer/basket/">Sepet {customerCard.quantity}</NavLink>;
+          return (
+            <Button
+              onClick={() => {
+                history.push('/customer/basket/');
+              }}
+              className="mr-5"
+            >
+              Sepet {customerCard.quantity}
+            </Button>
+          );
         }}
       </Query>
     </div>
   );
 };
-interface ICustomerBasketProps {}
+interface ICustomerBasketProps extends RouteComponentProps {}
 
-export default CustomerBasketIcon;
+// TODO : update this error
+// @ts-ignore
+export default withRouter(CustomerBasketIcon as React.ComponentClass<ICustomerBasketProps>);

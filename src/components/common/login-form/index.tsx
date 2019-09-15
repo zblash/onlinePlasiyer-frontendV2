@@ -2,6 +2,7 @@ import './style-login-form.scss';
 import * as React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import cls from 'classnames';
+import { Modal } from 'react-bootstrap';
 import { ApplicationContext } from '~/context/application';
 import { mutationEndPoints, queryEndpoints } from '~/services';
 import { refetchFactory } from '~/services/endpoints/query-endpoints';
@@ -64,54 +65,67 @@ class LoginForm extends React.Component<AppProps, IAppState> {
 
           return (
             <>
-              <form
-                id="login-form"
-                onSubmit={e => {
-                  e.preventDefault();
-                  login();
-                }}
-              />
-              <div>
-                <label>username :</label>
-                <input
-                  type="text"
-                  form={formId}
-                  onChange={e => {
-                    this.setState({ username: e.target.value });
+              <Modal.Header closeButton>
+                <Modal.Title className="text-dark">Login</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <form
+                  id="login-form"
+                  onSubmit={e => {
+                    e.preventDefault();
+                    login();
                   }}
                 />
-              </div>
-              <div>
-                <label>password :</label>
-                <input
-                  type="password"
-                  form={formId}
-                  onChange={e => {
-                    this.setState({ password: e.target.value });
-                  }}
-                />
-              </div>
-              <span
-                className={cls({
-                  hidden: !error,
-                  'login-error-text': error,
-                })}
-              >
-                UUps hata olustu
-              </span>
-              <button type="submit" form={formId} disabled={!username || password.length < 4 || loading}>
-                {loading ? 'Loading...' : 'Login'}
-              </button>
-              {pathname !== '/' && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    history.push('/');
-                  }}
+                <div className="form-group">
+                  <label>Username :</label>
+                  <input
+                    className="form-control"
+                    type="text"
+                    form={formId}
+                    onChange={e => {
+                      this.setState({ username: e.target.value });
+                    }}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Password :</label>
+                  <input
+                    className="form-control"
+                    type="password"
+                    form={formId}
+                    onChange={e => {
+                      this.setState({ password: e.target.value });
+                    }}
+                  />
+                </div>
+                <span
+                  className={cls({
+                    hidden: !error,
+                    'login-error-text': error,
+                  })}
                 >
-                  Go Home
+                  UUps hata olustu
+                </span>
+                <button
+                  className="btn btn-primary"
+                  type="submit"
+                  form={formId}
+                  disabled={!username || password.length < 4 || loading}
+                >
+                  {loading ? 'Loading...' : 'Login'}
                 </button>
-              )}
+                {pathname !== '/' && (
+                  <button
+                    className="btn btn-primary"
+                    type="button"
+                    onClick={() => {
+                      history.push('/');
+                    }}
+                  >
+                    Go Home
+                  </button>
+                )}
+              </Modal.Body>
             </>
           );
         }}

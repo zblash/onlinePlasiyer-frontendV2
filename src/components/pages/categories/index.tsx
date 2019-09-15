@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+import { CardGroup, Modal } from 'react-bootstrap';
 import { Query } from '~/components/common';
 import Category from './category';
 import CreateCategory from './create-category';
-import { Popup } from '~/components/ui';
 import { queryEndpoints } from '~/services';
 import { refetchFactory } from '~/services/endpoints/query-endpoints';
 
 export const deleteOrAddCategoryRefetchCategories = [
-  refetchFactory(queryEndpoints.getCategories, { type: 'all' }),
+  refetchFactory(queryEndpoints.getCategories),
   refetchFactory(queryEndpoints.getCategories, { type: 'main' }),
   refetchFactory(queryEndpoints.getCategories, { type: 'sub' }),
 ];
@@ -29,7 +29,7 @@ export default class AdminCategories extends React.Component<AdminCategoriesProp
     const { shouldShowCreatePopup } = this.state;
 
     return (
-      <div>
+      <div className="container-fluid">
         <Query query={queryEndpoints.getCategories}>
           {({ data, loading, error }) => {
             if (loading) {
@@ -42,6 +42,7 @@ export default class AdminCategories extends React.Component<AdminCategoriesProp
             return (
               <div>
                 <button
+                  className="btn btn-success"
                   type="button"
                   onClick={() => {
                     this.setState({ shouldShowCreatePopup: true });
@@ -49,19 +50,29 @@ export default class AdminCategories extends React.Component<AdminCategoriesProp
                 >
                   create category
                 </button>
-                {data.map(category => (
-                  <Category
-                    key={category.id}
-                    id={category.id}
-                    name={category.name}
-                    parentId={category.parentId}
-                    photoUrl={category.photoUrl}
-                    subCategory={category.subCategory}
-                  />
-                ))}
-                <Popup show={shouldShowCreatePopup} onClose={this.closeCreateCategoryPopup}>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-between',
+                    padding: '8px',
+                    alignItems: 'center',
+                  }}
+                >
+                  {data.map(category => (
+                    <Category
+                      key={category.id}
+                      id={category.id}
+                      name={category.name}
+                      parentId={category.parentId}
+                      photoUrl={category.photoUrl}
+                      subCategory={category.subCategory}
+                    />
+                  ))}
+                </div>
+                <Modal show={shouldShowCreatePopup} onHide={this.closeCreateCategoryPopup}>
                   <CreateCategory closePopup={this.closeCreateCategoryPopup} />
-                </Popup>
+                </Modal>
               </div>
             );
           }}

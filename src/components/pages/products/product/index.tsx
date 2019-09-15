@@ -1,17 +1,21 @@
-import * as React from 'react';
-import { Mutation } from '~/components/common';
-import { queryEndpoints, mutationEndPoints } from '~/services';
-import { Img, Popup } from '~/components/ui';
 import './style-product.scss';
+import * as React from 'react';
+import { Modal, Button } from 'react-bootstrap';
+import { Img, Popup } from '~/components/ui';
 import { withAuthUser, IWithAuthUserComponentProps } from '~/components/hoc/with-auth-user';
 import { isUserCustomer, isUserAdmin } from '~/utils';
 import SpecifyProducts from './customer-specify-products';
-import { refetchFactory } from '~/services/endpoints/query-endpoints';
 import { IProductResponse } from '~/__types';
+import DeleteProduct from './delete-product';
 
 const Product: React.SFC<IProductProps> = props => {
   const { product, user, categoryId } = props;
   const [shouldShowSpecifyProductPopup, setShouldShowSpecifyProductPopup] = React.useState(false);
+
+  const [shouldShowDeletePopup, setShouldShowDeletePopup] = React.useState(false);
+
+  const closeDeletePopup = () => setShouldShowDeletePopup(false);
+  const openDeletePopup = () => setShouldShowDeletePopup(true);
 
   return (
     <div className="view-product">
@@ -29,34 +33,12 @@ const Product: React.SFC<IProductProps> = props => {
         <div className="buttons">
           {isUserAdmin(user) && (
             <>
-              <button className="btn btn-primary" type="button">Duzenle (invalid)</button>
-              <Mutation
-                mutation={mutationEndPoints.deleteProduct}
-                variables={{ id: product.id }}
-                refetchQueries={[
-                  refetchFactory(queryEndpoints.getAllProducts),
-                  refetchFactory(queryEndpoints.getAllProductsByCategoryId, { categoryId }),
-                ]}
-              >
-                {(deleteProduct, { loading: deleteProductLoading, error: deleteProductError }) => {
-                  if (deleteProductError) {
-                    return <div>Error deleteProduct</div>;
-                  }
-
-                  return (
-                    <button
-                      className="btn btn-danger"
-                      type="button"
-                      disabled={deleteProductLoading || deleteProductError}
-                      onClick={() => {
-                        deleteProduct();
-                      }}
-                    >
-                      {deleteProductLoading ? '...Loading' : 'Sil'}
-                    </button>
-                  );
-                }}
-              </Mutation>
+              <button className="btn btn-primary" type="button">
+                Duzenle (invalid)
+              </button>
+              <button className="btn btn-danger" type="button" onClick={openDeletePopup}>
+                Sil
+              </button>
             </>
           )}
           {isUserCustomer(user) && (
@@ -78,6 +60,19 @@ const Product: React.SFC<IProductProps> = props => {
           </Popup>
         </>
       )}
+      {/* remove product popup */}
+      <Modal show={shouldShowDeletePopup} onHide={closeDeletePopup}>
+        <Modal.Header closeButton>
+          <Modal.Title className="text-dark">Emin misin ?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="text-dark">{product.name} tekrar geri getirilemez</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={closeDeletePopup}>
+            Hayir
+          </Button>
+          <DeleteProduct categoryId={categoryId} productId={product.id} closePopup={closeDeletePopup} />
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

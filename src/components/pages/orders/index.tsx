@@ -1,12 +1,12 @@
 import './style-merchant-orders.scss';
 import * as React from 'react';
+import { RouteComponentProps } from 'react-router';
 import { queryEndpoints } from '~/services';
 import { Query } from '~/components/common';
 import Order from './order';
 import OrderDetail from './order-detail';
-import { RouteComponentProps } from 'react-router';
 
-const MerchantOrders: React.SFC<IMerchantOrdersProps> = props => {
+const Orders: React.SFC<IMerchantOrdersProps> = props => {
   const {
     match: {
       params: { id },
@@ -27,10 +27,11 @@ const MerchantOrders: React.SFC<IMerchantOrdersProps> = props => {
           if (id && order) {
             return <OrderDetail order={order} />;
           }
+
           return (
             <div>
               {orders.map(order => (
-                <Order order={order} />
+                <Order order={order} key={order.id} />
               ))}
             </div>
           );
@@ -41,4 +42,4 @@ const MerchantOrders: React.SFC<IMerchantOrdersProps> = props => {
 };
 interface IMerchantOrdersProps extends RouteComponentProps<{ id: string }> {}
 
-export default MerchantOrders;
+export default Orders;

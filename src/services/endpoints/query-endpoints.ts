@@ -20,8 +20,8 @@ export function refetchFactory<T, TVar>(query: (s: TVar) => Promise<T>, variable
 }
 
 export class QueryEndpoints {
-  public getCategories: (s: { type?: 'sub' | 'main' | 'all' }) => Promise<ICategoryResponse[]> = ({ type } = {}) => {
-    if (type !== 'all' && type) {
+  public getCategories: (s: { type?: 'sub' | 'main' }) => Promise<ICategoryResponse[]> = ({ type } = {}) => {
+    if (type) {
       return ApiCall.get(`/categories?filter=true&sub=${type === 'sub' ? 'true' : 'false'}`);
     }
 

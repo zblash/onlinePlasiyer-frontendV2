@@ -62,10 +62,12 @@ const CreateProductByRole: React.SFC<CreateProductByRoleProps> = props => {
   }
 
   return (
-    <div>
-      <div>
+      <div className="container">
+          <div className="form_box">
+              <div className="form-group">
         <label>Ismini Girin</label>
         <input
+          className="form-control"
           type="text"
           onChange={e => {
             dispatch({ type: 'set-name', payload: e.target.value });
@@ -83,9 +85,12 @@ const CreateProductByRole: React.SFC<CreateProductByRoleProps> = props => {
         {({ data, loading, error }) => {
           if (loading) {
             return (
-              <select>
+                <div className="form-group">
+                    <label>Kategoriyi Secin</label>
+              <select className="form-control">
                 <option>Loading</option>
               </select>
+                </div>
             );
           }
           if (error) {
@@ -93,7 +98,10 @@ const CreateProductByRole: React.SFC<CreateProductByRoleProps> = props => {
           }
 
           return (
+              <div className="form-group">
+                  <label>Kategoriyi Secin</label>
             <select
+              className="form-control"
               defaultValue={data[0].id}
               onChange={e => {
                 dispatch({ type: 'set-category-id', payload: e.target.value });
@@ -105,33 +113,36 @@ const CreateProductByRole: React.SFC<CreateProductByRoleProps> = props => {
                 </option>
               ))}
             </select>
+              </div>
           );
         }}
       </Query>
       {role === 'ADMIN' && (
-        <div>
-          <label>Onaylimi : </label>
+        <div className="form-group form-check">
           <input
+            className="form-check-input"
             type="checkbox"
             onChange={e => {
               dispatch({ type: 'set-status', payload: e.target.checked });
             }}
           />
+           <label className="form-check-label">Onayli mi? : </label>
         </div>
       )}
-      <div>
-        <label>Tax Girin</label>
+      <div className="form-group">
+        <label>Vergi Oranini Girin</label>
         <input
+          className="form-control"
           type="number"
           onChange={e => {
             dispatch({ type: 'set-tax', payload: e.target.value });
           }}
         />
       </div>
-      <div>
+      <div className="form-group">
         <Img src={photoSrc} alt="Product image" extraClassName="w-10 h-10" zoomable />
-        <label>Resim Yukle </label>
         <input
+          className="form-control-file"
           type="file"
           onChange={event => {
             if (event.target.files && event.target.files[0]) {
@@ -167,6 +178,7 @@ const CreateProductByRole: React.SFC<CreateProductByRoleProps> = props => {
 
           return (
             <button
+              className="btn btn-dark ds"
               type="button"
               disabled={
                 !(
@@ -186,6 +198,7 @@ const CreateProductByRole: React.SFC<CreateProductByRoleProps> = props => {
           );
         }}
       </Mutation>
+    </div>
     </div>
   );
 };
