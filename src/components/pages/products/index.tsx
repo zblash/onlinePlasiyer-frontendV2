@@ -4,11 +4,15 @@ import { Query } from '~/components/common';
 import { queryEndpoints } from '~/services';
 import Product from './product';
 import { IWithAuthUserComponentProps } from '~/components/hoc/with-auth-user';
+import {useEffect} from "react";
 
 const Products: React.SFC<ProductsProps> = props => {
   const {
     match: { params },
   } = props;
+  useEffect(() => {
+    if(params.categoryId) setCategoryId(params.categoryId)
+  });
   const [categoryId, setCategoryId] = React.useState(params.categoryId);
   return (
     <div className="container-fluid">
