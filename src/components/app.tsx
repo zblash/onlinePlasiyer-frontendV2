@@ -54,16 +54,16 @@ class App extends React.Component {
         authorize: ['ADMIN'],
       },
       {
-        path: '/products/:categoryId?',
-        component: withHeader(Products),
-        shouldLogin: true,
-        authorize: ['ADMIN', 'CUSTOMER'],
-      },
-      {
         path: '/products/create/:barcode?',
         component: withHeader(CreateProduct),
         shouldLogin: true,
         authorize: ['ADMIN', 'MERCHANT'],
+      },
+      {
+        path: '/products/:categoryId?',
+        component: withHeader(Products),
+        shouldLogin: true,
+        authorize: ['ADMIN', 'CUSTOMER'],
       },
       {
         path: '/customer/basket',
