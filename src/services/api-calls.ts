@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getToken } from '~/services';
 
-export const URL = 'http://localhost:8080';
+export const URL = 'https://onlineplasiyer-backend.herokuapp.com';
 const API_URL = `${URL}/api`;
 
 export class ApiCall {
