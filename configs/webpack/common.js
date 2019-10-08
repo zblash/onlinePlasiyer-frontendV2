@@ -3,6 +3,7 @@ const { resolve } = require('path');
 const { CheckerPlugin } = require('awesome-typescript-loader');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const externalPackages = require('./packages');
+const svgLoader = require('./svg-loader');
 
 const appSrc = resolve(__dirname, '../../src');
 const externals = {};
@@ -20,6 +21,7 @@ module.exports = {
   context: appSrc,
   module: {
     rules: [
+      svgLoader,
       {
         test: /\.js$/,
         use: ['babel-loader', 'source-map-loader'],
@@ -39,6 +41,8 @@ module.exports = {
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
+        exclude: /src\/assets\/icons/,
+        include: /src\/assets\/images/,
         loaders: [
           'file-loader?hash=sha512&digest=hex&name=img/[hash].[ext]',
           'image-webpack-loader?bypassOnDebug&optipng.optimizationLevel=7&gifsicle.interlaced=false',
