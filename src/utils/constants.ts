@@ -1,4 +1,4 @@
-import { UserType, UserRoleResponse, UnitTypeResponse } from '~/__types';
+import { UserType, UserRoleResponse, UnitTypeResponse } from '~/backend-model-helpers';
 import { stringLitArray } from '.';
 
 export const ROLE_MAP: Record<UserRoleResponse, string> = {

@@ -5,7 +5,7 @@ export const URL = 'https://onlineplasiyer-backend.herokuapp.com';
 const API_URL = `${URL}/api`;
 
 export class ApiCall {
-  static post = <R = any>(route: string, params = {}) =>
+  public static post = <R = any>(route: string, params = {}) =>
     axios
       .post(API_URL + route, params, {
         headers: {
@@ -15,7 +15,7 @@ export class ApiCall {
       })
       .then(d => d.data) as Promise<R>;
 
-  static get = <R = any>(route: string, params = {}) =>
+  public static get = <R = any>(route: string, params = {}) =>
     axios
       .get(API_URL + route, {
         headers: {
@@ -26,7 +26,7 @@ export class ApiCall {
       })
       .then(d => d.data) as Promise<R>;
 
-  static delete = <R = any>(route: string, params: {} = {}) =>
+  public static delete = <R = any>(route: string, params: {} = {}) =>
     axios
       .delete(API_URL + route, {
         params,
@@ -37,7 +37,7 @@ export class ApiCall {
       })
       .then(d => d.data) as Promise<R>;
 
-  static put = <R = any>(route: string, params: {}) =>
+  public static put = <R = any>(route: string, params: {}) =>
     axios
       .put(API_URL + route, params, {
         headers: {

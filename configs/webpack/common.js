@@ -2,14 +2,9 @@
 const { resolve } = require('path');
 const { CheckerPlugin } = require('awesome-typescript-loader');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const externalPackages = require('./packages');
 const svgLoader = require('./svg-loader');
 
 const appSrc = resolve(__dirname, '../../src');
-const externals = {};
-externalPackages.forEach(pac => {
-  externals[pac.npmName] = pac.cdnName;
-});
 
 module.exports = {
   resolve: {
@@ -54,12 +49,8 @@ module.exports = {
     new CheckerPlugin(),
     new HtmlWebpackPlugin({
       template: 'index.html.ejs',
-      templateParameters: {
-        packages: Object.values(externalPackages),
-      },
     }),
   ],
-  externals,
   performance: {
     hints: false,
   },

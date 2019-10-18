@@ -2,7 +2,7 @@ import * as React from 'react';
 import MultiSelect from '@kenshooui/react-multi-select';
 import { Query, Mutation } from '~/components/common';
 import { queryEndpoints, mutationEndPoints } from '~/services';
-import { IAddressStateResponse } from '~/__types';
+import { IAddressStateResponse } from '~/backend-model-helpers';
 import { refetchFactory } from '~/services/endpoints/query-endpoints';
 
 export default class AddActiveState extends React.Component<AddActiveStateProps, AddActiveStateState> {

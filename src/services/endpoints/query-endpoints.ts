@@ -9,7 +9,7 @@ import {
   IProductResponse,
   ISpecifyProductResponse,
   ICardResponse,
-} from '~/__types';
+} from '~/backend-model-helpers';
 
 export function refetchFactory<T, TVar>(query: (s: TVar) => Promise<T>, variables?: TVar) {
   return {

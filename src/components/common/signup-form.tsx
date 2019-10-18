@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { UserRoleResponse } from '~/__types';
+import { UserRoleResponse } from '~/backend-model-helpers';
 import { ROLE_MAP } from '~/utils/constants';
 import { mutationEndPoints, queryEndpoints } from '~/services';
 import { Mutation, Query } from '.';

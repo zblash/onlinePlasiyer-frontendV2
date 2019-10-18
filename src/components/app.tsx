@@ -2,7 +2,7 @@ import * as React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import '~/assets/scss/app.scss';
 import { RouteChange, Query } from '~/components/common';
-import { UserRoleResponse } from '~/__types';
+import { UserRoleResponse } from '~/backend-model-helpers';
 import { queryEndpoints } from '~/services';
 import { withRequiredRole } from './hoc/with-required-role';
 import { withHeader } from './hoc/with-header';
@@ -91,6 +91,8 @@ class App extends React.Component {
         </Switch>
       </Router>
     );
+
+    return app;
 
     return (
       <Query query={queryEndpoints.checkHealth}>

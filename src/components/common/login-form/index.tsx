@@ -17,8 +17,6 @@ type AppProps = {
 } & RouteComponentProps;
 
 class LoginForm extends React.Component<AppProps, IAppState> {
-  public static contextType = ApplicationContext;
-
   public context!: React.ContextType<typeof ApplicationContext>;
 
   public constructor(props) {
@@ -119,5 +117,7 @@ class LoginForm extends React.Component<AppProps, IAppState> {
     );
   }
 }
+
+LoginForm.contextType = ApplicationContext;
 
 export default withRouter(LoginForm);

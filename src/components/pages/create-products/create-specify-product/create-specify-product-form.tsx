@@ -1,7 +1,7 @@
 import * as React from 'react';
 import MultiSelect from '@kenshooui/react-multi-select';
 import { UNIT_TYPE_MAP } from '~/utils/constants';
-import { UnitTypeResponse, IAddressStateResponse } from '~/__types';
+import { UnitTypeResponse, IAddressStateResponse } from '~/backend-model-helpers';
 import { Query, Mutation } from '~/components/common';
 import { queryEndpoints, mutationEndPoints } from '~/services';
 

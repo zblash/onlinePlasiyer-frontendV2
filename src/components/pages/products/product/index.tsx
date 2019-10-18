@@ -7,7 +7,7 @@ import { withAuthUser, IWithAuthUserComponentProps } from '~/components/hoc/with
 import { isUserCustomer, isUserAdmin } from '~/utils';
 import SpecifyProducts from './customer-specify-products';
 import { refetchFactory } from '~/services/endpoints/query-endpoints';
-import { IProductResponse } from '~/__types';
+import { IProductResponse } from '~/backend-model-helpers';
 
 const Product: React.SFC<IProductProps> = props => {
   const { product, user, categoryId } = props;

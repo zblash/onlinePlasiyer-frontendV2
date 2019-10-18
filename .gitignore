@@ -3,4 +3,4 @@
 dist/
 node_modules/
 tests/__coverage__/
-configs/.eslintcache
+.eslintcache

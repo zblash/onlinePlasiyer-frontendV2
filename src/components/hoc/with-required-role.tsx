@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Redirect } from 'react-router-dom';
 import { getDisplayName } from '~/utils';
 import { LoginForm } from '~/components/common';
-import { UserRoleResponse } from '~/__types';
+import { UserRoleResponse } from '~/backend-model-helpers';
 import { Popup } from '~/components/ui';
 import { withAuthUser, IWithAuthUserComponentProps } from './with-auth-user';
 

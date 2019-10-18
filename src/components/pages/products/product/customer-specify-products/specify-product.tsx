@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ISpecifyProductResponse } from '~/__types';
+import { ISpecifyProductResponse } from '~/backend-model-helpers';
 import { UNIT_TYPE_MAP } from '~/utils/constants';
 import { Mutation } from '~/components/common';
 import { mutationEndPoints, queryEndpoints } from '~/services';

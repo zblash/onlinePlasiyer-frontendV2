@@ -18,12 +18,7 @@ interface IMutationState<T = any> {
   error: any | null;
 }
 
-export default class Mutation<T = any, TVars = any> extends React.Component<
-  IMutationProps<T, TVars>,
-  IMutationState<T>
-> {
-  public static contextType = CacheContext;
-
+class Mutation<T = any, TVars = any> extends React.Component<IMutationProps<T, TVars>, IMutationState<T>> {
   public context!: React.ContextType<typeof CacheContext>;
 
   private _isMounted = false;
@@ -90,3 +85,5 @@ export default class Mutation<T = any, TVars = any> extends React.Component<
     });
   }
 }
+Mutation.contextType = CacheContext;
+export default Mutation;

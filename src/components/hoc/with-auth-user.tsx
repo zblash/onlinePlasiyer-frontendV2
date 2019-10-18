@@ -3,7 +3,7 @@ import { getDisplayName } from '~/utils';
 import { Query } from '~/components/common';
 import { ApplicationContext } from '~/context/application';
 import { queryEndpoints } from '~/services';
-import { IUserCommonResponse } from '~/__types';
+import { IUserCommonResponse } from '~/backend-model-helpers';
 
 export interface IWithAuthUserComponentProps {
   user: IUserCommonResponse;

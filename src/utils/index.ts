@@ -1,5 +1,14 @@
-import { IUserCommonResponse, UserRoleResponse } from '~/__types';
+import { IUserCommonResponse, UserRoleResponse } from '~/backend-model-helpers';
 
+export function makeid(length: number) {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+
+  return result;
+}
 const isArray = (o: any) => Array.isArray(o);
 const isObject = (o: any) => !isArray(o) && typeof o === 'object' && o !== null && o !== undefined;
 

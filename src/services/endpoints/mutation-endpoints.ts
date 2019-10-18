@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { ApiCall, URL } from '~/services/api-calls';
-import { UserRoleResponse, UnitTypeResponse, IProductResponse, ICardResponse } from '~/__types';
+import { UserRoleResponse, UnitTypeResponse, IProductResponse, ICardResponse } from '~/backend-model-helpers';
 
 export class MutationEndpoints {
   public deleteCategory: (s: { id: string }) => Promise<any> = ({ id }) => ApiCall.delete(`/categories/delete/${id}`);

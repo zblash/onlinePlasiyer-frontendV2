@@ -31,3 +31,5 @@ export default class Portal extends React.Component<ModalProps> {
     return ReactDOM.createPortal(children, this.el);
   }
 }
+
+export { Portal };

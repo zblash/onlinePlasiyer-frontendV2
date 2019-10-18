@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router-dom';
-import { UserRoleResponse } from '~/__types';
+import { UserRoleResponse } from '~/backend-model-helpers';
 import { Query, Mutation } from '~/components/common';
 import { Img } from '~/components/ui';
 import { NONE_IMAGE_SRC } from '~/utils/constants';

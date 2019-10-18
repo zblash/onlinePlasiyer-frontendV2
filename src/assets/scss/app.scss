@@ -1,34 +1,25 @@
-$bg-color: yellow;
-$border-color: red;
-
-.header-wrapper {
-  padding: 5px;
-  border: 1px solid $border-color;
-  display: flex;
+body {
+  margin: 0;
+  background-color: #fafafa;
+}
+html {
+  color: #4d4d4d;
+  font-family: -apple-system, BlinkMacSystemFont, '“Segoe UI”', Roboto, Oxygen-Sans, Ubuntu, Cantarell,
+    '“Helvetica Neue”', sans-serif;
 }
 
-.category-wrapper {
-  border: 1px solid $border-color;
-  margin: 5px;
+.rc-tooltip-inner {
+  padding: 0 !important;
+  color: currentColor !important;
+  background-color: transparent !important;
+  border-radius: 0px !important;
+  min-height: 0 !important;
+  border: none !important;
 }
-
-.cursor-pointer {
-  cursor: pointer;
+.rc-tooltip-arrow {
+  display: none !important;
 }
-
-.w-full {
-  width: 100%;
-}
-.h-full {
-  height: 100%;
-}
-.w-10 {
-  width: 150px;
-}
-.h-10 {
-  height: 120px;
-}
-
-.mr-10 {
-  margin-right: 10px;
+.rc-tooltip {
+  background-color: transparent !important;
+  opacity: 1 !important;
 }

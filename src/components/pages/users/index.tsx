@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { Query } from '~/components/common';
-import { UserType } from '~/__types';
+import { UserType } from '~/backend-model-helpers';
 import { userTypeMap } from '~/utils/constants';
 import { queryEndpoints } from '~/services';
 

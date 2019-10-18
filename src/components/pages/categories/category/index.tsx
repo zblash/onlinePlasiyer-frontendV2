@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ICategoryResponse } from '~/__types';
+import { ICategoryResponse } from '~/backend-model-helpers';
 import { Img, Popup } from '~/components/ui';
 import UpdateCategory from './update-category';
 import DeleteCategory from './delete-category';

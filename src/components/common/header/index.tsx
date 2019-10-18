@@ -1,137 +1,75 @@
-import './style-header.scss';
 import * as React from 'react';
-import { NavLink } from 'react-router-dom';
-import { Popup } from '~/components/ui';
-import { LoginForm, Query, SignupForm } from '~/components/common';
-import { ApplicationContext } from '~/context/application';
-import { isUserAdmin, isUserMerchant, isUserCustomer } from '~/utils';
-import { withAuthUser, IWithAuthUserComponentProps } from '~/components/hoc/with-auth-user';
-import CustomerBasketIcon from './basket-icon';
+import styled from '~/styled';
+import { HeaderLogo } from './header-logo';
+import { MenuItemProps, MenuItem } from './menu-item';
+import { HeaderSearchBar } from './search-bar';
 
-class Header extends React.Component<IHeaderProps, IHeaderState> {
-  public static contextType = ApplicationContext;
+/*
+  Header Helpers
+*/
+interface HeaderProps {}
 
-  public context!: React.ContextType<typeof ApplicationContext>;
+/*
+  Header Colors
+*/
+export const HeaderColors = {
+  wrapperBackground: '#262626',
+};
 
-  public constructor(props: IHeaderProps) {
-    super(props);
-    this.state = {
-      shouldShowLoginPopup: false,
-      shouldShowSignupPopup: false,
-      shouldShowLogoutPopup: false,
-    };
-  }
+/*
+  Header Styles
+*/
 
-  public closeLoginPopup = () => this.setState({ shouldShowLoginPopup: false });
+const HeaderStickyWrapper = styled.div`
+  background-color: ${HeaderColors.wrapperBackground};
+  height: 56px;
+  position: sticky;
+  top: 0;
+  padding: 0 48px 0 24px;
+  display: flex;
+  align-items: center;
+  z-index: 2;
+`;
 
-  public closeLogoutPopup = () => this.setState({ shouldShowLogoutPopup: false });
+const StyledMenuItemsWrapper = styled.div`
+  display: flex;
+  height: 100%;
+  margin-left: auto;
+`;
 
-  public closeSignupPopup = () => this.setState({ shouldShowSignupPopup: false });
+const Header: React.SFC<HeaderProps> = props => {
+  const menuItems: MenuItemProps[] = [
+    {
+      iconName: 'account',
+      text: 'Hesap',
+    },
+    {
+      iconName: 'shopingBasket',
+      text: 'Sepet (3)',
+    },
+  ];
 
-  public render() {
-    const {
-      user: { isLoggedIn },
-      userLogout,
-    } = this.context;
-    const { shouldShowLoginPopup, shouldShowSignupPopup, shouldShowLogoutPopup } = this.state;
-    const { user } = this.props;
-    const notAuthElements = (
-      <>
-        <button type="button" onClick={() => this.setState({ shouldShowLoginPopup: true })}>
-          Login
-        </button>
-        <Popup show={shouldShowLoginPopup} onClose={this.closeLoginPopup}>
-          <LoginForm
-            onLoggedIn={() => {
-              this.closeLoginPopup();
-            }}
-          />
-        </Popup>
-        <button type="button" onClick={() => this.setState({ shouldShowSignupPopup: true })}>
-          Signup
-        </button>
-        <Popup show={shouldShowSignupPopup} onClose={this.closeSignupPopup}>
-          <SignupForm
-            onSignup={() => {
-              this.closeSignupPopup();
-            }}
-          />
-        </Popup>
-      </>
-    );
-    const authElements = user ? (
-      <>
-        <div className="auth-element-wrapper">
-          <div className="flex mr-5">
-            <div className="mr-5">{user.name}</div>
-            {isUserAdmin(user) && (
-              <>
-                <NavLink to="/admin/categories/" className="mr-10">
-                  Categories
-                </NavLink>
-                <NavLink to="/admin/users/" className="mr-10">
-                  Users
-                </NavLink>
-              </>
-            )}
-            {(isUserAdmin(user) || isUserCustomer(user)) && (
-              <>
-                <NavLink to="/admin/products/" className="mr-10">
-                  View Product
-                </NavLink>
-              </>
-            )}
+  const __ = (
+    <HeaderStickyWrapper>
+      <HeaderLogo />
+      <HeaderSearchBar />
+      <StyledMenuItemsWrapper>
+        {menuItems.map(item => (
+          <MenuItem {...item} key={item.text} />
+        ))}
+      </StyledMenuItemsWrapper>
+    </HeaderStickyWrapper>
+  );
 
-            {isUserAdmin(user) || isUserMerchant(user) ? <NavLink to="/products/create/">Add Product</NavLink> : null}
-          </div>
-          <div className="end-item">
-            {isUserCustomer(user) && <CustomerBasketIcon />}
-            <button
-              type="button"
-              onClick={() => {
-                this.setState({ shouldShowLogoutPopup: true });
-              }}
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-        <Popup show={shouldShowLogoutPopup} onClose={this.closeLogoutPopup}>
-          <div>
-            <h1>Cikmak Istiyormusun ?</h1>
-            <button
-              type="button"
-              onClick={() => {
-                this.closeLogoutPopup();
-                userLogout();
-              }}
-            >
-              Evet
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                this.setState({ shouldShowLogoutPopup: false });
-              }}
-            >
-              Hayir
-            </button>
-          </div>
-        </Popup>
-      </>
-    ) : (
-      <div>Loading</div>
-    );
+  /*
+  Header Lifecycle
+  */
 
-    return <div className="header-wrapper">{!isLoggedIn ? notAuthElements : authElements}</div>;
-  }
-}
+  /*
+  Header Functions
+  */
 
-interface IHeaderState {
-  shouldShowLogoutPopup: boolean;
-  shouldShowLoginPopup: boolean;
-  shouldShowSignupPopup: boolean;
-}
-interface IHeaderProps extends IWithAuthUserComponentProps {}
+  return __;
+};
 
-export default withAuthUser(Header);
+export { Header };
