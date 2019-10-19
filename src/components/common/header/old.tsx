@@ -4,7 +4,7 @@ import { Popup } from '~/components/ui';
 import { LoginForm, SignupForm } from '~/components/common';
 import { ApplicationContext } from '~/context/application';
 import { isUserAdmin, isUserMerchant, isUserCustomer } from '~/utils';
-import { withAuthUser, IWithAuthUserComponentProps } from '~/components/hoc/with-auth-user';
+import { withAuthUser, WithAuthUserComponentProps } from '~/components/hoc/with-auth-user';
 import CustomerBasketIcon from './basket-icon';
 import styled from '~/styled';
 
@@ -140,7 +140,7 @@ interface IHeaderState {
   shouldShowLoginPopup: boolean;
   shouldShowSignupPopup: boolean;
 }
-interface IHeaderProps extends IWithAuthUserComponentProps {}
+interface IHeaderProps extends WithAuthUserComponentProps {}
 
 Header.contextType = ApplicationContext;
 

@@ -58,8 +58,8 @@ const Home: React.SFC<IHomeProps> = props => {
       </StyledDiv>
 
       <StyledCardContainer>
-        {[1, 2, 3, 4].map(() => (
-          <ProductCard />
+        {[1, 2, 3, 4].map(i => (
+          <ProductCard key={i} />
         ))}
       </StyledCardContainer>
     </Container>

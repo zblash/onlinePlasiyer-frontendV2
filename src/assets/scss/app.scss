@@ -1,3 +1,5 @@
+@import './full-screen-loading.scss';
+
 body {
   margin: 0;
   background-color: #fafafa;
@@ -8,18 +10,26 @@ html {
     '“Helvetica Neue”', sans-serif;
 }
 
-.rc-tooltip-inner {
-  padding: 0 !important;
-  color: currentColor !important;
+.tooltip-override {
   background-color: transparent !important;
+  opacity: 1 !important;
+  border: none !important;
+  padding: 0 !important;
   border-radius: 0px !important;
   min-height: 0 !important;
-  border: none !important;
+  color: currentColor !important;
+  font-size: 16px !important;
+}
+
+.rc-tooltip-inner {
+  @extend .tooltip-override;
 }
 .rc-tooltip-arrow {
   display: none !important;
 }
+.rc-tooltip.content {
+  @extend .tooltip-override;
+}
 .rc-tooltip {
-  background-color: transparent !important;
-  opacity: 1 !important;
+  @extend .tooltip-override;
 }

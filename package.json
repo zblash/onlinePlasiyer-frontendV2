@@ -46,6 +46,7 @@
     "eslint-plugin-react": "7.x",
     "eslint-plugin-react-hooks": "1.x",
     "file-loader": "^4.2.0",
+    "fork-svg-loader": "^0.0.3",
     "html-webpack-plugin": "^3.2.0",
     "husky": "^3.0.5",
     "image-webpack-loader": "^5.0.0",
@@ -63,7 +64,6 @@
     "webpack-cli": "^3.3.7",
     "webpack-dev-middleware": "^3.7.0",
     "webpack-dev-server": "^3.8.0",
-    "fork-svg-loader": "^0.0.3",
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
@@ -71,12 +71,13 @@
     "deep-equal": "^1.1.0",
     "express": "^4.17.1",
     "lodash.debounce": "^4.0.8",
+    "lodash.pick": "^4.4.0",
     "rc-tooltip": "^3.7.3",
-    "react-images": "^1.0.0",
-    "react-skylight": "^0.5.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
+    "react-images": "^1.0.0",
     "react-router-dom": "^5.0.1",
+    "react-skylight": "^0.5.1",
     "styled-components": "^4.4.0"
   },
   "husky": {

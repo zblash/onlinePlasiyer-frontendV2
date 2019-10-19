@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled, { keyframes, StylableProps } from '~/styled';
+import styled, { StylableProps, css } from '~/styled';
 
 interface ILoadingProps extends StylableProps {
   color?: string;
@@ -9,7 +9,7 @@ interface ILoadingProps extends StylableProps {
 
 const LoadinDefaultColor = '#000';
 
-const ldsRollerKeyframes = keyframes`
+const ldsRollerKeyframes = css.keyframes`
   0% {
       transform: rotate(0deg);
     }

@@ -11,6 +11,8 @@ const icons = {
   chevronLeft: require('~/assets/icons/chevron-left.svg'),
   chevronRight: require('~/assets/icons/chevron-right.svg'),
   downArrow: require('~/assets/icons/down-arrow.svg'),
+  login: require('~/assets/icons/login.svg'),
+  danger: require('~/assets/icons/danger.svg'),
 };
 
 export interface IconProps {

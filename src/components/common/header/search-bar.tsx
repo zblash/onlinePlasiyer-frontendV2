@@ -1,6 +1,6 @@
 import * as React from 'react';
-import styled, { createCssVariable } from '~/styled';
-import { Icon, Loading } from '~/components/ui';
+import styled, { css } from '~/styled';
+import { Icon, Loading, Input } from '~/components/ui';
 
 /*
   HeaderSearchBar Helpers
@@ -11,8 +11,8 @@ interface HeaderSearchBarProps {}
   HeaderSearchBar Colors
 */
 export const HeaderSearchBarColors = {
-  defaultColor: '#797979',
-  focusColor: '#737373',
+  unFocused: '#797979',
+  focused: '#737373',
   defaultBackground: '#1b1b1b',
   focusBackground: '#dadada',
 };
@@ -20,36 +20,14 @@ export const HeaderSearchBarColors = {
 /*
   HeaderSearchBar Styles
 */
-const color = createCssVariable(HeaderSearchBarColors.defaultColor);
-const commontStyle = `
-    color: ${color.get()};
-`;
+const cssVariable = css.variable(HeaderSearchBarColors.unFocused);
 
-const StyledInput = styled.input`
+const StyledInput = styled(Input)`
   margin: 0 8px;
-  color: ${color};
-
-  ::placeholder {
-    ${commontStyle}
-  }
-  :-ms-input-placeholder {
-    ${commontStyle}
-  }
-  ::-ms-input-placeholder {
-    ${commontStyle}
-  }
-
-  //reset
-  border: none;
-  background-image: none;
-  background-color: transparent;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  outline: none;
+  color: ${cssVariable};
 `;
 
-const HeaderSearchBarWrapper = styled.div`
+const StyledHeaderSearchBarWrapper = styled.div`
   display: flex;
   margin-left: 48px;
   background-color: ${HeaderSearchBarColors.defaultBackground};
@@ -57,7 +35,7 @@ const HeaderSearchBarWrapper = styled.div`
   border-radius: 4px;
   :focus-within {
     background-color: ${HeaderSearchBarColors.focusBackground};
-    ${color.set(HeaderSearchBarColors.focusColor)} !important;
+    ${cssVariable.set(HeaderSearchBarColors.focused)} !important;
   }
 `;
 
@@ -71,9 +49,9 @@ const HeaderSearchBar: React.SFC<HeaderSearchBarProps> = props => {
   const [isShownLoading, setIsShowLoading] = React.useState(false);
 
   const __ = (
-    <HeaderSearchBarWrapper>
+    <StyledHeaderSearchBarWrapper>
       <StyledLabel htmlFor="header-search-bar">
-        <Icon name="search" size={20} color={color.get()} />
+        <Icon name="search" size={20} color={cssVariable.get()} />
       </StyledLabel>
       <StyledInput
         id="header-search-bar"
@@ -81,9 +59,9 @@ const HeaderSearchBar: React.SFC<HeaderSearchBarProps> = props => {
         onChange={e => setIsShowLoading(e.target.value.length > 0)}
       />
       <StyledLabel htmlFor="header-search-bar">
-        <Loading color={color.get()} isVisible={isShownLoading} />
+        <Loading color={cssVariable.get()} isVisible={isShownLoading} />
       </StyledLabel>
-    </HeaderSearchBarWrapper>
+    </StyledHeaderSearchBarWrapper>
   );
 
   /*

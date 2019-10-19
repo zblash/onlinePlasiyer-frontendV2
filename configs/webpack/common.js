@@ -48,7 +48,7 @@ module.exports = {
   plugins: [
     new CheckerPlugin(),
     new HtmlWebpackPlugin({
-      template: 'index.html.ejs',
+      template: 'index.html',
     }),
   ],
   performance: {

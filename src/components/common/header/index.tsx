@@ -3,11 +3,14 @@ import styled from '~/styled';
 import { HeaderLogo } from './header-logo';
 import { MenuItemProps, MenuItem } from './menu-item';
 import { HeaderSearchBar } from './search-bar';
+import { LoginCard } from './cards/login-card';
+import { WithAuthUserComponentProps, withAuthUser } from '~/components/hoc/with-auth-user';
+import { AccountCard } from './cards/account-card';
 
 /*
   Header Helpers
 */
-interface HeaderProps {}
+interface HeaderProps extends WithAuthUserComponentProps {}
 
 /*
   Header Colors
@@ -20,7 +23,7 @@ export const HeaderColors = {
   Header Styles
 */
 
-const HeaderStickyWrapper = styled.div`
+const StyledHeaderStickyWrapper = styled.div`
   background-color: ${HeaderColors.wrapperBackground};
   height: 56px;
   position: sticky;
@@ -37,20 +40,31 @@ const StyledMenuItemsWrapper = styled.div`
   margin-left: auto;
 `;
 
-const Header: React.SFC<HeaderProps> = props => {
-  const menuItems: MenuItemProps[] = [
-    {
-      iconName: 'account',
-      text: 'Hesap',
-    },
-    {
-      iconName: 'shopingBasket',
-      text: 'Sepet (3)',
-    },
-  ];
+const _Header: React.SFC<HeaderProps> = props => {
+  const isUserLogin = props.isLoggedIn;
+  const menuItems: MenuItemProps[] = isUserLogin
+    ? [
+        {
+          iconName: 'account',
+          text: 'Hesap',
+          cardContent: () => <AccountCard />,
+        },
+        {
+          iconName: 'shopingBasket',
+          text: 'Sepet (3)',
+          cardContent: null,
+        },
+      ]
+    : [
+        {
+          iconName: 'login',
+          text: 'Oturum Ac',
+          cardContent: closeCard => <LoginCard onSuccess={closeCard} />,
+        },
+      ];
 
   const __ = (
-    <HeaderStickyWrapper>
+    <StyledHeaderStickyWrapper>
       <HeaderLogo />
       <HeaderSearchBar />
       <StyledMenuItemsWrapper>
@@ -58,7 +72,7 @@ const Header: React.SFC<HeaderProps> = props => {
           <MenuItem {...item} key={item.text} />
         ))}
       </StyledMenuItemsWrapper>
-    </HeaderStickyWrapper>
+    </StyledHeaderStickyWrapper>
   );
 
   /*
@@ -71,5 +85,7 @@ const Header: React.SFC<HeaderProps> = props => {
 
   return __;
 };
+
+const Header = withAuthUser(_Header);
 
 export { Header };

@@ -3,7 +3,7 @@ import { Mutation } from '~/components/common';
 import { queryEndpoints, mutationEndPoints } from '~/services';
 import { Img, Popup } from '~/components/ui';
 import './style-product.scss';
-import { withAuthUser, IWithAuthUserComponentProps } from '~/components/hoc/with-auth-user';
+import { withAuthUser, WithAuthUserComponentProps } from '~/components/hoc/with-auth-user';
 import { isUserCustomer, isUserAdmin } from '~/utils';
 import SpecifyProducts from './customer-specify-products';
 import { refetchFactory } from '~/services/endpoints/query-endpoints';
@@ -80,7 +80,7 @@ const Product: React.SFC<IProductProps> = props => {
     </div>
   );
 };
-interface IProductProps extends IWithAuthUserComponentProps {
+interface IProductProps extends WithAuthUserComponentProps {
   product: IProductResponse;
   categoryId: string;
 }

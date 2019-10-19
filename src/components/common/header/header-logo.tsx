@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from '~/styled';
 import logoPath from '~/assets/images/logo.png';
 
-const HeaderLogoTitle = styled.div`
+const StyledHeaderLogoTitle = styled.div`
   background-image: url(${logoPath});
   user-select: none;
   width: 256px;
@@ -10,7 +10,7 @@ const HeaderLogoTitle = styled.div`
 `;
 
 const HeaderLogo: React.SFC<IHeaderLogoProps> = props => {
-  return <HeaderLogoTitle />;
+  return <StyledHeaderLogoTitle />;
 };
 
 interface IHeaderLogoProps {}

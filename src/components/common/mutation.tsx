@@ -5,7 +5,10 @@ import { IQueryRequiredProp } from './query';
 type TMutation<T, TVariables> = (pass?: TVariables) => Promise<T>;
 
 interface IMutationProps<T, TVariables> {
-  children: (mutation: TMutation<T, TVariables>, s: { data: T; loading: boolean; error: any }) => JSX.Element;
+  children: (
+    mutation: TMutation<T, TVariables>,
+    s: { data: T; loading: boolean; error: any; setError: (e: any) => void },
+  ) => JSX.Element;
   onError?: (e: any) => void;
   onComplated?: (data: T) => void;
   mutation: TMutation<T, TVariables>;
@@ -42,7 +45,7 @@ class Mutation<T = any, TVars = any> extends React.Component<IMutationProps<T, T
 
   public mutate: TMutation<T, TVars> = vars => {
     if (this._isMounted) {
-      this.setState({ loading: true });
+      this.setState({ loading: true, error: null });
       const { onError, refetchQueries, onComplated, mutation, variables } = this.props;
       const { mutate } = this.context;
 
@@ -75,13 +78,19 @@ class Mutation<T = any, TVars = any> extends React.Component<IMutationProps<T, T
   };
 
   public render() {
-    const { children } = this.props;
+    const { children, onError } = this.props;
     const { data, loading, error } = this.state;
 
     return children(this.mutate, {
       data,
       loading,
       error,
+      setError: e => {
+        this.setState({ error: e });
+        if (onError) {
+          onError(e);
+        }
+      },
     });
   }
 }

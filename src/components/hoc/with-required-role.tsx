@@ -4,7 +4,7 @@ import { getDisplayName } from '~/utils';
 import { LoginForm } from '~/components/common';
 import { UserRoleResponse } from '~/backend-model-helpers';
 import { Popup } from '~/components/ui';
-import { withAuthUser, IWithAuthUserComponentProps } from './with-auth-user';
+import { withAuthUser, WithAuthUserComponentProps } from './with-auth-user';
 
 const withRequiredRole = <T, C>(
   WrappedComponent: React.ComponentClass<T> | React.FunctionComponent<T>,
@@ -17,7 +17,7 @@ const withRequiredRole = <T, C>(
   } = { showLoginPopup: true },
 ) => {
   const WithRequiredRoleHoc: React.SFC<
-    React.ComponentProps<typeof WrappedComponent> & IWithAuthUserComponentProps
+    React.ComponentProps<typeof WrappedComponent> & WithAuthUserComponentProps
   > = props => {
     const { user, isUserLoading, isLoggedIn } = props;
 

@@ -41,6 +41,9 @@ class Query<T = any, TVars = any, ParentQueryVariables = any, ParentQueryResult 
   IQueryProps<T, TVars, ParentQueryVariables, ParentQueryResult>,
   IQueryState
 > {
+  static defaultProps = {
+    fetchPolicy: 'cache-first',
+  };
   public context!: React.ContextType<typeof CacheContext>;
 
   private _id: string = `${Math.random()}`;
@@ -181,10 +184,5 @@ class Query<T = any, TVars = any, ParentQueryVariables = any, ParentQueryResult 
 }
 
 Query.contextType = CacheContext;
-
-// @ts-ignore
-Query.defaultProps = {
-  fetchPolicy: 'cache-first',
-};
 
 export default Query;

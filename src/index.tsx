@@ -13,8 +13,6 @@ import { globalStyle } from './styled/css';
 
 const GlobalStyle = createGlobalStyle`${globalStyle()}`;
 
-console.log(globalStyle());
-
 const rootEl = document.getElementById('root');
 
 render(

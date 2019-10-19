@@ -6,8 +6,8 @@ interface IApplicationContextStates {
   };
 }
 interface IApplicationContextActions {
-  userLogin: Function;
-  userLogout: Function;
+  userLogin: () => void;
+  userLogout: () => void;
 }
 const initialValue: {
   state: IApplicationContextStates;

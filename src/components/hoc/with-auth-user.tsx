@@ -5,16 +5,18 @@ import { ApplicationContext } from '~/context/application';
 import { queryEndpoints } from '~/services';
 import { IUserCommonResponse } from '~/backend-model-helpers';
 
-export interface IWithAuthUserComponentProps {
+export interface WithAuthUserComponentProps {
   user: IUserCommonResponse;
   isLoggedIn: boolean;
   isUserLoading: boolean;
 }
 
-function withAuthUser<P extends IWithAuthUserComponentProps, C extends React.ComponentType<P>>(
+function withAuthUser<P extends WithAuthUserComponentProps, C extends React.ComponentType<P>>(
   WrappedComponent: C & React.ComponentType<P>,
-): React.ComponentClass<Omit<P, keyof IWithAuthUserComponentProps>> {
-  const withAuthUserHoc: React.SFC<Omit<P, keyof IWithAuthUserComponentProps>> = props => {
+):
+  | React.ComponentClass<Omit<P, keyof WithAuthUserComponentProps>>
+  | React.SFC<Omit<P, keyof WithAuthUserComponentProps>> {
+  const withAuthUserHoc: React.SFC<Omit<P, keyof WithAuthUserComponentProps>> = props => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { user, userLogout } = React.useContext(ApplicationContext);
 

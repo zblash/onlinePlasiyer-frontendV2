@@ -5,7 +5,7 @@ import { isUserMerchant, isBarcodeCorrectSize } from '~/utils';
 import { queryEndpoints } from '~/services';
 import CreateProductByRole from './create-product-by-role';
 import CreateSpecifyProduct from './create-specify-product';
-import { IWithAuthUserComponentProps, withAuthUser } from '~/components/hoc/with-auth-user';
+import { WithAuthUserComponentProps, withAuthUser } from '~/components/hoc/with-auth-user';
 
 const CreateProduct: React.SFC<CreateProductProps> = props => {
   const {
@@ -63,6 +63,6 @@ const CreateProduct: React.SFC<CreateProductProps> = props => {
   );
 };
 
-type CreateProductProps = {} & RouteComponentProps<{ barcode: string }> & IWithAuthUserComponentProps;
+type CreateProductProps = {} & RouteComponentProps<{ barcode: string }> & WithAuthUserComponentProps;
 
 export default withAuthUser(CreateProduct);
