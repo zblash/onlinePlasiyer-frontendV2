@@ -1,56 +1,22 @@
 import * as React from 'react';
 import deepEqual from 'deep-equal';
-import { CacheContext } from '~/context/cache';
-import { FetchPolicy } from '~/context/cache/helpers';
-
-interface IQueryError {
-  error: string;
-  message: string;
-  path: string;
-  status: 500 | 404;
-  timestamp: string;
-  trace: string;
-}
-
-export interface IQueryRequiredProp<T, TVariables> {
-  query: (variables: TVariables) => Promise<T>;
-  variables?: TVariables;
-}
-
-interface IQueryProps<T, TVariables, ParentQueryVarianbles, ParentQueryResult>
-  extends IQueryRequiredProp<T, TVariables> {
-  children: (s: { data: T; loading: boolean; error: Error }) => JSX.Element;
-  onComplated?: (data: T) => void;
-  onUpdate?: (data: T) => void;
-  onError?: (e: IQueryError) => void;
-  fetchPolicy: FetchPolicy;
-  readCache?: {
-    parentQuery: (varables: ParentQueryVarianbles) => Promise<ParentQueryResult>;
-    parentVariables?: ParentQueryVarianbles;
-    dataGetter: (d: ParentQueryResult) => T;
-  };
-}
-
-interface IQueryState {
-  data: any;
-  loading: boolean;
-  error: Error | null;
-}
+import { CacheContext } from '../context';
+import { QueryComponentProps, QueryComponentState } from '../helpers';
 
 class Query<T = any, TVars = any, ParentQueryVariables = any, ParentQueryResult = any> extends React.Component<
-  IQueryProps<T, TVars, ParentQueryVariables, ParentQueryResult>,
-  IQueryState
+  QueryComponentProps<T, TVars, ParentQueryVariables, ParentQueryResult>,
+  QueryComponentState
 > {
   static defaultProps = {
     fetchPolicy: 'cache-first',
   };
-  public context!: React.ContextType<typeof CacheContext>;
+  context!: React.ContextType<typeof CacheContext>;
 
-  private _id: string = `${Math.random()}`;
+  componentId = `${Math.random()}`;
 
-  private _isMounted = false;
+  isComponentMounted = false;
 
-  public constructor(props) {
+  constructor(props) {
     super(props);
     this.state = {
       data: null,
@@ -59,32 +25,32 @@ class Query<T = any, TVars = any, ParentQueryVariables = any, ParentQueryResult 
     };
   }
 
-  public componentDidMount() {
-    this._isMounted = true;
+  componentDidMount() {
+    this.isComponentMounted = true;
     this.getQuery();
   }
 
-  public componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps) {
     const { variables } = this.props;
     if (!deepEqual(prevProps.variables, variables)) {
       this.getQuery();
     }
   }
 
-  public componentWillUnmount() {
+  componentWillUnmount() {
     this.setState({ data: null, loading: true, error: null });
-    this._isMounted = false;
+    this.isComponentMounted = false;
     const { removeListener } = this.context;
-    removeListener(this._id);
+    removeListener(this.componentId);
   }
 
-  public _safeSetState = data => {
-    if (this._isMounted) {
+  _safeSetState = data => {
+    if (this.isComponentMounted) {
       this.setState(data);
     }
   };
 
-  public getParentData = async () => {
+  getParentData = async () => {
     const { get } = this.context;
     const { onUpdate, readCache } = this.props;
     const { parentQuery, dataGetter, parentVariables } = readCache;
@@ -94,12 +60,12 @@ class Query<T = any, TVars = any, ParentQueryVariables = any, ParentQueryResult 
       variables: parentVariables,
       fetchPolicy: 'cache-only',
       listener: {
-        id: this._id,
+        id: this.componentId,
         onDataChange: async data => {
           const queryData = dataGetter(data);
           if (queryData) {
             const { error } = this.state;
-            if (this._isMounted && onUpdate) {
+            if (this.isComponentMounted && onUpdate) {
               onUpdate(queryData);
             }
             this._safeSetState({ data: queryData, error: queryData ? null : error });
@@ -123,7 +89,7 @@ class Query<T = any, TVars = any, ParentQueryVariables = any, ParentQueryResult 
     return null;
   };
 
-  public getQuery = async () => {
+  getQuery = async () => {
     const { get } = this.context;
     const { query, variables, onError, onComplated, fetchPolicy, onUpdate, readCache } = this.props;
 
@@ -135,12 +101,12 @@ class Query<T = any, TVars = any, ParentQueryVariables = any, ParentQueryResult 
     }
     get({
       query,
-      variables,
+      variables: variables || {},
       listener: {
-        id: this._id,
+        id: this.componentId,
         onDataChange: data => {
           const { error } = this.state;
-          if (this._isMounted && onUpdate) {
+          if (this.isComponentMounted && onUpdate) {
             onUpdate(data);
           }
           this._safeSetState({ data, error: data ? null : error });
@@ -171,7 +137,7 @@ class Query<T = any, TVars = any, ParentQueryVariables = any, ParentQueryResult 
       });
   };
 
-  public render() {
+  render() {
     const { children } = this.props;
     const { data, loading, error } = this.state;
 
@@ -185,4 +151,4 @@ class Query<T = any, TVars = any, ParentQueryVariables = any, ParentQueryResult 
 
 Query.contextType = CacheContext;
 
-export default Query;
+export { Query };

@@ -1,4 +1,4 @@
-import { isArray } from '~/utils/deneme';
+import { isArray } from '~/utils';
 
 describe('Example Test', () => {
   test('true is equal true', () => {

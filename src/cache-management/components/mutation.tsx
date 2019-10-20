@@ -1,27 +1,11 @@
 import * as React from 'react';
-import { CacheContext } from '~/context/cache';
-import { IQueryRequiredProp } from './query';
+import { CacheContext } from '../context';
+import { MutationComponentProps, MutationComponentState, MutationFunction } from '../helpers';
 
-type TMutation<T, TVariables> = (pass?: TVariables) => Promise<T>;
-
-interface IMutationProps<T, TVariables> {
-  children: (
-    mutation: TMutation<T, TVariables>,
-    s: { data: T; loading: boolean; error: any; setError: (e: any) => void },
-  ) => JSX.Element;
-  onError?: (e: any) => void;
-  onComplated?: (data: T) => void;
-  mutation: TMutation<T, TVariables>;
-  variables?: TVariables;
-  refetchQueries?: IQueryRequiredProp<any, any>[];
-}
-interface IMutationState<T = any> {
-  data: T;
-  loading: boolean;
-  error: any | null;
-}
-
-class Mutation<T = any, TVars = any> extends React.Component<IMutationProps<T, TVars>, IMutationState<T>> {
+class Mutation<T = any, TVars = any> extends React.Component<
+  MutationComponentProps<T, TVars>,
+  MutationComponentState<T>
+> {
   public context!: React.ContextType<typeof CacheContext>;
 
   private _isMounted = false;
@@ -43,7 +27,7 @@ class Mutation<T = any, TVars = any> extends React.Component<IMutationProps<T, T
     this._isMounted = false;
   }
 
-  public mutate: TMutation<T, TVars> = vars => {
+  public mutate: MutationFunction<T, TVars> = vars => {
     if (this._isMounted) {
       this.setState({ loading: true, error: null });
       const { onError, refetchQueries, onComplated, mutation, variables } = this.props;

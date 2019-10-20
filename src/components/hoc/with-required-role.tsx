@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { Redirect } from 'react-router-dom';
 import { getDisplayName } from '~/utils';
-import { LoginForm } from '~/components/common';
 import { UserRoleResponse } from '~/backend-model-helpers';
-import { Popup } from '~/components/ui';
 import { withAuthUser, WithAuthUserComponentProps } from './with-auth-user';
 
 const withRequiredRole = <T, C>(
@@ -32,9 +30,8 @@ const withRequiredRole = <T, C>(
 
     if (!isLoggedIn || (!user && isLoggedIn)) {
       return (
-        <Popup show shouldRenderCloseIcon={false} hideOverlayClicked={false}>
-          <LoginForm />
-        </Popup>
+        // TODO: return login form
+        null
       );
     }
 

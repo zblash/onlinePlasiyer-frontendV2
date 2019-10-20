@@ -28,7 +28,7 @@ interface IApplicationProviderProps {
   isLoggedIn: boolean;
 }
 
-export const ApplicationContext = React.createContext<IApplicationContextStates & IApplicationContextActions>({
+const ApplicationContext = React.createContext<IApplicationContextStates & IApplicationContextActions>({
   ...initialValue.state,
   ...initialValue.actions,
 });
@@ -74,4 +74,4 @@ class ApplicationContextProvider extends React.Component<IApplicationProviderPro
   }
 }
 
-export default ApplicationContextProvider;
+export { ApplicationContextProvider, ApplicationContext };

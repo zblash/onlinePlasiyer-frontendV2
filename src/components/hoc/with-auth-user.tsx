@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { getDisplayName } from '~/utils';
-import { Query } from '~/components/common';
 import { ApplicationContext } from '~/context/application';
 import { queryEndpoints } from '~/services';
 import { IUserCommonResponse } from '~/backend-model-helpers';
+import { Query } from '~/cache-management/components/query';
 
 export interface WithAuthUserComponentProps {
   user: IUserCommonResponse;

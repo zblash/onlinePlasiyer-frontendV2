@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { IUserCommonResponse, UserRoleResponse } from '~/backend-model-helpers';
 
 export function makeid(length: number) {
@@ -23,7 +25,7 @@ function objectValues<K>(obj: Record<string, K>): K[] {
   return Object.keys(obj).map(_key => obj[_key]) as K[];
 }
 
-function getDisplayName(WrappedComponent): string {
+function getDisplayName(WrappedComponent: any): string {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
 
@@ -55,25 +57,14 @@ function isPublicRole(role: UserRoleResponse) {
   return role === 'MERCHANT' || role === 'CUSTOMER';
 }
 
-function narrowObject(
-  obj: Record<string, any>,
-  mainKey: string = '',
-): Record<string, string | number | boolean | null | undefined> {
-  let newobject = {};
-  const keys = Object.keys(obj || {});
-  keys.sort();
-  keys.forEach(_key => {
-    const key = `${mainKey ? `${mainKey}.` : ''}${_key}`;
-    const value = obj[_key];
+function narrowObject(obj: Record<string, any>): Record<string, string | number | boolean | null | undefined> {
+  const newobject = {};
+  Object.keys(obj).forEach(key => {
+    const value = obj[key];
     if (isObject(value) || isArray(value)) {
-      Object.keys(value).forEach(_inlineKey => {
-        const _inlineValue = value[_inlineKey];
-        if (isObject(_inlineValue) || isArray(_inlineValue)) {
-          const currentItem = narrowObject(_inlineValue, `${key}.${_inlineKey}`);
-          newobject = { ...currentItem, ...newobject };
-        } else {
-          newobject[`${key}.${_inlineKey}`] = _inlineValue;
-        }
+      const transformedData = narrowObject(value);
+      Object.keys(transformedData).forEach(nestedObjectKey => {
+        newobject[`${key}.${nestedObjectKey}`] = transformedData[nestedObjectKey];
       });
     } else {
       newobject[key] = value;

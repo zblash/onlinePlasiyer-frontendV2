@@ -1,57 +1,13 @@
 import * as React from 'react';
 import deepEqual from 'deep-equal';
 import { isArray, getKeyByValue } from '~/utils';
-import { cacheHelper, getRouteId, FetchPolicy } from './helpers';
 import { queryEndpoints } from '~/services';
-import { IQueryRequiredProp } from '~/components/common/query';
+import { CacheContextProviderComponentState, CacheContextActions, GenericQuery, RouteSchema } from './helpers';
+import { getRouteResponseSchema, getRouteId, separatingObjectsContainingId } from './utils';
 
-type TQuery = (vars: any) => Promise<any>;
-
-type IQueryProps = IQueryRequiredProp<any, any>;
-
-export interface IRouteCache {
-  id: string;
-  props?: {
-    [key: string]: IRouteCache | IRouteCache[];
-  };
-}
-
-export interface IRouteResponse {
-  usedIds: string[];
-  cache: IRouteCache | IRouteCache[];
-}
-
-export interface ICacheHelperResponse {
-  route: IRouteResponse['cache'];
-  cache: Record<string, any>;
-}
-
-interface IApplicationContextState {
-  dataCache: Record<string, any>;
-  routeCache: Record<string, IRouteResponse>;
-}
-interface IApplicationContextActions {
-  get: (s: {
-    query: TQuery;
-    variables: any;
-    fetchPolicy: FetchPolicy;
-    listener?: {
-      id: string;
-      onDataChange: (data: any) => void;
-    };
-  }) => Promise<any>;
-
-  mutate: (s: {
-    mutation: (vars: any) => Promise<any>;
-    variables: any;
-    refetchQueries?: IQueryProps[];
-  }) => Promise<any>;
-
-  removeListener: (id: string) => void;
-}
 const initialValue: {
-  state: IApplicationContextState;
-  actions: IApplicationContextActions;
+  state: CacheContextProviderComponentState;
+  actions: CacheContextActions;
 } = {
   state: {
     dataCache: {},
@@ -64,12 +20,12 @@ const initialValue: {
   },
 };
 
-export const CacheContext = React.createContext<IApplicationContextActions>({
+const CacheContext = React.createContext<CacheContextActions>({
   ...initialValue.state,
   ...initialValue.actions,
 });
 
-class CacheContextProvider extends React.Component<{}, IApplicationContextState> {
+class CacheContextProvider extends React.Component<{}, CacheContextProviderComponentState> {
   private _proccessTimer: Record<string, Promise<any>>;
 
   private _changeListener: Record<string, { listner: (data: any) => void; routeId: string }>;
@@ -91,7 +47,7 @@ class CacheContextProvider extends React.Component<{}, IApplicationContextState>
     return route;
   };
 
-  public get: IApplicationContextActions['get'] = props => {
+  public get: CacheContextActions['get'] = props => {
     const { query, variables, listener, fetchPolicy } = props;
     const routeId = getRouteId(this.getRouteEndpoint(query), variables);
     if (fetchPolicy === 'cache-only' || fetchPolicy === 'cache-first' || fetchPolicy === 'cache-and-network') {
@@ -114,15 +70,26 @@ class CacheContextProvider extends React.Component<{}, IApplicationContextState>
             this._proccessTimer[routeId] = undefined;
             const _state = this.state;
             const { dataCache, routeCache } = _state;
-            const _cache = cacheHelper(data);
-            if (_cache) {
+            const routeSchema = getRouteResponseSchema(data);
+            const modifiedObjects = separatingObjectsContainingId(data);
+            if (routeSchema && modifiedObjects) {
               this.setState(
                 {
-                  dataCache: { ...dataCache, ..._cache.cache },
-                  routeCache: { ...routeCache, [routeId]: { cache: _cache.route, usedIds: Object.keys(_cache.cache) } },
+                  dataCache: { ...dataCache, ...modifiedObjects },
+                  routeCache: {
+                    ...routeCache,
+                    [routeId]: { schema: routeSchema, usedIds: Object.keys(modifiedObjects) },
+                  },
                 },
                 () => {
-                  this.updateQueries(_cache, _state, listener ? listener.id : '##');
+                  this.updateQueries(
+                    {
+                      route: routeSchema,
+                      cache: modifiedObjects,
+                    },
+                    _state,
+                    listener ? listener.id : '##',
+                  );
                 },
               );
             }
@@ -145,18 +112,25 @@ class CacheContextProvider extends React.Component<{}, IApplicationContextState>
     return query(variables);
   };
 
-  public mutate: IApplicationContextActions['mutate'] = ({ variables, mutation, refetchQueries }) =>
+  public mutate: CacheContextActions['mutate'] = ({ variables, mutation, refetchQueries }) =>
     mutation(variables).then(data => {
       const _state = this.state;
-      const _cache = cacheHelper(data);
+      const _cache = getRouteResponseSchema(data);
+      const modifiedObjects = separatingObjectsContainingId(data);
       this.refetchQuerys(refetchQueries).then(() => {
         if (_cache) {
           this.setState(
             prevState => ({
-              dataCache: { ...prevState.dataCache, ..._cache.cache },
+              dataCache: { ...prevState.dataCache, ...modifiedObjects },
             }),
             () => {
-              this.updateQueries(_cache, _state);
+              this.updateQueries(
+                {
+                  route: _cache,
+                  cache: modifiedObjects,
+                },
+                _state,
+              );
             },
           );
         }
@@ -165,7 +139,7 @@ class CacheContextProvider extends React.Component<{}, IApplicationContextState>
       return data;
     });
 
-  public refetchQuerys = async (refetchQueries: IQueryProps[]) => {
+  public refetchQuerys = async (refetchQueries: GenericQuery[]) => {
     if (isArray(refetchQueries)) {
       await Promise.all(
         refetchQueries.map(({ query, variables: refetchVars }) =>
@@ -185,8 +159,8 @@ class CacheContextProvider extends React.Component<{}, IApplicationContextState>
 
   // TODO : refactor code
   public updateQueries = (
-    newResponseCache: ICacheHelperResponse,
-    oldAppState: IApplicationContextState,
+    newResponseCache: { route: RouteSchema | RouteSchema[]; cache: Record<string, any> },
+    oldAppState: CacheContextProviderComponentState,
     currentQueryId: string = '##',
   ) => {
     const { routeCache } = this.state;
@@ -247,7 +221,7 @@ class CacheContextProvider extends React.Component<{}, IApplicationContextState>
   public getDataByRoute = (routeId: string) => {
     const { routeCache } = this.state;
 
-    const data = routeCache[routeId].cache;
+    const data = routeCache[routeId].schema;
 
     if (!data) {
       throw new Error('Data yok');
@@ -287,4 +261,4 @@ class CacheContextProvider extends React.Component<{}, IApplicationContextState>
   }
 }
 
-export default CacheContextProvider;
+export { CacheContextProvider, CacheContext };

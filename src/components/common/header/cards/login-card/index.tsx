@@ -3,8 +3,8 @@ import styled, { css } from '~/styled';
 import { Input, Button, Icon, Loading } from '~/components/ui';
 import { SuccessAnimationIcon } from './success-animation-icon';
 import { mutationEndPoints } from '~/services';
-import { Mutation } from '~/components/common';
 import { ApplicationContext } from '~/context/application';
+import Mutation from '~/cache-management/components/mutation';
 
 /*
   LoginCard Helpers
