@@ -1,8 +1,12 @@
 import * as React from 'react';
 import styled from '~/styled';
-import { CategoryList } from './category-list';
-import { Container, Button } from '~/components/ui';
+import { Container } from '~/components/ui';
 import { ProductCard, ProductCardWrapper } from './product-card';
+import { Query } from '~/cache-management/components/query';
+import { queryEndpoints } from '~/services';
+import { CategoryFields } from './category';
+import { CategoryHorizontalList } from '~/backend-components/common/category-horizontal-list';
+import { WithAuthUserComponentProps } from '~/components/hoc/with-auth-user';
 
 const StyledDiv = styled.div`
   margin-top: 48px;
@@ -25,58 +29,59 @@ const StyledCardContainer = styled(StyledDiv)`
   }
 `;
 
-const Home: React.SFC<IHomeProps> = props => {
-  const [selectedCategoryId, setSelectedCategoryId] = React.useState(categories[0].id);
-  const [selectedParentCategoryId, setSelectedParentCategoryId] = React.useState(categories[0].id);
+const Home: React.SFC<IHomeProps & WithAuthUserComponentProps> = props => {
+  const [selectedCategoryId, setSelectedCategoryId] = React.useState<string>(null);
+  const [selectedParentCategoryId, setSelectedParentCategoryId] = React.useState<string>(null);
 
-  const { subCategories, name: selectedParentCategoryName } = categories.find(
-    category => category.id === selectedParentCategoryId,
-  );
-  const selectedCategoryName =
-    selectedCategoryId === selectedParentCategoryId
-      ? selectedParentCategoryName
-      : subCategories.find(category => category.id === selectedCategoryId).name;
+  if (!props.user) {
+    return null;
+  }
 
   return (
-    <Container>
-      <StyledDiv>
-        <CategoryList
-          categories={categories}
-          selectedCateogryId={selectedParentCategoryId}
-          onItemClick={id => {
-            setSelectedCategoryId(id);
-            setSelectedParentCategoryId(id);
-          }}
-          onSubItemClick={id => {
-            setSelectedParentCategoryId(
-              categories.find(category => category.subCategories.find(subCategory => subCategory.id === id)).id,
-            );
-            setSelectedCategoryId(id);
-          }}
-        />
-        <StyledSelectedParentCategoryTitle>{selectedCategoryName}</StyledSelectedParentCategoryTitle>
-      </StyledDiv>
+    <Query
+      query={queryEndpoints.getCategories}
+      variables={{ type: 'all' }}
+      onComplated={d => {
+        const cat = d.filter(c => !c.subCategory)[0];
+        setSelectedCategoryId(cat.id);
+        setSelectedParentCategoryId(cat.id);
+      }}
+    >
+      {({ data, loading, error }) => {
+        if (data && selectedCategoryId && selectedParentCategoryId) {
+          const selectedCategoryName = data.find(category => category.id === selectedCategoryId)!.name;
 
-      <StyledCardContainer>
-        {[1, 2, 3, 4].map(i => (
-          <ProductCard key={i} />
-        ))}
-      </StyledCardContainer>
-    </Container>
+          return (
+            <Container>
+              <StyledDiv>
+                <CategoryHorizontalList
+                  categories={data}
+                  selectedCateogryId={selectedParentCategoryId}
+                  onItemClick={id => {
+                    setSelectedCategoryId(id);
+                    setSelectedParentCategoryId(id);
+                  }}
+                  onSubItemClick={id => {
+                    setSelectedParentCategoryId(data.find(category => category.id === id).parentId);
+                    setSelectedCategoryId(id);
+                  }}
+                />
+                <StyledSelectedParentCategoryTitle>{selectedCategoryName}</StyledSelectedParentCategoryTitle>
+              </StyledDiv>
+
+              <StyledCardContainer>
+                {[1, 2, 3, 4].map(i => (
+                  <ProductCard key={i} />
+                ))}
+              </StyledCardContainer>
+            </Container>
+          );
+        }
+        return null;
+      }}
+    </Query>
   );
 };
 interface IHomeProps {}
 
 export default Home;
-
-// TODO: remove
-const categories = new Array(11).fill('').map((_, index) => ({
-  id: `${index}`,
-  name: `Category${index}`,
-  img: `https://picsum.photos/700/${900 + index}`,
-  subCategories: new Array(11).fill('').map((_, index2) => ({
-    id: `${index}_${index2}`,
-    name: `Category${index}_${index2}`,
-    img: `https://picsum.photos/600/${800 + index}`,
-  })),
-}));
