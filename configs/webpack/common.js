@@ -1,10 +1,12 @@
-// shared config (dev and prod)
 const { resolve } = require('path');
 const { CheckerPlugin } = require('awesome-typescript-loader');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const svgLoader = require('./svg-loader');
+const loaders = require('./loaders');
 
 const appSrc = resolve(__dirname, '../../src');
+
+const nodeEnv = process.env.NODE_ENV || 'production';
+const isProduction = nodeEnv === 'production';
 
 module.exports = {
   resolve: {
@@ -15,40 +17,15 @@ module.exports = {
   },
   context: appSrc,
   module: {
-    rules: [
-      svgLoader,
-      {
-        test: /\.js$/,
-        use: ['babel-loader', 'source-map-loader'],
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.tsx?$/,
-        use: ['babel-loader', 'awesome-typescript-loader'],
-      },
-      {
-        test: /\.css$/,
-        use: ['style-loader', { loader: 'css-loader', options: { importLoaders: 1 } }],
-      },
-      {
-        test: /\.scss$/,
-        loaders: ['style-loader', { loader: 'css-loader', options: { importLoaders: 1 } }, 'sass-loader'],
-      },
-      {
-        test: /\.(jpe?g|png|gif|svg)$/i,
-        exclude: /src\/assets\/icons/,
-        include: /src\/assets\/images/,
-        loaders: [
-          'file-loader?hash=sha512&digest=hex&name=img/[hash].[ext]',
-          'image-webpack-loader?bypassOnDebug&optipng.optimizationLevel=7&gifsicle.interlaced=false',
-        ],
-      },
-    ],
+    rules: loaders,
   },
   plugins: [
     new CheckerPlugin(),
     new HtmlWebpackPlugin({
-      template: 'index.html',
+      template: 'index.html.ejs',
+      templateParameters: {
+        injectScript: isProduction ? 'window.__REACT_DEVTOOLS_GLOBAL_HOOK__.inject = function () {}' : '',
+      },
     }),
   ],
   performance: {

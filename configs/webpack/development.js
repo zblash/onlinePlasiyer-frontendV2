@@ -1,6 +1,5 @@
 // development config
 const merge = require('webpack-merge');
-const path = require('path');
 const webpack = require('webpack');
 const commonConfig = require('./common');
 

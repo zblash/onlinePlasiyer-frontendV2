@@ -1,4 +1,3 @@
-/* eslint-disable global-require */
 import { createGlobalStyle } from '~/styled';
 import { globalStyle } from '~/styled/css';
 
