@@ -1,31 +1,14 @@
 import * as React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { UserRoleResponse } from '~/backend-model-helpers';
 import { queryEndpoints } from '~/services';
 import { withRequiredRole } from './hoc/with-required-role';
-import { withHeader } from './hoc/with-header';
 
-import Home from './pages/home';
 import Page404 from '~/components/pages/404-component';
 import { FullScreenLoading } from './common/full-screen-loading';
 import { Query } from '~/cache-management/components/query';
-
-interface IRoute {
-  path: string;
-  component: React.ComponentClass | React.FunctionComponent;
-  shouldLogin: boolean;
-  authorize?: UserRoleResponse[];
-  disabled?: boolean;
-}
+import routes from './routes';
 
 const App = () => {
-  const routes: IRoute[] = [
-    {
-      path: '/',
-      component: withHeader(Home),
-      shouldLogin: false,
-    },
-  ];
   const app = (
     <Router>
       <Switch>
@@ -36,7 +19,6 @@ const App = () => {
               path={route.path}
               component={withRequiredRole(route.component, {
                 authorize: route.authorize,
-                showLoginPopup: route.shouldLogin,
               })}
               exact
             />

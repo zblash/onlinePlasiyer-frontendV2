@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled, { css } from '~/styled';
 import Portal from './portal';
+import { Loading } from '../ui';
 
 /*
   FullScreenLoading Helpers
@@ -12,6 +13,7 @@ interface FullScreenLoadingProps {}
 */
 export const FullScreenLoadingColors = {
   wrapperBackground: '#fff',
+  primary: '#0075ff',
 };
 
 /*
@@ -52,7 +54,7 @@ const StyledBodyDiv = styled.div`
   > span {
     height: 5px;
     width: 35px;
-    background: #0075ff;
+    background: ${FullScreenLoadingColors.primary};
     position: absolute;
     top: -19px;
     left: 60px;
@@ -64,7 +66,7 @@ const StyledBaseSpan = styled.span`
   width: 0;
   height: 0;
   border-top: 6px solid transparent;
-  border-right: 100px solid #0075ff;
+  border-right: 100px solid ${FullScreenLoadingColors.primary};
   border-bottom: 6px solid transparent;
 
   &:before {
@@ -72,7 +74,7 @@ const StyledBaseSpan = styled.span`
     height: 22px;
     width: 22px;
     border-radius: 50%;
-    background: #0075ff;
+    background: ${FullScreenLoadingColors.primary};
     position: absolute;
     right: -110px;
     top: -16px;
@@ -84,7 +86,7 @@ const StyledBaseSpan = styled.span`
     width: 0;
     height: 0;
     border-top: 0 solid transparent;
-    border-right: 55px solid #0075ff;
+    border-right: 55px solid ${FullScreenLoadingColors.primary};
     border-bottom: 16px solid transparent;
     top: -16px;
     right: -98px;
@@ -95,7 +97,7 @@ const StyledFaceDiv = styled.div`
   position: absolute;
   height: 12px;
   width: 20px;
-  background: #0075ff;
+  background: ${FullScreenLoadingColors.primary};
   border-radius: 20px 20px 0 0;
   transform: rotate(-40deg);
   right: -125px;
@@ -105,7 +107,7 @@ const StyledFaceDiv = styled.div`
     content: '';
     height: 12px;
     width: 12px;
-    background: #0075ff;
+    background: ${FullScreenLoadingColors.primary};
     right: 4px;
     top: 7px;
     position: absolute;
@@ -124,7 +126,7 @@ const StyledLongFasers = styled.div`
     position: absolute;
     height: 2px;
     width: 20%;
-    background: #0075ff;
+    background: ${FullScreenLoadingColors.primary};
 
     &:nth-child(1) {
       top: 20%;
@@ -153,7 +155,7 @@ const StyledLongFasers = styled.div`
 const cssCommonSpanStyle = css`
   width: 30px;
   height: 1px;
-  background: #0075ff;
+  background: ${FullScreenLoadingColors.primary};
   position: absolute;
   animation: fazer1 0.2s linear infinite;
 `;
@@ -176,6 +178,14 @@ const cssAnimation4 = css`
 `;
 
 const FullScreenLoading: React.SFC<FullScreenLoadingProps> = props => {
+  return (
+    <Portal>
+      <StyledFullScreenLoadingWrapper>
+        <Loading size={70} color={FullScreenLoadingColors.primary} />
+      </StyledFullScreenLoadingWrapper>
+    </Portal>
+  );
+
   const __ = (
     <Portal>
       <StyledFullScreenLoadingWrapper>
@@ -202,14 +212,6 @@ const FullScreenLoading: React.SFC<FullScreenLoadingProps> = props => {
       </StyledFullScreenLoadingWrapper>
     </Portal>
   );
-
-  /*
-  FullScreenLoading Lifecycle
-  */
-
-  /*
-  FullScreenLoading Functions
-  */
 
   return __;
 };
