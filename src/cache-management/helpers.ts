@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-type FetchPolicy = 'cache-first' | 'cache-and-network' | 'network-only' | 'cache-only';
+type FetchPolicy = 'cache-first' | 'cache-and-network' | 'network-only';
 
 export type GenericQuery = QueryRequiredFields<any, any>;
 
@@ -58,18 +58,13 @@ interface QueryRequiredFields<T, TVariables> {
 
 // QUERY COMPONENT
 
-export interface QueryComponentProps<T, TVariables, ParentQueryVarianbles, ParentQueryResult>
-  extends QueryRequiredFields<T, TVariables> {
+export interface QueryComponentProps<T, TVariables> extends QueryRequiredFields<T, TVariables> {
   children: (s: { data: T; loading: boolean; error: Error }) => JSX.Element;
   onComplated?: (data: T) => void;
   onUpdate?: (data: T) => void;
   onError?: (e: IQueryError) => void;
   fetchPolicy: FetchPolicy;
-  readCache?: {
-    parentQuery: (varables: ParentQueryVarianbles) => Promise<ParentQueryResult>;
-    parentVariables?: ParentQueryVarianbles;
-    dataGetter: (d: ParentQueryResult) => T;
-  };
+  skip?: boolean;
 }
 
 export interface QueryComponentState {

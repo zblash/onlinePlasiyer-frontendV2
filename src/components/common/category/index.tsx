@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled, { css } from '~/styled';
-import { Icon } from '~/components/ui';
+import { UIIcon } from '~/components/ui';
 import { SubCategoryList } from './sub-category-list';
 import Tooltip from 'rc-tooltip';
 
@@ -10,7 +10,7 @@ import Tooltip from 'rc-tooltip';
 export interface CategoryFields {
   id: string;
   name: string;
-  img: string;
+  photoUrl: string;
   subCategories?: Omit<CategoryFields, 'subCategories'>[];
 }
 
@@ -123,14 +123,14 @@ const CategoryItem: React.SFC<CategoryItemProps> = props => {
 
   const __ = (
     <CategoryItemWrapper isHighlighted={props.isHighlighted} onClick={props.onClick}>
-      <StyledCategoryImg src={props.img} />
+      <StyledCategoryImg src={props.photoUrl} />
       <StyledCategoryName>{props.name}</StyledCategoryName>
       <StyledSelectedStatus isShown={props.isHighlighted} />
       <Tooltip
         {...tooltipProps}
         overlay={
           <SubCategoryList
-            categories={props.subCategories}
+            categories={props.subCategories || []}
             onItemClick={id => {
               setIsClickSubitem(true);
               if (props.onSubItemClick) {
@@ -142,7 +142,7 @@ const CategoryItem: React.SFC<CategoryItemProps> = props => {
         placement="bottom"
       >
         <IconWrapper>
-          <Icon
+          <UIIcon
             className={iconStyle}
             name="downArrow"
             size={14}

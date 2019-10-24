@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { IconName } from '~/components/ui/icon';
-import { Icon, Button } from '~/components/ui';
+import { UIIcon, UIButton } from '~/components/ui';
 import styled, { css } from '~/styled';
 import Tooltip from 'rc-tooltip';
 
@@ -41,7 +41,7 @@ const cssIconStyle = css`
   opacity: ${textOpacityVariable.get()};
 `;
 
-const StyledMenuItemWrapper = styled(Button)`
+const StyledMenuItemWrapper = styled(UIButton)`
   display: flex;
   padding: 0 24px;
   align-items: center;
@@ -79,7 +79,7 @@ const MenuItem: React.SFC<MenuItemProps> = props => {
       {...tooltipProps}
     >
       <StyledMenuItemWrapper onClick={() => setIsClosed(false)}>
-        <Icon name={props.iconName} size={20} className={cssIconStyle} color={MenuItemColors.text} />
+        <UIIcon name={props.iconName} size={20} className={cssIconStyle} color={MenuItemColors.text} />
         <StyledMenuItemText>{props.text}</StyledMenuItemText>
       </StyledMenuItemWrapper>
     </Tooltip>

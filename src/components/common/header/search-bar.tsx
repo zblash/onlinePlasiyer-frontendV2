@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled, { css } from '~/styled';
-import { Icon, Loading, Input } from '~/components/ui';
+import { UIIcon, Loading, UIInput } from '~/components/ui';
 
 /*
   HeaderSearchBar Helpers
@@ -22,7 +22,7 @@ export const HeaderSearchBarColors = {
 */
 const cssVariable = css.variable(HeaderSearchBarColors.unFocused);
 
-const StyledInput = styled(Input)`
+const StyledInput = styled(UIInput)`
   margin: 0 8px;
   color: ${cssVariable};
 `;
@@ -51,7 +51,7 @@ const HeaderSearchBar: React.SFC<HeaderSearchBarProps> = props => {
   const __ = (
     <StyledHeaderSearchBarWrapper>
       <StyledLabel htmlFor="header-search-bar">
-        <Icon name="search" size={20} color={cssVariable.get()} />
+        <UIIcon name="search" size={20} color={cssVariable.get()} />
       </StyledLabel>
       <StyledInput
         id="header-search-bar"

@@ -26,14 +26,14 @@ const CacheContext = React.createContext<CacheContextActions>({
 });
 
 class CacheContextProvider extends React.Component<{}, CacheContextProviderComponentState> {
-  private _proccessTimer: Record<string, Promise<any>>;
+  queryQeue: Record<string, Promise<any>>;
 
-  private _changeListener: Record<string, { listner: (data: any) => void; routeId: string }>;
+  _changeListener: Record<string, { listner: (data: any) => void; routeId: string }>;
 
-  public constructor(props) {
+  constructor(props) {
     super(props);
     this.state = { ...initialValue.state };
-    this._proccessTimer = {};
+    this.queryQeue = {};
     this._changeListener = {};
   }
 
@@ -50,11 +50,9 @@ class CacheContextProvider extends React.Component<{}, CacheContextProviderCompo
   public get: CacheContextActions['get'] = props => {
     const { query, variables, listener, fetchPolicy } = props;
     const routeId = getRouteId(this.getRouteEndpoint(query), variables);
-    if (fetchPolicy === 'cache-only' || fetchPolicy === 'cache-first' || fetchPolicy === 'cache-and-network') {
+    if (fetchPolicy === 'cache-first' || fetchPolicy === 'cache-and-network') {
       const hasRouteData = this.hasRouteData(routeId);
-      if (fetchPolicy === 'cache-only') {
-        return Promise.resolve(hasRouteData ? this.getDataByRoute(routeId) : null);
-      }
+
       if (listener) {
         this._changeListener[listener.id] = { routeId, listner: listener.onDataChange };
       }
@@ -67,7 +65,7 @@ class CacheContextProvider extends React.Component<{}, CacheContextProviderCompo
       const apiCall = () =>
         query(variables)
           .then(data => {
-            this._proccessTimer[routeId] = undefined;
+            this.queryQeue[routeId] = undefined;
             const _state = this.state;
             const { dataCache, routeCache } = _state;
             const routeSchema = getRouteResponseSchema(data);
@@ -97,16 +95,16 @@ class CacheContextProvider extends React.Component<{}, CacheContextProviderCompo
             return data;
           })
           .finally(() => {
-            this._proccessTimer[routeId] = undefined;
+            this.queryQeue[routeId] = undefined;
           });
 
-      if (!this._proccessTimer[routeId]) {
-        this._proccessTimer[routeId] = apiCall();
+      if (!this.queryQeue[routeId]) {
+        this.queryQeue[routeId] = apiCall();
       } else {
-        this._proccessTimer[routeId].then(() => this.get(props));
+        this.queryQeue[routeId].then(() => this.get(props));
       }
 
-      return this._proccessTimer[routeId];
+      return this.queryQeue[routeId];
     }
 
     return query(variables);
@@ -164,8 +162,9 @@ class CacheContextProvider extends React.Component<{}, CacheContextProviderCompo
     currentQueryId: string = '##',
   ) => {
     const { routeCache } = this.state;
-    Object.keys(this._changeListener).forEach(_queryId => {
-      const item = this._changeListener[_queryId];
+    const a = this._changeListener;
+    Object.keys(a).forEach(_queryId => {
+      const item = a[_queryId];
       const newResponseCacheAllIds = Object.keys(newResponseCache.cache);
       const routeResult = routeCache[item.routeId];
       if (this.hasRouteData(item.routeId) && _queryId !== currentQueryId) {

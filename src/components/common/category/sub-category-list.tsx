@@ -63,7 +63,7 @@ const SubCategoryList: React.SFC<SubCategoryListProps> = props => {
             onItemClick(category.id);
           }}
         >
-          <StyledImg src={category.img} />
+          <StyledImg src={category.photoUrl} />
           <StyledName>{category.name}</StyledName>
         </StyledCategoryWrapper>
       ))}

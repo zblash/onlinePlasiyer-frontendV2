@@ -1,6 +1,6 @@
 import styled from '~/styled';
 
-export const Button = styled.button`
+export const UIButton = styled.button`
   // reset button style
   background: none;
   color: inherit;

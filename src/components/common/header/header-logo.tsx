@@ -1,9 +1,9 @@
 import * as React from 'react';
 import styled from '~/styled';
 import logoPath from '~/assets/images/logo.png';
-import { Link } from '~/components/ui';
+import { UILink } from '~/components/ui';
 
-const StyledHeaderLogoTitle = styled(Link)`
+const StyledHeaderLogoTitle = styled(UILink)`
   background-image: url(${logoPath});
   user-select: none;
   width: 256px;

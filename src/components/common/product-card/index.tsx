@@ -1,11 +1,19 @@
 import * as React from 'react';
 import styled, { StylableProps } from '~/styled';
-import { Button } from '~/components/ui';
+import { UIButton } from '~/components/ui';
 
 /*
   ProductCard Helpers
 */
-interface ProductCardProps extends StylableProps {}
+export interface ProductData {
+  id: string;
+  name: string;
+  img: string;
+}
+
+interface ProductCardProps extends StylableProps, ProductData {
+  onButtonClick?: () => void;
+}
 
 /*
   ProductCard Colors
@@ -48,10 +56,10 @@ const StyledCardWrapper = styled.div`
   padding: 0;
   font-size: 12px;
   border-radius: 4px;
-  box-shadow: #cccccc 0 0 16px;
+  box-shadow: #cccccc 0 0 6px;
+    0px 1px 5px 0px rgba(0, 0, 0, 0.12);
   overflow: hidden;
 
-  height: 310px;
   flex: 1;
   :hover {
     ${StyledShadowElement} {
@@ -76,29 +84,31 @@ const StyledTitle = styled.h2`
   margin: 0;
 `;
 
-const StyledPreviewButton = styled(Button)`
-  display: inline-block;
-  border: 1px solid #0075ff;
-  background-color: #fff;
-  -webkit-font-smoothing: antialiased;
-  color: #0075ff;
-  text-align: center;
-  cursor: pointer;
-  margin: 1px 4px 0;
-  line-height: 1.5;
-  padding: 7px 12px;
-  font-size: 12px;
-  font-weight: 700;
-  text-decoration: none;
-  border-radius: 2px;
-  :hover {
-    color: #fff;
-    background-color: #0075ff;
+const StyledPreviewButton = styled(UIButton)`
+  && {
+    display: inline-block;
+    border: 1px solid #0075ff;
+    background-color: #fff;
+    -webkit-font-smoothing: antialiased;
+    color: #0075ff;
+    text-align: center;
+    cursor: pointer;
+    margin: 1px 4px 0;
+    line-height: 1.5;
+    padding: 7px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: 2px;
+    :hover {
+      color: #fff;
+      background-color: #0075ff;
+    }
+    :active {
+      background-color: #0062d4;
+    }
+    transition: background-color 0.3s, color 0.3s;
   }
-  :active {
-    background-color: #0062d4;
-  }
-  transition: background-color 0.3s, color 0.3s;
 `;
 
 const ProductCard: React.SFC<ProductCardProps> = props => {
@@ -106,11 +116,11 @@ const ProductCard: React.SFC<ProductCardProps> = props => {
     <StyledCardWrapper className={props.className}>
       <StyledShadowElement />
       <StyledCardImgWrapper>
-        <StyledCardImg src="https://picsum.photos/701/901" />
+        <StyledCardImg src={props.img} />
       </StyledCardImgWrapper>
       <StyledContent>
-        <StyledTitle>Kuru Fasulye</StyledTitle>
-        <StyledPreviewButton>Fiyatlari Gor</StyledPreviewButton>
+        <StyledTitle>{props.name}</StyledTitle>
+        <StyledPreviewButton onClick={props.onButtonClick}>Fiyatlari Gor</StyledPreviewButton>
       </StyledContent>
     </StyledCardWrapper>
   );

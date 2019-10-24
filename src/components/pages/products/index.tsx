@@ -20,7 +20,18 @@ const _ProductsPage: React.SFC<ProductsPageProps> = props => {
     <Query query={queryEndpoints.getCategories} variables={{ type: 'all' }}>
       {({ data: categories, loading, error }) => {
         if (categories) {
-          return <ProductsPageComponent {...{ categoryIdParam, categories }} />;
+          return (
+            <ProductsPageComponent
+              selectedCategoryId={categoryIdParam}
+              categories={categories.map(category => ({
+                id: category.id,
+                parentId: category.parentId,
+                isSubCategory: false,
+                name: category.name,
+                photoUrl: category.photoUrl,
+              }))}
+            />
+          );
         }
         return null;
       }}

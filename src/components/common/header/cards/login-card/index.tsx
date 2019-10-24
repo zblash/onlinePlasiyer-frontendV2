@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled, { css } from '~/styled';
-import { Input, Button, Icon, Loading } from '~/components/ui';
+import { UIInput, UIButton, UIIcon, Loading } from '~/components/ui';
 import { SuccessAnimationIcon } from './success-animation-icon';
 import { mutationEndPoints } from '~/services';
 import { ApplicationContext } from '~/context/application';
@@ -42,12 +42,12 @@ const StyledInputWrapper = styled.div<{ hasError: boolean }>`
   border: 1px solid ${props => (props.hasError ? LoginCardColors.danger : LoginCardColors.primary)};
   border-radius: 4px;
 `;
-const StyledInput = styled(Input)`
+const StyledInput = styled(UIInput)`
   margin: 0 8px;
   color: ${LoginCardColors.unFocused};
 `;
 
-const StyledLoginButton = styled(Button)<{ hasError: boolean }>`
+const StyledLoginButton = styled(UIButton)<{ hasError: boolean }>`
   border: 1px solid ${props => (props.hasError ? LoginCardColors.danger : LoginCardColors.primary)};
   background-color: ${LoginCardColors.white};
   color: ${props => (props.hasError ? LoginCardColors.danger : LoginCardColors.primary)};
@@ -148,7 +148,7 @@ const LoginCard: React.SFC<LoginCardProps> = props => {
               </StyledLoginButton>
               {isLoading && <Loading color={LoginCardColors.primary} size={24} />}
               {hasError && (
-                <Icon
+                <UIIcon
                   name="danger"
                   size={24}
                   color={LoginCardColors.danger}

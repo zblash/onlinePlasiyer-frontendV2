@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from '~/styled';
-import { Button, Loading } from '~/components/ui';
+import { UIButton, Loading } from '~/components/ui';
 import { withAuthUser, WithAuthUserComponentProps } from '~/components/hoc/with-auth-user';
 import { ApplicationContext } from '~/context/application';
 
@@ -24,7 +24,7 @@ export const AccountCardColors = {
   AccountCard Styles
 */
 
-const StyledLogoutButton = styled(Button)`
+const StyledLogoutButton = styled(UIButton)`
   border: 1px solid ${AccountCardColors.danger};
   background-color: ${AccountCardColors.white};
   color: ${AccountCardColors.danger};

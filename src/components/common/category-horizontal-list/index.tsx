@@ -2,19 +2,20 @@ import * as React from 'react';
 import _debounce from 'lodash.debounce';
 import styled from '~/styled';
 import { CategoryFields, CategoryItem } from '../category';
-import { Icon } from '~/components/ui';
+import { UIIcon } from '~/components/ui';
 
 /*
   CategoryList Helpers
 */
-export interface CategoryHorizontalListComponentProps {
+
+export interface CategoryHorizontalListData {
+  categories: CategoryFields[];
+}
+
+interface CategoryHorizontalListProps extends CategoryHorizontalListData {
   selectedCateogryId?: string;
   onItemClick?: (id: string) => void;
   onSubItemClick?: (id: string) => void;
-}
-
-interface CategoryHorizontalListProps extends CategoryHorizontalListComponentProps {
-  categories: CategoryFields[];
 }
 
 /*
@@ -93,7 +94,7 @@ const CategoryHorizontalList: React.SFC<CategoryHorizontalListProps> = props => 
   const __ = (
     <CategoryListContainer>
       <IconWrapper position="left" isShown={!positionStatus.isStart} onClick={() => scrollManually('left')}>
-        <Icon name="chevronLeft" color={CategoryHorizontalListColors.scrollableListIcon} size={20} />
+        <UIIcon name="chevronLeft" color={CategoryHorizontalListColors.scrollableListIcon} size={20} />
       </IconWrapper>
 
       <CategoryScrollableList onScroll={onScrollWithDebounce} ref={wrapperRef}>
@@ -109,7 +110,7 @@ const CategoryHorizontalList: React.SFC<CategoryHorizontalListProps> = props => 
       </CategoryScrollableList>
 
       <IconWrapper position="right" isShown={!positionStatus.isEnd} onClick={() => scrollManually('right')}>
-        <Icon name="chevronRight" color={CategoryHorizontalListColors.scrollableListIcon} size={20} />
+        <UIIcon name="chevronRight" color={CategoryHorizontalListColors.scrollableListIcon} size={20} />
       </IconWrapper>
     </CategoryListContainer>
   );
