@@ -32,7 +32,6 @@ module.exports = {
       templateParameters: {
         injectScript: isProduction ? 'window.__REACT_DEVTOOLS_GLOBAL_HOOK__.inject = function () {}' : '',
       },
-      inject: true,
     }),
   ],
   performance: {
