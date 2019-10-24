@@ -1,7 +1,9 @@
 const svgLoader = require('./svg-loader');
+const styleLoader = require('./style-loader');
 
 module.exports = [
-  svgLoader,
+  ...svgLoader(),
+  ...styleLoader(),
   {
     test: /\.js$/,
     use: ['babel-loader', 'source-map-loader'],
@@ -10,14 +12,6 @@ module.exports = [
   {
     test: /\.tsx?$/,
     use: ['babel-loader', 'awesome-typescript-loader'],
-  },
-  {
-    test: /\.css$/,
-    use: ['style-loader', { loader: 'css-loader', options: { importLoaders: 1 } }],
-  },
-  {
-    test: /\.scss$/,
-    loaders: ['style-loader', { loader: 'css-loader', options: { importLoaders: 1 } }, 'sass-loader'],
   },
   {
     test: /\.(jpe?g|png|gif|svg)$/i,

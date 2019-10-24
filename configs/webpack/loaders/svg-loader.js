@@ -69,9 +69,15 @@ const forkSvgLoader = {
   },
 };
 
-module.exports = {
-  test: /\.svg$/,
-  include: /src\/assets\/icons/,
-  exclude: /src\/assets\/images/,
-  use: [forkSvgLoader, svgCurrentColorLoader],
-};
+function svgLoader() {
+  return [
+    {
+      test: /\.svg$/,
+      include: /src\/assets\/icons/,
+      exclude: /src\/assets\/images/,
+      use: [forkSvgLoader, svgCurrentColorLoader],
+    },
+  ];
+}
+
+module.exports = svgLoader;
