@@ -1,7 +1,7 @@
 import React from 'react';
 import { ApplicationContext } from '~/context/application';
 
-function useStateFromProp(initialValue) {
+function useStateFromProp<T>(initialValue: T): [T, React.Dispatch<React.SetStateAction<T>>] {
   const [value, setValue] = React.useState(initialValue);
 
   React.useEffect(() => setValue(initialValue), [initialValue]);
@@ -13,8 +13,8 @@ function useApplicationContext() {
   return React.useContext(ApplicationContext);
 }
 
-function usePrevious(value: any) {
-  const ref = React.useRef();
+function usePrevious<T>(value: T): T {
+  const ref = React.useRef<T>();
 
   React.useEffect(() => {
     ref.current = value;

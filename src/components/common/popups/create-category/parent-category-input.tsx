@@ -39,6 +39,15 @@ const _ParentCategoryInput: React.SFC<ParentCategoryInputProps> = props => {
     queryEndpoints.getCategories,
     { variables: { type: 'parent' }, skip: !isActivate },
   );
+
+  const inputIconElement = (
+    <UIIcon
+      className={inputIconStyle}
+      name={getParentCategoriesLoading ? 'loading' : 'maintenance'}
+      size={20}
+      color={props.isHighlighted ? CreateCategoryPopupColors.primary : CreateCategoryPopupColors.textColor}
+    />
+  );
   const __ = (
     <UIAutoComplete
       items={parentCategories || []}
@@ -47,21 +56,14 @@ const _ParentCategoryInput: React.SFC<ParentCategoryInputProps> = props => {
       getItemValue={item => item.name}
       renderInput={
         <StyledInput
-  value={autocompleteValue}
-  disabled={!!(props.disabled || getParentCategoriesLoading || getParentCategoriesError)}
-  inputClassName={commonInputStyle}
-  placeholder={ParentCategoryInputStrings.inputPlaceholder}
-  onChange={e => setAutoCompleteValue(e)}
-  id="category-parentid"
-  leftIcon={(
-<UIIcon
-              className={inputIconStyle}
-              name={getParentCategoriesLoading ? 'loading' : 'maintenance'}
-              size={20}
-              color={props.isHighlighted ? CreateCategoryPopupColors.primary : CreateCategoryPopupColors.textColor}
-            />
-)}
-/>
+          value={autocompleteValue}
+          disabled={!!(props.disabled || getParentCategoriesLoading || getParentCategoriesError)}
+          inputClassName={commonInputStyle}
+          placeholder={ParentCategoryInputStrings.inputPlaceholder}
+          onChange={e => setAutoCompleteValue(e)}
+          id="category-parentid"
+          leftIcon={inputIconElement}
+        />
       }
       renderItem={(item, highlighted) => (
         // TODO: update this element

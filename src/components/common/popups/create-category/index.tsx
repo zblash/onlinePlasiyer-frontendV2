@@ -172,11 +172,11 @@ const _CreateCategoryPopup: React.SFC<CreateCategoryPopupProps> = props => {
         id="category-name"
         leftIcon={
           <UIIcon
-  className={inputIconStyle}
-  name="nameTag"
-  size={20}
-  color={state.name ? CreateCategoryPopupColors.primary : CreateCategoryPopupColors.textColor}
-/>
+            className={inputIconStyle}
+            name="nameTag"
+            size={20}
+            color={state.name ? CreateCategoryPopupColors.primary : CreateCategoryPopupColors.textColor}
+          />
         }
       />
       <UICheckbox

@@ -82,18 +82,6 @@ function useQuery<T extends BaseEndpointType>(
   const options = { ...defaultQueryOptions, ..._options };
   const [state, setState] = React.useState({ data: null, error: null, loading: !options.skip });
 
-  React.useEffect(() => {
-    getQuery();
-  }, [JSON.stringify(options.variables), options.skip]);
-
-  React.useEffect(() => {
-    getQuery();
-
-    return () => {
-      cacheContext.removeListener(queryHookId);
-    };
-  }, []);
-
   function getQuery() {
     if (options.skip) {
       return;
@@ -129,6 +117,18 @@ function useQuery<T extends BaseEndpointType>(
         throw e;
       });
   }
+
+  React.useEffect(() => {
+    getQuery();
+
+    return () => {
+      cacheContext.removeListener(queryHookId);
+    };
+  }, []);
+
+  React.useEffect(() => {
+    getQuery();
+  }, [JSON.stringify(options)]);
 
   return [state.data, state.loading, state.error];
 }

@@ -169,14 +169,14 @@ const CategoryItem: React.SFC<CategoryItemProps> = props => {
           {...tooltipProps}
           overlay={
             <SubCategoryList
-  categories={props.subCategories}
-  onItemClick={category => {
+              categories={props.subCategories}
+              onItemClick={category => {
                 setIsClickSubitem(true);
                 if (props.onSubItemClick) {
                   props.onSubItemClick(category);
                 }
               }}
-/>
+            />
           }
           placement="bottom"
         >
