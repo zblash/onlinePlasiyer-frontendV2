@@ -27,6 +27,7 @@
       { "blankLine": "any", "prev": ["const", "let", "var"], "next": ["const", "let", "var"] },
       { "blankLine": "always", "prev": ["*"], "next": ["return"] }
     ],
+    "react-hooks/exhaustive-deps": 0,
     "no-plusplus": 0,
     "@typescript-eslint/explicit-function-return-type": 0,
     "@typescript-eslint/interface-name-prefix": 0,

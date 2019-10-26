@@ -22,7 +22,7 @@ export interface CacheContextProviderComponentState {
   >;
 }
 
-export interface CacheContextActions {
+export interface CacheContext {
   get: (s: {
     query: GenericQuery['query'];
     variables: any;
@@ -63,41 +63,10 @@ interface QueryRequiredFields<T> {
   variables?: EndpointsVariablesType<T>;
 }
 
-// QUERY COMPONENT
-
-export interface QueryComponentProps<T> extends QueryRequiredFields<T> {
-  children: (s: { data: EndpointsResultType<T>; loading: boolean; error: Error }) => JSX.Element;
-  onComplated?: (data: EndpointsResultType<T>) => void;
-  onUpdate?: (data: EndpointsResultType<T>) => void;
-  onError?: (e: IQueryError) => void;
-  fetchPolicy: FetchPolicy;
-  skip?: boolean;
-}
-
-export interface QueryComponentState {
-  data: any;
-  loading: boolean;
-  error: Error | null;
-}
-
-// MUTATION COMPONENTS
-
-export type MutationFunction<T, TVariables> = (pass?: TVariables) => Promise<T>;
-
-export interface MutationComponentProps<T, TVariables> {
-  children: (
-    mutation: MutationFunction<T, TVariables>,
-    s: { data: T; loading: boolean; error: any; setError: (e: any) => void },
-  ) => JSX.Element;
-  onError?: (e: any) => void;
-  onComplated?: (data: T) => void;
-  mutation: MutationFunction<T, TVariables>;
-  variables?: TVariables;
-  refetchQueries?: GenericQuery[];
-}
-
-export interface MutationComponentState<T = any> {
-  data: T;
-  loading: boolean;
-  error: any | null;
-}
+export type CommonEnpointOptions<T> = EndpointsVariablesType<T> extends undefined
+  ? {
+      variables?: EndpointsVariablesType<T>;
+    }
+  : {
+      variables: EndpointsVariablesType<T>;
+    };

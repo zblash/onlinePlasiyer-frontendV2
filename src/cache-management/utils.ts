@@ -37,7 +37,7 @@ export const separatingObjectsContainingId = (unmodifiedData: any) => {
   return modifiedData;
 };
 
-function getRouteResponseSchema(obj: any, id?: string): RouteSchema | RouteSchema[] {
+function getRouteSchema(obj: any, id?: string): RouteSchema | RouteSchema[] {
   if (typeof obj !== 'object') {
     return null;
   }
@@ -49,7 +49,7 @@ function getRouteResponseSchema(obj: any, id?: string): RouteSchema | RouteSchem
   if (isArray(obj)) {
     route = [];
     (obj as any[]).forEach(value => {
-      const cacheItem = getRouteResponseSchema(value);
+      const cacheItem = getRouteSchema(value);
       if (cacheItem) {
         (route as RouteSchema[]).push(cacheItem as RouteSchema);
       }
@@ -65,7 +65,7 @@ function getRouteResponseSchema(obj: any, id?: string): RouteSchema | RouteSchem
       if (isArray(value)) {
         const newRoute = [];
         const cacheMap = (value as any[]).map(val => {
-          const r = getRouteResponseSchema(val);
+          const r = getRouteSchema(val);
 
           return r;
         });
@@ -80,7 +80,7 @@ function getRouteResponseSchema(obj: any, id?: string): RouteSchema | RouteSchem
         }
       } else if (isObject(value)) {
         const _key = `${_id}.${key}`;
-        const newCache = getRouteResponseSchema(value, _key);
+        const newCache = getRouteSchema(value, _key);
         _route.props = { ..._route.props, [key]: newCache };
       }
     });
@@ -89,4 +89,4 @@ function getRouteResponseSchema(obj: any, id?: string): RouteSchema | RouteSchem
   return route;
 }
 
-export { getRouteId, getRouteResponseSchema };
+export { getRouteId, getRouteSchema };

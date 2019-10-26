@@ -1,15 +1,13 @@
 import * as React from 'react';
-import { EndpointsResultType, EndpointsVariablesType, GenericQuery, FetchPolicy } from './helpers';
+import {
+  EndpointsResultType,
+  EndpointsVariablesType,
+  GenericQuery,
+  FetchPolicy,
+  CommonEnpointOptions,
+} from './helpers';
 import { CacheContext } from './context';
 import { WithDefaultProps } from '~/helpers';
-
-type CommonOptions<T> = EndpointsVariablesType<T> extends undefined
-  ? {
-      variables?: EndpointsVariablesType<T>;
-    }
-  : {
-      variables: EndpointsVariablesType<T>;
-    };
 
 // [mutation,result,loading,error]
 type UseMutationResult<Mutation> = [
@@ -21,7 +19,7 @@ type UseMutationResult<Mutation> = [
 
 type UseMutationOptions<T> = {
   refetchQueries?: GenericQuery[];
-} & CommonOptions<T>;
+} & CommonEnpointOptions<T>;
 
 type BaseEndpointType = (vars: any) => Promise<any>;
 
@@ -59,12 +57,11 @@ function useMutation<T extends BaseEndpointType>(mutation: T, options?: UseMutat
 type UseQueryResult<Query> = [EndpointsResultType<Query>, boolean, any];
 
 type UseQueryOptions<T> = {
-  name?: string;
   fetchPolicy: FetchPolicy;
   skip: boolean;
   onCompleted: (data: EndpointsResultType<T>) => void;
   onError: (e: any) => void;
-} & CommonOptions<T>;
+} & CommonEnpointOptions<T>;
 
 const defaultQueryOptions = {
   fetchPolicy: 'cache-first' as FetchPolicy,
@@ -124,10 +121,6 @@ function useQuery<T extends BaseEndpointType>(
     return () => {
       cacheContext.removeListener(queryHookId);
     };
-  }, []);
-
-  React.useEffect(() => {
-    getQuery();
   }, [JSON.stringify(options)]);
 
   return [state.data, state.loading, state.error];
