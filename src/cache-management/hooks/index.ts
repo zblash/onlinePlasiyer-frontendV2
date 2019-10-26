@@ -83,13 +83,13 @@ function useQuery<T extends BaseEndpointType>(
 
   React.useEffect(() => {
     getQuery();
-  }, [getQuery, options.skip]);
+  }, [JSON.stringify(options.variables), options.skip]);
 
   React.useEffect(() => {
     getQuery();
 
     return () => cacheContext.removeListener(queryHookId);
-  }, [cacheContext, getQuery, queryHookId]);
+  }, []);
 
   function getQuery() {
     if (options.skip) {
