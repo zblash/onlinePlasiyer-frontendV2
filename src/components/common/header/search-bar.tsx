@@ -20,48 +20,44 @@ export const HeaderSearchBarColors = {
 /*
   HeaderSearchBar Styles
 */
-const cssVariable = css.variable(HeaderSearchBarColors.unFocused);
 
-const StyledInput = styled(UIInput)`
-  margin: 0 8px;
-  color: ${cssVariable};
+const cssCommonColor = css`
+  color: ${HeaderSearchBarColors.unFocused};
 `;
 
-const StyledHeaderSearchBarWrapper = styled.div`
-  display: flex;
+const inputStyle = css`
+  margin: 0 8px;
+`;
+
+const wrapperStyle = css`
+  padding: 4px 8px 4px 12px;
   margin-left: 48px;
   background-color: ${HeaderSearchBarColors.defaultBackground};
-  padding: 4px 8px 4px 12px;
-  border-radius: 4px;
   :focus-within {
     background-color: ${HeaderSearchBarColors.focusBackground};
-    ${cssVariable.set(HeaderSearchBarColors.focused)} !important;
+    .${cssCommonColor} {
+      color: ${HeaderSearchBarColors.focused};
+    }
   }
 `;
 
-const StyledLabel = styled.label`
-  display: flex;
-  align-items: center;
-  justify-content: center;
+const StyledLoading = styled(Loading)<{ isHidden: boolean }>`
+  visibility: ${p => (p.isHidden ? 'hidden' : 'visible')};
 `;
 
 const HeaderSearchBar: React.SFC<HeaderSearchBarProps> = props => {
-  const [isShownLoading, setIsShowLoading] = React.useState(false);
+  const [searchBarValue, setSearchBarValue] = React.useState('');
 
   const __ = (
-    <StyledHeaderSearchBarWrapper>
-      <StyledLabel htmlFor="header-search-bar">
-        <UIIcon name="search" size={20} color={cssVariable.get()} />
-      </StyledLabel>
-      <StyledInput
-        id="header-search-bar"
-        placeholder="Search"
-        onChange={e => setIsShowLoading(e.target.value.length > 0)}
-      />
-      <StyledLabel htmlFor="header-search-bar">
-        <Loading color={cssVariable.get()} isVisible={isShownLoading} />
-      </StyledLabel>
-    </StyledHeaderSearchBarWrapper>
+    <UIInput
+      className={wrapperStyle}
+      inputClassName={inputStyle}
+      placeholder="Search"
+      onChange={e => setSearchBarValue(e)}
+      leftIcon={<UIIcon name="search" size={20} className={cssCommonColor} />}
+      rightIcon={<StyledLoading color={HeaderSearchBarColors.focused} isHidden={!searchBarValue} />}
+      id="header-search-bar"
+    />
   );
 
   /*

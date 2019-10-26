@@ -1,8 +1,8 @@
 import * as React from 'react';
+import Tooltip from 'rc-tooltip';
 import { IconName } from '~/components/ui/icon';
 import { UIIcon, UIButton } from '~/components/ui';
 import styled, { css } from '~/styled';
-import Tooltip from 'rc-tooltip';
 
 /*
   MenuItem Helpers
@@ -28,17 +28,16 @@ export const MenuItemColors = {
   MenuItem Styles
 */
 
-const textOpacityVariable = css.variable(0.4);
+const cssCommonOpacity = css`
+  opacity: 0.4;
+`;
 const StyledMenuItemText = styled.span`
   color: ${MenuItemColors.text};
-  font-family: PT Sans, Helvetica, Arial, sans-serif;
   font-size: 14px;
-  opacity: ${textOpacityVariable};
 `;
 
 const cssIconStyle = css`
   margin-right: 12px;
-  opacity: ${textOpacityVariable.get()};
 `;
 
 const StyledMenuItemWrapper = styled(UIButton)`
@@ -50,7 +49,9 @@ const StyledMenuItemWrapper = styled(UIButton)`
     background-color: ${MenuItemColors.wrapperActiveBackground} !important;
   }
   :hover {
-    ${textOpacityVariable.set(0.8)};
+    .${cssCommonOpacity} {
+      opacity: 0.8;
+    }
     background-color: ${MenuItemColors.wrapperHoverBackground};
   }
 `;
@@ -79,8 +80,13 @@ const MenuItem: React.SFC<MenuItemProps> = props => {
       {...tooltipProps}
     >
       <StyledMenuItemWrapper onClick={() => setIsClosed(false)}>
-        <UIIcon name={props.iconName} size={20} className={cssIconStyle} color={MenuItemColors.text} />
-        <StyledMenuItemText>{props.text}</StyledMenuItemText>
+        <UIIcon
+          name={props.iconName}
+          size={20}
+          className={css.cx(cssIconStyle, cssCommonOpacity)}
+          color={MenuItemColors.text}
+        />
+        <StyledMenuItemText className={cssCommonOpacity}>{props.text}</StyledMenuItemText>
       </StyledMenuItemWrapper>
     </Tooltip>
   );

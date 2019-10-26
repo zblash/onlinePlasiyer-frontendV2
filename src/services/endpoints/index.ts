@@ -6,7 +6,3 @@ const mutationEndPoints = new MutationEndpoints();
 const queryEndpoints = new QueryEndpoints();
 
 export { queryEndpoints, mutationEndPoints };
-
-// TODO: remove window object
-// @ts-ignore
-window.queryEndpoints = queryEndpoints;

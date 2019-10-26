@@ -19,6 +19,8 @@ interface ProductCardProps extends StylableProps, ProductData {
   ProductCard Colors
 */
 export const ProductCardColors = {
+  primary: '#0075ff',
+  primaryDark: '#0062d4',
   wrapperBackground: '#fff',
 };
 
@@ -85,30 +87,28 @@ const StyledTitle = styled.h2`
 `;
 
 const StyledPreviewButton = styled(UIButton)`
-  && {
-    display: inline-block;
-    border: 1px solid #0075ff;
-    background-color: #fff;
-    -webkit-font-smoothing: antialiased;
-    color: #0075ff;
-    text-align: center;
-    cursor: pointer;
-    margin: 1px 4px 0;
-    line-height: 1.5;
-    padding: 7px 12px;
-    font-size: 12px;
-    font-weight: 700;
-    text-decoration: none;
-    border-radius: 2px;
-    :hover {
-      color: #fff;
-      background-color: #0075ff;
-    }
-    :active {
-      background-color: #0062d4;
-    }
-    transition: background-color 0.3s, color 0.3s;
+  display: inline-block;
+  border: 1px solid ${ProductCardColors.primary};
+  background-color: #fff;
+  -webkit-font-smoothing: antialiased;
+  color: #0075ff;
+  text-align: center;
+  cursor: pointer;
+  margin: 1px 4px 0;
+  line-height: 1.5;
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 2px;
+  :hover {
+    color: #fff;
+    background-color: ${ProductCardColors.primary};
   }
+  :active {
+    background-color: ${ProductCardColors.primaryDark};
+  }
+  transition: background-color 0.3s, color 0.3s;
 `;
 
 const ProductCard: React.SFC<ProductCardProps> = props => {

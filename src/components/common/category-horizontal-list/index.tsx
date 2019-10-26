@@ -1,8 +1,10 @@
 import * as React from 'react';
 import _debounce from 'lodash.debounce';
-import styled from '~/styled';
+import { useHistory } from 'react-router';
+import styled, { css } from '~/styled';
+import { UIIcon, UIButton } from '~/components/ui';
 import { CategoryFields, CategoryItem } from '../category';
-import { UIIcon } from '~/components/ui';
+import { useApplicationContext } from '~/utils/hooks';
 
 /*
   CategoryList Helpers
@@ -12,24 +14,46 @@ export interface CategoryHorizontalListData {
   categories: CategoryFields[];
 }
 
-interface CategoryHorizontalListProps extends CategoryHorizontalListData {
+export interface CategoryHorizontalListComponentProps {
+  shouldUseProductsPageLink?: boolean;
   selectedCateogryId?: string;
-  onItemClick?: (id: string) => void;
-  onSubItemClick?: (id: string) => void;
+  onItemClick?: (category: CategoryFields) => void;
+  onSubItemClick?: (category: CategoryFields) => void;
 }
+
+interface CategoryHorizontalListProps extends CategoryHorizontalListData, CategoryHorizontalListComponentProps {}
 
 /*
   CategoryList Colors
 */
 export const CategoryHorizontalListColors = {
-  scrollableListIcon: '#fff',
+  white: '#fff',
+  primary: '#0075ff',
+  primaryDark: '#0062d4',
   scrollbarTrack: '#e1e1e1',
+  addButtonInactive: '#ddd',
   scrollbarThumb: '#878787',
 };
 
 /*
   CategoryList Styles
 */
+
+const StyledAddButton = styled(UIButton)`
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s;
+  background-color: ${CategoryHorizontalListColors.addButtonInactive};
+  color: ${CategoryHorizontalListColors.white};
+  padding: 4px 8px;
+  border-radius: 8px;
+  :active {
+    background-color: ${CategoryHorizontalListColors.primaryDark} !important;
+  }
+  :hover {
+    background-color: ${CategoryHorizontalListColors.primary};
+  }
+`;
 
 const CategoryListContainer = styled.div`
   position: relative;
@@ -71,7 +95,7 @@ const IconWrapper = styled.div<{ position: 'left' | 'right'; isShown: boolean }>
   width: 32px;
   height: 32px;
   position: absolute;
-  top: 71px;
+  top: 110px;
   border-radius: 50%;
   cursor: pointer;
   :hover {
@@ -84,7 +108,19 @@ const IconWrapper = styled.div<{ position: 'left' | 'right'; isShown: boolean }>
   z-index: 1;
 `;
 
-const CategoryHorizontalList: React.SFC<CategoryHorizontalListProps> = props => {
+const StyledListTop = styled.div`
+  height: 48px;
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+`;
+const addIconStyle = css`
+  margin-left: 8px;
+`;
+
+const _CategoryHorizontalList: React.SFC<CategoryHorizontalListProps> = props => {
+  const { popups } = useApplicationContext();
+  const routerHistory = useHistory();
   const [positionStatus, setPositionStatus] = React.useState({ isStart: true, isEnd: false });
   const wrapperRef = React.useRef<HTMLDivElement>();
   const onScrollWithDebounce = React.useCallback(_debounce(onScroll, 500), [positionStatus]);
@@ -94,23 +130,40 @@ const CategoryHorizontalList: React.SFC<CategoryHorizontalListProps> = props => 
   const __ = (
     <CategoryListContainer>
       <IconWrapper position="left" isShown={!positionStatus.isStart} onClick={() => scrollManually('left')}>
-        <UIIcon name="chevronLeft" color={CategoryHorizontalListColors.scrollableListIcon} size={20} />
+        <UIIcon name="chevronLeft" color={CategoryHorizontalListColors.white} size={20} />
       </IconWrapper>
 
+      <StyledListTop>
+        <StyledAddButton onClick={popups.createCategory.show}>
+          Ekle <UIIcon name="add" color={CategoryHorizontalListColors.white} size={10} className={addIconStyle} />
+        </StyledAddButton>
+      </StyledListTop>
       <CategoryScrollableList onScroll={onScrollWithDebounce} ref={wrapperRef}>
         {props.categories.map(categoryField => (
           <CategoryItem
-            onSubItemClick={props.onSubItemClick}
+            onSubItemClick={subItem => {
+              if (props.shouldUseProductsPageLink) {
+                routerHistory.push(`/products/${subItem.id}`);
+              }
+              if (props.onSubItemClick) {
+                props.onSubItemClick(subItem);
+              }
+            }}
             key={categoryField.id}
             {...categoryField}
             isHighlighted={categoryField.id === props.selectedCateogryId}
-            onClick={() => onItemClick(categoryField.id)}
+            onClick={() => {
+              if (props.shouldUseProductsPageLink) {
+                routerHistory.push(`/products/${categoryField.id}`);
+              }
+              onItemClick(categoryField);
+            }}
           />
         ))}
       </CategoryScrollableList>
 
       <IconWrapper position="right" isShown={!positionStatus.isEnd} onClick={() => scrollManually('right')}>
-        <UIIcon name="chevronRight" color={CategoryHorizontalListColors.scrollableListIcon} size={20} />
+        <UIIcon name="chevronRight" color={CategoryHorizontalListColors.white} size={20} />
       </IconWrapper>
     </CategoryListContainer>
   );
@@ -140,5 +193,8 @@ const CategoryHorizontalList: React.SFC<CategoryHorizontalListProps> = props => 
 
   return __;
 };
+
+// @ts-ignore
+const CategoryHorizontalList = _CategoryHorizontalList;
 
 export { CategoryHorizontalList };

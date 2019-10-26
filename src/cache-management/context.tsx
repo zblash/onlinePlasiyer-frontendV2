@@ -159,7 +159,7 @@ class CacheContextProvider extends React.Component<{}, CacheContextProviderCompo
   public updateQueries = (
     newResponseCache: { route: RouteSchema | RouteSchema[]; cache: Record<string, any> },
     oldAppState: CacheContextProviderComponentState,
-    currentQueryId: string = '##',
+    currentQueryId = '##',
   ) => {
     const { routeCache } = this.state;
     const a = this._changeListener;

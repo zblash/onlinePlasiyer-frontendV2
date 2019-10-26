@@ -4,7 +4,8 @@ import { UIInput, UIButton, UIIcon, Loading } from '~/components/ui';
 import { SuccessAnimationIcon } from './success-animation-icon';
 import { mutationEndPoints } from '~/services';
 import { ApplicationContext } from '~/context/application';
-import Mutation from '~/cache-management/components/mutation';
+import { useMutation } from '~/cache-management/hooks';
+import { useStateFromProp } from '~/utils/hooks';
 
 /*
   LoginCard Helpers
@@ -106,61 +107,58 @@ const LoginCard: React.SFC<LoginCardProps> = props => {
 
   const [password, setPassword] = React.useState('');
   const [username, setUsername] = React.useState('');
+  const [login, _, isLoading, error] = useMutation(mutationEndPoints.login, {
+    variables: { password, username },
+  });
+  const [hasError, setError] = useStateFromProp(!!error);
+
+  React.useEffect(() => {
+    if (hasError) {
+      setHasAnimation(true);
+      setTimeout(() => {
+        setHasAnimation(false);
+      }, 1000);
+    }
+  }, [hasError]);
   const __ = (
-    <Mutation
-      mutation={mutationEndPoints.login}
-      variables={{ password, username }}
-      onError={() => {
-        setHasAnimation(true);
-        setTimeout(() => {
-          setHasAnimation(false);
-        }, 1000);
-      }}
-      onComplated={() => {
-        setHasSuccess(true);
-        setTimeout(() => {
-          props.onSuccess();
-          userLogin();
-        }, 1300);
-      }}
-    >
-      {(login, { error: hasError, loading: isLoading, setError }) => {
-        return (
-          <StyledLoginCardWrapper>
-            <StyledInputWrapper hasError={hasError}>
-              <StyledInput placeholder="Kullanici Adi" onChange={e => setUsername(e.target.value)} />
-            </StyledInputWrapper>
-            <StyledInputWrapper hasError={hasError}>
-              <StyledInput type="password" placeholder="Sifre" onChange={e => setPassword(e.target.value)} />
-            </StyledInputWrapper>
-            <StyledBottomWrapper>
-              <StyledLoginButton
-                hasError={hasError}
-                onClick={() => {
-                  if (!username || !password) {
-                    setError(true);
-                  } else {
-                    login();
-                  }
-                }}
-              >
-                Giris Yap
-              </StyledLoginButton>
-              {isLoading && <Loading color={LoginCardColors.primary} size={24} />}
-              {hasError && (
-                <UIIcon
-                  name="danger"
-                  size={24}
-                  color={LoginCardColors.danger}
-                  className={css.cx({ [cssDangerIconStyle]: hasAnimation })}
-                />
-              )}
-              {hasSuccess && <SuccessAnimationIcon />}
-            </StyledBottomWrapper>
-          </StyledLoginCardWrapper>
-        );
-      }}
-    </Mutation>
+    <StyledLoginCardWrapper>
+      <StyledInputWrapper hasError={hasError}>
+        <StyledInput placeholder="Kullanici Adi" onChange={e => setUsername(e)} id="username-login-card" />
+      </StyledInputWrapper>
+      <StyledInputWrapper hasError={hasError}>
+        <StyledInput type="password" placeholder="Sifre" onChange={e => setPassword(e)} id="password-login-card" />
+      </StyledInputWrapper>
+      <StyledBottomWrapper>
+        <StyledLoginButton
+          hasError={hasError}
+          onClick={() => {
+            if (!username || !password) {
+              setError(true);
+            } else {
+              login().then(() => {
+                setHasSuccess(true);
+                setTimeout(() => {
+                  props.onSuccess();
+                  userLogin();
+                }, 1300);
+              });
+            }
+          }}
+        >
+          Giris Yap
+        </StyledLoginButton>
+        {isLoading && <Loading color={LoginCardColors.primary} size={24} />}
+        {hasError && (
+          <UIIcon
+            name="danger"
+            size={24}
+            color={LoginCardColors.danger}
+            className={css.cx({ [cssDangerIconStyle]: hasAnimation })}
+          />
+        )}
+        {hasSuccess && <SuccessAnimationIcon />}
+      </StyledBottomWrapper>
+    </StyledLoginCardWrapper>
   );
 
   return __;

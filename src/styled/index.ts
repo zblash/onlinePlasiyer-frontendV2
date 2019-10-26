@@ -17,7 +17,6 @@ interface ICSSProperties {
 
 type StyledComponent<T> = React.StatelessComponent<T & { as?: React.ReactType }> & IProblemSolver;
 
-// type StyledTag<T> = <Props = T>(
 type StyledTag<T> = <Props>(
   strings: TemplateStringsArray,
   ...exprs: (ExpressTypes | ((props: Props) => string | number) | IProblemSolver)[]

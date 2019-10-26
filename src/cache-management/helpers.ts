@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-type FetchPolicy = 'cache-first' | 'cache-and-network' | 'network-only';
+export type FetchPolicy = 'cache-first' | 'cache-and-network' | 'network-only';
 
-export type GenericQuery = QueryRequiredFields<any, any>;
+export type GenericQuery = QueryRequiredFields<any>;
 
 export interface RouteSchema {
   id: string;
@@ -51,17 +51,24 @@ interface IQueryError {
   trace: string;
 }
 
-interface QueryRequiredFields<T, TVariables> {
-  query: (variables: TVariables) => Promise<T>;
-  variables?: TVariables;
+type ArgumentTypes<F extends Function> = F extends (...args: infer A) => any ? A : never;
+type ThenArg<T> = T extends Promise<infer U> ? U : T;
+
+export type EndpointsResultType<F> = F extends (v: any) => Promise<any> ? ThenArg<ReturnType<F>> | null : F;
+
+export type EndpointsVariablesType<F> = F extends Function ? ArgumentTypes<F>[0] : F;
+
+interface QueryRequiredFields<T> {
+  query: T;
+  variables?: EndpointsVariablesType<T>;
 }
 
 // QUERY COMPONENT
 
-export interface QueryComponentProps<T, TVariables> extends QueryRequiredFields<T, TVariables> {
-  children: (s: { data: T; loading: boolean; error: Error }) => JSX.Element;
-  onComplated?: (data: T) => void;
-  onUpdate?: (data: T) => void;
+export interface QueryComponentProps<T> extends QueryRequiredFields<T> {
+  children: (s: { data: EndpointsResultType<T>; loading: boolean; error: Error }) => JSX.Element;
+  onComplated?: (data: EndpointsResultType<T>) => void;
+  onUpdate?: (data: EndpointsResultType<T>) => void;
   onError?: (e: IQueryError) => void;
   fetchPolicy: FetchPolicy;
   skip?: boolean;
@@ -86,7 +93,7 @@ export interface MutationComponentProps<T, TVariables> {
   onComplated?: (data: T) => void;
   mutation: MutationFunction<T, TVariables>;
   variables?: TVariables;
-  refetchQueries?: QueryRequiredFields<any, any>[];
+  refetchQueries?: GenericQuery[];
 }
 
 export interface MutationComponentState<T = any> {

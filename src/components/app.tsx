@@ -5,8 +5,8 @@ import { withRequiredRole } from './hoc/with-required-role';
 
 import Page404 from '~/components/pages/404-component';
 import { FullScreenLoading } from './common/full-screen-loading';
-import { Query } from '~/cache-management/components/query';
 import routes from './routes';
+import { useQuery } from '~/cache-management/hooks';
 
 const App = () => {
   const app = (
@@ -30,26 +30,27 @@ const App = () => {
   );
 
   const [showLoading, setShowLoading] = React.useState(false);
-  React.useEffect(() => {
-    setTimeout(() => {
-      setShowLoading(true);
-    }, 1000);
-  }, []);
+  const [_, loading, error] = useQuery(queryEndpoints.checkHealth, {
+    onCompleted: () => {
+      setTimeout(() => {
+        setShowLoading(false);
+      }, 1000);
+    },
+  });
+
+  if (loading) {
+    return <FullScreenLoading />;
+  }
+
+  if (error) {
+    return <h1>Baglanti Gerceklestiremedik en kisa surede duzelecek</h1>;
+  }
 
   return (
-    <Query query={queryEndpoints.checkHealth}>
-      {({ loading, error }) => {
-        if (loading) {
-          return showLoading ? <FullScreenLoading /> : null;
-        }
-
-        if (error) {
-          return <h1>Baglanti Gerceklestiremedik en kisa surede duzelecek</h1>;
-        }
-
-        return app;
-      }}
-    </Query>
+    <>
+      {showLoading && <FullScreenLoading />}
+      {app}
+    </>
   );
 };
 

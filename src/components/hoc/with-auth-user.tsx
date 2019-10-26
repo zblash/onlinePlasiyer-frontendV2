@@ -3,7 +3,7 @@ import { getDisplayName } from '~/utils';
 import { ApplicationContext } from '~/context/application';
 import { queryEndpoints } from '~/services';
 import { IUserCommonResponse } from '~/backend-model-helpers';
-import { Query } from '~/cache-management/components/query';
+import { useQuery } from '~/cache-management/hooks';
 
 export interface WithAuthUserComponentProps {
   user: IUserCommonResponse;
@@ -17,38 +17,29 @@ function withAuthUser<P extends WithAuthUserComponentProps, C extends React.Comp
   | React.ComponentClass<Omit<P, keyof WithAuthUserComponentProps>>
   | React.SFC<Omit<P, keyof WithAuthUserComponentProps>> {
   const withAuthUserHoc: React.SFC<Omit<P, keyof WithAuthUserComponentProps>> = props => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const { user, userLogout } = React.useContext(ApplicationContext);
 
     if (!user.isLoggedIn) {
       // @ts-ignore
       return <WrappedComponent {...props} user={null} isLoggedIn={false} />;
     }
+    const [data, loading, error] = useQuery(queryEndpoints.getAuthUser, {
+      onError: error => {
+        userLogout();
+      },
+    });
 
-    return (
-      <Query
-        query={queryEndpoints.getAuthUser}
-        onError={error => {
-          if (error.status === 500) {
-            userLogout();
-          }
-        }}
-      >
-        {({ data, loading, error }) => {
-          if (loading) {
-            // @ts-ignore
-            return <WrappedComponent {...props} user={null} isLoggedIn={false} isUserLoading />;
-          }
-          if (error) {
-            // @ts-ignore
-            return <WrappedComponent {...props} user={null} isLoggedIn={false} isUserLoading={false} />;
-          }
+    if (loading) {
+      // @ts-ignore
+      return <WrappedComponent {...props} user={null} isLoggedIn={false} isUserLoading />;
+    }
+    if (error) {
+      // @ts-ignore
+      return <WrappedComponent {...props} user={null} isLoggedIn={false} isUserLoading={false} />;
+    }
 
-          // @ts-ignore
-          return <WrappedComponent {...props} user={data} isLoggedIn isUserLoading={false} />;
-        }}
-      </Query>
-    );
+    // @ts-ignore
+    return <WrappedComponent {...props} user={data} isLoggedIn isUserLoading={false} />;
   };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (withAuthUserHoc as any).displayName = `withAuthUser(${getDisplayName(WrappedComponent)})`;

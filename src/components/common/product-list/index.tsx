@@ -1,6 +1,6 @@
 import * as React from 'react';
-import styled from '~/styled';
 import _chunk from 'lodash.chunk';
+import styled from '~/styled';
 import { ProductCardWrapper, ProductCard, ProductData } from '../product-card';
 import { UICollapsible, UITable } from '~/components/ui';
 import { UITableColumns } from '~/components/ui/table';
@@ -64,6 +64,7 @@ const _ProductList: React.SFC<ProductListProps> = props => {
   const __ = (
     <>
       {chunkedArray.map((items, index) => (
+        // TODO: move to new file
         <UICollapsible
           key={index}
           content={(trigger, isOpen) => (

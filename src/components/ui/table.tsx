@@ -122,7 +122,7 @@ const iconStyle = css`
   margin: 0 8px;
 `;
 
-function _UiTable<T>(props: UiTableProps<T>) {
+function _UITable<T>(props: UiTableProps<T>) {
   const hasRowCount = typeof props.rowCount === 'number';
   const rowCount = hasRowCount ? props.rowCount : props.data.length;
   const [pageIndex, setPageIndex] = React.useState(0);
@@ -136,11 +136,12 @@ function _UiTable<T>(props: UiTableProps<T>) {
         });
         data.push(empty as T);
       }
+
       return data.slice(pageIndex * rowCount, (pageIndex + 1) * props.rowCount);
     }
 
     return data;
-  }, [props.rowCount, props.data, pageIndex]);
+  }, [props.data, props.rowCount, hasRowCount, rowCount, pageIndex]);
 
   const pageCount = Math.floor(props.data.length / rowCount);
 
@@ -203,6 +204,6 @@ function _UiTable<T>(props: UiTableProps<T>) {
   return __;
 }
 
-const UiTable = _UiTable;
+const UITable = _UITable;
 
-export { UiTable };
+export { UITable };

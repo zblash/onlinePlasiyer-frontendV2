@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from '~/styled';
+import { Loading } from './loading';
 
 const icons = {
   restart: require('~/assets/icons/restart.svg'),
@@ -13,6 +14,14 @@ const icons = {
   downArrow: require('~/assets/icons/down-arrow.svg'),
   login: require('~/assets/icons/login.svg'),
   danger: require('~/assets/icons/danger.svg'),
+  addCircle: require('~/assets/icons/addCircle.svg'),
+  add: require('~/assets/icons/add.svg'),
+  maintenance: require('~/assets/icons/maintenance.svg'),
+  database: require('~/assets/icons/database.svg'),
+  nameTag: require('~/assets/icons/nameTag.svg'),
+  photoCamera: require('~/assets/icons/photoCamera.svg'),
+  trash: require('~/assets/icons/trash.svg'),
+  close: require('~/assets/icons/close.svg'),
 };
 
 export interface IconProps {
@@ -29,15 +38,18 @@ interface IconStyleProps {
   color?: string;
 }
 
-export type IconName = keyof typeof icons;
+export type IconName = keyof typeof icons | 'loading';
 
 const StyledIconSvg = styled.svg<IconStyleProps>`
   display: block;
   color: ${props => props.color || ''};
 `;
 
-export const Icon = React.memo<IconProps>(props => {
-  const { size, name, className } = props;
+export const UIIcon = React.memo<IconProps>(props => {
+  const { size, name, className, color, setRef } = props;
+  if (name === 'loading') {
+    return <Loading size={size} color={color} className={className} />;
+  }
   const loadedSvg = icons[name];
 
   if (!loadedSvg) return null;
@@ -60,8 +72,8 @@ export const Icon = React.memo<IconProps>(props => {
   return (
     <StyledIconSvg
       {...svgAttributes}
-      ref={props.setRef}
-      color={props.color}
+      ref={setRef}
+      color={color}
       className={className}
       onClick={props.onClick}
       dangerouslySetInnerHTML={{ __html: loadedSvg.content }}

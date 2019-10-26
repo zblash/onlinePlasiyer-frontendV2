@@ -1,9 +1,12 @@
 import * as React from 'react';
 import { Container } from '~/components/ui';
+import { CategoryHorizontalList } from '~/backend-components/common/category-horizontal-list';
+import { WithAuthUserComponentProps } from '~/components/hoc/with-auth-user';
 
-const Home: React.SFC<IHomeProps> = props => {
-  return <Container>Home</Container>;
+interface HomeProps extends WithAuthUserComponentProps {}
+
+const Home: React.SFC<HomeProps> = props => {
+  return <Container>{props.user && <CategoryHorizontalList shouldUseProductsPageLink />}</Container>;
 };
-interface IHomeProps {}
 
 export default Home;

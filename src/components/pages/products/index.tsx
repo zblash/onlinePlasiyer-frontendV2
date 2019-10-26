@@ -1,42 +1,61 @@
 import * as React from 'react';
-import { Query } from '~/cache-management/components/query';
-import { queryEndpoints } from '~/services';
-import { RouteComponentProps } from 'react-router';
-import { ProductsPageComponent } from '~/components/pages/products/products-page-component';
+import { useParams } from 'react-router';
+import styled from '~/styled';
+import { Container } from '~/components/ui';
+import { ProductList } from './product-list';
+import { CategoryHorizontalList } from '~/backend-components/common/category-horizontal-list';
 
 /*
   ProductsPage Helpers
 */
-
 interface RouteParams {
   categoryId?: string;
 }
 
-interface ProductsPageProps extends RouteComponentProps<RouteParams> {}
+interface ProductsPageProps {}
+
+/*
+  ProductsPage Colors
+*/
+export const ProductsPageColors = {
+  wrapperBackground: '#fff',
+};
+
+/*
+  ProductsPage Styles
+*/
+
+const StyledSelectedParentCategoryTitle = styled.h2`
+  font-size: 20px;
+  color: #333333;
+`;
 
 const _ProductsPage: React.SFC<ProductsPageProps> = props => {
-  const { categoryId: categoryIdParam } = props.match.params;
+  const { categoryId: selectedCategoryId } = useParams<RouteParams>();
+  const [selectedCategoryName, setSelectedCategoryName] = React.useState('');
   const __ = (
-    <Query query={queryEndpoints.getCategories} variables={{ type: 'all' }}>
-      {({ data: categories, loading, error }) => {
-        if (categories) {
-          return (
-            <ProductsPageComponent
-              selectedCategoryId={categoryIdParam}
-              categories={categories.map(category => ({
-                id: category.id,
-                parentId: category.parentId,
-                isSubCategory: false,
-                name: category.name,
-                photoUrl: category.photoUrl,
-              }))}
-            />
-          );
-        }
-        return null;
-      }}
-    </Query>
+    <Container>
+      <CategoryHorizontalList
+        selectedCateogryId={selectedCategoryId}
+        shouldUseProductsPageLink
+        onLoadData={categories => {
+          if (selectedCategoryId) {
+            setSelectedCategoryName(categories.find(category => category.id === selectedCategoryId).name);
+          }
+        }}
+      />
+      <StyledSelectedParentCategoryTitle>{selectedCategoryName}</StyledSelectedParentCategoryTitle>
+      <ProductList selectedCategoryId={selectedCategoryId} />
+    </Container>
   );
+
+  /*
+  ProductsPage Lifecycle
+  */
+
+  /*
+  ProductsPage Functions
+  */
 
   return __;
 };

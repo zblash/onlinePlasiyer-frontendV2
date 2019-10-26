@@ -55,40 +55,22 @@ function keyframes(_styles: TemplateStringsArray, ...args: CssExpressionType) {
 
   return _keyframe.getName();
 }
-function createCssVariable(defaultVal: string | number): ICssVariable {
-  const name = makeid(10);
-  // eslint-disable-next-line
-  css.global`
-  html{
-    --${name}:${defaultVal} 
-  }
-  `;
-
-  // eslint-disable-next-line
-  const str = new String(`var(--${name})`) as ICssVariable;
-
-  str.set = s => `--${name}:${s}`;
-  str.get = () => str.toString();
-
-  return str;
-}
 
 css.styled = styledCss;
 css.global = globalCss;
 css.cx = cx;
 css.keyframes = keyframes;
-css.variable = createCssVariable;
 
-const globalStyle = () => `${styles.map(style => `.${style.className}{${style.css}}`).join('')}${globals.join('\n')}`;
+const globalStyle = () => `
+${styles.map(style => `.${style.className}{${style.css}}`).join('')}
+${globals.join('\n')}
+`;
 
-// @ts-ignore
 const _css: {
   (_styles: TemplateStringsArray, ...args: (ExpressTypes)[]): string;
   styled: typeof styledCss;
   global: typeof globalCss;
   keyframes: typeof keyframes;
-  variable: typeof createCssVariable;
-  // eslint-disable-next-line
   cx: (...s: any) => string;
 } = css;
 

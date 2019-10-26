@@ -4,10 +4,9 @@ import styled, { StylableProps, css } from '~/styled';
 interface ILoadingProps extends StylableProps {
   color?: string;
   size?: number;
-  isVisible?: boolean;
 }
 
-const LoadinDefaultColor = '#000';
+const LoadingDefaultColor = '#000';
 
 const ldsRollerKeyframes = css.keyframes`
   0% {
@@ -18,7 +17,7 @@ const ldsRollerKeyframes = css.keyframes`
     }
 `;
 
-const LdsRoller = styled.div<{ color: string; size: number; isVisible: boolean }>`
+const LdsRoller = styled.div<{ color: string; size: number }>`
   display: inline-block;
   width: ${props => props.size}px;
   height: ${props => props.size}px;
@@ -30,23 +29,13 @@ const LdsRoller = styled.div<{ color: string; size: number; isVisible: boolean }
     margin: 1px;
     border-radius: 50%;
     border: ${props => props.size * 0.078125}px solid ${props => props.color};
-    border-color: ${props => (props.isVisible ? props.color : 'transparent')} transparent
-      ${props => (props.isVisible ? props.color : 'transparent')} transparent;
+    border-color: ${props => props.color} transparent;
     animation: ${ldsRollerKeyframes} 1.2s linear infinite;
   }
 `;
 
 const Loading: React.SFC<ILoadingProps> = props => {
-  const isVisible = props.isVisible === undefined ? true : props.isVisible;
-
-  return (
-    <LdsRoller
-      color={props.color || LoadinDefaultColor}
-      size={props.size || 20}
-      {...{ isVisible }}
-      className={props.className}
-    />
-  );
+  return <LdsRoller color={props.color || LoadingDefaultColor} size={props.size || 20} className={props.className} />;
 };
 
 export { Loading };

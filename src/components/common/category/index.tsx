@@ -1,23 +1,27 @@
 import * as React from 'react';
+import Tooltip from 'rc-tooltip';
 import styled, { css } from '~/styled';
 import { UIIcon } from '~/components/ui';
 import { SubCategoryList } from './sub-category-list';
-import Tooltip from 'rc-tooltip';
+import { useMutation } from '~/cache-management/hooks';
+import { mutationEndPoints, queryEndpoints } from '~/services';
 
 /*
   CategoryItem Helpers
 */
+
 export interface CategoryFields {
   id: string;
   name: string;
   photoUrl: string;
+  parentId?: string;
   subCategories?: Omit<CategoryFields, 'subCategories'>[];
 }
 
 interface CategoryItemProps extends CategoryFields {
   isHighlighted?: boolean;
   onClick?: () => void;
-  onSubItemClick?: (id: string) => void;
+  onSubItemClick?: (category: CategoryFields) => void;
 }
 
 /*
@@ -27,6 +31,7 @@ export const CategoryItemColors = {
   wrapperBackground: '#fff',
   wrapperActiveBackground: '#f9f9f9',
   wrapperBorder: '#e6e6e6',
+  danger: '#e2574c',
   shadow: '#dadada',
   categoryName: '#4d4d4d',
   isSelected: '#0075ff',
@@ -41,6 +46,13 @@ const iconStyle = css`
   opacity: 0;
   visibility: hidden;
   transition: visibility 0.3s, opacity 0.3s linear, transform 0.3s;
+`;
+const deleteIconStyle = css`
+  visibility: hidden;
+  pointer-events: none;
+  position: absolute;
+  top: 8px;
+  right: 8px;
 `;
 
 const IconWrapper = styled.span`
@@ -85,6 +97,10 @@ const CategoryItemWrapper = styled.div<{ isHighlighted?: boolean }>`
       visibility: visible;
       opacity: 1;
     }
+    .${deleteIconStyle} {
+      visibility: visible;
+      pointer-events: auto;
+    }
   }
   :active {
     background-color: ${CategoryItemColors.wrapperActiveBackground};
@@ -105,7 +121,7 @@ const StyledCategoryName = styled.h3`
 
 const StyledSelectedStatus = styled.span<{ isShown?: boolean }>`
   position: absolute;
-  right: 12px;
+  left: 12px;
   top: 12px;
 
   display: ${props => (props.isShown ? 'block' : 'none')};
@@ -119,40 +135,64 @@ const StyledSelectedStatus = styled.span<{ isShown?: boolean }>`
 
 const CategoryItem: React.SFC<CategoryItemProps> = props => {
   const [isClickSubitem, setIsClickSubitem] = React.useState(false);
+  const [deleteCategory, _, deleteCategoryLoading] = useMutation(mutationEndPoints.deleteCategory, {
+    variables: { id: props.id },
+    refetchQueries: [
+      {
+        query: queryEndpoints.getCategories,
+        variables: { type: 'all' },
+      },
+    ],
+  });
+
   const tooltipProps = isClickSubitem ? { visible: false } : {};
 
   const __ = (
     <CategoryItemWrapper isHighlighted={props.isHighlighted} onClick={props.onClick}>
+      <UIIcon
+        className={deleteIconStyle}
+        size={18}
+        name={deleteCategoryLoading ? 'loading' : 'trash'}
+        color={CategoryItemColors.danger}
+        onClick={e => {
+          if (!deleteCategoryLoading) {
+            e.stopPropagation();
+            deleteCategory();
+          }
+        }}
+      />
       <StyledCategoryImg src={props.photoUrl} />
       <StyledCategoryName>{props.name}</StyledCategoryName>
       <StyledSelectedStatus isShown={props.isHighlighted} />
-      <Tooltip
-        {...tooltipProps}
-        overlay={
-          <SubCategoryList
-            categories={props.subCategories || []}
-            onItemClick={id => {
-              setIsClickSubitem(true);
-              if (props.onSubItemClick) {
-                props.onSubItemClick(id);
-              }
-            }}
-          />
-        }
-        placement="bottom"
-      >
-        <IconWrapper>
-          <UIIcon
-            className={iconStyle}
-            name="downArrow"
-            size={14}
-            color={CategoryItemColors.downArrowIcon}
-            onClick={e => {
-              e.stopPropagation();
-            }}
-          />
-        </IconWrapper>
-      </Tooltip>
+      {props.subCategories.length > 0 && (
+        <Tooltip
+          {...tooltipProps}
+          overlay={
+            <SubCategoryList
+  categories={props.subCategories}
+  onItemClick={category => {
+                setIsClickSubitem(true);
+                if (props.onSubItemClick) {
+                  props.onSubItemClick(category);
+                }
+              }}
+/>
+          }
+          placement="bottom"
+        >
+          <IconWrapper>
+            <UIIcon
+              className={iconStyle}
+              name="downArrow"
+              size={14}
+              color={CategoryItemColors.downArrowIcon}
+              onClick={e => {
+                e.stopPropagation();
+              }}
+            />
+          </IconWrapper>
+        </Tooltip>
+      )}
     </CategoryItemWrapper>
   );
 
