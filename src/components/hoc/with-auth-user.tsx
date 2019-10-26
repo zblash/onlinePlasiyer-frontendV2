@@ -18,7 +18,6 @@ function withAuthUser<P extends WithAuthUserComponentProps, C extends React.Comp
   | React.SFC<Omit<P, keyof WithAuthUserComponentProps>> {
   const withAuthUserHoc: React.SFC<Omit<P, keyof WithAuthUserComponentProps>> = props => {
     const { user, userLogout } = React.useContext(ApplicationContext);
-
     if (!user.isLoggedIn) {
       // @ts-ignore
       return <WrappedComponent {...props} user={null} isLoggedIn={false} />;
