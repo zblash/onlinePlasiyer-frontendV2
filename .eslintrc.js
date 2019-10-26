@@ -19,11 +19,8 @@ module.exports = {
     'no-multiple-empty-lines': [2, { max: 1 }],
     'import/no-extraneous-dependencies': [2, { devDependencies: true }],
     'lines-between-class-members': [2, 'always'],
-    '@typescript-eslint/explicit-function-return-type': 2,
     '@typescript-eslint/no-explicit-any': 2,
-    '@typescript-eslint/interface-name-prefix': 0,
     '@typescript-eslint/explicit-member-accessibility': 2,
-    '@typescript-eslint/explicit-function-return-type': 0,
     'react/prefer-stateless-function': 2,
     'padding-line-between-statements': [
       2,
@@ -45,6 +42,8 @@ module.exports = {
     ],
     // closed
     'no-plusplus': 0,
+    '@typescript-eslint/explicit-function-return-type': 0,
+    '@typescript-eslint/interface-name-prefix': 0,
     'react/jsx-props-no-spreading': 0,
     'react/jsx-one-expression-per-line': 0,
     'arrow-body-style': 0,
