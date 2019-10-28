@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ApiCall, URL } from '~/services/api-calls';
 import {
-  UserType,
+  UserRole,
   IUserCommonResponse,
   IAddressStateResponse,
   IAddressCityResponse,
@@ -9,12 +9,22 @@ import {
   IProductResponse,
   ISpecifyProductResponse,
   ICardResponse,
+  UserType,
+  IOrder,
+  Invoice,
 } from '~/backend-model-helpers';
 
 type GetCategoriesType = 'sub' | 'parent' | 'all';
 
+export function refetchFactory<T, TVar>(query: (s: TVar) => Promise<T>, variables?: TVar) {
+  return {
+    query,
+    variables,
+  };
+}
+
 export class QueryEndpoints {
-  public getCategories: (s: { type: GetCategoriesType }) => Promise<ICategoryResponse[]> = ({ type }) => {
+  getCategories: (s: { type: GetCategoriesType }) => Promise<ICategoryResponse[]> = ({ type }) => {
     if (type !== 'all' && type) {
       return ApiCall.get(`/categories?filter=true&sub=${type === 'sub' ? 'true' : 'false'}`);
     }
@@ -22,54 +32,66 @@ export class QueryEndpoints {
     return ApiCall.get('/categories');
   };
 
-  public getCategoryByID: (s: { id: string }) => Promise<ICategoryResponse> = ({ id }) =>
-    ApiCall.get(`/categories/${id}`);
+  getCategoryByID: (s: { id: string }) => Promise<ICategoryResponse> = ({ id }) => ApiCall.get(`/categories/${id}`);
 
-  public getCategoriesWithoutSub = () => ApiCall.get('/categories?filter=true&sub=false');
+  getCategoriesWithoutSub = () => ApiCall.get('/categories?filter=true&sub=false');
 
-  public getProductByBarcode: (s: { barcode: string }) => Promise<IProductResponse> = ({ barcode }) =>
+  getProductByBarcode: (s: { barcode: string }) => Promise<IProductResponse> = ({ barcode }) =>
     ApiCall.get(`/products/barcode/${barcode}`);
 
-  public getProductById: (s: { id: string }) => Promise<IProductResponse> = ({ id }) => ApiCall.get(`/products/${id}`);
+  getProductById: (s: { id: string }) => Promise<IProductResponse> = ({ id }) => ApiCall.get(`/products/${id}`);
 
-  public getAllSpecifyProductsByProductId: (s: { productId: string }) => Promise<ISpecifyProductResponse[]> = ({
+  getAllSpecifyProductsByProductId: (s: { productId: string }) => Promise<ISpecifyProductResponse[]> = ({
     productId,
   }) => ApiCall.get(`/products/specify/product/${productId}`);
 
-  public getAllProducts: () => Promise<IProductResponse[]> = () => ApiCall.get(`/products/`);
+  getAllProducts: () => Promise<IProductResponse[]> = () => ApiCall.get(`/products/`);
 
-  public getCard: () => Promise<ICardResponse> = () => ApiCall.get(`/cart/`);
+  getCard: () => Promise<ICardResponse> = () => ApiCall.get(`/cart/`);
 
-  public getAllProductsByCategoryId: (s: { categoryId: string }) => Promise<IProductResponse[]> = ({ categoryId }) =>
+  getAllProductsByCategoryId: (s: { categoryId: string }) => Promise<IProductResponse[]> = ({ categoryId }) =>
     ApiCall.get(`/products/category/${categoryId}`);
 
-  public getUsers = ({ type }: { type: UserType }) => {
-    const userTypeRouteMap: Record<UserType, string> = {
-      'customers-active': '/users/customers/active',
-      'customers-all': '/users/customers/',
-      'customers-passive': '/users/customers/passive',
-      'merchants-active': '/users/merchant/active',
-      'merchants-passive': '/users/merchant/passive',
-      'merchants-all': '/users/merchant/',
+  getUsers: (s: { role: UserRole; type: UserType }) => Promise<IUserCommonResponse[]> = ({ type, role }) => {
+    const userTypeRouteMap: Record<UserRole, Record<UserType, string>> = {
+      customers: {
+        active: '/users/customers/active',
+        all: '/users/customers/',
+        passive: '/users/customers/passive',
+      },
+      merchants: {
+        active: '/users/merchant/active',
+        passive: '/users/merchant/passive',
+        all: '/users/merchant/',
+      },
+      admin: {
+        active: '/users/admin',
+        passive: '/users/admin',
+        all: '/users/admin',
+      },
     };
-    if (!Object.keys(userTypeRouteMap).includes(type)) {
+    if (!['merchants', 'customers', 'admin'].includes(role) || !['active', 'all', 'passive'].includes(type)) {
       return Promise.reject(new Error('Type is not found'));
     }
 
-    return ApiCall.get(userTypeRouteMap[type]);
+    return ApiCall.get(userTypeRouteMap[role][type]);
   };
 
-  public getAuthUser: () => Promise<IUserCommonResponse> = () => ApiCall.get('/users/getmyinfos');
+  getAuthUser: () => Promise<IUserCommonResponse> = () => ApiCall.get('/users/getmyinfos');
 
-  public getAuthUserActiveStates: () => Promise<IAddressStateResponse[]> = () => ApiCall.get('/users/activeStates');
+  getAuthUserActiveStates: () => Promise<IAddressStateResponse[]> = () => ApiCall.get('/users/activeStates');
 
-  public checkHealth = () => axios.get(URL.concat('/health')).then(() => ({ id: 'he', status: true }));
+  checkHealth = () =>
+    axios.get(URL.concat('/health')).then(() => ({ id: 'a5a16900-4db7-4f6e-96fd-ae0d46eacdd4', status: true }));
 
-  public getCities: () => Promise<IAddressCityResponse[]> = () =>
+  getCities: () => Promise<IAddressCityResponse[]> = () =>
     axios.get(URL.concat('/definitions/cities')).then(({ data }) => data);
 
-  public getStatesByCityId: (s: { cityId: string }) => Promise<IAddressStateResponse[]> = ({ cityId }) =>
+  getStatesByCityId: (s: { cityId: string }) => Promise<IAddressStateResponse[]> = ({ cityId }) =>
     axios.get(URL.concat(`/definitions/cities/${cityId}/states`)).then(({ data }) => data);
 
-  public getStates: () => Promise<any> = () => axios.get(URL.concat('/definitions/states')).then(({ data }) => data);
+  getStates: () => Promise<any> = () => axios.get(URL.concat('/definitions/states')).then(({ data }) => data);
+
+  getAllOrders: () => Promise<IOrder[]> = () => ApiCall.get('/orders');
+  getAllInvoices: () => Promise<Invoice[]> = () => ApiCall.get('/invoices');
 }

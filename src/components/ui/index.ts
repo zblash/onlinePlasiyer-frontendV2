@@ -17,3 +17,5 @@ export { UITable } from './table';
 export { UICheckbox } from './checkbox';
 
 export { UIAutoComplete } from './autocomplete';
+
+export { UIButtonGroup } from './button-group';

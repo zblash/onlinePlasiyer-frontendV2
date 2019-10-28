@@ -14,6 +14,7 @@ interface UIInputProps extends StylableProps {
   onChange?: (v: string) => void;
   value?: string;
   disabled?: boolean;
+  form?: string;
   setRef?: React.RefObject<HTMLInputElement>;
 }
 
@@ -28,8 +29,8 @@ const StyledUIInputWrapper = styled.div<{ disabled?: boolean }>`
 `;
 const Input = styled.input`
   border: none;
-  background-image: none;
-  background-color: transparent;
+  background-image: none !important;
+  background-color: transparent !important ;
   box-shadow: none;
   outline: none;
 `;
@@ -46,6 +47,7 @@ const _UIInput: React.SFC<UIInputProps> = props => {
       {props.leftIcon && <StyledLabel htmlFor={props.id}>{props.leftIcon}</StyledLabel>}
       <Input
         ref={props.setRef}
+        form={props.form}
         value={props.value}
         type={props.type}
         disabled={props.disabled}
@@ -61,6 +63,6 @@ const _UIInput: React.SFC<UIInputProps> = props => {
   return __;
 };
 
-const UIInput = _UIInput;
+const UIInput = React.memo(_UIInput);
 
 export { UIInput };

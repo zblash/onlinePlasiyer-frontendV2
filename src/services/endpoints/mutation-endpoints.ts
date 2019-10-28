@@ -10,32 +10,33 @@ export interface CreateCategoryVariables {
   uploadFile: File;
 }
 
+export interface UpdateCategoryVariables {
+  id: string;
+  parentId: string | null | undefined;
+  name: string;
+  isSub: boolean;
+  uploadFile?: null | File;
+}
+
 // TODO: move to react context
 export class MutationEndpoints {
   public deleteCategory: (s: { id: string }) => Promise<any> = ({ id }) => ApiCall.delete(`/categories/delete/${id}`);
 
-  public updateCategory = ({
-    id,
-    params,
-  }: {
-    id: string;
-    params: {
-      parentId: string | null | undefined;
-      name: string;
-      isSub: boolean;
-      uploadfile?: null | File;
-    };
-  }) => {
+  public updateCategory = (params: UpdateCategoryVariables) => {
     const formData = new FormData();
-    const _data = {
+    const id = params.id;
+    const data = {
       ...params,
       subCategory: params.isSub ? 1 : 0,
+      uploadfile: params.uploadFile,
     };
 
-    delete _data.isSub;
+    delete data.isSub;
+    delete data.uploadFile;
+    delete data.id;
 
-    Object.keys(_data).forEach(key => {
-      formData.append(key, _data[key]);
+    Object.keys(data).forEach(key => {
+      formData.append(key, data[key]);
     });
 
     return ApiCall.put(`/categories/update/${id}`, formData);
@@ -47,9 +48,11 @@ export class MutationEndpoints {
       ...params,
       subCategory: params.isSub ? 1 : 0,
       uploadfile: params.uploadFile,
-      uploadFile: undefined,
-      isSub: undefined,
     };
+
+    delete _data.isSub;
+    delete _data.uploadFile;
+
     Object.keys(_data).forEach(key => {
       formData.append(key, _data[key]);
     });
@@ -57,7 +60,7 @@ export class MutationEndpoints {
     return ApiCall.post('/categories/create', formData);
   };
 
-  public changeStatus = ({ id, status }: { id: string; status: boolean }) => {
+  public changeUserStatus = ({ id, status }: { id: string; status: boolean }) => {
     if (status) {
       return ApiCall.post(`/users/setActive/${id}`);
     }

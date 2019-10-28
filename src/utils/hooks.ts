@@ -1,5 +1,5 @@
 import React from 'react';
-import { ApplicationContext } from '~/context/application';
+import { ApplicationContext } from '~/components/app/context';
 
 function useStateFromProp<T>(initialValue: T): [T, React.Dispatch<React.SetStateAction<T>>] {
   const [value, setValue] = React.useState(initialValue);
@@ -54,4 +54,15 @@ function useLocalStorage<T>(key: string, initialValue: T | null = null): [T | nu
   return [storedValue, setValue, removeItem];
 }
 
-export { useStateFromProp, useApplicationContext, usePrevious, useKeepValue, useLocalStorage };
+function useStateWithCallback<T>(
+  initialState: T,
+  callback: (s: T) => void,
+): [T, React.Dispatch<React.SetStateAction<T>>] {
+  const [state, setState] = React.useState(initialState);
+
+  React.useEffect(() => callback(state), [state, callback]);
+
+  return [state, setState];
+}
+
+export { useStateFromProp, useApplicationContext, usePrevious, useKeepValue, useLocalStorage, useStateWithCallback };

@@ -2,10 +2,16 @@
 @import './tooltip-overried.scss';
 
 body {
-  margin: 0;
   background-color: #fafafa;
+  color: #4d4d4d;
 }
 html {
-  color: #4d4d4d;
   font-family: 'Open Sans';
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
 }

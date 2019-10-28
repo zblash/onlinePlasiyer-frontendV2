@@ -4,7 +4,7 @@ import deepEqual from 'deep-equal';
 import { isArray, getKeyByValue } from '~/utils';
 import { queryEndpoints } from '~/services';
 import { CacheContextProviderComponentState, CacheContext, GenericQuery, RouteSchema } from './helpers';
-import { getRouteSchema, getRouteId, separatingObjectsContainingId } from './utils';
+import { getRouteSchema, getRouteId, separatingObjectsContainingId, deepMergeIdObjects } from './utils';
 
 const CacheContext = React.createContext<CacheContext>({
   get: () => Promise.resolve(),
@@ -23,7 +23,6 @@ class CacheContextProvider extends React.Component<{}, CacheContextProviderCompo
     this.queryQeue = {};
     this.changeListener = {};
   }
-
   getRouteEndpoint = (query: any) => {
     const route = getKeyByValue(queryEndpoints, query);
 
@@ -56,7 +55,8 @@ class CacheContextProvider extends React.Component<{}, CacheContextProviderCompo
             const _state = this.state;
             const { dataCache, routeCache } = _state;
             const routeSchema = getRouteSchema(data);
-            const modifiedObjects = separatingObjectsContainingId(data);
+            const modifiedObjects = deepMergeIdObjects(dataCache, separatingObjectsContainingId(data));
+
             if (routeSchema && modifiedObjects) {
               this.setState(
                 {

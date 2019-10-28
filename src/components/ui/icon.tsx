@@ -14,14 +14,18 @@ const icons = {
   downArrow: require('~/assets/icons/down-arrow.svg'),
   login: require('~/assets/icons/login.svg'),
   danger: require('~/assets/icons/danger.svg'),
-  addCircle: require('~/assets/icons/addCircle.svg'),
+  addCircle: require('~/assets/icons/add-circle.svg'),
   add: require('~/assets/icons/add.svg'),
   maintenance: require('~/assets/icons/maintenance.svg'),
   database: require('~/assets/icons/database.svg'),
-  nameTag: require('~/assets/icons/nameTag.svg'),
-  photoCamera: require('~/assets/icons/photoCamera.svg'),
+  nameTag: require('~/assets/icons/name-tag.svg'),
+  photoCamera: require('~/assets/icons/photo-camera.svg'),
   trash: require('~/assets/icons/trash.svg'),
+  edit: require('~/assets/icons/edit.svg'),
   close: require('~/assets/icons/close.svg'),
+  save: require('~/assets/icons/save.svg'),
+  checkMark: require('~/assets/icons/check-mark.svg'),
+  clipboard: require('~/assets/icons/clipboard.svg'),
 };
 
 export interface IconProps {

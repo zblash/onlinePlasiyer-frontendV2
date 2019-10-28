@@ -1,40 +1,48 @@
 import React from 'react';
+import { CategoryPopupUpdateCategoryValues } from '~/components/common/popups/category';
+import { IUserCommonResponse } from '~/backend-model-helpers';
 
-export interface Popup {
+export interface Popup<T = undefined> {
   isShown: boolean;
-  show: () => void;
+  show: (options?: T) => void;
   hide: () => void;
+  options: T;
 }
 
 export interface Popups {
   createCategory: Popup;
+  updateCategory: Popup<CategoryPopupUpdateCategoryValues>;
 }
 
 export interface ApplicationContextValues {
-  userLogin: () => void;
   userLogout: () => void;
   popups: Popups;
-  user: {
-    isLoggedIn: boolean;
-  };
+  user: IUserCommonResponse;
 }
 const emptyPopup: Popup = {
   isShown: false,
+  options: undefined,
   show: () => {},
   hide: () => {},
 };
 
 export const applicationContextInitialValue: ApplicationContextValues = {
   user: {
-    isLoggedIn: false,
+    name: '',
+    email: '',
+    id: '',
+    role: 'ADMIN',
+    username: '',
   },
-  userLogin: () => {},
   userLogout: () => {},
   popups: {
     createCategory: emptyPopup,
+    updateCategory: emptyPopup,
   },
 };
 
-export interface ApplicationProviderProps {}
+export interface ApplicationProviderProps {
+  user: IUserCommonResponse;
+}
 
 export const ApplicationContext = React.createContext<ApplicationContextValues>(applicationContextInitialValue);

@@ -10,7 +10,7 @@ interface DefaultLoadingProps {}
 /*
   DefaultLoading Colors
 */
-export const DefaultLoadingColors = {
+const DefaultLoadingColors = {
   wrapperBackground: 'transparent',
   primary: '#0075ff',
 };

@@ -5,6 +5,7 @@ import { UIIcon } from '~/components/ui';
 import { SubCategoryList } from './sub-category-list';
 import { useMutation } from '~/cache-management/hooks';
 import { mutationEndPoints, queryEndpoints } from '~/services';
+import { useApplicationContext } from '~/utils/hooks';
 
 /*
   CategoryItem Helpers
@@ -27,14 +28,15 @@ interface CategoryItemProps extends CategoryFields {
 /*
   CategoryItem Colors
 */
-export const CategoryItemColors = {
+const CategoryItemColors = {
   wrapperBackground: '#fff',
   wrapperActiveBackground: '#f9f9f9',
   wrapperBorder: '#e6e6e6',
-  danger: '#e2574c',
   shadow: '#dadada',
   categoryName: '#4d4d4d',
   isSelected: '#0075ff',
+  primary: '#0075ff',
+  danger: '#e2574c',
   downArrowIcon: '#828282',
 };
 
@@ -47,12 +49,13 @@ const iconStyle = css`
   visibility: hidden;
   transition: visibility 0.3s, opacity 0.3s linear, transform 0.3s;
 `;
-const deleteIconStyle = css`
+
+const StyledModifyIconWrapper = styled.div`
   visibility: hidden;
-  pointer-events: none;
   position: absolute;
   top: 8px;
   right: 8px;
+  display: flex;
 `;
 
 const IconWrapper = styled.span`
@@ -97,9 +100,8 @@ const CategoryItemWrapper = styled.div<{ isHighlighted?: boolean }>`
       visibility: visible;
       opacity: 1;
     }
-    .${deleteIconStyle} {
+    ${StyledModifyIconWrapper} {
       visibility: visible;
-      pointer-events: auto;
     }
   }
   :active {
@@ -133,8 +135,13 @@ const StyledSelectedStatus = styled.span<{ isShown?: boolean }>`
   background-image: linear-gradient(-45deg, rgba(255, 255, 220, 0.3) 0%, transparent 100%);
 `;
 
+const editIconStyle = css`
+  margin-right: 8px;
+`;
+
 const CategoryItem: React.SFC<CategoryItemProps> = props => {
   const [isClickSubitem, setIsClickSubitem] = React.useState(false);
+  const { popups } = useApplicationContext();
   const [deleteCategory, _, deleteCategoryLoading] = useMutation(mutationEndPoints.deleteCategory, {
     variables: { id: props.id },
     refetchQueries: [
@@ -149,18 +156,29 @@ const CategoryItem: React.SFC<CategoryItemProps> = props => {
 
   const __ = (
     <CategoryItemWrapper isHighlighted={props.isHighlighted} onClick={props.onClick}>
-      <UIIcon
-        className={deleteIconStyle}
-        size={18}
-        name={deleteCategoryLoading ? 'loading' : 'trash'}
-        color={CategoryItemColors.danger}
-        onClick={e => {
-          if (!deleteCategoryLoading) {
+      <StyledModifyIconWrapper>
+        <UIIcon
+          size={18}
+          name="edit"
+          color={CategoryItemColors.primary}
+          className={editIconStyle}
+          onClick={e => {
             e.stopPropagation();
-            deleteCategory();
-          }
-        }}
-      />
+            popups.updateCategory.show({ isSub: false, name: props.name, imgSrc: props.photoUrl, id: props.id });
+          }}
+        />
+        <UIIcon
+          size={18}
+          name={deleteCategoryLoading ? 'loading' : 'trash'}
+          color={CategoryItemColors.danger}
+          onClick={e => {
+            e.stopPropagation();
+            if (!deleteCategoryLoading) {
+              deleteCategory();
+            }
+          }}
+        />
+      </StyledModifyIconWrapper>
       <StyledCategoryImg src={props.photoUrl} />
       <StyledCategoryName>{props.name}</StyledCategoryName>
       <StyledSelectedStatus isShown={props.isHighlighted} />

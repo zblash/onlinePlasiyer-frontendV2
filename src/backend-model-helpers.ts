@@ -1,12 +1,12 @@
 export interface IAddressStateResponse {
   cityTitle: string;
-  code: 0;
+  code: number;
   id: string;
   title: string;
 }
 
 export interface IAddressCityResponse {
-  code: 0;
+  code: number;
   id: string;
   title: string;
 }
@@ -76,15 +76,49 @@ export interface ICategoryResponse {
   subCategory: boolean;
 }
 
+export type TOrderStatus = 'NEW' | 'FINISHED' | 'PAID' | 'CANCELLED';
+
+export interface IOrderItems {
+  price: number;
+  id: string;
+  productBarcode: string;
+  productName: string;
+  productPhotoUrl: string;
+  productPrice: number;
+  productTax: number;
+  quantity: number;
+  recommendedRetailPrice: number;
+  sellerName: string;
+  totalPrice: number;
+  unitPrice: number;
+  unitType: UnitTypeResponse;
+}
+
+export interface IOrder {
+  buyerName: string;
+  id: string;
+  orderDate: string;
+  orderItems: IOrderItems[];
+  sellerName: string;
+  status: TOrderStatus;
+  totalPrice: number;
+  waybillDate: string | null;
+}
+
+export interface Invoice {
+  buyer: string;
+  discount: number;
+  id: string;
+  paidPrice: number;
+  seller: string;
+  totalPrice: number;
+  unPaidPrice: number;
+}
+
 export type UserRoleResponse = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';
 
-export type UserType =
-  | 'customers-active'
-  | 'customers-all'
-  | 'customers-passive'
-  | 'merchants-active'
-  | 'merchants-all'
-  | 'merchants-passive';
+export type UserRole = 'customers' | 'merchants' | 'admin';
+export type UserType = 'active' | 'passive' | 'all';
 
 export type PublicUserRole = 'MERCHANT' | 'CUSTOMER';
 

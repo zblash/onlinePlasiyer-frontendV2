@@ -9,6 +9,8 @@ export interface ProductData {
   id: string;
   name: string;
   img: string;
+  taxRate: number;
+  barcode: string;
 }
 
 interface ProductCardProps extends StylableProps, ProductData {
@@ -22,6 +24,14 @@ export const ProductCardColors = {
   primary: '#0075ff',
   primaryDark: '#0062d4',
   wrapperBackground: '#fff',
+};
+/*
+  ProductCard Strings 
+*/
+export const ProductCardStrings = {
+  taxRate: 'Vergi Orani',
+  showPrice: 'Fiyatlari Goster',
+  barcode: 'Barkod',
 };
 
 /*
@@ -111,6 +121,13 @@ const StyledPreviewButton = styled(UIButton)`
   transition: background-color 0.3s, color 0.3s;
 `;
 
+const StyledContentCenter = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const StyledContentSpan = styled.span``;
+
 const ProductCard: React.SFC<ProductCardProps> = props => {
   const __ = (
     <StyledCardWrapper className={props.className}>
@@ -120,7 +137,15 @@ const ProductCard: React.SFC<ProductCardProps> = props => {
       </StyledCardImgWrapper>
       <StyledContent>
         <StyledTitle>{props.name}</StyledTitle>
-        <StyledPreviewButton onClick={props.onButtonClick}>Fiyatlari Gor</StyledPreviewButton>
+        <StyledContentCenter>
+          <StyledContentSpan>
+            {ProductCardStrings.taxRate} %{props.taxRate}
+          </StyledContentSpan>
+          <StyledContentSpan>
+            {ProductCardStrings.barcode} : {props.barcode}
+          </StyledContentSpan>
+        </StyledContentCenter>
+        <StyledPreviewButton onClick={props.onButtonClick}>{ProductCardStrings.showPrice}</StyledPreviewButton>
       </StyledContent>
     </StyledCardWrapper>
   );

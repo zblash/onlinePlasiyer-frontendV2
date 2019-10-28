@@ -1,17 +1,17 @@
 import * as React from 'react';
 import {
   EndpointsResultType,
-  EndpointsVariablesType,
   GenericQuery,
   FetchPolicy,
   CommonEnpointOptions,
+  EndpointsVariablesType,
 } from './helpers';
 import { CacheContext } from './context';
 import { WithDefaultProps } from '~/helpers';
 
 // [mutation,result,loading,error]
 type UseMutationResult<Mutation> = [
-  () => Promise<EndpointsResultType<Mutation>>,
+  (vars?: EndpointsVariablesType<Mutation>) => Promise<EndpointsResultType<Mutation>>,
   EndpointsResultType<Mutation>,
   boolean,
   any,
@@ -19,20 +19,22 @@ type UseMutationResult<Mutation> = [
 
 type UseMutationOptions<T> = {
   refetchQueries?: GenericQuery[];
-} & CommonEnpointOptions<T>;
+  variables?: EndpointsVariablesType<T>;
+};
 
 type BaseEndpointType = (vars: any) => Promise<any>;
 
-function useMutation<T extends BaseEndpointType>(mutation: T, options?: UseMutationOptions<T>): UseMutationResult<T> {
+function useMutation<T extends BaseEndpointType>(mutation: T, _options?: UseMutationOptions<T>): UseMutationResult<T> {
   const cacheContext = React.useContext(CacheContext);
+  const options = { ..._options };
   const [state, setState] = React.useState({ data: null, error: null, loading: false });
-  function mutate() {
+  function mutate(variables?: EndpointsVariablesType<T>) {
     setState({ ...state, error: null, loading: true });
 
     return cacheContext
       .mutate({
         mutation,
-        variables: options.variables,
+        variables: { ...options.variables, ...variables },
         refetchQueries: options.refetchQueries,
       })
       .then(data => {
@@ -61,6 +63,7 @@ type UseQueryOptions<T> = {
   skip: boolean;
   onCompleted: (data: EndpointsResultType<T>) => void;
   onError: (e: any) => void;
+  defaultValue?: EndpointsResultType<T>;
 } & CommonEnpointOptions<T>;
 
 const defaultQueryOptions = {
@@ -123,7 +126,7 @@ function useQuery<T extends BaseEndpointType>(
     };
   }, [JSON.stringify(options)]);
 
-  return [state.data, state.loading, state.error];
+  return [state.data || options.defaultValue, state.loading, state.error];
 }
 
 export { useMutation, useQuery };

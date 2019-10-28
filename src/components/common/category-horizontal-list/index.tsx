@@ -26,7 +26,7 @@ interface CategoryHorizontalListProps extends CategoryHorizontalListData, Catego
 /*
   CategoryList Colors
 */
-export const CategoryHorizontalListColors = {
+const CategoryHorizontalListColors = {
   white: '#fff',
   primary: '#0075ff',
   primaryDark: '#0062d4',
@@ -134,7 +134,7 @@ const _CategoryHorizontalList: React.SFC<CategoryHorizontalListProps> = props =>
       </IconWrapper>
 
       <StyledListTop>
-        <StyledAddButton onClick={popups.createCategory.show}>
+        <StyledAddButton onClick={() => popups.createCategory.show()}>
           Ekle <UIIcon name="add" color={CategoryHorizontalListColors.white} size={10} className={addIconStyle} />
         </StyledAddButton>
       </StyledListTop>

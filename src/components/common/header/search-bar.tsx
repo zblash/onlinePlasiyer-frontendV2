@@ -10,7 +10,7 @@ interface HeaderSearchBarProps {}
 /*
   HeaderSearchBar Colors
 */
-export const HeaderSearchBarColors = {
+const HeaderSearchBarColors = {
   unFocused: '#797979',
   focused: '#737373',
   defaultBackground: '#1b1b1b',

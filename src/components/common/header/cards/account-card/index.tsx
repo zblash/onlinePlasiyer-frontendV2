@@ -1,18 +1,17 @@
 import * as React from 'react';
 import styled from '~/styled';
 import { UIButton, Loading } from '~/components/ui';
-import { withAuthUser, WithAuthUserComponentProps } from '~/components/hoc/with-auth-user';
-import { ApplicationContext } from '~/context/application';
+import { useApplicationContext } from '~/utils/hooks';
 
 /*
   AccountCard Helpers
 */
-interface AccountCardProps extends WithAuthUserComponentProps {}
+interface AccountCardProps {}
 
 /*
   AccountCard Colors
 */
-export const AccountCardColors = {
+const AccountCardColors = {
   primary: '#0075ff',
   wrapperBackground: '#fff',
   white: '#fff',
@@ -57,21 +56,11 @@ const StyledUsernameTitle = styled.h5`
 `;
 
 const _AccountCard: React.SFC<AccountCardProps> = props => {
-  const { userLogout } = React.useContext(ApplicationContext);
-  if (props.isUserLoading) {
-    return (
-      <StyledAccountCardWrapper>
-        <Loading color={AccountCardColors.primary} size={24} />
-      </StyledAccountCardWrapper>
-    );
-  }
-  if (!props.user) {
-    return null;
-  }
+  const { userLogout, user } = useApplicationContext();
 
   const __ = (
     <StyledAccountCardWrapper>
-      <StyledUsernameTitle>{props.user.name}</StyledUsernameTitle>
+      <StyledUsernameTitle>{user.name}</StyledUsernameTitle>
       <StyledLogoutButton onClick={userLogout}>Cikis Yap</StyledLogoutButton>
     </StyledAccountCardWrapper>
   );
@@ -87,6 +76,6 @@ const _AccountCard: React.SFC<AccountCardProps> = props => {
   return __;
 };
 
-const AccountCard = withAuthUser(_AccountCard);
+const AccountCard = _AccountCard;
 
 export { AccountCard };

@@ -1,20 +1,19 @@
 import * as React from 'react';
 import styled, { css } from '~/styled';
-import { objectKeys } from '~/utils';
 import { UIIcon } from '~/components/ui';
 
 /*
   UiTable Helpers
 */
 
-export interface UITableColumns<T> {
-  text: string;
-  props: keyof T;
-}
+export type UITableColumns<T> = {
+  title: string | React.ReactElement;
+  itemRenderer: string | number | ((item: T) => React.ReactElement | string | number);
+};
 
 interface UiTableProps<T> {
-  columns: UITableColumns<T>[];
   data: T[];
+  columns: UITableColumns<T>[];
   rowCount?: number;
 }
 
@@ -54,6 +53,9 @@ const StyledHeadTh = styled.th`
   :first-child {
     padding-left: 40px;
   }
+  :last-child {
+    padding-right: 40px;
+  }
 `;
 
 const StyledBodyTd = styled.td`
@@ -62,6 +64,9 @@ const StyledBodyTd = styled.td`
   text-align: left;
   :first-child {
     padding-left: 40px;
+  }
+  :last-child {
+    padding-right: 40px;
   }
 `;
 
@@ -129,12 +134,8 @@ function _UITable<T>(props: UiTableProps<T>) {
   const tableData = React.useMemo(() => {
     const data = Array.from(props.data);
     if (hasRowCount) {
-      while (data.length % rowCount !== 0) {
-        const empty = {};
-        objectKeys(data[data.length - 1]).forEach(key => {
-          empty[key] = ' ' as never;
-        });
-        data.push(empty as T);
+      while (data.length % rowCount !== 0 || data.length === 0) {
+        data.push(null as T);
       }
 
       return data.slice(pageIndex * rowCount, (pageIndex + 1) * props.rowCount);
@@ -150,16 +151,18 @@ function _UITable<T>(props: UiTableProps<T>) {
       <StyledUiTable>
         <StyledTHead>
           <StyledHeadTr>
-            {props.columns.map(({ text }) => (
-              <StyledHeadTh key={text}>{text}</StyledHeadTh>
+            {props.columns.map(({ title }, index) => (
+              <StyledHeadTh key={index}>{title}</StyledHeadTh>
             ))}
           </StyledHeadTr>
         </StyledTHead>
         <StyledTableBody>
           {tableData.map((item, index) => (
             <StyledBodyTr key={index}>
-              {props.columns.map(({ text, props }) => (
-                <StyledBodyTd key={text}>{item[props]}</StyledBodyTd>
+              {props.columns.map(({ itemRenderer }, indexNested) => (
+                <StyledBodyTd key={indexNested}>
+                  {item ? (typeof itemRenderer === 'function' ? itemRenderer(item) : itemRenderer) : null}
+                </StyledBodyTd>
               ))}
             </StyledBodyTr>
           ))}

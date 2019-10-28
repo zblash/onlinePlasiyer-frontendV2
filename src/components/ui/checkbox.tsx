@@ -5,11 +5,17 @@ interface CheckboxProps extends StylableProps {
   id: string;
   label: React.ReactElement | string;
   hasError?: boolean;
+  unCheckedlabel?: React.ReactElement | string;
   onChange?: (isChecked: boolean) => void;
+  alwaysHighlighted?: boolean;
 }
+// TODO: refactor css
+const primaryColor = '#0075ff';
+const deactiveColor = '#5a5358';
 
-const StyledLabel = styled.label`
-  margin-left: 8px;
+const StyledLabel = styled.label<{ poition: 'left' | 'right' }>`
+  margin-left: ${props => (props.poition === 'right' ? 8 : 0)}px;
+  margin-right: ${props => (props.poition === 'left' ? 8 : 0)}px;
   cursor: pointer;
 `;
 
@@ -18,18 +24,48 @@ const StyledCheckboxWrapper = styled.div`
   align-items: center;
 `;
 
-function UICheckbox(props: CheckboxProps) {
-  const { id, label, hasError } = props;
-  const inputClassname = `
-      m-checkbox__input m-checkbox--switch__input
-      ${hasError && 'm-checkbox--has-error__input'}
-    `;
+const StyledCheckbox = styled.input<{ isAlwaysHighlighted?: boolean }>`
+  position: relative;
+  flex-shrink: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  outline: none;
+  cursor: pointer;
+  width: 32px;
+  height: 16px;
+  border: 2px solid ${props => (props.isAlwaysHighlighted ? primaryColor : deactiveColor)};
+  border-radius: 16px;
 
+  ::before {
+    content: ' ';
+    position: absolute;
+    transition: all 0.1s;
+    top: 2px;
+    right: 18px;
+    bottom: 2px;
+    left: 2px;
+    border-radius: 50%;
+    background: ${props => (props.isAlwaysHighlighted ? primaryColor : deactiveColor)};
+  }
+  :checked {
+    border-color: ${primaryColor};
+    ::before {
+      right: 2px;
+      left: 18px;
+      background: ${primaryColor};
+    }
+  }
+`;
+
+function UICheckbox(props: CheckboxProps) {
+  const { id, label, unCheckedlabel } = props;
   return (
     <StyledCheckboxWrapper className={props.className}>
-      <input
+      {unCheckedlabel && <StyledLabel poition="left">{unCheckedlabel}</StyledLabel>}
+      <StyledCheckbox
+        isAlwaysHighlighted={props.alwaysHighlighted}
         type="checkbox"
-        className={inputClassname}
         id={id}
         onChange={e => {
           if (props.onChange) {
@@ -37,75 +73,9 @@ function UICheckbox(props: CheckboxProps) {
           }
         }}
       />
-      <StyledLabel>{label}</StyledLabel>
+      <StyledLabel poition="right">{label}</StyledLabel>
     </StyledCheckboxWrapper>
   );
 }
 
 export { UICheckbox };
-
-// TODO: refactor css
-const primaryColor = '#0075ff';
-
-css.global`
-  .m-checkbox__input {
-    position: relative;
-    flex-shrink: 0;
-    width: 20px;
-    height: 20px;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    outline: none;
-    cursor: pointer;
-    border: 2px solid ${primaryColor};
-  }
-  .m-checkbox__input::before {
-    content: ' ';
-    position: absolute;
-    top: 50%;
-    right: 50%;
-    bottom: 50%;
-    left: 50%;
-    transition: all 0.1s;
-    background: ${primaryColor};
-  }
-  .m-checkbox__input:checked::before,
-  .m-checkbox__input:disabled {
-    border-color: #5a5358;
-    cursor: default;
-  }
-  .m-checkbox__input:disabled::before {
-    background-color: #5a5358;
-  }
-  .m-checkbox--has-error__input {
-    border-color: red;
-    background-color: rgba(255, 0, 0, 0.2);
-  }
-  .m-checkbox--has-error__input::before {
-    background-color: red;
-  }
-  .m-checkbox--switch__input {
-    width: 32px;
-    height: 16px;
-    border: 2px solid #5a5358;
-    border-radius: 16px;
-  }
-  .m-checkbox--switch__input::before {
-    top: 2px;
-    right: 18px;
-    bottom: 2px;
-    left: 2px;
-    border-radius: 50%;
-    background: #5a5358;
-  }
-  .m-checkbox--switch__input:checked {
-    border-color: ${primaryColor};
-  }
-
-  .m-checkbox--switch__input:checked::before {
-    right: 2px;
-    left: 18px;
-    background: ${primaryColor};
-  }
-`;

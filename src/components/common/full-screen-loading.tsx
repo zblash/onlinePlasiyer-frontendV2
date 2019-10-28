@@ -11,7 +11,7 @@ interface FullScreenLoadingProps {}
 /*
   FullScreenLoading Colors
 */
-export const FullScreenLoadingColors = {
+const FullScreenLoadingColors = {
   wrapperBackground: '#fff',
 };
 
@@ -30,12 +30,12 @@ const StyledFullScreenLoadingWrapper = styled.div`
   z-index: 999;
 `;
 
-const FullScreenLoading: React.SFC<FullScreenLoadingProps> = () => (
+const FullScreenLoading: React.SFC<FullScreenLoadingProps> = React.memo(() => (
   <Portal>
     <StyledFullScreenLoadingWrapper>
       <DefaultLoading />
     </StyledFullScreenLoadingWrapper>
   </Portal>
-);
+));
 
 export { FullScreenLoading };

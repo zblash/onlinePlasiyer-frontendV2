@@ -2,8 +2,7 @@ import * as React from 'react';
 import { Redirect } from 'react-router-dom';
 import { getDisplayName } from '~/utils';
 import { UserRoleResponse } from '~/backend-model-helpers';
-import { withAuthUser, WithAuthUserComponentProps } from './with-auth-user';
-import { FullScreenLoading } from '../common/full-screen-loading';
+import { useApplicationContext } from '~/utils/hooks';
 
 const withRequiredRole = <T, C>(
   WrappedComponent: React.ComponentClass<T> | React.FunctionComponent<T>,
@@ -13,21 +12,15 @@ const withRequiredRole = <T, C>(
     authorize?: UserRoleResponse[];
   },
 ) => {
-  const WithRequiredRoleHoc: React.SFC<
-    React.ComponentProps<typeof WrappedComponent> & WithAuthUserComponentProps
-  > = props => {
-    const { user, isUserLoading, isLoggedIn } = props;
+  const WithRequiredRoleHoc: React.SFC<React.ComponentProps<typeof WrappedComponent>> = props => {
+    const { user } = useApplicationContext();
 
     const shouldAuth = Array.isArray(authorize);
     const wrappedElement = <WrappedComponent {...props} />;
     if (!shouldAuth) {
       return wrappedElement;
     }
-    if (isUserLoading) {
-      return <FullScreenLoading />;
-    }
-
-    if (!isLoggedIn || (!user && isLoggedIn) || (Array.isArray(authorize) && !authorize.includes(user.role))) {
+    if (Array.isArray(authorize) && !authorize.includes(user.role)) {
       return <Redirect to="/" />;
     }
 
@@ -36,7 +29,7 @@ const withRequiredRole = <T, C>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (WithRequiredRoleHoc as any).displayName = `withRequredRole(${getDisplayName(WrappedComponent)})`;
 
-  return withAuthUser(WithRequiredRoleHoc);
+  return WithRequiredRoleHoc;
 };
 
 export { withRequiredRole };

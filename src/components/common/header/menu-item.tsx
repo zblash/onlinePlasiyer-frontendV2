@@ -10,13 +10,13 @@ import styled, { css } from '~/styled';
 export interface MenuItemProps {
   iconName: IconName;
   text: string;
-  cardContent: (closePopup: () => void) => React.ReactElement;
+  cardContent?: (closeCard: () => void) => React.ReactElement;
 }
 
 /*
   MenuItem Colors
 */
-export const MenuItemColors = {
+const MenuItemColors = {
   wrapperHoverBackground: '#212121',
   wrapperActiveBackground: '#1c1c1c',
   text: '#fff',
@@ -66,40 +66,43 @@ const MenuItem: React.SFC<MenuItemProps> = props => {
   const [isClosed, setIsClosed] = React.useState(false);
   const tooltipProps = isClosed ? { visible: false } : {};
 
-  const __ = (
-    <Tooltip
-      overlay={
-        typeof props.cardContent === 'function' ? (
-          <StyledPopuCardWrapper>{props.cardContent(() => setIsClosed(true))}</StyledPopuCardWrapper>
-        ) : (
-          <span />
-        )
-      }
-      placement="bottom"
-      trigger="click"
-      {...tooltipProps}
-    >
-      <StyledMenuItemWrapper onClick={() => setIsClosed(false)}>
-        <UIIcon
-          name={props.iconName}
-          size={20}
-          className={css.cx(cssIconStyle, cssCommonOpacity)}
-          color={MenuItemColors.text}
-        />
-        <StyledMenuItemText className={cssCommonOpacity}>{props.text}</StyledMenuItemText>
-      </StyledMenuItemWrapper>
-    </Tooltip>
+  if (props.cardContent) {
+    return (
+      <Tooltip
+        overlay={
+          typeof props.cardContent === 'function' ? (
+            <StyledPopuCardWrapper>{props.cardContent(() => setIsClosed(true))}</StyledPopuCardWrapper>
+          ) : (
+            <span />
+          )
+        }
+        placement="bottom"
+        trigger="click"
+        {...tooltipProps}
+      >
+        <StyledMenuItemWrapper onClick={() => setIsClosed(false)}>
+          <UIIcon
+            name={props.iconName}
+            size={20}
+            className={css.cx(cssIconStyle, cssCommonOpacity)}
+            color={MenuItemColors.text}
+          />
+          <StyledMenuItemText className={cssCommonOpacity}>{props.text}</StyledMenuItemText>
+        </StyledMenuItemWrapper>
+      </Tooltip>
+    );
+  }
+  return (
+    <StyledMenuItemWrapper>
+      <UIIcon
+        name={props.iconName}
+        size={20}
+        className={css.cx(cssIconStyle, cssCommonOpacity)}
+        color={MenuItemColors.text}
+      />
+      <StyledMenuItemText className={cssCommonOpacity}>{props.text}</StyledMenuItemText>
+    </StyledMenuItemWrapper>
   );
-
-  /*
-  MenuItem Lifecycle
-  */
-
-  /*
-  MenuItem Functions
-  */
-
-  return __;
 };
 
 export { MenuItem };

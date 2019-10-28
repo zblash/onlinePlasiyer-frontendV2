@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { UIAutoComplete, UIIcon } from '~/components/ui';
-import { StyledInput, commonInputStyle, inputIconStyle, CreateCategoryPopupColors } from '.';
+import { StyledInput, commonInputStyle, inputIconStyle, CategoryPopupColors } from '.';
 import { queryEndpoints } from '~/services';
 import { useKeepValue } from '~/utils/hooks';
 import { useQuery } from '~/cache-management/hooks';
@@ -37,7 +37,7 @@ const _ParentCategoryInput: React.SFC<ParentCategoryInputProps> = props => {
 
   const [parentCategories, getParentCategoriesLoading, getParentCategoriesError] = useQuery(
     queryEndpoints.getCategories,
-    { variables: { type: 'parent' }, skip: !isActivate },
+    { variables: { type: 'parent' }, skip: !isActivate, defaultValue: [] },
   );
 
   const inputIconElement = (
@@ -45,12 +45,12 @@ const _ParentCategoryInput: React.SFC<ParentCategoryInputProps> = props => {
       className={inputIconStyle}
       name={getParentCategoriesLoading ? 'loading' : 'maintenance'}
       size={20}
-      color={props.isHighlighted ? CreateCategoryPopupColors.primary : CreateCategoryPopupColors.textColor}
+      color={props.isHighlighted ? CategoryPopupColors.primary : CategoryPopupColors.textColor}
     />
   );
   const __ = (
     <UIAutoComplete
-      items={parentCategories || []}
+      items={parentCategories}
       value={autocompleteValue}
       shouldItemRender={(item, value) => item.name.toLowerCase().indexOf(value.toLowerCase()) > -1}
       getItemValue={item => item.name}

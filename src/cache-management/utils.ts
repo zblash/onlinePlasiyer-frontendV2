@@ -1,11 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { isObject, isArray, narrowObject } from '~/utils';
+import { isObject, isArray, narrowObject, objectKeys } from '~/utils';
 import { RouteSchema } from './helpers';
 
 const getRouteId = (route: string, variables?: Record<string, any>) => route + JSON.stringify(narrowObject(variables));
 
 const CURRENT_ID_KEY = 'id';
+
+export function deepMergeIdObjects(cache: any, newData: any) {
+  const modifiedData = {};
+  objectKeys(newData).forEach(id => {
+    modifiedData[id] = { ...cache[id], ...newData[id] };
+  });
+  return modifiedData;
+}
 
 export const separatingObjectsContainingId = (unmodifiedData: any) => {
   let modifiedData: Record<string, any> = {};

@@ -8,27 +8,25 @@ import { TOKEN_KEY } from '~/utils/constants';
 function ApplicationContextProvider(props: React.PropsWithChildren<ApplicationProviderProps>) {
   const [token, setToken, removeToken] = useLocalStorage<string>(TOKEN_KEY);
   const { children } = props;
-  const [isUserLoggedIn, setIsUserLoggedIn] = React.useState(!!token);
   const createCategory = usePopup();
+  const updateCategory = usePopup();
 
   return (
     <ApplicationContext.Provider
       value={{
-        user: {
-          isLoggedIn: isUserLoggedIn,
-        },
-        userLogin: () => setIsUserLoggedIn(true),
+        user: props.user,
         userLogout: () => {
-          setIsUserLoggedIn(false);
           removeToken();
+          location.reload();
         },
         popups: {
           createCategory,
+          updateCategory,
         },
       }}
     >
       {children}
-      <PopupsWrapper createCategory={createCategory} />
+      <PopupsWrapper createCategory={createCategory} updateCategory={updateCategory} />
     </ApplicationContext.Provider>
   );
 }

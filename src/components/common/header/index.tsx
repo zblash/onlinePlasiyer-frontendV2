@@ -3,20 +3,29 @@ import styled from '~/styled';
 import { HeaderLogo } from './header-logo';
 import { MenuItemProps, MenuItem } from './menu-item';
 import { HeaderSearchBar } from './search-bar';
-import { LoginCard } from './cards/login-card';
-import { WithAuthUserComponentProps, withAuthUser } from '~/components/hoc/with-auth-user';
 import { AccountCard } from './cards/account-card';
 
 /*
   Header Helpers
 */
-interface HeaderProps extends WithAuthUserComponentProps {}
+interface HeaderProps {}
 
 /*
   Header Colors
 */
-export const HeaderColors = {
+const HeaderColors = {
   wrapperBackground: '#262626',
+};
+
+/*
+  Header Strings 
+*/
+
+const HeaderStrings = {
+  accont: 'Hesap',
+  login: 'Oturum Ac',
+  register: 'Kayit Ol',
+  shopingBasket: 'Sepet',
 };
 
 /*
@@ -41,27 +50,18 @@ const StyledMenuItemsWrapper = styled.div`
 `;
 
 const _Header: React.SFC<HeaderProps> = props => {
-  const isUserLogin = props.isLoggedIn;
-  const menuItems: MenuItemProps[] = isUserLogin
-    ? [
-        {
-          iconName: 'account',
-          text: 'Hesap',
-          cardContent: () => <AccountCard />,
-        },
-        {
-          iconName: 'shopingBasket',
-          text: 'Sepet (3)',
-          cardContent: null,
-        },
-      ]
-    : [
-        {
-          iconName: 'login',
-          text: 'Oturum Ac',
-          cardContent: closeCard => <LoginCard onSuccess={closeCard} />,
-        },
-      ];
+  const menuItems: MenuItemProps[] = [
+    {
+      iconName: 'account',
+      text: HeaderStrings.accont,
+      cardContent: () => <AccountCard />,
+    },
+    {
+      iconName: 'shopingBasket',
+      text: 'Sepet (3)',
+      cardContent: null,
+    },
+  ];
 
   const __ = (
     <StyledHeaderStickyWrapper>
@@ -86,6 +86,6 @@ const _Header: React.SFC<HeaderProps> = props => {
   return __;
 };
 
-const Header = withAuthUser(_Header);
+const Header = _Header;
 
 export { Header };

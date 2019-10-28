@@ -2,13 +2,15 @@ import * as React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { withRequiredRole } from '../hoc/with-required-role';
 
-import { withHeader } from '../hoc/with-header';
-
-import Home from '../pages/home';
+import { Home } from '../pages/home';
 import { ProductsPage } from '../pages/products';
+import { UsersPage } from '../pages/users';
 import Page404 from '~/components/pages/404-component';
 
 import { UserRoleResponse } from '~/backend-model-helpers';
+import { Header } from '../common/header';
+import { OrdersPage } from './orders';
+import { InvoicesPage } from './invoices';
 
 interface IRoute {
   path: string;
@@ -20,19 +22,29 @@ interface IRoute {
 const routes: IRoute[] = [
   {
     path: '/',
-    component: withHeader(Home),
+    component: Home,
+  },
+  {
+    path: '/users',
+    component: UsersPage,
+    authorize: ['ADMIN'],
   },
   {
     path: '/products/:categoryId?',
-    component: withHeader(ProductsPage),
-    authorize: ['ADMIN', 'CUSTOMER'],
+    component: ProductsPage,
   },
+  {
+    path: '/orders',
+    component: OrdersPage,
+  },
+  { path: '/invoices', component: InvoicesPage },
 ];
 
 const Routes = React.memo(() => {
   return (
     <>
       <Router>
+        <Header />
         <Switch>
           {routes.map(route => (
             <Route

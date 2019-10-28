@@ -1,39 +1,10 @@
 import * as React from 'react';
-
-import styled, { StylableProps } from '~/styled';
-import { CategoryFields } from '.';
 import { useMutation } from '~/cache-management/hooks';
 import { mutationEndPoints, queryEndpoints } from '~/services';
+import styled, { css } from '~/styled';
+import { CategoryFields } from '..';
 import { UIIcon } from '~/components/ui';
-
-/*
-  SubCategoryList Helpers
-*/
-interface SubCategoryListProps extends StylableProps {
-  categories: CategoryFields[];
-  onItemClick?: (category: CategoryFields) => void;
-}
-const SubCategoryListColors = {
-  danger: '#e2574c',
-};
-
-/*
-  SubCategoryList Styles
-*/
-
-const SubCategoryListWrapper = styled.div`
-  width: 300px;
-  box-shadow: 0px 5px 26px rgba(13, 12, 63, 0.05), 0px 2px 10px #b1b1b1;
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 4px;
-  overflow-y: auto;
-  overflow-x: hidden;
-
-  ::-webkit-scrollbar {
-    display: none;
-  }
-`;
+import { SubCategoryListColors } from '.';
 
 const StyledCategoryWrapper = styled.div`
   padding: 8px;
@@ -61,6 +32,13 @@ const StyledImg = styled.img`
 const StyledName = styled.h4`
   margin: 0;
 `;
+const StyledModifyIconWrapper = styled.div`
+  display: flex;
+`;
+
+const editIconStyle = css`
+  margin-right: 8px;
+`;
 
 const SubCategory: React.SFC<CategoryFields & { onClick?: Function }> = props => {
   const [deleteCategory, _, deleteCategoryLoading] = useMutation(mutationEndPoints.deleteCategory, {
@@ -87,36 +65,32 @@ const SubCategory: React.SFC<CategoryFields & { onClick?: Function }> = props =>
         <StyledName>{props.name}</StyledName>
       </SubCategoryLeftWrapper>
 
-      <UIIcon
-        size={18}
-        name={deleteCategoryLoading ? 'loading' : 'trash'}
-        color={SubCategoryListColors.danger}
-        onClick={e => {
-          if (!deleteCategoryLoading) {
+      <StyledModifyIconWrapper>
+        <UIIcon
+          size={18}
+          name="edit"
+          color={SubCategoryListColors.primary}
+          className={editIconStyle}
+          onClick={e => {
             e.stopPropagation();
-            deleteCategory();
-          }
-        }}
-      />
+            // TODO: edit category popup open
+          }}
+        />
+
+        <UIIcon
+          size={18}
+          name={deleteCategoryLoading ? 'loading' : 'trash'}
+          color={SubCategoryListColors.danger}
+          onClick={e => {
+            e.stopPropagation();
+            if (!deleteCategoryLoading) {
+              deleteCategory();
+            }
+          }}
+        />
+      </StyledModifyIconWrapper>
     </StyledCategoryWrapper>
   );
 };
 
-const SubCategoryList: React.SFC<SubCategoryListProps> = props => {
-  const onItemClick = props.onItemClick || (() => {});
-  const __ = (
-    <SubCategoryListWrapper className={props.className}>
-      {props.categories.map(category => (
-        <SubCategory key={category.id} {...category} onClick={() => onItemClick(category)} />
-      ))}
-    </SubCategoryListWrapper>
-  );
-
-  /*
-  SubCategoryList Functions
-  */
-
-  return __;
-};
-
-export { SubCategoryList };
+export { SubCategory };

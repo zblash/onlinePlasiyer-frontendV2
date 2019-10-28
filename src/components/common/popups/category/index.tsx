@@ -1,21 +1,33 @@
 import * as React from 'react';
 import styled, { css } from '~/styled';
+import lodashGet from 'lodash.get';
 import { UIInput, UIIcon, UICheckbox, UIButton, Loading } from '~/components/ui';
-import { useCreateCategoryReducer } from './reducer';
+import { useCategoryPopupReducer } from './reducer';
 import { useApplicationContext } from '~/utils/hooks';
 import { ParentCategoryInput } from './parent-category-input';
 import { queryEndpoints, mutationEndPoints } from '~/services';
 import { useMutation } from '~/cache-management/hooks';
 
 /*
-  CreateCategoryPopup Helpers
+  CategoryPopup Helpers
 */
-interface CreateCategoryPopupProps {}
+export interface CategoryPopupUpdateCategoryValues {
+  name: string;
+  parentCategoryId?: string;
+  isSub: boolean;
+  imgSrc: string;
+  id: string;
+}
+
+type CategoryPopupProps<T> = {
+  type: T;
+  initialState?: CategoryPopupUpdateCategoryValues;
+};
 
 /*
-  CreateCategoryPopup Colors
+  CategoryPopup Colors
 */
-export const CreateCategoryPopupColors = {
+export const CategoryPopupColors = {
   primary: '#0075ff',
   white: '#fff',
   primaryDark: '#0062d4',
@@ -26,11 +38,11 @@ export const CreateCategoryPopupColors = {
 };
 
 /*
-  CreateCategoryPopup Styles
+  CategoryPopup Styles
 */
 
-const StyledCreateCategoryPopupWrapper = styled.div`
-  background-color: ${CreateCategoryPopupColors.wrapperBackground};
+const StyledCategoryPopupWrapper = styled.div`
+  background-color: ${CategoryPopupColors.wrapperBackground};
   display: flex;
   flex-direction: column;
   padding: 16px;
@@ -39,28 +51,28 @@ const StyledCreateCategoryPopupWrapper = styled.div`
 
 export const inputIconStyle = css`
   padding: 4px 12px;
-  background-color: ${CreateCategoryPopupColors.iconBackground};
+  background-color: ${CategoryPopupColors.iconBackground};
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
-  border-right: 1px solid ${CreateCategoryPopupColors.inputBorder};
+  border-right: 1px solid ${CategoryPopupColors.inputBorder};
 `;
 
 export const commonInputStyle = css`
   margin: 0 8px;
-  color: ${CreateCategoryPopupColors.textColor};
+  color: ${CategoryPopupColors.textColor};
 `;
 
 export const StyledInput = styled(UIInput)<{}>`
   margin-bottom: 16px;
-  border: 1px solid ${CreateCategoryPopupColors.inputBorder};
+  border: 1px solid ${CategoryPopupColors.inputBorder};
   :focus-within {
-    border: 1px solid ${CreateCategoryPopupColors.primary};
+    border: 1px solid ${CategoryPopupColors.primary};
     .${inputIconStyle} {
-      border-right: 1px solid ${CreateCategoryPopupColors.primary};
-      color: ${CreateCategoryPopupColors.primary};
+      border-right: 1px solid ${CategoryPopupColors.primary};
+      color: ${CategoryPopupColors.primary};
     }
     .${commonInputStyle} {
-      color: ${CreateCategoryPopupColors.primary};
+      color: ${CategoryPopupColors.primary};
     }
   }
 `;
@@ -77,7 +89,7 @@ const StyledCategoryImgWrapper = styled.label`
   height: 48px;
   margin-bottom: 24px;
   border-radius: 50%;
-  border: 2px solid ${CreateCategoryPopupColors.primary};
+  border: 2px solid ${CategoryPopupColors.primary};
   cursor: pointer;
 `;
 const StyledCategoryImg = styled.img`
@@ -96,26 +108,29 @@ const StyledHiddenFilePicker = styled.input`
   pointer-events: none;
 `;
 
-const StyledLoading = styled(Loading)``;
+const loadingStyle = css``;
 
-const StyledCreateCategoryButton = styled(UIButton)<{ disabled: boolean }>`
+const StyledCategoryButton = styled(UIButton)<{ disabled: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
   height: 36px;
   opacity: ${props => (props.disabled ? 0.6 : 1)};
-  border: 1px solid ${CreateCategoryPopupColors.primary};
-  color: ${CreateCategoryPopupColors.primary};
+  border: 1px solid ${CategoryPopupColors.primary};
+  color: ${CategoryPopupColors.primary};
   text-align: center;
   cursor: pointer;
   text-decoration: none;
   border-radius: 4px;
   :hover {
     color: #fff;
-    background-color: ${CreateCategoryPopupColors.primary};
+    background-color: ${CategoryPopupColors.primary};
+    .${loadingStyle}:after {
+      border-color: ${CategoryPopupColors.white} transparent;
+    }
   }
   :active {
-    background-color: ${CreateCategoryPopupColors.primaryDark};
+    background-color: ${CategoryPopupColors.primaryDark};
   }
   transition: background-color 0.3s, color 0.3s;
 `;
@@ -129,21 +144,29 @@ const imageIconStyle = css`
 
 const filePickerInputId = 'image-picker-create-category-popup';
 
-const _CreateCategoryPopup: React.SFC<CreateCategoryPopupProps> = props => {
+function _CategoryPopup<T extends 'update' | 'create'>(props: CategoryPopupProps<T>) {
   const { popups } = useApplicationContext();
-  const [state, dispatch] = useCreateCategoryReducer();
-  const [imgSrc, setImgSrc] = React.useState(null);
-  const [createCategory, _, createCategoryLoading] = useMutation(mutationEndPoints.createCategory, {
-    variables: { ...state, parentId: state.parentCategory ? state.parentCategory.id : null },
-    refetchQueries: [
-      {
-        query: queryEndpoints.getCategories,
-        variables: { type: 'all' },
-      },
-    ],
+  const [state, dispatch] = useCategoryPopupReducer({
+    name: lodashGet(props.initialState, 'name'),
+    isSub: lodashGet(props.initialState, 'isSub'),
   });
+  const [imgSrc, setImgSrc] = React.useState(lodashGet(props.initialState, 'imgSrc'));
+  const [categoryAction, _, loading] = useMutation(
+    props.type === 'update' ? mutationEndPoints.updateCategory : mutationEndPoints.createCategory,
+    {
+      variables: {
+        id: lodashGet(props.initialState, 'id'),
+        isSub: state.isSub,
+        name: state.name,
+        parentId: state.parentId,
+        uploadFile: state.uploadFile,
+      },
+      refetchQueries:
+        props.type === 'create' ? [{ query: queryEndpoints.getCategories, variables: { type: 'all' } }] : [],
+    },
+  );
   const __ = (
-    <StyledCreateCategoryPopupWrapper>
+    <StyledCategoryPopupWrapper>
       <StyledHiddenFilePicker
         hidden
         id={filePickerInputId}
@@ -168,6 +191,7 @@ const _CreateCategoryPopup: React.SFC<CreateCategoryPopupProps> = props => {
       <StyledInput
         inputClassName={commonInputStyle}
         placeholder="Kategori Ismini Girin"
+        value={state.name}
         onChange={e => dispatch({ type: 'name', payload: e })}
         id="category-name"
         leftIcon={
@@ -175,13 +199,14 @@ const _CreateCategoryPopup: React.SFC<CreateCategoryPopupProps> = props => {
             className={inputIconStyle}
             name="nameTag"
             size={20}
-            color={state.name ? CreateCategoryPopupColors.primary : CreateCategoryPopupColors.textColor}
+            color={state.name ? CategoryPopupColors.primary : CategoryPopupColors.textColor}
           />
         }
       />
       <UICheckbox
         id="is-sub"
         className={checkboxStyle}
+        // TODO: move to page strings objects
         label={<StyledCheckboxText>Bu bir alt kategorimi ?</StyledCheckboxText>}
         onChange={isChecked => {
           dispatch({ type: 'isSub', payload: isChecked });
@@ -189,43 +214,44 @@ const _CreateCategoryPopup: React.SFC<CreateCategoryPopupProps> = props => {
       />
       <ParentCategoryInput
         disabled={!state.isSub}
-        isHighlighted={!!state.parentCategory}
+        isHighlighted={!!state.parentId}
         onSelect={item => {
           dispatch({
-            payload: item,
+            payload: item.id,
             type: 'parentCategory',
           });
         }}
       />
 
-      <StyledCreateCategoryButton
-        disabled={!(imgSrc && state.name && ((state.isSub && state.parentCategory) || !state.isSub))}
+      <StyledCategoryButton
+        disabled={!(imgSrc && state.name && ((state.isSub && state.parentId) || !state.isSub))}
         onClick={() => {
-          if (!createCategoryLoading) {
-            createCategory().then(popups.createCategory.hide);
+          if (!loading) {
+            categoryAction().then(props.type === 'create' ? popups.createCategory.hide : popups.updateCategory.hide);
           }
         }}
       >
-        {createCategoryLoading ? (
-          <StyledLoading color={CreateCategoryPopupColors.white} size={22} />
+        {loading ? (
+          <Loading color={CategoryPopupColors.primary} size={22} className={loadingStyle} />
         ) : (
-          <span>Olustur</span>
+          // TODO: move to page strings objects
+          <span>{props.type === 'create' ? 'Olustur' : 'Guncelle'}</span>
         )}
-      </StyledCreateCategoryButton>
-    </StyledCreateCategoryPopupWrapper>
+      </StyledCategoryButton>
+    </StyledCategoryPopupWrapper>
   );
 
   /*
-  CreateCategoryPopup Lifecycle
+  CategoryPopup Lifecycle
   */
 
   /*
-  CreateCategoryPopup Functions
+  CategoryPopup Functions
   */
 
   return __;
-};
+}
 
-const CreateCategoryPopup = _CreateCategoryPopup;
+const CategoryPopup = _CategoryPopup;
 
-export { CreateCategoryPopup };
+export { CategoryPopup };
