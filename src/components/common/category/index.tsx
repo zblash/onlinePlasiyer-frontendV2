@@ -3,8 +3,8 @@ import Tooltip from 'rc-tooltip';
 import styled, { css } from '~/styled';
 import { UIIcon } from '~/components/ui';
 import { SubCategoryList } from './sub-category-list';
-import { useMutation } from '~/cache-management/hooks';
-import { mutationEndPoints, queryEndpoints } from '~/services';
+import { useMutation } from '~/services/context';
+import { mutationEndPoints, queryEndpoints } from '~/services/endpoints';
 import { useApplicationContext } from '~/utils/hooks';
 
 /*

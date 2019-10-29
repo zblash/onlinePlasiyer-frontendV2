@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { TOKEN_KEY } from '~/utils/constants';
 
 import { isObject, isArray, narrowObject, objectKeys } from '~/utils';
 import { RouteSchema } from './helpers';
@@ -98,3 +99,8 @@ function getRouteSchema(obj: any, id?: string): RouteSchema | RouteSchema[] {
 }
 
 export { getRouteId, getRouteSchema };
+
+// TODO: remove function after enpoints move to react context
+export const getToken = () => {
+  return JSON.parse(localStorage.getItem(TOKEN_KEY));
+};

@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { UIAutoComplete, UIIcon } from '~/components/ui';
 import { StyledInput, commonInputStyle, inputIconStyle, CategoryPopupColors } from '.';
-import { queryEndpoints } from '~/services';
+import { queryEndpoints } from '~/services/endpoints';
 import { useKeepValue } from '~/utils/hooks';
-import { useQuery } from '~/cache-management/hooks';
+import { useQuery } from '~/services/context';
 
 /*
   ParentCategoryInput Helpers

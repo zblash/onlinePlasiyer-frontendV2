@@ -1,5 +1,6 @@
 import React from 'react';
-import { ApplicationContext } from '~/components/app/context';
+import { ApplicationContext } from '~/app/context';
+import { ServicesContext } from '~/services/context';
 
 function useStateFromProp<T>(initialValue: T): [T, React.Dispatch<React.SetStateAction<T>>] {
   const [value, setValue] = React.useState(initialValue);
@@ -11,6 +12,10 @@ function useStateFromProp<T>(initialValue: T): [T, React.Dispatch<React.SetState
 
 function useApplicationContext() {
   return React.useContext(ApplicationContext);
+}
+
+function useServicesContext() {
+  return React.useContext(ServicesContext);
 }
 
 function usePrevious<T>(value: T): T {
@@ -65,4 +70,12 @@ function useStateWithCallback<T>(
   return [state, setState];
 }
 
-export { useStateFromProp, useApplicationContext, usePrevious, useKeepValue, useLocalStorage, useStateWithCallback };
+export {
+  useStateFromProp,
+  useApplicationContext,
+  usePrevious,
+  useKeepValue,
+  useLocalStorage,
+  useStateWithCallback,
+  useServicesContext,
+};

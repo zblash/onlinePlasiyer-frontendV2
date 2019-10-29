@@ -57,7 +57,7 @@
       "background-color:${${1}Colors.wrapperBackground}",
       "`",
       "",
-      "const $1:React.SFC<$1Props>=(props)=>{",
+      "function $1(props:React.PropsWithChildren<$1Props>){",
       "",
       "const __ = (<Styled$1Wrapper>Hello $1</Styled$1Wrapper>);",
       "",

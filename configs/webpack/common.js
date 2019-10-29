@@ -28,7 +28,7 @@ module.exports = {
       ignoreOrder: false,
     }),
     new HtmlWebpackPlugin({
-      template: 'index.html.ejs',
+      template: 'root/index.html.ejs',
       templateParameters: {
         injectScript: isProduction ? 'window.__REACT_DEVTOOLS_GLOBAL_HOOK__.inject = function () {}' : '',
       },

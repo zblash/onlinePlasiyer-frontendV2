@@ -5,7 +5,7 @@ const commonConfig = require('./common');
 
 module.exports = merge(commonConfig, {
   mode: 'production',
-  entry: './index.tsx',
+  entry: './root/index.tsx',
   output: {
     filename: 'index.js',
     path: resolve(__dirname, '../../dist'),

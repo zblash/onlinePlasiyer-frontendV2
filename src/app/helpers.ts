@@ -1,6 +1,6 @@
-import React from 'react';
 import { CategoryPopupUpdateCategoryValues } from '~/components/common/popups/category';
-import { IUserCommonResponse } from '~/backend-model-helpers';
+import { User } from '~/helpers';
+import { IUserCommonResponse } from '~/services/helpers';
 
 export interface Popup<T = undefined> {
   isShown: boolean;
@@ -17,7 +17,7 @@ export interface Popups {
 export interface ApplicationContextValues {
   userLogout: () => void;
   popups: Popups;
-  user: IUserCommonResponse;
+  user: User;
 }
 const emptyPopup: Popup = {
   isShown: false,
@@ -31,7 +31,7 @@ export const applicationContextInitialValue: ApplicationContextValues = {
     name: '',
     email: '',
     id: '',
-    role: 'ADMIN',
+    role: 'admin',
     username: '',
   },
   userLogout: () => {},
@@ -44,5 +44,3 @@ export const applicationContextInitialValue: ApplicationContextValues = {
 export interface ApplicationProviderProps {
   user: IUserCommonResponse;
 }
-
-export const ApplicationContext = React.createContext<ApplicationContextValues>(applicationContextInitialValue);

@@ -1,9 +1,9 @@
 import * as React from 'react';
 import styled, { css } from '~/styled';
-import { UserRole, UserType } from '~/backend-model-helpers';
-import { queryEndpoints, mutationEndPoints } from '~/services';
-import { useQuery, useMutation } from '~/cache-management/hooks';
+import { queryEndpoints, mutationEndPoints } from '~/services/endpoints';
+import { useQuery, useMutation } from '~/services/context';
 import { Container, UICheckbox, UITable, UIIcon, UIButtonGroup } from '~/components/ui';
+import { UserRole, UserType } from '~/helpers';
 
 /*
   UsersPage Helpers
@@ -78,7 +78,7 @@ const iconStyle = css`
   cursor: pointer;
 `;
 const UsersPage: React.SFC<UsersPageProps> = props => {
-  const [userRole, setUserRole] = React.useState<UserRole>('customers');
+  const [userRole, setUserRole] = React.useState<UserRole>('customer');
   const [type, setType] = React.useState<UserType>('all');
   const [users] = useQuery(queryEndpoints.getUsers, {
     variables: { role: userRole, type },
@@ -102,7 +102,7 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
               }}
               options={[
                 {
-                  id: 'customers',
+                  id: 'customer',
                   text: UsersPageStrings.customers,
                 },
                 {
@@ -110,7 +110,7 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
                   text: UsersPageStrings.admin,
                 },
                 {
-                  id: 'merchants',
+                  id: 'merchant',
                   text: UsersPageStrings.merchants,
                 },
               ]}

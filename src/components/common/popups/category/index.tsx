@@ -5,8 +5,8 @@ import { UIInput, UIIcon, UICheckbox, UIButton, Loading } from '~/components/ui'
 import { useCategoryPopupReducer } from './reducer';
 import { useApplicationContext } from '~/utils/hooks';
 import { ParentCategoryInput } from './parent-category-input';
-import { queryEndpoints, mutationEndPoints } from '~/services';
-import { useMutation } from '~/cache-management/hooks';
+import { queryEndpoints, mutationEndPoints } from '~/services/endpoints';
+import { useMutation } from '~/services/context';
 
 /*
   CategoryPopup Helpers

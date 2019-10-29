@@ -2,17 +2,12 @@
 import * as React from 'react';
 import deepEqual from 'deep-equal';
 import { isArray, getKeyByValue } from '~/utils';
-import { queryEndpoints } from '~/services';
-import { CacheContextProviderComponentState, CacheContext, GenericQuery, RouteSchema } from './helpers';
+import { ServicesContextProviderComponentState, ServicesContextValues, GenericQuery, RouteSchema } from './helpers';
 import { getRouteSchema, getRouteId, separatingObjectsContainingId, deepMergeIdObjects } from './utils';
+import { ServicesContext } from './context';
+import { queryEndpoints } from './endpoints';
 
-const CacheContext = React.createContext<CacheContext>({
-  get: () => Promise.resolve(),
-  mutate: () => Promise.resolve(),
-  removeListener: () => {},
-});
-
-class CacheContextProvider extends React.Component<{}, CacheContextProviderComponentState> {
+class ServicesContextProvider extends React.Component<{}, ServicesContextProviderComponentState> {
   queryQeue: Record<string, Promise<any>>;
 
   changeListener: Record<string, { listner: (data: any) => void; routeId: string }>;
@@ -33,7 +28,7 @@ class CacheContextProvider extends React.Component<{}, CacheContextProviderCompo
     return route;
   };
 
-  get: CacheContext['get'] = props => {
+  get: ServicesContextValues['get'] = props => {
     const { query, variables, listener, fetchPolicy } = props;
     const routeId = getRouteId(this.getRouteEndpoint(query), variables);
     if (fetchPolicy === 'cache-first' || fetchPolicy === 'cache-and-network') {
@@ -97,7 +92,7 @@ class CacheContextProvider extends React.Component<{}, CacheContextProviderCompo
     return query(variables);
   };
 
-  mutate: CacheContext['mutate'] = ({ variables, mutation, refetchQueries }) =>
+  mutate: ServicesContextValues['mutate'] = ({ variables, mutation, refetchQueries }) =>
     mutation(variables).then(data => {
       const _state = this.state;
       const _cache = getRouteSchema(data);
@@ -147,7 +142,7 @@ class CacheContextProvider extends React.Component<{}, CacheContextProviderCompo
   // TODO : refactor code
   updateQueries = (
     newResponseCache: { route: RouteSchema | RouteSchema[]; cache: Record<string, any> },
-    oldAppState: CacheContextProviderComponentState,
+    oldAppState: ServicesContextProviderComponentState,
     currentQueryId = '##',
   ) => {
     const { routeCache } = this.state;
@@ -235,7 +230,7 @@ class CacheContextProvider extends React.Component<{}, CacheContextProviderCompo
     const { children } = this.props;
 
     return (
-      <CacheContext.Provider
+      <ServicesContext.Provider
         value={{
           get: this.get,
           mutate: this.mutate,
@@ -243,9 +238,9 @@ class CacheContextProvider extends React.Component<{}, CacheContextProviderCompo
         }}
       >
         {children}
-      </CacheContext.Provider>
+      </ServicesContext.Provider>
     );
   }
 }
 
-export { CacheContextProvider, CacheContext };
+export { ServicesContextProvider };

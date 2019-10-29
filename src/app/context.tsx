@@ -1,5 +1,8 @@
 import * as React from 'react';
+import { ApplicationContextValues, applicationContextInitialValue } from './helpers';
 import { Popup } from './helpers';
+
+const ApplicationContext = React.createContext<ApplicationContextValues>(applicationContextInitialValue);
 
 function usePopup<T = undefined>(): Popup<T> {
   const [isShown, setIsShown] = React.useState(false);
@@ -18,4 +21,4 @@ function usePopup<T = undefined>(): Popup<T> {
   };
 }
 
-export { usePopup };
+export { ApplicationContext, usePopup };

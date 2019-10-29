@@ -5,3 +5,17 @@ type MissingProps<Defaults, Props> = Pick<Props, Exclude<keyof Props, keyof Defa
 export type WithDefaultProps<Defaults, Props> = MissingProps<Defaults, Props> &
   // @ts-ignore
   { [P in keyof Defaults]?: P extends keyof Props ? Props[P] : never };
+
+export type UserRole = 'admin' | 'merchant' | 'customer';
+
+export interface User {
+  username: string;
+  role: UserRole;
+  name: string;
+  email: string;
+  id: string;
+  status?: boolean;
+  taxNumber?: string;
+}
+
+export type UserType = 'active' | 'passive' | 'all';

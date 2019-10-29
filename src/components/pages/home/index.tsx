@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Container } from '~/components/ui';
-import { useQuery } from '~/cache-management/hooks';
-import { queryEndpoints } from '~/services';
+import { useQuery } from '~/services/context';
+import { queryEndpoints } from '~/services/endpoints';
 import { CategoryHorizontalList } from '~/components/common/category-horizontal-list';
 
 interface HomeProps {}

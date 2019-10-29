@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { IUserCommonResponse, UserRoleResponse } from '~/services/helpers';
 
-import { IUserCommonResponse, UserRoleResponse } from '~/backend-model-helpers';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 export function makeid(length: number) {
   let result = '';

@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { useMutation } from '~/cache-management/hooks';
-import { mutationEndPoints, queryEndpoints } from '~/services';
+import { useMutation } from '~/services/context';
+import { mutationEndPoints, queryEndpoints } from '~/services/endpoints';
 import styled, { css } from '~/styled';
 import { CategoryFields } from '..';
 import { UIIcon } from '~/components/ui';

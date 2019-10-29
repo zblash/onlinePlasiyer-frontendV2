@@ -5,9 +5,10 @@ import {
   FetchPolicy,
   CommonEnpointOptions,
   EndpointsVariablesType,
-} from './helpers';
-import { CacheContext } from './context';
+  ServicesContextValues,
+} from '~/services/helpers';
 import { WithDefaultProps } from '~/helpers';
+import { useServicesContext } from '~/utils/hooks';
 
 // [mutation,result,loading,error]
 type UseMutationResult<Mutation> = [
@@ -24,8 +25,14 @@ type UseMutationOptions<T> = {
 
 type BaseEndpointType = (vars: any) => Promise<any>;
 
+const ServicesContext = React.createContext<ServicesContextValues>({
+  get: () => Promise.resolve(),
+  mutate: () => Promise.resolve(),
+  removeListener: () => {},
+});
+
 function useMutation<T extends BaseEndpointType>(mutation: T, _options?: UseMutationOptions<T>): UseMutationResult<T> {
-  const cacheContext = React.useContext(CacheContext);
+  const cacheContext = useServicesContext();
   const options = { ..._options };
   const [state, setState] = React.useState({ data: null, error: null, loading: false });
   function mutate(variables?: EndpointsVariablesType<T>) {
@@ -77,7 +84,7 @@ function useQuery<T extends BaseEndpointType>(
   query: T,
   _options?: WithDefaultProps<typeof defaultQueryOptions, UseQueryOptions<T>>,
 ): UseQueryResult<T> {
-  const cacheContext = React.useContext(CacheContext);
+  const cacheContext = useServicesContext();
   const queryHookId = React.useRef(`${Math.random()}`).current;
   const options = { ...defaultQueryOptions, ..._options };
   const [state, setState] = React.useState({ data: null, error: null, loading: !options.skip });
@@ -129,4 +136,4 @@ function useQuery<T extends BaseEndpointType>(
   return [state.data || options.defaultValue, state.loading, state.error];
 }
 
-export { useMutation, useQuery };
+export { useMutation, useQuery, ServicesContext };

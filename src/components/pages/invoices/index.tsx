@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from '~/styled';
-import { useQuery } from '~/cache-management/hooks';
-import { queryEndpoints } from '~/services';
+import { useQuery } from '~/services/context';
+import { queryEndpoints } from '~/services/endpoints';
 import { Container, UITable } from '~/components/ui';
 
 /*

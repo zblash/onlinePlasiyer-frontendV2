@@ -1,9 +1,9 @@
 import * as React from 'react';
 import styled, { css } from '~/styled';
 import { UIInput, UIAutoComplete, UIButtonGroup, UIButton } from '~/components/ui';
-import { useQuery } from '~/cache-management/hooks';
-import { queryEndpoints } from '~/services';
-import { UserRole } from '~/backend-model-helpers';
+import { useQuery } from '~/services/context';
+import { queryEndpoints } from '~/services/endpoints';
+import { UserRole } from '~/helpers';
 
 /*
   HeaderRegisterCard Helpers
@@ -185,7 +185,7 @@ const HeaderRegisterCard: React.SFC<HeaderRegisterCardProps> = props => {
           onItemClick={id => {}}
           options={[
             {
-              id: 'customers',
+              id: 'customer',
               text: HeaderRegisterCardStrings.customer,
             },
             {
@@ -193,7 +193,7 @@ const HeaderRegisterCard: React.SFC<HeaderRegisterCardProps> = props => {
               text: HeaderRegisterCardStrings.admin,
             },
             {
-              id: 'merchants',
+              id: 'merchant',
               text: HeaderRegisterCardStrings.merchant,
             },
           ]}

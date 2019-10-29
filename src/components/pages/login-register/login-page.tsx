@@ -1,8 +1,8 @@
 import * as React from 'react';
 import styled, { css } from '~/styled';
 import { UIInput, UIButton, Loading } from '~/components/ui';
-import { useMutation } from '~/cache-management/hooks';
-import { mutationEndPoints } from '~/services';
+import { useMutation } from '~/services/context';
+import { mutationEndPoints } from '~/services/endpoints';
 import { useStateFromProp } from '~/utils/hooks';
 import logoPath from '~/assets/images/logo.png';
 

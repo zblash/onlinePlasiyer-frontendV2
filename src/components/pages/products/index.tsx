@@ -3,8 +3,8 @@ import { useParams } from 'react-router';
 import styled from '~/styled';
 import { Container } from '~/components/ui';
 import { ProductList } from '~/components/common/product-list';
-import { useQuery } from '~/cache-management/hooks';
-import { queryEndpoints } from '~/services';
+import { useQuery } from '~/services/context';
+import { queryEndpoints } from '~/services/endpoints';
 import { CategoryHorizontalList } from '~/components/common/category-horizontal-list';
 
 /*

@@ -1,20 +1,21 @@
 import * as React from 'react';
-import { ApplicationContext, ApplicationProviderProps } from './helpers';
-import { usePopup } from './hooks';
-import { PopupsWrapper } from './popups-wrapper';
+import { ApplicationContext, usePopup } from './context';
+import Routes from '~/components/pages';
+import { USER_ROLE_MAP } from '~/helpers/maps';
 import { useLocalStorage } from '~/utils/hooks';
+import { ApplicationProviderProps } from './helpers';
 import { TOKEN_KEY } from '~/utils/constants';
+import { PopupsWrapper } from './popups-wrapper';
 
-function ApplicationContextProvider(props: React.PropsWithChildren<ApplicationProviderProps>) {
+function App(props: ApplicationProviderProps) {
   const [token, setToken, removeToken] = useLocalStorage<string>(TOKEN_KEY);
-  const { children } = props;
   const createCategory = usePopup();
   const updateCategory = usePopup();
 
   return (
     <ApplicationContext.Provider
       value={{
-        user: props.user,
+        user: { ...props.user, role: USER_ROLE_MAP[props.user.role] },
         userLogout: () => {
           removeToken();
           location.reload();
@@ -25,10 +26,10 @@ function ApplicationContextProvider(props: React.PropsWithChildren<ApplicationPr
         },
       }}
     >
-      {children}
+      <Routes />
       <PopupsWrapper createCategory={createCategory} updateCategory={updateCategory} />
     </ApplicationContext.Provider>
   );
 }
 
-export { ApplicationContextProvider, ApplicationContext };
+export default App;
