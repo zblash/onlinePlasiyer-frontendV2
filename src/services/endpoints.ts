@@ -92,6 +92,7 @@ class QueryEndpoints {
   getStates: () => Promise<any> = () => axios.get(URL.concat('/definitions/states')).then(({ data }) => data);
 
   getAllOrders: () => Promise<IOrder[]> = () => ApiCall.get('/orders');
+
   getAllInvoices: () => Promise<Invoice[]> = () => ApiCall.get('/invoices');
 }
 
@@ -120,7 +121,7 @@ class MutationEndpoints {
 
   updateCategory = (params: UpdateCategoryVariables) => {
     const formData = new FormData();
-    const id = params.id;
+    const { id } = params;
     const data = {
       ...params,
       subCategory: params.isSub ? 1 : 0,

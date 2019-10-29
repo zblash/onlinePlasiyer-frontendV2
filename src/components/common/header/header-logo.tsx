@@ -17,4 +17,5 @@ const HeaderLogo: React.SFC<IHeaderLogoProps> = props => {
 interface IHeaderLogoProps {}
 
 const _HeaderLogo = React.memo(HeaderLogo);
+
 export { _HeaderLogo as HeaderLogo };

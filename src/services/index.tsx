@@ -18,6 +18,7 @@ class ServicesContextProvider extends React.Component<{}, ServicesContextProvide
     this.queryQeue = {};
     this.changeListener = {};
   }
+
   getRouteEndpoint = (query: any) => {
     const route = getKeyByValue(queryEndpoints, query);
 

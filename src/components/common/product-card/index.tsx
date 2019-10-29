@@ -25,6 +25,7 @@ export const ProductCardColors = {
   primaryDark: '#0062d4',
   wrapperBackground: '#fff',
 };
+
 /*
   ProductCard Strings 
 */

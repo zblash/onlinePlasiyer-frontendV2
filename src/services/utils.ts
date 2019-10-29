@@ -13,6 +13,7 @@ export function deepMergeIdObjects(cache: any, newData: any) {
   objectKeys(newData).forEach(id => {
     modifiedData[id] = { ...cache[id], ...newData[id] };
   });
+
   return modifiedData;
 }
 

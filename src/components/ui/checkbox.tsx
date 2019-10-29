@@ -60,6 +60,7 @@ const StyledCheckbox = styled.input<{ isAlwaysHighlighted?: boolean }>`
 
 function UICheckbox(props: CheckboxProps) {
   const { id, label, unCheckedlabel } = props;
+
   return (
     <StyledCheckboxWrapper className={props.className}>
       {unCheckedlabel && <StyledLabel poition="left">{unCheckedlabel}</StyledLabel>}

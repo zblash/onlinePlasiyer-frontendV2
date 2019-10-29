@@ -51,6 +51,7 @@ function UIButtonGroup<T = string>(props: ButtonGroupProps<T>) {
     ...item,
     position: index === 0 ? 'left' : index === 1 ? 'center' : ('right' as ButtonProps['position']),
   }));
+
   return (
     <StyledUserTypesWrapper>
       {options.map(item => (

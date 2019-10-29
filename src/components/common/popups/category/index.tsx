@@ -1,6 +1,6 @@
 import * as React from 'react';
-import styled, { css } from '~/styled';
 import lodashGet from 'lodash.get';
+import styled, { css } from '~/styled';
 import { UIInput, UIIcon, UICheckbox, UIButton, Loading } from '~/components/ui';
 import { useCategoryPopupReducer } from './reducer';
 import { useApplicationContext } from '~/utils/hooks';

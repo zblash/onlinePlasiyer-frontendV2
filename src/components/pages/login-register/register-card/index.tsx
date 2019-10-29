@@ -197,7 +197,7 @@ const HeaderRegisterCard: React.SFC<HeaderRegisterCardProps> = props => {
               text: HeaderRegisterCardStrings.merchant,
             },
           ]}
-          selectedId={'admin'}
+          selectedId="admin"
         />
         <StyledRegisterButton hasError={false}>Kayit Ol</StyledRegisterButton>
       </StyledUserTypeWrapper>
