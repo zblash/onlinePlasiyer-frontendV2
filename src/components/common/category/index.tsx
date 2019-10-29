@@ -142,7 +142,7 @@ const editIconStyle = css`
 const CategoryItem: React.SFC<CategoryItemProps> = props => {
   const [isClickSubitem, setIsClickSubitem] = React.useState(false);
   const { popups } = useApplicationContext();
-  const [deleteCategory, _, deleteCategoryLoading] = useMutation(mutationEndPoints.deleteCategory, {
+  const [deleteCategory, deleteCategoryLoading] = useMutation(mutationEndPoints.deleteCategory, {
     variables: { id: props.id },
     refetchQueries: [
       {

@@ -16,7 +16,9 @@ const RegisterPageColors = {
 /*
   RegisterPage Strings
 */
-const RegisterPageStrings = {};
+const RegisterPageStrings = {
+  hello: 'Hello Register',
+};
 
 /*
   RegisterPage Styles
@@ -27,7 +29,7 @@ const StyledRegisterPageWrapper = styled.div`
 `;
 
 const RegisterPage: React.SFC<RegisterPageProps> = props => {
-  const __ = <StyledRegisterPageWrapper>Hello RegisterPage</StyledRegisterPageWrapper>;
+  const __ = <StyledRegisterPageWrapper>{RegisterPageStrings.hello}</StyledRegisterPageWrapper>;
 
   /*
   RegisterPage Lifecycle

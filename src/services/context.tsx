@@ -10,12 +10,12 @@ import {
 import { WithDefaultProps } from '~/helpers';
 import { useServicesContext } from '~/utils/hooks';
 
-// [mutation,result,loading,error]
+// [mutation,loading,error,result]
 type UseMutationResult<Mutation> = [
   (vars?: EndpointsVariablesType<Mutation>) => Promise<EndpointsResultType<Mutation>>,
-  EndpointsResultType<Mutation>,
   boolean,
   any,
+  EndpointsResultType<Mutation>,
 ];
 
 type UseMutationOptions<T> = {
@@ -59,7 +59,7 @@ function useMutation<T extends BaseEndpointType>(mutation: T, _options?: UseMuta
       });
   }
 
-  return [mutate, state.data, state.loading, state.error];
+  return [mutate, state.loading, state.error, state.data];
 }
 
 // [queryResult,loading,error]

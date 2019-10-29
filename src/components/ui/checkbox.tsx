@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled, { css, StylableProps } from '~/styled';
+import styled, { StylableProps } from '~/styled';
 
 interface CheckboxProps extends StylableProps {
   id: string;

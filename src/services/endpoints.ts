@@ -245,4 +245,4 @@ const mutationEndPoints = new MutationEndpoints();
 
 const queryEndpoints = new QueryEndpoints();
 
-export { queryEndpoints, mutationEndPoints, checkHealthEnpoint };
+export { queryEndpoints, mutationEndPoints, checkHealthEnpoint, refetchFactory };

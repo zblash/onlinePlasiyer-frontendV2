@@ -10,13 +10,6 @@ import { Container, UITable } from '~/components/ui';
 interface InvoicesPageProps {}
 
 /*
-  InvoicesPage Colors
-*/
-const InvoicesPageColors = {
-  wrapperBackground: '#fff',
-};
-
-/*
   InvoicesPage Strings
 */
 const InvoicesPageStrings = {

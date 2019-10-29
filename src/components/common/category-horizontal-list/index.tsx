@@ -194,7 +194,6 @@ const _CategoryHorizontalList: React.SFC<CategoryHorizontalListProps> = props =>
   return __;
 };
 
-// @ts-ignore
 const CategoryHorizontalList = _CategoryHorizontalList;
 
 export { CategoryHorizontalList };

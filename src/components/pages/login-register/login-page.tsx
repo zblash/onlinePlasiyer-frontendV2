@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled, { css } from '~/styled';
+import styled from '~/styled';
 import { UIInput, UIButton, Loading } from '~/components/ui';
 import { useMutation } from '~/services/context';
 import { mutationEndPoints } from '~/services/endpoints';
@@ -30,7 +30,9 @@ const LoginPageColors = {
 /*
   LoginPage Strings
 */
-const LoginPageStrings = {};
+const LoginPageStrings = {
+  login: 'Giris Yap',
+};
 
 /*
   LoginPage Styles
@@ -107,7 +109,7 @@ const StyledBottomWrapper = styled.div`
 const LoginPage: React.SFC<LoginPageProps> = props => {
   const [password, setPassword] = React.useState('');
   const [username, setUsername] = React.useState('');
-  const [login, _, isLoading, error] = useMutation(mutationEndPoints.login, {
+  const [login, isLoading, error] = useMutation(mutationEndPoints.login, {
     variables: { password, username },
   });
   const [hasError, setError] = useStateFromProp(error);
@@ -124,6 +126,8 @@ const LoginPage: React.SFC<LoginPageProps> = props => {
             } else {
               setError(false);
               login().then(() => {
+                // TODO: move to  endpoints context
+                // eslint-disable-next-line
                 location.reload();
               });
             }
@@ -137,7 +141,7 @@ const LoginPage: React.SFC<LoginPageProps> = props => {
           </StyledInputWrapper>
           <StyledBottomWrapper>
             <StyledLoginButton hasError={hasError} type="submit">
-              {isLoading ? <Loading color="currentColor" size={24} /> : 'Giris Yap'}
+              {isLoading ? <Loading color="currentColor" size={24} /> : LoginPageStrings.login}
             </StyledLoginButton>
           </StyledBottomWrapper>
         </form>

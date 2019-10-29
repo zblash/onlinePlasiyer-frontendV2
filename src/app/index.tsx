@@ -8,7 +8,8 @@ import { TOKEN_KEY } from '~/utils/constants';
 import { PopupsWrapper } from './popups-wrapper';
 
 function App(props: ApplicationProviderProps) {
-  const [token, setToken, removeToken] = useLocalStorage<string>(TOKEN_KEY);
+  // TODO: remove useLocalStorage
+  const removeToken = useLocalStorage<string>(TOKEN_KEY)[2];
   const createCategory = usePopup();
   const updateCategory = usePopup();
 
@@ -18,6 +19,8 @@ function App(props: ApplicationProviderProps) {
         user: { ...props.user, role: USER_ROLE_MAP[props.user.role] },
         userLogout: () => {
           removeToken();
+          // TODO: move to  endpoints context
+          // eslint-disable-next-line
           location.reload();
         },
         popups: {

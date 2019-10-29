@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from '~/styled';
-import { UIButton, Loading } from '~/components/ui';
+import { UIButton } from '~/components/ui';
 import { useApplicationContext } from '~/utils/hooks';
 
 /*

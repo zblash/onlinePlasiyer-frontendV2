@@ -41,7 +41,7 @@ const editIconStyle = css`
 `;
 
 const SubCategory: React.SFC<CategoryFields & { onClick?: Function }> = props => {
-  const [deleteCategory, _, deleteCategoryLoading] = useMutation(mutationEndPoints.deleteCategory, {
+  const [deleteCategory, deleteCategoryLoading] = useMutation(mutationEndPoints.deleteCategory, {
     variables: { id: props.id },
     refetchQueries: [
       {

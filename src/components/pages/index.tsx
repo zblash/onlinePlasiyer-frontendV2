@@ -5,7 +5,7 @@ import { withRequiredRole } from '../hoc/with-required-role';
 import { Home } from '../pages/home';
 import { ProductsPage } from '../pages/products';
 import { UsersPage } from '../pages/users';
-import Page404 from '~/components/pages/404-component';
+import { Page404 } from '~/components/pages/404-component';
 
 import { Header } from '../common/header';
 import { OrdersPage } from './orders';

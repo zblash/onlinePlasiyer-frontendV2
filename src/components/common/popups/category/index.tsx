@@ -151,7 +151,7 @@ function _CategoryPopup<T extends 'update' | 'create'>(props: CategoryPopupProps
     isSub: lodashGet(props.initialState, 'isSub'),
   });
   const [imgSrc, setImgSrc] = React.useState(lodashGet(props.initialState, 'imgSrc'));
-  const [categoryAction, _, loading] = useMutation(
+  const [categoryAction, loading] = useMutation(
     props.type === 'update' ? mutationEndPoints.updateCategory : mutationEndPoints.createCategory,
     {
       variables: {
@@ -176,6 +176,7 @@ function _CategoryPopup<T extends 'update' | 'create'>(props: CategoryPopupProps
             const file = event.target.files[0];
             const reader = new FileReader();
             reader.onload = e => {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
               // @ts-ignore
               setImgSrc(e.target.result as string);
               dispatch({ payload: file, type: 'uploadFile' });

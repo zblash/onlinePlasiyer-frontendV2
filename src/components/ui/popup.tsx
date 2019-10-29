@@ -88,10 +88,6 @@ const _Popup: React.SFC<PopupProps> = props => {
   Popup Functions
   */
 
-  function openPopup() {
-    setIsShown(true);
-  }
-
   function closePopup() {
     setIsShown(false);
     onClose();

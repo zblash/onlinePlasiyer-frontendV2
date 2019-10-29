@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled, { css } from '~/styled';
 import { queryEndpoints, mutationEndPoints } from '~/services/endpoints';
 import { useQuery, useMutation } from '~/services/context';
-import { Container, UICheckbox, UITable, UIIcon, UIButtonGroup } from '~/components/ui';
+import { Container, UITable, UIIcon, UIButtonGroup } from '~/components/ui';
 import { UserRole, UserType } from '~/helpers';
 
 /*
@@ -85,7 +85,7 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
     defaultValue: [],
   });
 
-  const [changeUserStatus, _, loading] = useMutation(mutationEndPoints.changeUserStatus);
+  const [changeUserStatus, loading] = useMutation(mutationEndPoints.changeUserStatus);
 
   const __ = (
     <StyledUsersPageWrapper>
@@ -167,19 +167,23 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
                   },
                   {
                     title: '',
-                    itemRenderer: item => (
-                      <EditingOperationsWrapper>
-                        <UIIcon
-                          size={20}
-                          className={iconStyle}
-                          name={loading ? 'loading' : item.status ? 'trash' : 'checkMark'}
-                          color={item.status ? UsersPageColors.danger : UsersPageColors.primary}
-                          onClick={e => {
-                            changeUserStatus({ id: item.id, status: !item.status });
-                          }}
-                        />
-                      </EditingOperationsWrapper>
-                    ),
+                    itemRenderer: item => {
+                      const iconName = item.status ? 'trash' : 'checkMark';
+
+                      return (
+                        <EditingOperationsWrapper>
+                          <UIIcon
+                            size={20}
+                            className={iconStyle}
+                            name={loading ? 'loading' : iconName}
+                            color={item.status ? UsersPageColors.danger : UsersPageColors.primary}
+                            onClick={e => {
+                              changeUserStatus({ id: item.id, status: !item.status });
+                            }}
+                          />
+                        </EditingOperationsWrapper>
+                      );
+                    },
                   },
                 ],
           )}

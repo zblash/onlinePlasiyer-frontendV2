@@ -1,4 +1,5 @@
 // TODO: move to stateless component
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from 'react';
 import deepEqual from 'deep-equal';
 import { isArray, getKeyByValue } from '~/utils';
@@ -122,11 +123,13 @@ class ServicesContextProvider extends React.Component<{}, ServicesContextProvide
 
   refetchQueries = async (refetchQueries: GenericQuery[]) => {
     if (isArray(refetchQueries)) {
-      return await Promise.all(
+      const fetchedQueries = await Promise.all(
         refetchQueries.map(({ query, variables: refetchVars }) =>
           this.get({ query, variables: refetchVars, fetchPolicy: 'cache-and-network' }),
         ),
       );
+
+      return fetchedQueries;
     }
 
     return [];

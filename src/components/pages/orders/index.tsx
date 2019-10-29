@@ -16,7 +16,9 @@ const OrdersPageColors = {
 /*
   OrdersPage Strings
 */
-const OrdersPageStrings = {};
+const OrdersPageStrings = {
+  hello: 'Merhaba',
+};
 
 /*
   OrdersPage Styles
@@ -27,7 +29,7 @@ const StyledOrdersPageWrapper = styled.div`
 `;
 
 const OrdersPage: React.SFC<OrdersPageProps> = props => {
-  const __ = <StyledOrdersPageWrapper>Hello OrdersPage</StyledOrdersPageWrapper>;
+  const __ = <StyledOrdersPageWrapper>{OrdersPageStrings.hello}</StyledOrdersPageWrapper>;
 
   /*
   OrdersPage Lifecycle
