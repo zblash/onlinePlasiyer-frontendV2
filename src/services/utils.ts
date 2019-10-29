@@ -107,4 +107,12 @@ const TOKEN = {
 
 function paginationHelper<T>(result: PaginationResult<T>) {}
 
-export { getRouteId, getRouteSchema, TOKEN };
+function isPaginatedResult(data: any) {
+  if (isObject(data) && !data.id && data.values) {
+    return true;
+  }
+
+  return false;
+}
+
+export { getRouteId, getRouteSchema, TOKEN, isPaginatedResult };

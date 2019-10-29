@@ -52,12 +52,12 @@ interface QueryRequiredFields<T> {
   variables?: EndpointsVariablesType<T>;
 }
 
-export type CommonEnpointOptions<T> = EndpointsVariablesType<T> extends undefined
+export type QueryVariablesOptions<T> = T extends undefined
   ? {
-      variables?: EndpointsVariablesType<T>;
+      variables?: T;
     }
   : {
-      variables: EndpointsVariablesType<T>;
+      variables: T;
     };
 
 export interface IAddressStateResponse {

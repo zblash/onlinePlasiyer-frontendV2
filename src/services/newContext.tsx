@@ -2,9 +2,9 @@
 // import deepEqual from 'deep-equal';
 // import { isArray, getKeyByValue } from '~/utils';
 // import { getRouteSchema, getRouteId, separatingObjectsContainingId } from './utils';
-// import { CommonEnpointOptions, EndpointsResultType } from './helpers';
+// import { QueryVariablesOptions, EndpointsResultType, EndpointsVariablesType } from './helpers';
 
-// type QueryOptions<T> = {} & CommonEnpointOptions<T>;
+// type QueryOptions<T> = {} & QueryVariablesOptions<EndpointsVariablesType<T>>;
 
 // interface ServicesContext {
 //   query: <T>(query: T, options: QueryOptions<T>) => Promise<EndpointsResultType<T>>;

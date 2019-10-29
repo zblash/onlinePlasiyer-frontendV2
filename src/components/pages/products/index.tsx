@@ -3,7 +3,7 @@ import { useParams } from 'react-router';
 import styled from '~/styled';
 import { Container } from '~/components/ui';
 import { ProductList } from '~/components/common/product-list';
-import { useQuery } from '~/services/context';
+import { useQuery, usePaginationQuery } from '~/services/context';
 import { queryEndpoints } from '~/services/endpoints';
 import { CategoryHorizontalList } from '~/components/common/category-horizontal-list';
 
@@ -36,7 +36,6 @@ const StyledSelectedParentCategoryTitle = styled.h2`
 const _ProductsPage: React.SFC<ProductsPageProps> = props => {
   const { categoryId: selectedCategoryId } = useParams<RouteParams>();
   const [selectedCategoryName, setSelectedCategoryName] = React.useState('');
-  const [selectedProductId, setSelectedProductId] = React.useState<string>(null);
   const { data: allCategories } = useQuery(queryEndpoints.getCategories, {
     variables: { type: 'all' },
     defaultValue: [],
@@ -46,17 +45,6 @@ const _ProductsPage: React.SFC<ProductsPageProps> = props => {
       }
     },
   });
-  const { data: products } = useQuery(queryEndpoints.getAllProductsByCategoryId, {
-    variables: { categoryId: selectedCategoryId },
-    skip: !selectedCategoryId,
-    defaultValue: [],
-  });
-  const { data: specifyProducts } = useQuery(queryEndpoints.getAllSpecifyProductsByProductId, {
-    variables: { productId: selectedProductId },
-    skip: !selectedProductId,
-    defaultValue: [],
-  });
-
   const categoriesMap = allCategories
     .filter(category => !category.subCategory)
     .map(category => ({
@@ -72,17 +60,7 @@ const _ProductsPage: React.SFC<ProductsPageProps> = props => {
         shouldUseProductsPageLink
       />
       <StyledSelectedParentCategoryTitle>{selectedCategoryName}</StyledSelectedParentCategoryTitle>
-      <ProductList
-        onItemClick={id => setSelectedProductId(id)}
-        selectedProductSpecifies={specifyProducts}
-        items={products.map(product => ({
-          id: product.id,
-          name: product.name,
-          taxRate: product.tax,
-          img: product.photoUrl,
-          barcode: product.barcode,
-        }))}
-      />
+      <ProductList selectedCategoryId={selectedCategoryId} />
     </Container>
   );
 

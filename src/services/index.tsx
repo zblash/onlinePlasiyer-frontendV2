@@ -4,14 +4,20 @@ import * as React from 'react';
 import deepEqual from 'deep-equal';
 import { isArray, getKeyByValue } from '~/utils';
 import { ServicesContextProviderComponentState, ServicesContextValues, GenericQuery, RouteSchema } from './helpers';
-import { getRouteSchema, getRouteId, separatingObjectsContainingId, deepMergeIdObjects } from './utils';
+import {
+  getRouteSchema,
+  getRouteId,
+  separatingObjectsContainingId,
+  deepMergeIdObjects,
+  isPaginatedResult,
+} from './utils';
 import { ServicesContext } from './context';
 import { queryEndpoints } from './endpoints';
 
 class ServicesContextProvider extends React.Component<{}, ServicesContextProviderComponentState> {
   queryQeue: Record<string, Promise<any>>;
 
-  changeListener: Record<string, { listner: (data: any) => void; routeId: string }>;
+  changeListener: Record<string, { listner: (data: any) => void; routeIds: string[] }>;
 
   constructor(props) {
     super(props);
@@ -37,7 +43,11 @@ class ServicesContextProvider extends React.Component<{}, ServicesContextProvide
       const hasRouteData = this.hasRouteData(routeId);
 
       if (listener) {
-        this.changeListener[listener.id] = { routeId, listner: listener.onDataChange };
+        const oldRouteIds = this.changeListener[listener.id] ? this.changeListener[listener.id].routeIds : [];
+        this.changeListener[listener.id] = {
+          routeIds: [...oldRouteIds, routeId].reduce((u, i) => (u.includes(i) ? u : [...u, i]), []),
+          listner: listener.onDataChange,
+        };
       }
 
       if (hasRouteData && fetchPolicy === 'cache-first') {
@@ -47,7 +57,8 @@ class ServicesContextProvider extends React.Component<{}, ServicesContextProvide
       }
       const apiCall = () =>
         query(variables)
-          .then(data => {
+          .then(_data => {
+            let data = isPaginatedResult(_data) ? _data.values : _data;
             this.queryQeue[routeId] = undefined;
             const _state = this.state;
             const { dataCache, routeCache } = _state;
@@ -76,7 +87,7 @@ class ServicesContextProvider extends React.Component<{}, ServicesContextProvide
               );
             }
 
-            return data;
+            return _data;
           })
           .finally(() => {
             this.queryQeue[routeId] = undefined;
@@ -153,28 +164,30 @@ class ServicesContextProvider extends React.Component<{}, ServicesContextProvide
     Object.keys(this.changeListener).forEach(_queryId => {
       const queryListener = this.changeListener[_queryId];
       const newResponseCacheAllIds = Object.keys(newResponseCache.cache);
-      const routeResult = routeCache[queryListener.routeId];
-      if (this.hasRouteData(queryListener.routeId) && _queryId !== currentQueryId) {
-        const routeUsedIds = routeResult.usedIds;
-        const newCacheIdsForQuery = newResponseCacheAllIds.filter(_id => routeUsedIds.includes(_id));
-        // TODO: update for optimize
-        const isResultEmptyArray = newResponseCacheAllIds.length === 0;
-        if (newCacheIdsForQuery.length > 0 || isResultEmptyArray) {
-          let hasChangedData = !deepEqual(oldAppState.routeCache[queryListener.routeId], routeResult);
-          for (let index = 0; index < newCacheIdsForQuery.length; index += 1) {
-            if (hasChangedData) {
-              break;
+      queryListener.routeIds.forEach(routeId => {
+        const routeResult = routeCache[routeId];
+        if (this.hasRouteData(routeId) && _queryId !== currentQueryId) {
+          const routeUsedIds = routeResult.usedIds;
+          const newCacheIdsForQuery = newResponseCacheAllIds.filter(_id => routeUsedIds.includes(_id));
+          // TODO: update for optimize
+          const isResultEmptyArray = newResponseCacheAllIds.length === 0;
+          if (newCacheIdsForQuery.length > 0 || isResultEmptyArray) {
+            let hasChangedData = !deepEqual(oldAppState.routeCache[routeId], routeResult);
+            for (let index = 0; index < newCacheIdsForQuery.length; index += 1) {
+              if (hasChangedData) {
+                break;
+              }
+              const _id = newCacheIdsForQuery[index];
+              const oldCacheForId = oldAppState.dataCache[_id];
+              const newCacheForId = newResponseCache[_id];
+              hasChangedData = !deepEqual(newCacheForId, oldCacheForId);
             }
-            const _id = newCacheIdsForQuery[index];
-            const oldCacheForId = oldAppState.dataCache[_id];
-            const newCacheForId = newResponseCache[_id];
-            hasChangedData = !deepEqual(newCacheForId, oldCacheForId);
-          }
-          if (hasChangedData) {
-            queryListener.listner(this.getDataByRoute(queryListener.routeId));
+            if (hasChangedData) {
+              queryListener.listner(this.getDataByRoute(routeId));
+            }
           }
         }
-      }
+      });
     });
   };
 

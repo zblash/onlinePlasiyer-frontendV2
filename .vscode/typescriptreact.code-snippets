@@ -1,6 +1,6 @@
 {
   "Create Function": {
-    "prefix": "tsxFunction",
+    "prefix": "tsxFunctionAdvanced",
     "body": [
       "import * as React from 'react';",
       "import styled from '~/styled';",
@@ -39,7 +39,31 @@
       "const _$1 = $1;",
       "",
       "export { _$1 as $1 } "
-    ],
-    "description": "Log output to console"
+    ]
+  },
+  "Create Function2": {
+    "prefix": "tsxFunction",
+    "body": [
+      "import * as React from 'react';",
+      "",
+      "/*\n  $1 Helpers\n*/",
+      "interface $1Props{}",
+      "",
+      "function $1(props:React.PropsWithChildren<$1Props>){",
+      "",
+      "const __ = (<div/>);",
+      "",
+      "/*\n  $1 Lifecycle\n  */",
+      "",
+      "/*\n  $1 Functions\n  */",
+      "",
+      "return __;",
+      "",
+      "};",
+      "",
+      "const _$1 = $1;",
+      "",
+      "export { _$1 as $1 } "
+    ]
   }
 }

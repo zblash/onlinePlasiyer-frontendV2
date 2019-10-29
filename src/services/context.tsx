@@ -3,9 +3,10 @@ import {
   EndpointsResultType,
   GenericQuery,
   FetchPolicy,
-  CommonEnpointOptions,
   EndpointsVariablesType,
   ServicesContextValues,
+  PaginationResult,
+  QueryVariablesOptions,
 } from '~/services/helpers';
 import { WithDefaultProps } from '~/helpers';
 import { useServicesContext } from '~/utils/hooks';
@@ -74,7 +75,7 @@ type UseQueryOptions<T> = {
   onCompleted: (data: EndpointsResultType<T>) => void;
   onError: (e: any) => void;
   defaultValue?: EndpointsResultType<T>;
-} & CommonEnpointOptions<T>;
+} & QueryVariablesOptions<EndpointsVariablesType<T>>;
 
 const defaultQueryOptions = {
   fetchPolicy: 'cache-first' as FetchPolicy,
@@ -144,13 +145,12 @@ function useQuery<T extends BaseEndpointType>(
 }
 
 type UsePaginationQueryResult<Query> = {
-  data: EndpointsResultType<Query>;
+  // @ts-ignore
+  data: EndpointsResultType<Query>['values'];
   loading: boolean;
   error: any;
-  pagination: {
-    next: () => void;
-    prev: () => void;
-  };
+  next: () => void;
+  isFetchedAll: boolean;
 };
 
 type UsePaginationQueryOptions<T> = {
@@ -158,16 +158,93 @@ type UsePaginationQueryOptions<T> = {
   skip: boolean;
   onCompleted: (data: EndpointsResultType<T>) => void;
   onError: (e: any) => void;
-  isPaginated: boolean;
-  defaultValue?: EndpointsResultType<T>;
   variables?: Omit<EndpointsVariablesType<T>, 'pageNumber'>;
 };
 
-function usePaginatedQuery<T extends BaseEndpointType>(
+function usePaginationQuery<T extends BaseEndpointType>(
   query: T,
-  _options: UsePaginationQueryOptions<T>,
+  _options?: WithDefaultProps<typeof defaultQueryOptions, UsePaginationQueryOptions<T>>,
 ): UsePaginationQueryResult<T> {
+  const totalPageCount = React.useRef(0);
+  const totalItemsCount = React.useRef(0);
   const [pageNumber, setPageNumber] = React.useState(1);
+  const cacheContext = useServicesContext();
+  const queryHookId = React.useRef(`${Math.random()}`).current;
+  const options = { ...defaultQueryOptions, ..._options };
+  const [state, setState] = React.useState({ data: [], error: null, loading: !options.skip });
+
+  function getQuery() {
+    if (options.skip) {
+      return;
+    }
+    setState({ ...state, loading: true });
+    cacheContext
+      .get({
+        query,
+        fetchPolicy: options.fetchPolicy,
+        variables: { ...options.variables, pageNumber },
+        listener: {
+          id: queryHookId,
+          onDataChange: data => {
+            const newData = [];
+            for (let index = 0; index < state.data.length; index++) {
+              const element = state.data[index];
+              const newResult = data[element.id];
+              if (newResult) {
+                newData.push({ ...element, ...newResult });
+              } else {
+                newData.push(element);
+              }
+            }
+            setState({
+              loading: false,
+              data: newData,
+              error: data ? null : state.error,
+            });
+          },
+        },
+      })
+      .then(data => {
+        totalPageCount.current = data.totalPage;
+        totalItemsCount.current = data.totalElements;
+        setState({
+          ...state,
+          loading: false,
+          data: [...state.data, ...data.values],
+        });
+        options.onCompleted(data);
+      })
+      .catch(e => {
+        setState({ ...state, error: e, loading: false });
+        options.onError(e);
+        throw e;
+      });
+  }
+
+  React.useEffect(() => {
+    getQuery();
+
+    return () => {
+      cacheContext.removeListener(queryHookId);
+    };
+  }, [JSON.stringify(options)]);
+
+  React.useEffect(() => {
+    getQuery();
+  }, [pageNumber]);
+
+  return {
+    isFetchedAll: state.data.length === totalItemsCount.current,
+    data: state.data as EndpointsResultType<T>,
+    loading: state.loading,
+    error: state.error,
+    next: () => {
+      const nextPageNumber = Math.min(totalPageCount.current, pageNumber + 1);
+      if (nextPageNumber > pageNumber) {
+        setPageNumber(nextPageNumber);
+      }
+    },
+  };
 }
 
-export { useMutation, useQuery, ServicesContext };
+export { useMutation, useQuery, ServicesContext, usePaginationQuery };

@@ -45,10 +45,11 @@ class QueryEndpoints {
 
   getAllSpecifyProductsByProductId: (s: {
     productId: string;
-  }) => Promise<PaginationResult<ISpecifyProductResponse[]>> = ({ productId }) =>
-    ApiCall.get(`/products/specify/product/${productId}`);
+    pageNumber: number;
+  }) => Promise<PaginationResult<ISpecifyProductResponse>> = ({ productId, pageNumber }) =>
+    ApiCall.get(`/products/specify/product/${productId}?pageNumber=${pageNumber}`);
 
-  getAllProducts: (variables: { pageNumber: number }) => Promise<PaginationResult<IProductResponse[]>> = ({
+  getAllProducts: (variables: { pageNumber: number }) => Promise<PaginationResult<IProductResponse>> = ({
     pageNumber,
   }) => ApiCall.get(`/products?pageNumber=${pageNumber}`);
 
@@ -57,7 +58,7 @@ class QueryEndpoints {
   getAllProductsByCategoryId: (s: {
     categoryId: string;
     pageNumber: number;
-  }) => Promise<PaginationResult<IProductResponse[]>> = ({ categoryId, pageNumber }) =>
+  }) => Promise<PaginationResult<IProductResponse>> = ({ categoryId, pageNumber }) =>
     ApiCall.get(`/products/category/${categoryId}?pageNumber=${pageNumber}`);
 
   getUsers: (s: { role: UserRole; type: UserType }) => Promise<IUserCommonResponse[]> = ({ type, role }) => {
