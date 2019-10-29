@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 export type FetchPolicy = 'cache-first' | 'cache-and-network' | 'network-only';
 
 export type GenericQuery = QueryRequiredFields<any>;
@@ -40,15 +38,6 @@ export interface ServicesContextValues {
   }) => Promise<any>;
 
   removeListener: (id: string) => void;
-}
-
-interface IQueryError {
-  error: string;
-  message: string;
-  path: string;
-  status: 500 | 404;
-  timestamp: string;
-  trace: string;
 }
 
 type ArgumentTypes<F extends Function> = F extends (...args: infer A) => any ? A : never;
@@ -193,3 +182,13 @@ export type UserRoleResponse = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';
 export type PublicUserRole = 'MERCHANT' | 'CUSTOMER';
 
 export type UnitTypeResponse = 'KG' | 'KL' | 'AD';
+
+export interface PaginationResult<DataType> {
+  first: boolean;
+  last: boolean;
+  nextPage: number;
+  previusPageIndex: number;
+  values: DataType[];
+  totalElements: number;
+  totalPage: number;
+}

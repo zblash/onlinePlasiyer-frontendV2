@@ -1,49 +1,41 @@
 import axios from 'axios';
-import { getToken } from './utils';
+import { TOKEN } from './utils';
 
 export const URL = 'https://onlineplasiyer-backend.herokuapp.com';
 const API_URL = `${URL}/api`;
 
+const headers = () => ({
+  Authorization: TOKEN.get(),
+  'Content-Type': 'application/json',
+});
 export class ApiCall {
-  static post = <R = any>(route: string, params = {}) =>
+  static post = (route: string, params = {}) =>
     axios
       .post(API_URL + route, params, {
-        headers: {
-          Authorization: getToken(),
-          'Content-Type': 'application/json',
-        },
+        headers: headers(),
       })
-      .then(d => d.data) as Promise<R>;
+      .then(d => d.data);
 
-  static get = <R = any>(route: string, params = {}) =>
+  static get = (route: string, params = {}) =>
     axios
       .get(API_URL + route, {
-        headers: {
-          Authorization: getToken(),
-          'Content-Type': 'application/json',
-        },
+        headers: headers(),
         params,
       })
-      .then(d => d.data) as Promise<R>;
+      .then(d => d.data);
 
-  static delete = <R = any>(route: string, params: {} = {}) =>
+  static delete = (route: string, params: {} = {}) =>
     axios
       .delete(API_URL + route, {
         params,
-        headers: {
-          Authorization: getToken(),
-          'Content-Type': 'application/json',
-        },
+        headers: headers(),
       })
-      .then(d => d.data) as Promise<R>;
+      .then(d => d.data);
 
-  static put = <R = any>(route: string, params: {}) =>
+  static put = (route: string, params: any) =>
     axios
       .put(API_URL + route, params, {
-        headers: {
-          Authorization: getToken(),
-          'Content-Type': 'application/json',
-        },
+        headers: headers(),
       })
-      .then(d => d.data) as Promise<R>;
+      .then(d => d.data);
 }

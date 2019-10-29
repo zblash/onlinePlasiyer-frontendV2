@@ -62,8 +62,11 @@ function useMutation<T extends BaseEndpointType>(mutation: T, _options?: UseMuta
   return [mutate, state.loading, state.error, state.data];
 }
 
-// [queryResult,loading,error]
-type UseQueryResult<Query> = [EndpointsResultType<Query>, boolean, any];
+type UseQueryResult<Query> = {
+  data: EndpointsResultType<Query>;
+  loading: boolean;
+  error: any;
+};
 
 type UseQueryOptions<T> = {
   fetchPolicy: FetchPolicy;
@@ -133,7 +136,38 @@ function useQuery<T extends BaseEndpointType>(
     };
   }, [JSON.stringify(options)]);
 
-  return [state.data || options.defaultValue, state.loading, state.error];
+  return {
+    data: state.data || options.defaultValue,
+    loading: state.loading,
+    error: state.error,
+  };
+}
+
+type UsePaginationQueryResult<Query> = {
+  data: EndpointsResultType<Query>;
+  loading: boolean;
+  error: any;
+  pagination: {
+    next: () => void;
+    prev: () => void;
+  };
+};
+
+type UsePaginationQueryOptions<T> = {
+  fetchPolicy: FetchPolicy;
+  skip: boolean;
+  onCompleted: (data: EndpointsResultType<T>) => void;
+  onError: (e: any) => void;
+  isPaginated: boolean;
+  defaultValue?: EndpointsResultType<T>;
+  variables?: Omit<EndpointsVariablesType<T>, 'pageNumber'>;
+};
+
+function usePaginatedQuery<T extends BaseEndpointType>(
+  query: T,
+  _options: UsePaginationQueryOptions<T>,
+): UsePaginationQueryResult<T> {
+  const [pageNumber, setPageNumber] = React.useState(1);
 }
 
 export { useMutation, useQuery, ServicesContext };

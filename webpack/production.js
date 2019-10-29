@@ -8,7 +8,7 @@ module.exports = merge(commonConfig, {
   entry: './root/index.tsx',
   output: {
     filename: 'index.js',
-    path: resolve(__dirname, '../../dist'),
+    path: resolve(process.cwd(), '/dist'),
     publicPath: '/',
   },
 });

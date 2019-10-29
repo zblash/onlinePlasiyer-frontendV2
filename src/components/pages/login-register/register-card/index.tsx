@@ -88,8 +88,8 @@ const StyledRegisterButton = styled(UIButton)<{ hasError: boolean }>`
 
 const HeaderRegisterCard: React.SFC<HeaderRegisterCardProps> = props => {
   const [selectedCityId, setSelectedCityId] = React.useState(null);
-  const [cities] = useQuery(queryEndpoints.getCities, { defaultValue: [] });
-  const [statesByCityId] = useQuery(queryEndpoints.getStatesByCityId, {
+  const { data: cities } = useQuery(queryEndpoints.getCities, { defaultValue: [] });
+  const { data: statesByCityId } = useQuery(queryEndpoints.getStatesByCityId, {
     variables: { cityId: selectedCityId },
     skip: !selectedCityId,
     defaultValue: [],

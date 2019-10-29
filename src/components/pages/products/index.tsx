@@ -37,7 +37,7 @@ const _ProductsPage: React.SFC<ProductsPageProps> = props => {
   const { categoryId: selectedCategoryId } = useParams<RouteParams>();
   const [selectedCategoryName, setSelectedCategoryName] = React.useState('');
   const [selectedProductId, setSelectedProductId] = React.useState<string>(null);
-  const [allCategories] = useQuery(queryEndpoints.getCategories, {
+  const { data: allCategories } = useQuery(queryEndpoints.getCategories, {
     variables: { type: 'all' },
     defaultValue: [],
     onCompleted: categories => {
@@ -46,12 +46,12 @@ const _ProductsPage: React.SFC<ProductsPageProps> = props => {
       }
     },
   });
-  const [products] = useQuery(queryEndpoints.getAllProductsByCategoryId, {
+  const { data: products } = useQuery(queryEndpoints.getAllProductsByCategoryId, {
     variables: { categoryId: selectedCategoryId },
     skip: !selectedCategoryId,
     defaultValue: [],
   });
-  const [specifyProducts] = useQuery(queryEndpoints.getAllSpecifyProductsByProductId, {
+  const { data: specifyProducts } = useQuery(queryEndpoints.getAllSpecifyProductsByProductId, {
     variables: { productId: selectedProductId },
     skip: !selectedProductId,
     defaultValue: [],

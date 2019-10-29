@@ -29,7 +29,7 @@ const StyledPageContainer = styled.div`
 `;
 
 const InvoicesPage: React.SFC<InvoicesPageProps> = props => {
-  const [invoices] = useQuery(queryEndpoints.getAllInvoices, { defaultValue: [] });
+  const { data: invoices } = useQuery(queryEndpoints.getAllInvoices, { defaultValue: [] });
   const __ = (
     <Container>
       <StyledPageContainer>

@@ -12,9 +12,11 @@ import {
   Invoice,
   UnitTypeResponse,
   UserRoleResponse,
+  PaginationResult,
 } from '~/services/helpers';
 import { UserRole, UserType } from '~/helpers';
 import { TOKEN_KEY } from '~/utils/constants';
+import { TOKEN } from './utils';
 
 type GetCategoriesType = 'sub' | 'parent' | 'all';
 
@@ -36,23 +38,27 @@ class QueryEndpoints {
 
   getCategoryByID: (s: { id: string }) => Promise<ICategoryResponse> = ({ id }) => ApiCall.get(`/categories/${id}`);
 
-  getCategoriesWithoutSub = () => ApiCall.get('/categories?filter=true&sub=false');
-
   getProductByBarcode: (s: { barcode: string }) => Promise<IProductResponse> = ({ barcode }) =>
     ApiCall.get(`/products/barcode/${barcode}`);
 
   getProductById: (s: { id: string }) => Promise<IProductResponse> = ({ id }) => ApiCall.get(`/products/${id}`);
 
-  getAllSpecifyProductsByProductId: (s: { productId: string }) => Promise<ISpecifyProductResponse[]> = ({
-    productId,
-  }) => ApiCall.get(`/products/specify/product/${productId}`);
+  getAllSpecifyProductsByProductId: (s: {
+    productId: string;
+  }) => Promise<PaginationResult<ISpecifyProductResponse[]>> = ({ productId }) =>
+    ApiCall.get(`/products/specify/product/${productId}`);
 
-  getAllProducts: () => Promise<IProductResponse[]> = () => ApiCall.get(`/products/`);
+  getAllProducts: (variables: { pageNumber: number }) => Promise<PaginationResult<IProductResponse[]>> = ({
+    pageNumber,
+  }) => ApiCall.get(`/products?pageNumber=${pageNumber}`);
 
   getCard: () => Promise<ICardResponse> = () => ApiCall.get(`/cart/`);
 
-  getAllProductsByCategoryId: (s: { categoryId: string }) => Promise<IProductResponse[]> = ({ categoryId }) =>
-    ApiCall.get(`/products/category/${categoryId}`);
+  getAllProductsByCategoryId: (s: {
+    categoryId: string;
+    pageNumber: number;
+  }) => Promise<PaginationResult<IProductResponse[]>> = ({ categoryId, pageNumber }) =>
+    ApiCall.get(`/products/category/${categoryId}?pageNumber=${pageNumber}`);
 
   getUsers: (s: { role: UserRole; type: UserType }) => Promise<IUserCommonResponse[]> = ({ type, role }) => {
     const userTypeRouteMap: Record<UserRole, Record<UserType, string>> = {
@@ -201,8 +207,7 @@ class MutationEndpoints {
 
   login = (s: { username: string; password: string }) =>
     axios.post(`${URL}/signin`, s).then(({ data }) => {
-      // TODO: src\context\application\index.tsx  use setToken Function
-      localStorage.setItem(TOKEN_KEY, JSON.stringify(`Bearer ${data.token}`));
+      TOKEN.set(`Bearer ${data.token}`);
 
       return data;
     });

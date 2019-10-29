@@ -35,7 +35,7 @@ const _ParentCategoryInput: React.SFC<ParentCategoryInputProps> = props => {
   const [autocompleteValue, setAutoCompleteValue] = React.useState('');
   const isActivate = !useKeepValue(props.disabled, false);
 
-  const [parentCategories, getParentCategoriesLoading, getParentCategoriesError] = useQuery(
+  const { data: parentCategories, loading: getParentCategoriesLoading, error: getParentCategoriesError } = useQuery(
     queryEndpoints.getCategories,
     { variables: { type: 'parent' }, skip: !isActivate, defaultValue: [] },
   );

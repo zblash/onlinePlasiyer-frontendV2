@@ -7,7 +7,7 @@ import { CategoryHorizontalList } from '~/components/common/category-horizontal-
 interface HomeProps {}
 
 const Home: React.SFC<HomeProps> = props => {
-  const [allCategories] = useQuery(queryEndpoints.getCategories, {
+  const { data: allCategories } = useQuery(queryEndpoints.getCategories, {
     variables: { type: 'all' },
     defaultValue: [],
   });

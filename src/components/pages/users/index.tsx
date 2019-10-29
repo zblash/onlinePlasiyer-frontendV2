@@ -80,7 +80,7 @@ const iconStyle = css`
 const UsersPage: React.SFC<UsersPageProps> = props => {
   const [userRole, setUserRole] = React.useState<UserRole>('customer');
   const [type, setType] = React.useState<UserType>('all');
-  const [users] = useQuery(queryEndpoints.getUsers, {
+  const { data: users } = useQuery(queryEndpoints.getUsers, {
     variables: { role: userRole, type },
     defaultValue: [],
   });

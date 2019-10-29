@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const loaders = require('./loaders');
 
-const appSrc = resolve(__dirname, '../../src');
+const appSrc = resolve(process.cwd(), 'src');
 
 const nodeEnv = process.env.NODE_ENV || 'production';
 const isProduction = nodeEnv === 'production';

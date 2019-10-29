@@ -2,7 +2,7 @@
 import { TOKEN_KEY } from '~/utils/constants';
 
 import { isObject, isArray, narrowObject, objectKeys } from '~/utils';
-import { RouteSchema } from './helpers';
+import { RouteSchema, GenericQuery, PaginationResult } from './helpers';
 
 const getRouteId = (route: string, variables?: Record<string, any>) => route + JSON.stringify(narrowObject(variables));
 
@@ -99,9 +99,12 @@ function getRouteSchema(obj: any, id?: string): RouteSchema | RouteSchema[] {
   return route;
 }
 
-export { getRouteId, getRouteSchema };
-
-// TODO: remove function after enpoints move to react context
-export const getToken = () => {
-  return JSON.parse(localStorage.getItem(TOKEN_KEY));
+const TOKEN = {
+  get: () => localStorage.getItem(TOKEN_KEY),
+  set: (token: string) => localStorage.setItem(TOKEN_KEY, token),
+  remove: () => localStorage.removeItem(TOKEN_KEY),
 };
+
+function paginationHelper<T>(result: PaginationResult<T>) {}
+
+export { getRouteId, getRouteSchema, TOKEN };
