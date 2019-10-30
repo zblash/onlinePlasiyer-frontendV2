@@ -1,10 +1,8 @@
 import * as React from 'react';
 import styled from '~/styled';
 import { UIInput, UIButton, Loading } from '~/components/ui';
-import { useMutation } from '~/services/context';
-import { mutationEndPoints } from '~/services/endpoints';
-import { useStateFromProp } from '~/utils/hooks';
 import logoPath from '~/assets/images/logo.png';
+import { login } from '~/services/api';
 
 /*
   LoginPage Helpers
@@ -45,7 +43,7 @@ const StyledLoginWrapper = styled.div`
   background-color: ${LoginPageColors.primary};
 `;
 
-// TODO: change image
+// TODO: resim arka plandan dolayi dogru cikmiyor tamamen mavi olan bir resim ile degistir
 const StyledLogo = styled.div`
   background-image: url(${logoPath});
   user-select: none;
@@ -109,10 +107,8 @@ const StyledBottomWrapper = styled.div`
 const LoginPage: React.SFC<LoginPageProps> = props => {
   const [password, setPassword] = React.useState('');
   const [username, setUsername] = React.useState('');
-  const [login, isLoading, error] = useMutation(mutationEndPoints.login, {
-    variables: { password, username },
-  });
-  const [hasError, setError] = useStateFromProp(error);
+  const [hasError, setError] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   return (
     <StyledLoginWrapper>
@@ -125,11 +121,8 @@ const LoginPage: React.SFC<LoginPageProps> = props => {
               setError(true);
             } else {
               setError(false);
-              login().then(() => {
-                // TODO: move to  endpoints context
-                // eslint-disable-next-line
-                location.reload();
-              });
+              setIsLoading(true);
+              login(username, password).catch(() => setError(true));
             }
           }}
         >

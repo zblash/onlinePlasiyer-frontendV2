@@ -3,9 +3,9 @@ import { useParams } from 'react-router';
 import styled from '~/styled';
 import { Container } from '~/components/ui';
 import { ProductList } from '~/components/common/product-list';
-import { useQuery, usePaginationQuery } from '~/services/context';
-import { queryEndpoints } from '~/services/endpoints';
 import { CategoryHorizontalList } from '~/components/common/category-horizontal-list';
+import { useQuery } from '~/services/query-context/context';
+import { queryEndpoints } from '~/services/query-context/query-endpoints';
 
 /*
   ProductsPage Helpers
@@ -39,11 +39,12 @@ const _ProductsPage: React.SFC<ProductsPageProps> = props => {
   const { data: allCategories } = useQuery(queryEndpoints.getCategories, {
     variables: { type: 'all' },
     defaultValue: [],
-    onCompleted: categories => {
-      if (selectedCategoryId) {
-        setSelectedCategoryName(categories.find(category => category.id === selectedCategoryId).name);
-      }
-    },
+    // TODO : implement on complate
+    // onCompleted: categories => {
+    //   if (selectedCategoryId) {
+    //     setSelectedCategoryName(categories.find(category => category.id === selectedCategoryId).name);
+    //   }
+    // },
   });
   const categoriesMap = allCategories
     .filter(category => !category.subCategory)

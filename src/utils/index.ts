@@ -10,11 +10,16 @@ export function makeid(length: number) {
 
   return result;
 }
-const isArray = (o: any) => Array.isArray(o);
+function isArray<T>(o: any): o is Array<T> {
+  return Array.isArray(o);
+}
 const isObject = (o: any) => !isArray(o) && typeof o === 'object' && o !== null && o !== undefined;
 
 function objectKeys<K extends string>(obj: Record<K, any>): K[] {
   return Object.keys(obj) as K[];
+}
+function objectForeach<K extends string, V>(obj: Record<K, V>, callback: (key: K, value: V) => void) {
+  Object.keys(obj).forEach(key => callback(key as K, obj[key]));
 }
 function isBarcodeCorrectSize(barcode: string) {
   return barcode.length > 12 && barcode.length < 100;
@@ -91,6 +96,7 @@ export {
   isPublicRole,
   objectKeys,
   objectValues,
+  objectForeach,
   isBarcodeCorrectSize,
   isUserCustomer,
 };

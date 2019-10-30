@@ -3,10 +3,12 @@ import lodashGet from 'lodash.get';
 import styled, { css } from '~/styled';
 import { UIInput, UIIcon, UICheckbox, UIButton, Loading } from '~/components/ui';
 import { useCategoryPopupReducer } from './reducer';
-import { useApplicationContext } from '~/utils/hooks';
 import { ParentCategoryInput } from './parent-category-input';
-import { queryEndpoints, mutationEndPoints } from '~/services/endpoints';
-import { useMutation } from '~/services/context';
+import { useApplicationContext } from '~/app/context';
+import { useMutation } from '~/services/mutation-context/context';
+import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
+import { refetchFactory } from '~/services/utils';
+import { queryEndpoints } from '~/services/query-context/query-endpoints';
 
 /*
   CategoryPopup Helpers
@@ -35,6 +37,15 @@ export const CategoryPopupColors = {
   iconBackground: '#fafafa',
   textColor: '#737373',
   inputBorder: '#e6e6e6',
+};
+
+/*
+  CategoryPopup Strings 
+*/
+export const CategoryPopupString = {
+  isSubCategoryQuestrion: 'Bu Bir Alt Kategorimi ?',
+  create: 'Olustur',
+  update: 'Guncelle',
 };
 
 /*
@@ -147,22 +158,19 @@ const filePickerInputId = 'image-picker-create-category-popup';
 function _CategoryPopup<T extends 'update' | 'create'>(props: CategoryPopupProps<T>) {
   const { popups } = useApplicationContext();
   const [state, dispatch] = useCategoryPopupReducer({
-    name: lodashGet(props.initialState, 'name'),
-    isSub: lodashGet(props.initialState, 'isSub'),
+    name: lodashGet(props.initialState, 'name', ''),
+    isSub: lodashGet(props.initialState, 'isSub', false),
+    parentId: lodashGet(props.initialState, 'parentCategoryId', null),
   });
   const [imgSrc, setImgSrc] = React.useState(lodashGet(props.initialState, 'imgSrc'));
-  const [categoryAction, loading] = useMutation(
+  const { mutation: categoryAction, loading } = useMutation(
     props.type === 'update' ? mutationEndPoints.updateCategory : mutationEndPoints.createCategory,
     {
       variables: {
         id: lodashGet(props.initialState, 'id'),
-        isSub: state.isSub,
-        name: state.name,
-        parentId: state.parentId,
-        uploadFile: state.uploadFile,
+        ...state,
       },
-      refetchQueries:
-        props.type === 'create' ? [{ query: queryEndpoints.getCategories, variables: { type: 'all' } }] : [],
+      refetchQueries: props.type === 'create' ? [refetchFactory(queryEndpoints.getCategories, { type: 'all' })] : [],
     },
   );
   const __ = (
@@ -205,10 +213,10 @@ function _CategoryPopup<T extends 'update' | 'create'>(props: CategoryPopupProps
         }
       />
       <UICheckbox
+        value={state.isSub}
         id="is-sub"
         className={checkboxStyle}
-        // TODO: move to page strings objects
-        label={<StyledCheckboxText>Bu bir alt kategorimi ?</StyledCheckboxText>}
+        label={<StyledCheckboxText>{CategoryPopupString.isSubCategoryQuestrion}</StyledCheckboxText>}
         onChange={isChecked => {
           dispatch({ type: 'isSub', payload: isChecked });
         }}
@@ -216,6 +224,7 @@ function _CategoryPopup<T extends 'update' | 'create'>(props: CategoryPopupProps
       <ParentCategoryInput
         disabled={!state.isSub}
         isHighlighted={!!state.parentId}
+        selectedCategoryId={state.parentId}
         onSelect={item => {
           dispatch({
             payload: item.id,
@@ -235,8 +244,7 @@ function _CategoryPopup<T extends 'update' | 'create'>(props: CategoryPopupProps
         {loading ? (
           <Loading color={CategoryPopupColors.primary} size={22} className={loadingStyle} />
         ) : (
-          // TODO: move to page strings objects
-          <span>{props.type === 'create' ? 'Olustur' : 'Guncelle'}</span>
+          <span>{props.type === 'create' ? CategoryPopupString.create : CategoryPopupString.update}</span>
         )}
       </StyledCategoryButton>
     </StyledCategoryPopupWrapper>

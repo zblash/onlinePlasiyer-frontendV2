@@ -1,9 +1,10 @@
 import * as React from 'react';
+import lodashGet from 'lodash.get';
 import { UIAutoComplete, UIIcon } from '~/components/ui';
 import { StyledInput, commonInputStyle, inputIconStyle, CategoryPopupColors } from '.';
-import { queryEndpoints } from '~/services/endpoints';
 import { useKeepValue } from '~/utils/hooks';
-import { useQuery } from '~/services/context';
+import { useQuery } from '~/services/query-context/context';
+import { queryEndpoints } from '~/services/query-context/query-endpoints';
 
 /*
   ParentCategoryInput Helpers
@@ -18,6 +19,7 @@ interface ParentCategoryInputProps {
   disabled?: boolean;
   isHighlighted?: boolean;
   onSelect: (category: Category) => void;
+  selectedCategoryId: string;
 }
 
 /*
@@ -84,6 +86,13 @@ const _ParentCategoryInput: React.SFC<ParentCategoryInputProps> = props => {
   /*
   ParentCategoryInput Lifecycle
   */
+  React.useEffect(() => {
+    if (props.selectedCategoryId) {
+      setAutoCompleteValue(
+        lodashGet(parentCategories.find(category => category.id === props.selectedCategoryId), 'name', ''),
+      );
+    }
+  }, [parentCategories.length]);
 
   /*
   ParentCategoryInput Functions

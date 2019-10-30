@@ -1,8 +1,20 @@
 import * as React from 'react';
-import { PaginationQueryContextType } from './helpers';
+import { PaginationQueryContextType, PaginationQueryGetter } from './helpers';
+import { paginationQueryEndpoints } from './pagination-query-endpoints';
 
-const initialValue: PaginationQueryContextType = {};
+const initialValue: PaginationQueryContextType = {
+  getDataByRouteId: () => null,
+  refetchQueries: () => Promise.resolve(0),
+  queryHandler: () => Promise.resolve(''),
+};
 
 const PaginationQueryContext = React.createContext(initialValue);
 
-export { PaginationQueryContext };
+const usePaginationQueryContext = () => React.useContext(PaginationQueryContext);
+
+function usePaginationQuery(queryGetter: PaginationQueryGetter) {
+  const paginationQueryContext = usePaginationQueryContext();
+  const query = queryGetter(paginationQueryEndpoints);
+}
+
+export { PaginationQueryContext, usePaginationQuery, usePaginationQueryContext };

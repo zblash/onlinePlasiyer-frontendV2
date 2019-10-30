@@ -1,15 +1,18 @@
 import * as React from 'react';
+import axios from 'axios';
 import { FullScreenLoading } from '~/components/common/full-screen-loading';
-import { ServicesContextProvider } from '~/services';
 import { CheckUser } from './check-user';
-import { checkHealthEnpoint } from '~/services/endpoints';
+import { URL, hasToken } from '../services/api';
+import { LoginRegisterPage } from './login-register';
 
 function CheckHealth() {
   const [isLoading, setIsLoading] = React.useState(true);
   const [hasError, setHasError] = React.useState(false);
   React.useEffect(() => {
     setIsLoading(true);
-    checkHealthEnpoint()
+
+    axios
+      .get(URL.concat('/health'))
       .catch(() => {
         setHasError(true);
       })
@@ -23,15 +26,14 @@ function CheckHealth() {
   }
 
   if (hasError) {
-    // TODO:update this element
     return <h1>Baglanti Gerceklestiremedik en kisa surede duzelecek</h1>;
   }
 
-  return (
-    <ServicesContextProvider>
-      <CheckUser />
-    </ServicesContextProvider>
-  );
+  if (!hasToken) {
+    return <LoginRegisterPage />;
+  }
+
+  return <CheckUser />;
 }
 
 export { CheckHealth };

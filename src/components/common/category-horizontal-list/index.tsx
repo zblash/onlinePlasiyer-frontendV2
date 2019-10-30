@@ -4,7 +4,7 @@ import { useHistory } from 'react-router';
 import styled, { css } from '~/styled';
 import { UIIcon, UIButton } from '~/components/ui';
 import { CategoryFields, CategoryItem } from '../category';
-import { useApplicationContext } from '~/utils/hooks';
+import { useApplicationContext } from '~/app/context';
 
 /*
   CategoryList Helpers

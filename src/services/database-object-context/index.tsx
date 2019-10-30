@@ -1,28 +1,22 @@
 import * as React from 'react';
 import { DatabaseObjectContext } from './context';
-import { CrudeDatabaseObject } from './helpers';
-
-/*
-  DatabaseObjectContextProvider Helpers
-*/
-interface DatabaseObjectContextProviderProps {}
+import { deepMergeIdObjects, separatingObjectsContainingId } from '../utils';
+import { DatabaseObjectContextProviderProps } from './helpers';
 
 function DatabaseObjectContextProvider(props: React.PropsWithChildren<DatabaseObjectContextProviderProps>) {
-  const [objects, setObject] = React.useState({});
-  /*
-  DatabaseObjectContextProvider Functions
-  */
-  function addOrUpdate(object: CrudeDatabaseObject) {
-    const prerecordedObject = objects[object.id];
-    if (prerecordedObject) {
-      setObject({ ...objects, [object.id]: { ...prerecordedObject, ...object } });
-    } else {
-      setObject({ ...objects, [object.id]: object });
-    }
+  const [databaseObjects, setDatabaseObjects] = React.useState({});
+
+  function setObjects(backendResponse: any) {
+    setDatabaseObjects(prev => ({
+      ...prev,
+      ...deepMergeIdObjects(prev, separatingObjectsContainingId(backendResponse)),
+    }));
   }
 
   return (
-    <DatabaseObjectContext.Provider value={{ addOrUpdate, objects }}>{props.children}</DatabaseObjectContext.Provider>
+    <DatabaseObjectContext.Provider value={{ setObjectsFromBackendResponse: setObjects, objects: databaseObjects }}>
+      {props.children}
+    </DatabaseObjectContext.Provider>
   );
 }
 

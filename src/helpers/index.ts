@@ -20,3 +20,5 @@ export interface User {
 }
 
 export type UserType = 'active' | 'passive' | 'all';
+
+export type MaybeArray<T> = T | T[];

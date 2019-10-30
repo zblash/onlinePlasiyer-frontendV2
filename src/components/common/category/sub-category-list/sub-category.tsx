@@ -1,10 +1,13 @@
 import * as React from 'react';
-import { useMutation } from '~/services/context';
-import { mutationEndPoints, queryEndpoints } from '~/services/endpoints';
 import styled, { css } from '~/styled';
 import { CategoryFields } from '..';
 import { UIIcon } from '~/components/ui';
 import { SubCategoryListColors } from '.';
+import { useMutation } from '~/services/mutation-context/context';
+import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
+import { refetchFactory } from '~/services/utils';
+import { queryEndpoints } from '~/services/query-context/query-endpoints';
+import { useApplicationContext } from '~/app/context';
 
 const StyledCategoryWrapper = styled.div`
   padding: 8px;
@@ -41,14 +44,10 @@ const editIconStyle = css`
 `;
 
 const SubCategory: React.SFC<CategoryFields & { onClick?: Function }> = props => {
-  const [deleteCategory, deleteCategoryLoading] = useMutation(mutationEndPoints.deleteCategory, {
+  const { popups } = useApplicationContext();
+  const { mutation: deleteCategory, loading: deleteCategoryLoading } = useMutation(mutationEndPoints.deleteCategory, {
     variables: { id: props.id },
-    refetchQueries: [
-      {
-        query: queryEndpoints.getCategories,
-        variables: { type: 'all' },
-      },
-    ],
+    refetchQueries: [refetchFactory(queryEndpoints.getCategories, { type: 'all' })],
   });
 
   return (
@@ -73,7 +72,13 @@ const SubCategory: React.SFC<CategoryFields & { onClick?: Function }> = props =>
           className={editIconStyle}
           onClick={e => {
             e.stopPropagation();
-            // TODO: edit category popup open
+            popups.updateCategory.show({
+              id: props.id,
+              name: props.name,
+              imgSrc: props.photoUrl,
+              isSub: true,
+              parentCategoryId: props.parentId,
+            });
           }}
         />
 

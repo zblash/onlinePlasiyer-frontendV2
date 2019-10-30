@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Container } from '~/components/ui';
-import { useQuery } from '~/services/context';
-import { queryEndpoints } from '~/services/endpoints';
 import { CategoryHorizontalList } from '~/components/common/category-horizontal-list';
+import { useQuery } from '~/services/query-context/context';
+import { queryEndpoints } from '~/services/query-context/query-endpoints';
 
 interface HomeProps {}
 

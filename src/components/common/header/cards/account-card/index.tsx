@@ -1,7 +1,8 @@
 import * as React from 'react';
 import styled from '~/styled';
 import { UIButton } from '~/components/ui';
-import { useApplicationContext } from '~/utils/hooks';
+import { useApplicationContext } from '~/app/context';
+import { logout } from '~/services/api';
 
 /*
   AccountCard Helpers
@@ -56,12 +57,12 @@ const StyledUsernameTitle = styled.h5`
 `;
 
 const _AccountCard: React.SFC<AccountCardProps> = props => {
-  const { userLogout, user } = useApplicationContext();
+  const { user } = useApplicationContext();
 
   const __ = (
     <StyledAccountCardWrapper>
       <StyledUsernameTitle>{user.name}</StyledUsernameTitle>
-      <StyledLogoutButton onClick={userLogout}>Cikis Yap</StyledLogoutButton>
+      <StyledLogoutButton onClick={logout}>Cikis Yap</StyledLogoutButton>
     </StyledAccountCardWrapper>
   );
 

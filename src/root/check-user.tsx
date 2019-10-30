@@ -1,26 +1,39 @@
 import React from 'react';
 import App from '~/app';
-import { LoginRegisterPage } from '~/components/pages/login-register';
 import { FullScreenLoading } from '~/components/common/full-screen-loading';
-import { useQuery } from '~/services/context';
-import { TOKEN } from '~/services/utils';
-import { queryEndpoints } from '~/services/endpoints';
+import { ApiCall } from '~/services/api';
+import { ServicesContextProvider } from '~/services';
+import { LoginRegisterPage } from './login-register';
 
 function CheckUser() {
-  const isSkip = !TOKEN.get();
-  const { data: user, loading: userLoading, error: userError } = useQuery(queryEndpoints.getAuthUser, {
-    skip: isSkip,
-  });
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [hasError, setHasError] = React.useState(false);
+  const [user, setUser] = React.useState(null);
 
-  if (userLoading) {
+  React.useEffect(() => {
+    ApiCall.get('/users/getmyinfos')
+      .then(user => {
+        setUser(user);
+        setIsLoading(false);
+      })
+      .catch(() => {
+        setHasError(true);
+      });
+  }, []);
+
+  if (isLoading) {
     return <FullScreenLoading />;
   }
 
-  if (userError || !user) {
+  if (hasError || !user) {
     return <LoginRegisterPage />;
   }
 
-  return <App user={user} />;
+  return (
+    <ServicesContextProvider>
+      <App user={user} />
+    </ServicesContextProvider>
+  );
 }
 
 export { CheckUser };

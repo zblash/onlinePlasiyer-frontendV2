@@ -1,8 +1,8 @@
 import * as React from 'react';
 import styled from '~/styled';
-import { useQuery } from '~/services/context';
-import { queryEndpoints } from '~/services/endpoints';
 import { Container, UITable } from '~/components/ui';
+import { useQuery } from '~/services/query-context/context';
+import { queryEndpoints } from '~/services/query-context/query-endpoints';
 
 /*
   InvoicesPage Helpers

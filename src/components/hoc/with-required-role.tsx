@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Redirect } from 'react-router-dom';
 import { getDisplayName } from '~/utils';
-import { useApplicationContext } from '~/utils/hooks';
 import { UserRole } from '~/helpers';
+import { useApplicationContext } from '~/app/context';
 
 const withRequiredRole = <T, C>(
   WrappedComponent: React.ComponentClass<T> | React.FunctionComponent<T>,

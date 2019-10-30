@@ -15,7 +15,6 @@ export interface Popups {
 }
 
 export interface ApplicationContextValues {
-  userLogout: () => void;
   popups: Popups;
   user: User;
 }
@@ -34,7 +33,6 @@ export const applicationContextInitialValue: ApplicationContextValues = {
     role: 'admin',
     username: '',
   },
-  userLogout: () => {},
   popups: {
     createCategory: emptyPopup,
     updateCategory: emptyPopup,

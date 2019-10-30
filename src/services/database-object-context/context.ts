@@ -2,10 +2,14 @@ import * as React from 'react';
 import { DatabaseObjectsContextType } from './helpers';
 
 const initialValue: DatabaseObjectsContextType = {
-  addOrUpdate: () => {},
+  setObjectsFromBackendResponse: () => {},
   objects: {},
 };
 
 const DatabaseObjectContext = React.createContext<DatabaseObjectsContextType>(initialValue);
 
-export { DatabaseObjectContext };
+function useDatabaseObjectsContext() {
+  return React.useContext(DatabaseObjectContext);
+}
+
+export { DatabaseObjectContext, useDatabaseObjectsContext };

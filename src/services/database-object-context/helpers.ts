@@ -1,8 +1,6 @@
-export interface CrudeDatabaseObject {
-  id: string;
-}
+export interface DatabaseObjectContextProviderProps {}
 
 export interface DatabaseObjectsContextType {
-  addOrUpdate: (obj: CrudeDatabaseObject) => void;
-  objects: Record<string, CrudeDatabaseObject>;
+  setObjectsFromBackendResponse: (obj: any) => void;
+  objects: Record<string, any>;
 }

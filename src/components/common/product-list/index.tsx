@@ -1,11 +1,8 @@
 import * as React from 'react';
 import _chunk from 'lodash.chunk';
 import styled from '~/styled';
-import { ProductCardWrapper, ProductCard, ProductData } from '../product-card';
-import { UICollapsible, UITable } from '~/components/ui';
+import { ProductCardWrapper } from '../product-card';
 import { UITableColumns } from '~/components/ui/table';
-import { usePaginationQuery } from '~/services/context';
-import { queryEndpoints } from '~/services/endpoints';
 
 /*
   ProductList Helpers
@@ -59,61 +56,63 @@ const StyledCardContainer = styled.div`
 `;
 
 const _ProductList: React.SFC<ProductListProps> = props => {
-  const [openedProductId, setOpenedProductId] = React.useState<string>(null);
-  const { data: products } = usePaginationQuery(queryEndpoints.getAllProductsByCategoryId, {
-    variables: { categoryId: props.selectedCategoryId },
-    skip: !props.selectedCategoryId,
-  });
-  const { data: specifyProducts } = usePaginationQuery(queryEndpoints.getAllSpecifyProductsByProductId, {
-    variables: { productId: openedProductId },
-    skip: !openedProductId,
-  });
-  const chunkedArray = React.useMemo(
-    () =>
-      _chunk(
-        products.map(product => ({
-          id: product.id,
-          name: product.name,
-          taxRate: product.tax,
-          img: product.photoUrl,
-          barcode: product.barcode,
-        })),
-        CHUNK_SIZE,
-      ),
-    [products.length],
-  );
+  return null;
+  // TODO : remove comments after implement usePaginationQuery
+  // const [openedProductId, setOpenedProductId] = React.useState<string>(null);
+  // const { data: products } = usePaginationQuery(queryEndpoints.getAllProductsByCategoryId, {
+  //   variables: { categoryId: props.selectedCategoryId },
+  //   skip: !props.selectedCategoryId,
+  // });
+  // const { data: specifyProducts } = usePaginationQuery(queryEndpoints.getAllSpecifyProductsByProductId, {
+  //   variables: { productId: openedProductId },
+  //   skip: !openedProductId,
+  // });
+  // const chunkedArray = React.useMemo(
+  //   () =>
+  //     _chunk(
+  //       products.map(product => ({
+  //         id: product.id,
+  //         name: product.name,
+  //         taxRate: product.tax,
+  //         img: product.photoUrl,
+  //         barcode: product.barcode,
+  //       })),
+  //       CHUNK_SIZE,
+  //     ),
+  //   [products.length],
+  // );
 
-  const __ = (
-    <>
-      {chunkedArray.map((items, index) => (
-        <UICollapsible
-          key={index}
-          content={(trigger, isOpen) => (
-            <StyledCardContainer>
-              {items.map(product => (
-                <ProductCard
-                  key={product.id}
-                  {...product}
-                  onButtonClick={() => {
-                    if (openedProductId !== product.id) {
-                      setOpenedProductId(product.id);
-                      trigger(true);
-                    } else {
-                      trigger(!isOpen);
-                    }
-                  }}
-                />
-              ))}
-            </StyledCardContainer>
-          )}
-        >
-          <UITable data={specifyProducts} rowCount={8} columns={TABLE_SHOWN_DATA} />
-        </UICollapsible>
-      ))}
-    </>
-  );
+  // const __ = (
+  //   <>
+  //     {chunkedArray.map((items, index) => (
+  //       <UICollapsible
+  //         key={index}
+  //         content={(trigger, isOpen) => (
+  //           <StyledCardContainer>
+  //             {items.map(product => (
+  //               <ProductCard
+  //                 key={product.id}
+  //                 {...product}
+  //                 onButtonClick={() => {
+  //                   if (openedProductId !== product.id) {
+  //                     setOpenedProductId(product.id);
+  //                     trigger(true);
+  //                   } else {
+  //                     trigger(!isOpen);
+  //                   }
+  //                 }}
+  //               />
+  //             ))}
+  //           </StyledCardContainer>
+  //         )}
+  //       >
+  //         <UITable data={specifyProducts} rowCount={8} columns={TABLE_SHOWN_DATA} />
+  //       </UICollapsible>
+  //     ))}
+  //   </>
+  // );
 
-  return __;
+  // return __;
 };
 
 const ProductList = _ProductList;

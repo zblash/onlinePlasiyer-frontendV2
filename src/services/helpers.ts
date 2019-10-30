@@ -1,6 +1,4 @@
-export type FetchPolicy = 'cache-first' | 'cache-and-network' | 'network-only';
-
-export type GenericQuery = QueryRequiredFields<any>;
+export type EndpointGetter<T> = (queries: T) => T[keyof T];
 
 export interface RouteSchema {
   id: string;
@@ -20,37 +18,13 @@ export interface ServicesContextProviderComponentState {
   >;
 }
 
-export interface ServicesContextValues {
-  get: (s: {
-    query: GenericQuery['query'];
-    variables: any;
-    fetchPolicy: FetchPolicy;
-    listener?: {
-      id: string;
-      onDataChange: (data: any) => void;
-    };
-  }) => Promise<any>;
-
-  mutate: (s: {
-    mutation: (vars: any) => Promise<any>;
-    variables: any;
-    refetchQueries?: GenericQuery[];
-  }) => Promise<any>;
-
-  removeListener: (id: string) => void;
-}
-
-type ArgumentTypes<F extends Function> = F extends (...args: infer A) => any ? A : never;
+export type ArgumentTypes<F extends Function> = F extends (...args: infer A) => any ? A : never;
+export type FirstArgument<F extends Function> = ArgumentTypes<F>[0];
 type ThenArg<T> = T extends Promise<infer U> ? U : T;
 
 export type EndpointsResultType<F> = F extends (v: any) => Promise<any> ? ThenArg<ReturnType<F>> | null : F;
 
 export type EndpointsVariablesType<F> = F extends Function ? ArgumentTypes<F>[0] : F;
-
-interface QueryRequiredFields<T> {
-  query: T;
-  variables?: EndpointsVariablesType<T>;
-}
 
 export type QueryVariablesOptions<T> = T extends undefined
   ? {
@@ -182,13 +156,3 @@ export type UserRoleResponse = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';
 export type PublicUserRole = 'MERCHANT' | 'CUSTOMER';
 
 export type UnitTypeResponse = 'KG' | 'KL' | 'AD';
-
-export interface PaginationResult<DataType> {
-  first: boolean;
-  last: boolean;
-  nextPage: number;
-  previusPageIndex: number;
-  values: DataType[];
-  totalElements: number;
-  totalPage: number;
-}

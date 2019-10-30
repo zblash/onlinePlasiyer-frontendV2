@@ -8,6 +8,7 @@ interface CheckboxProps extends StylableProps {
   unCheckedlabel?: React.ReactElement | string;
   onChange?: (isChecked: boolean) => void;
   alwaysHighlighted?: boolean;
+  value?: boolean;
 }
 // TODO: refactor css
 const primaryColor = '#0075ff';
@@ -65,6 +66,7 @@ function UICheckbox(props: CheckboxProps) {
     <StyledCheckboxWrapper className={props.className}>
       {unCheckedlabel && <StyledLabel poition="left">{unCheckedlabel}</StyledLabel>}
       <StyledCheckbox
+        checked={props.value}
         isAlwaysHighlighted={props.alwaysHighlighted}
         type="checkbox"
         id={id}
