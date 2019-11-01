@@ -7,10 +7,8 @@ import {
   IUserCommonResponse,
   IAddressStateResponse,
   IAddressCityResponse,
-  IOrder,
-  Invoice,
-} from '../helpers';
-import { UserRole, UserType } from '~/helpers';
+} from '~/services/helpers/backend-models';
+import { UserRole, UserType } from '../helpers/maps';
 
 type GetCategoriesType = 'sub' | 'parent' | 'all';
 class QueryEndpoints {
@@ -47,10 +45,6 @@ class QueryEndpoints {
         all: '/users/admin',
       },
     };
-    if (!['merchants', 'customers', 'admin'].includes(role) || !['active', 'all', 'passive'].includes(type)) {
-      return Promise.reject(new Error('Type is not found'));
-    }
-
     return ApiCall.get(userTypeRouteMap[role][type]);
   };
 
@@ -63,10 +57,6 @@ class QueryEndpoints {
     axios.get(URL.concat(`/definitions/cities/${cityId}/states`)).then(({ data }) => data);
 
   getStates: () => Promise<any> = () => axios.get(URL.concat('/definitions/states')).then(({ data }) => data);
-
-  getAllOrders: () => Promise<IOrder[]> = () => ApiCall.get('/orders');
-
-  getAllInvoices: () => Promise<Invoice[]> = () => ApiCall.get('/invoices');
 }
 const queryEndpoints = new QueryEndpoints();
 

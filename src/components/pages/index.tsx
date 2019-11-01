@@ -10,7 +10,7 @@ import { Page404 } from '~/components/pages/404-component';
 import { Header } from '../common/header';
 import { OrdersPage } from './orders';
 import { InvoicesPage } from './invoices';
-import { UserRole } from '~/helpers';
+import { UserRole } from '~/services/helpers/maps';
 
 interface IRoute {
   path: string;

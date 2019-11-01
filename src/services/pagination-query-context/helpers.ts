@@ -1,8 +1,8 @@
-import { EndpointsResultType, QueryVariablesOptions, EndpointsVariablesType, EndpointGetter } from '../helpers';
+import { EndpointsResultType, EndpointsVariablesType } from '../helpers';
 import { paginationQueryEndpoints } from './pagination-query-endpoints';
 
 export interface PaginationQueryContextType {
-  queryHandler: (params: QueryHandlerParams) => Promise<string>;
+  queryHandler: (params: QueryHandlerParams) => Promise<{ routeId: string; lastPageNumber: number }>;
   refetchQueries: (params: QueryHandlerParams[]) => Promise<any>;
   getDataByRouteId: (id: string) => any;
 }
@@ -28,17 +28,20 @@ export interface QueryContextType {
   getDataByRouteId: (id: string) => any;
 }
 
-export type BaseQuery = (vars: any) => Promise<any>;
+export type BasePaginationQuery = typeof paginationQueryEndpoints[keyof typeof paginationQueryEndpoints];
 
-export type UseQueryResult<Query> = {
-  data: EndpointsResultType<Query>;
+export type UsePaginationQueryResult<Query> = {
+  // @ts-ignore
+  data: EndpointsResultType<Query>['values'];
   loading: boolean;
   error: any;
+  isDone: boolean;
+  next: () => void;
 };
 
-export type UseQueryOptions<T> = {
-  skip: boolean;
-  defaultValue?: Partial<EndpointsResultType<T>>;
-} & QueryVariablesOptions<EndpointsVariablesType<T>>;
-
-export type PaginationQueryGetter = EndpointGetter<typeof paginationQueryEndpoints>;
+export type UsePaginationQueryOptions<T> = {
+  skip?: boolean;
+  // @ts-ignore
+  defaultValue?: Partial<EndpointsResultType<T>['values']>;
+  variables?: Omit<EndpointsVariablesType<T>, 'pageNumber'>;
+};

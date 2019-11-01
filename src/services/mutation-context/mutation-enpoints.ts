@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { ApiCall, URL } from '~/services/api';
-import { ICardResponse, UnitTypeResponse, UserRoleResponse, IProductResponse } from '../helpers';
+import { ICardResponse, UnitTypeResponse, UserRoleResponse, IProductResponse } from '~/services/helpers/backend-models';
 
 interface CreateCategoryVariables {
   parentId?: string | null;
@@ -18,7 +18,8 @@ interface UpdateCategoryVariables {
 }
 
 class MutationEndpoints {
-  deleteCategory: (s: { id: string }) => Promise<any> = ({ id }) => ApiCall.delete(`/categories/delete/${id}`);
+  removeCategory: (s: { id: string }) => Promise<any> = ({ id }) =>
+    ApiCall.delete(`/categories/delete/${id}`).then(data => ({ ...data, removed: true }));
 
   updateCategory = (params: UpdateCategoryVariables) => {
     const formData = new FormData();
@@ -124,7 +125,7 @@ class MutationEndpoints {
 
   removeItemFromCard: (s: { id: string }) => Promise<any> = ({ id }) => ApiCall.post(`/cart/removeItem/${id}`);
 
-  deleteProduct: (s: { id: string }) => Promise<IProductResponse> = ({ id }) =>
+  removeProduct: (s: { id: string }) => Promise<IProductResponse> = ({ id }) =>
     ApiCall.delete(`/products/delete/${id}`);
 
   clearCard: () => Promise<any> = () => ApiCall.post('/cart/clear/');

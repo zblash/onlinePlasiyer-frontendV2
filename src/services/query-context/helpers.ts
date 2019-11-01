@@ -1,4 +1,5 @@
-import { EndpointsResultType, QueryVariablesOptions, EndpointsVariablesType } from '../helpers';
+import { EndpointsResultType, EndpointsVariablesType } from '../helpers';
+import { queryEndpoints } from './query-endpoints';
 
 export type QueryHandlerParams = {
   query: (vars: any) => Promise<any>;
@@ -10,7 +11,7 @@ export interface QueryContextType {
   getDataByRouteId: (id: string) => any;
 }
 
-export type BaseQuery = (vars: any) => Promise<any>;
+export type BaseQuery = typeof queryEndpoints[keyof typeof queryEndpoints];
 
 export type UseQueryResult<Query> = {
   data: EndpointsResultType<Query>;
@@ -21,4 +22,6 @@ export type UseQueryResult<Query> = {
 export type UseQueryOptions<T> = {
   skip?: boolean;
   defaultValue?: Partial<EndpointsResultType<T>>;
-} & QueryVariablesOptions<EndpointsVariablesType<T>>;
+  variables?: EndpointsVariablesType<T>;
+  onCompleted?: (d: EndpointsResultType<T>) => void;
+};

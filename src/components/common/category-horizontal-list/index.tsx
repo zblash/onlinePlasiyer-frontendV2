@@ -135,6 +135,7 @@ const _CategoryHorizontalList: React.SFC<CategoryHorizontalListProps> = props =>
 
       <StyledListTop>
         <StyledAddButton onClick={() => popups.createCategory.show()}>
+          {/* // TODO(0): move string object */}
           Ekle <UIIcon name="add" color={CategoryHorizontalListColors.white} size={10} className={addIconStyle} />
         </StyledAddButton>
       </StyledListTop>
@@ -186,7 +187,7 @@ const _CategoryHorizontalList: React.SFC<CategoryHorizontalListProps> = props =>
     if (wrapperRef.current) {
       const currentScrollPosition = wrapperRef.current.scrollLeft;
       const willAddPosition = position === 'left' ? -200 : 200;
-      // TODO: implement animation
+      // TODO(0): implement animation
       wrapperRef.current.scrollTo(currentScrollPosition + willAddPosition, 0);
     }
   }

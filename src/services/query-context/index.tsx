@@ -8,6 +8,7 @@ import { RouteSchema } from '../helpers';
 import { dataToSchema } from '../utils/route-schema';
 import { useParseSchema } from '../utils/useParseScheme';
 import { MaybeArray } from '~/helpers';
+import { queryEndpoints } from './query-endpoints';
 
 interface QueryContextProviderProps {}
 
@@ -19,10 +20,10 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
 
   function queryHandler(params: QueryHandlerParams) {
     const { query, variables } = params;
-    const routeId = getRouteId(getRouteByEndpoint(query), variables);
+    const routeId = getRouteId(getRouteByEndpoint(queryEndpoints, query), variables);
     const isCurrentRouteFetched = isRouteFetched(routeId);
     if (isCurrentRouteFetched) {
-      return Promise.resolve(getDataByRouteId(routeId));
+      return Promise.resolve(routeId);
     }
     if (!queryQueue.current[routeId]) {
       queryQueue.current[routeId] = queryApiCall(params).then(() => routeId);
@@ -35,7 +36,7 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
 
   function queryApiCall(params: QueryHandlerParams) {
     const { query, variables } = params;
-    const routeId = getRouteId(getRouteByEndpoint(query), variables);
+    const routeId = getRouteId(getRouteByEndpoint(queryEndpoints, query), variables);
     return query(variables)
       .then(data => {
         const routeSchema = dataToSchema(data);
@@ -60,7 +61,7 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
     return parseSchema(schema as RouteSchema);
   }
 
-  function refetchQueries(queries: QueryHandlerParams[]) {
+  function refetchQueries(queries: QueryHandlerParams[] = []) {
     return Promise.all(queries.map(query => queryApiCall(query)));
   }
 

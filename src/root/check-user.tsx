@@ -18,6 +18,7 @@ function CheckUser() {
       })
       .catch(() => {
         setHasError(true);
+        setIsLoading(false);
       });
   }, []);
 

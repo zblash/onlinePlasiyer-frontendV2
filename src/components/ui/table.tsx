@@ -160,9 +160,14 @@ function _UITable<T>(props: UiTableProps<T>) {
           {tableData.map((item, index) => (
             <StyledBodyTr key={index}>
               {props.columns.map(({ itemRenderer }, indexNested) => {
-                const child = typeof itemRenderer === 'function' ? itemRenderer(item) : itemRenderer;
-
-                return <StyledBodyTd key={indexNested}>{item ? child : null}</StyledBodyTd>;
+                if (!item) {
+                  return <StyledBodyTd key={indexNested}></StyledBodyTd>;
+                }
+                return (
+                  <StyledBodyTd key={indexNested}>
+                    {typeof itemRenderer === 'function' ? itemRenderer(item) : itemRenderer}
+                  </StyledBodyTd>
+                );
               })}
             </StyledBodyTr>
           ))}

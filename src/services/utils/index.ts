@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { isObject, isArray, narrowObject, objectKeys, getKeyByValue } from '~/utils';
-import { queryEndpoints } from '../query-context/query-endpoints';
-import { RouteSchema, EndpointsVariablesType } from '../helpers';
+import { EndpointsVariablesType } from '../helpers';
 
 const getRouteId = (route: string, variables?: Record<string, any>) => route + JSON.stringify(narrowObject(variables));
-const getRouteByEndpoint = (query: any) => {
-  const route = getKeyByValue(queryEndpoints, query);
+const getRouteByEndpoint = (queries: any, query: any) => {
+  const route = getKeyByValue(queries, query);
 
-  if (!queryEndpoints[route]) {
-    throw new Error(`Endpoint Bulunamadi ${route}`);
+  if (!route) {
+    throw new Error(`Endpoint Bulunamadi`);
   }
 
   return route;

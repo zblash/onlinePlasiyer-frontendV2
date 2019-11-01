@@ -1,11 +1,11 @@
 import * as React from 'react';
 import styled, { css } from '~/styled';
 import { Container, UITable, UIIcon, UIButtonGroup } from '~/components/ui';
-import { UserRole, UserType } from '~/helpers';
 import { useQuery } from '~/services/query-context/context';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
+import { UserRole, UserType } from '~/services/helpers/maps';
 
 /*
   UsersPage Helpers

@@ -68,7 +68,7 @@ const _ParentCategoryInput: React.SFC<ParentCategoryInputProps> = props => {
         />
       }
       renderItem={(item, highlighted) => (
-        // TODO: update this element
+        // TODO(0): update this element
         <div
           key={item.id}
           style={{ backgroundColor: highlighted ? '#eee' : 'transparent', padding: 5, cursor: 'pointer' }}

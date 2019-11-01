@@ -45,9 +45,12 @@ const editIconStyle = css`
 
 const SubCategory: React.SFC<CategoryFields & { onClick?: Function }> = props => {
   const { popups } = useApplicationContext();
-  const { mutation: deleteCategory, loading: deleteCategoryLoading } = useMutation(mutationEndPoints.deleteCategory, {
+  const { mutation: deleteCategory, loading: deleteCategoryLoading } = useMutation(mutationEndPoints.removeCategory, {
     variables: { id: props.id },
-    refetchQueries: [refetchFactory(queryEndpoints.getCategories, { type: 'all' })],
+    refetchQueries: [
+      refetchFactory(queryEndpoints.getCategories, { type: 'all' }),
+      refetchFactory(queryEndpoints.getCategories, { type: 'parent' }),
+    ],
   });
 
   return (

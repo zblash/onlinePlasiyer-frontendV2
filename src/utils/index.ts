@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { IUserCommonResponse, UserRoleResponse } from '~/services/helpers';
 
 export function makeid(length: number) {
   let result = '';
@@ -33,34 +32,6 @@ function getDisplayName(WrappedComponent: any): string {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
 
-function isUserAdmin(user: IUserCommonResponse) {
-  if (user) {
-    return user.role === 'ADMIN';
-  }
-
-  return false;
-}
-
-function isUserCustomer(user: IUserCommonResponse) {
-  if (user) {
-    return user.role === 'CUSTOMER';
-  }
-
-  return false;
-}
-
-function isUserMerchant(user: IUserCommonResponse) {
-  if (user) {
-    return user.role === 'MERCHANT';
-  }
-
-  return false;
-}
-
-function isPublicRole(role: UserRoleResponse) {
-  return role === 'MERCHANT' || role === 'CUSTOMER';
-}
-
 function narrowObject(obj: Record<string, any>): Record<string, string | number | boolean | null | undefined> {
   const newobject = {};
   Object.keys(obj).forEach(key => {
@@ -86,17 +57,13 @@ function getKeyByValue(obj, value): string {
 
 export {
   getDisplayName,
-  isUserAdmin,
-  isUserMerchant,
   narrowObject,
   stringLitArray,
   isArray,
   isObject,
   getKeyByValue,
-  isPublicRole,
   objectKeys,
   objectValues,
   objectForeach,
   isBarcodeCorrectSize,
-  isUserCustomer,
 };

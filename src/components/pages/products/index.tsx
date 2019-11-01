@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { useParams } from 'react-router';
-import styled from '~/styled';
-import { Container } from '~/components/ui';
+import lodashGet from 'lodash.get';
+
+import styled, { css } from '~/styled';
+import { Container, UIButton, UIIcon } from '~/components/ui';
 import { ProductList } from '~/components/common/product-list';
 import { CategoryHorizontalList } from '~/components/common/category-horizontal-list';
 import { useQuery } from '~/services/query-context/context';
@@ -20,17 +22,45 @@ interface ProductsPageProps {}
   ProductsPage Colors
 */
 export const ProductsPageColors = {
-  wrapperBackground: '#fff',
   titleText: '#333',
+  white: '#fff',
+  primary: '#0075ff',
+  primaryDark: '#0062d4',
+  scrollbarTrack: '#e1e1e1',
+  addButtonInactive: '#ddd',
+  scrollbarThumb: '#878787',
 };
 
 /*
   ProductsPage Styles
 */
 
-const StyledSelectedParentCategoryTitle = styled.h2`
+const StyledProductListTopWrapper = styled.div`
+  align-items: baseline;
+  display: flex;
+  justify-content: space-between;
+`;
+const StyledSelectedCategoryName = styled.h2`
   font-size: 20px;
   color: ${ProductsPageColors.titleText};
+`;
+const StyledAddButton = styled(UIButton)`
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s;
+  background-color: ${ProductsPageColors.addButtonInactive};
+  color: ${ProductsPageColors.white};
+  padding: 4px 8px;
+  border-radius: 8px;
+  :active {
+    background-color: ${ProductsPageColors.primaryDark} !important;
+  }
+  :hover {
+    background-color: ${ProductsPageColors.primary};
+  }
+`;
+const addIconStyle = css`
+  margin-left: 8px;
 `;
 
 const _ProductsPage: React.SFC<ProductsPageProps> = props => {
@@ -39,12 +69,6 @@ const _ProductsPage: React.SFC<ProductsPageProps> = props => {
   const { data: allCategories } = useQuery(queryEndpoints.getCategories, {
     variables: { type: 'all' },
     defaultValue: [],
-    // TODO : implement on complate
-    // onCompleted: categories => {
-    //   if (selectedCategoryId) {
-    //     setSelectedCategoryName(categories.find(category => category.id === selectedCategoryId).name);
-    //   }
-    // },
   });
   const categoriesMap = allCategories
     .filter(category => !category.subCategory)
@@ -60,7 +84,14 @@ const _ProductsPage: React.SFC<ProductsPageProps> = props => {
         selectedCateogryId={selectedCategoryId}
         shouldUseProductsPageLink
       />
-      <StyledSelectedParentCategoryTitle>{selectedCategoryName}</StyledSelectedParentCategoryTitle>
+      <StyledProductListTopWrapper>
+        <StyledSelectedCategoryName>{selectedCategoryName}</StyledSelectedCategoryName>
+
+        <StyledAddButton>
+          {/* // TODO(0): move string object */}
+          Ekle <UIIcon name="add" color={ProductsPageColors.white} size={10} className={addIconStyle} />
+        </StyledAddButton>
+      </StyledProductListTopWrapper>
       <ProductList selectedCategoryId={selectedCategoryId} />
     </Container>
   );
@@ -68,6 +99,9 @@ const _ProductsPage: React.SFC<ProductsPageProps> = props => {
   /*
   ProductsPage Lifecycle
   */
+  React.useEffect(() => {
+    setSelectedCategoryName(lodashGet(allCategories.find(category => category.id === selectedCategoryId), 'name'));
+  }, [selectedCategoryId, JSON.stringify(allCategories)]);
 
   /*
   ProductsPage Functions

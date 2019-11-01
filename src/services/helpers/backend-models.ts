@@ -1,39 +1,3 @@
-export type EndpointGetter<T> = (queries: T) => T[keyof T];
-
-export interface RouteSchema {
-  id: string;
-  props?: {
-    [key: string]: RouteSchema | RouteSchema[];
-  };
-}
-
-export interface ServicesContextProviderComponentState {
-  dataCache: Record<string, any>;
-  routeCache: Record<
-    string,
-    {
-      usedIds: string[];
-      schema: RouteSchema | RouteSchema[];
-    }
-  >;
-}
-
-export type ArgumentTypes<F extends Function> = F extends (...args: infer A) => any ? A : never;
-export type FirstArgument<F extends Function> = ArgumentTypes<F>[0];
-type ThenArg<T> = T extends Promise<infer U> ? U : T;
-
-export type EndpointsResultType<F> = F extends (v: any) => Promise<any> ? ThenArg<ReturnType<F>> | null : F;
-
-export type EndpointsVariablesType<F> = F extends Function ? ArgumentTypes<F>[0] : F;
-
-export type QueryVariablesOptions<T> = T extends undefined
-  ? {
-      variables?: T;
-    }
-  : {
-      variables: T;
-    };
-
 export interface IAddressStateResponse {
   cityTitle: string;
   code: number;
@@ -112,8 +76,6 @@ export interface ICategoryResponse {
   subCategory: boolean;
 }
 
-export type TOrderStatus = 'NEW' | 'FINISHED' | 'PAID' | 'CANCELLED';
-
 export interface IOrderItems {
   price: number;
   id: string;
@@ -152,7 +114,5 @@ export interface Invoice {
 }
 
 export type UserRoleResponse = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';
-
-export type PublicUserRole = 'MERCHANT' | 'CUSTOMER';
-
 export type UnitTypeResponse = 'KG' | 'KL' | 'AD';
+export type TOrderStatus = 'NEW' | 'FINISHED' | 'PAID' | 'CANCELLED';

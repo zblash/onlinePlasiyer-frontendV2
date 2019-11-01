@@ -2,14 +2,13 @@ import * as React from 'react';
 import styled, { css } from '~/styled';
 import { Portal } from '../common/portal';
 import { useStateFromProp } from '~/utils/hooks';
-import { WithDefaultProps } from '~/helpers';
 import { UIIcon } from './icon';
 
 interface PopupProps {
   isShown: boolean;
   onClose: () => void;
-  shouldShowCloseIcon: boolean;
-  hideOnOverlayClicked: boolean;
+  shouldShowCloseIcon?: boolean;
+  hideOnOverlayClicked?: boolean;
 }
 
 /*
@@ -96,6 +95,6 @@ const _Popup: React.SFC<PopupProps> = props => {
   return <Portal>{isShown ? __ : null}</Portal>;
 };
 
-const Popup: React.SFC<WithDefaultProps<typeof PopupDefaultProps, PopupProps>> = _Popup;
+const Popup: React.SFC<PopupProps> = _Popup;
 
 export { Popup };

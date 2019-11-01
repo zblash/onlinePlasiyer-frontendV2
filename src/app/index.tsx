@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { ApplicationContext, usePopup } from './context';
 import Routes from '~/components/pages';
-import { USER_ROLE_MAP } from '~/helpers/maps';
 import { ApplicationProviderProps } from './helpers';
 import { PopupsWrapper } from './popups-wrapper';
+import { USER_ROLE_MAP } from '~/services/helpers/maps';
 
 function App(props: ApplicationProviderProps) {
   const createCategory = usePopup();

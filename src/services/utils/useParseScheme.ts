@@ -10,7 +10,7 @@ function useParseSchema() {
       const propValue = schema.props[prop];
       databaseObjects[prop] = isArray(propValue)
         ? propValue.map(childProp => parseSchema(childProp))
-        : (databaseObjects[prop] = parseSchema(propValue));
+        : parseSchema(propValue);
     });
     return databaseObjects;
   }

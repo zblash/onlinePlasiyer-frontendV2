@@ -1029,6 +1029,13 @@
   dependencies:
     "@types/lodash" "*"
 
+"@types/lodash.concat@^4.5.6":
+  version "4.5.6"
+  resolved "https://registry.yarnpkg.com/@types/lodash.concat/-/lodash.concat-4.5.6.tgz#16c73478a594a64dae69e9d6ce226c6b247718b3"
+  integrity sha512-+lqeeYa0dMF4i69hl34QaqIkRqmHKQwiYrWSKX/WhoHg672dN8fykAkNDTgl3xDEFPT435T4dp9YTG4Mi/UqBQ==
+  dependencies:
+    "@types/lodash" "*"
+
 "@types/lodash.debounce@^4.0.6":
   version "4.0.6"
   resolved "https://registry.yarnpkg.com/@types/lodash.debounce/-/lodash.debounce-4.0.6.tgz#c5a2326cd3efc46566c47e4c0aa248dc0ee57d60"
@@ -6295,6 +6302,11 @@ lodash.chunk@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/lodash.chunk/-/lodash.chunk-4.2.0.tgz#66e5ce1f76ed27b4303d8c6512e8d1216e8106bc"
   integrity sha1-ZuXOH3btJ7QwPYxlEujRIW6BBrw=
+
+lodash.concat@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.concat/-/lodash.concat-4.5.0.tgz#b053ae02e4a8008582e7256b9d02bda6d0380395"
+  integrity sha1-sFOuAuSoAIWC5yVrnQK9ptA4A5U=
 
 lodash.debounce@^4.0.8:
   version "4.0.8"

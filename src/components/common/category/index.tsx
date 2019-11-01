@@ -144,9 +144,12 @@ const editIconStyle = css`
 const CategoryItem: React.SFC<CategoryItemProps> = props => {
   const [isClickSubitem, setIsClickSubitem] = React.useState(false);
   const { popups } = useApplicationContext();
-  const { mutation: deleteCategory, loading: deleteCategoryLoading } = useMutation(mutationEndPoints.deleteCategory, {
+  const { mutation: deleteCategory, loading: deleteCategoryLoading } = useMutation(mutationEndPoints.removeCategory, {
     variables: { id: props.id },
-    refetchQueries: [refetchFactory(queryEndpoints.getCategories, { type: 'all' })],
+    refetchQueries: [
+      refetchFactory(queryEndpoints.getCategories, { type: 'all' }),
+      refetchFactory(queryEndpoints.getCategories, { type: 'parent' }),
+    ],
   });
 
   const tooltipProps = isClickSubitem ? { visible: false } : {};
@@ -180,7 +183,7 @@ const CategoryItem: React.SFC<CategoryItemProps> = props => {
       <StyledCategoryName>{props.name}</StyledCategoryName>
       <StyledSelectedStatus isShown={props.isHighlighted} />
       {props.subCategories.length > 0 && (
-        // TODO: move rc-tooltip  to custom tooltip component
+        // TODO(0): move rc-tooltip  to custom tooltip component
         <Tooltip
           {...tooltipProps}
           overlay={

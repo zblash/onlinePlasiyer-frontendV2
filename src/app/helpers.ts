@@ -1,6 +1,6 @@
 import { CategoryPopupUpdateCategoryValues } from '~/components/common/popups/category';
-import { User } from '~/helpers';
-import { IUserCommonResponse } from '~/services/helpers';
+import { User } from '~/services/helpers/maps';
+import { IUserCommonResponse } from '~/services/helpers/backend-models';
 
 export interface Popup<T = undefined> {
   isShown: boolean;

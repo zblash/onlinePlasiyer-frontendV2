@@ -13,16 +13,15 @@ function useQueryContext() {
   return React.useContext(QueryContext);
 }
 
-function useQuery<T extends BaseQuery>(query: T, _options?: UseQueryOptions<T>): UseQueryResult<T> {
+function useQuery<T extends BaseQuery>(query: T, options?: UseQueryOptions<T>): UseQueryResult<T> {
   const queryContext = useQueryContext();
-  const options = { skip: false, ..._options };
   const [state, setState] = React.useState({ routeId: null, error: null, loading: !options.skip, isCompleted: false });
 
   function getQuery() {
     if (options.skip) {
       return;
     }
-    setState({ ...state, loading: true });
+    setState({ ...state, loading: true, isCompleted: false });
     queryContext
       .queryHandler({
         query,
@@ -45,6 +44,12 @@ function useQuery<T extends BaseQuery>(query: T, _options?: UseQueryOptions<T>):
   React.useEffect(() => {
     getQuery();
   }, [JSON.stringify(options)]);
+
+  React.useEffect(() => {
+    if (state.isCompleted && options.onCompleted) {
+      options.onCompleted(dataGetter());
+    }
+  }, [state.isCompleted]);
 
   function dataGetter() {
     if (state.routeId) {
