@@ -17,6 +17,7 @@ export interface ServicesContextProviderComponentState {
 }
 
 export type ArgumentTypes<F extends Function> = F extends (...args: infer A) => any ? A : never;
+
 export type FirstArgument<F extends Function> = ArgumentTypes<F>[0];
 type ThenArg<T> = T extends Promise<infer U> ? U : T;
 

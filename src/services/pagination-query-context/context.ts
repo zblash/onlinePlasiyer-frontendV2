@@ -9,7 +9,7 @@ import {
 const initialValue: PaginationQueryContextType = {
   getDataByRouteId: () => null,
   refetchQueries: () => Promise.resolve(0),
-  queryHandler: () => Promise.resolve({ routeId: '', lastPageNumber: 0 }),
+  queryHandler: () => Promise.resolve({ routeId: '', lastPageNumber: 0, elementCountOfPage: 0 }),
 };
 
 const PaginationQueryContext = React.createContext(initialValue);
@@ -24,6 +24,7 @@ function usePaginationQuery<T extends BasePaginationQuery>(
   const [state, setState] = React.useState({
     routeId: null,
     error: null,
+    elementCountOfPage: 0,
     loading: !options.skip,
     isCompleted: false,
     pageNumber: 1,
@@ -40,10 +41,11 @@ function usePaginationQuery<T extends BasePaginationQuery>(
         variables: options.variables || {},
         pageNumber: state.pageNumber,
       })
-      .then(({ routeId, lastPageNumber }) => {
+      .then(({ routeId, lastPageNumber, elementCountOfPage }) => {
         setState(prev => ({
           ...prev,
           routeId,
+          elementCountOfPage,
           lastPageNumber,
           loading: false,
           isCompleted: true,
@@ -63,10 +65,14 @@ function usePaginationQuery<T extends BasePaginationQuery>(
     if (state.routeId) {
       return paginationQueryContext.getDataByRouteId(state.routeId);
     }
+
     return options.defaultValue || null;
   }
+
   return {
+    elementCountOfPage: state.elementCountOfPage,
     data: dataGetter(),
+    currentPage: state.pageNumber,
     loading: state.loading,
     error: state.error,
     isDone: state.pageNumber === state.lastPageNumber && !!state.routeId,

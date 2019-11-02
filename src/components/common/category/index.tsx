@@ -146,10 +146,6 @@ const CategoryItem: React.SFC<CategoryItemProps> = props => {
   const { popups } = useApplicationContext();
   const { mutation: deleteCategory, loading: deleteCategoryLoading } = useMutation(mutationEndPoints.removeCategory, {
     variables: { id: props.id },
-    refetchQueries: [
-      refetchFactory(queryEndpoints.getCategories, { type: 'all' }),
-      refetchFactory(queryEndpoints.getCategories, { type: 'parent' }),
-    ],
   });
 
   const tooltipProps = isClickSubitem ? { visible: false } : {};

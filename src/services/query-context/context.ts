@@ -55,6 +55,7 @@ function useQuery<T extends BaseQuery>(query: T, options?: UseQueryOptions<T>): 
     if (state.routeId) {
       return queryContext.getDataByRouteId(state.routeId);
     }
+
     return options.defaultValue || null;
   }
 

@@ -114,5 +114,7 @@ export interface Invoice {
 }
 
 export type UserRoleResponse = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';
+
 export type UnitTypeResponse = 'KG' | 'KL' | 'AD';
+
 export type TOrderStatus = 'NEW' | 'FINISHED' | 'PAID' | 'CANCELLED';

@@ -1,3 +1,5 @@
+import { MaybeArray } from '~/helpers';
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export function makeid(length: number) {
@@ -9,7 +11,7 @@ export function makeid(length: number) {
 
   return result;
 }
-function isArray<T>(o: any): o is Array<T> {
+function isArray<T>(o: MaybeArray<T>): o is Array<T> {
   return Array.isArray(o);
 }
 const isObject = (o: any) => !isArray(o) && typeof o === 'object' && o !== null && o !== undefined;

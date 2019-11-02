@@ -60,4 +60,5 @@ function refetchFactory<T>(query: T, variables: EndpointsVariablesType<T>) {
     variables,
   };
 }
+
 export { getRouteId, getRouteByEndpoint, refetchFactory };

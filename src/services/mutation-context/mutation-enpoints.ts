@@ -99,34 +99,15 @@ class MutationEndpoints {
     unitType: UnitTypeResponse;
   }) => ApiCall.post('/products/specify/create', { ...params, stateList: params.stateIds, stateIds: undefined });
 
-  signup = (data: {
-    cityId: string;
-    details: string;
-    email: string;
-    name: string;
-    password: string;
-    role: UserRoleResponse;
-    stateId: string;
-    taxNumber: string;
-    username: string;
-  }) => {
-    const _data = {
-      ...data,
-      roleType: data.role,
-      role: undefined,
-    };
-
-    return axios.post(`${URL}/sign-up`, _data).then(d => d.data);
-  };
-
   addActiveStatesForAuthUser = ({ stateIds }: { stateIds: string[] }) => {
     return ApiCall.post('/users/addActiveState', stateIds);
   };
 
-  removeItemFromCard: (s: { id: string }) => Promise<any> = ({ id }) => ApiCall.post(`/cart/removeItem/${id}`);
+  removeItemFromCard: (s: { id: string }) => Promise<any> = ({ id }) =>
+    ApiCall.post(`/cart/removeItem/${id}`).then(item => ({ ...item, removed: true }));
 
   removeProduct: (s: { id: string }) => Promise<IProductResponse> = ({ id }) =>
-    ApiCall.delete(`/products/delete/${id}`);
+    ApiCall.delete(`/products/delete/${id}`).then(item => ({ ...item, removed: true }));
 
   clearCard: () => Promise<any> = () => ApiCall.post('/cart/clear/');
 
@@ -134,4 +115,5 @@ class MutationEndpoints {
 }
 
 const mutationEndPoints = new MutationEndpoints();
+
 export { mutationEndPoints };

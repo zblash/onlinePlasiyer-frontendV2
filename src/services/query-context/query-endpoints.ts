@@ -11,6 +11,7 @@ import {
 import { UserRole, UserType } from '../helpers/maps';
 
 type GetCategoriesType = 'sub' | 'parent' | 'all';
+
 class QueryEndpoints {
   getCategories: (s: { type: GetCategoriesType }) => Promise<ICategoryResponse[]> = ({ type }) =>
     ApiCall.get(`/categories`, {
@@ -45,6 +46,7 @@ class QueryEndpoints {
         all: '/users/admin',
       },
     };
+
     return ApiCall.get(userTypeRouteMap[role][type]);
   };
 

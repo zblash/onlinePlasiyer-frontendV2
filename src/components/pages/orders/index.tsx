@@ -43,11 +43,18 @@ const StyledPageContainer = styled.div`
 `;
 
 const OrdersPage: React.SFC<OrdersPageProps> = props => {
-  const { data: orders } = usePaginationQuery(paginationQueryEndpoints.getAllOrders, { defaultValue: [] });
+  const { data: orders, next } = usePaginationQuery(paginationQueryEndpoints.getAllOrders, {
+    defaultValue: [],
+  });
   const __ = (
     <Container>
       <StyledPageContainer>
         <UITable
+          onChangePage={(pageIndex, pageCount) => {
+            if (pageIndex + 2 === pageCount) {
+              next();
+            }
+          }}
           data={orders}
           rowCount={14}
           columns={[

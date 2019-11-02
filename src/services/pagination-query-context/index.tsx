@@ -14,6 +14,7 @@ import { paginationQueryEndpoints } from './pagination-query-endpoints';
 
 type RouteStorage = {
   lastPageNumber: number;
+  elementCountOfPage: number;
   storage: Array<{
     schema: MaybeArray<RouteSchema>;
     pageNumber: number;
@@ -30,14 +31,18 @@ function PaginationQueryContextProvider(props) {
     const routeId = getRouteId(getRouteByEndpoint(paginationQueryEndpoints, query), variables);
     const isCurrentRouteFetched = isRouteFetched(routeId, params.pageNumber);
     if (isCurrentRouteFetched) {
-      return Promise.resolve({ routeId, lastPageNumber: routeStorage[routeId].lastPageNumber });
+      return Promise.resolve(
+        resultCreator(routeId, routeStorage[routeId].lastPageNumber, routeStorage[routeId].elementCountOfPage),
+      );
     }
     if (!queryQueue.current[routeId]) {
-      queryQueue.current[routeId] = queryApiCall(params).then(data => ({ routeId, lastPageNumber: data.totalPage }));
+      queryQueue.current[routeId] = queryApiCall(params).then(data =>
+        resultCreator(routeId, data.totalPage, data.elementCountOfPage),
+      );
     } else {
       queryQueue.current[routeId]
         .then(() => queryHandler(params))
-        .then(data => ({ routeId, lastPageNumber: data.totalPage }));
+        .then(data => resultCreator(routeId, data.totalPage, data.elementCountOfPage));
     }
 
     return queryQueue.current[routeId];
@@ -46,6 +51,7 @@ function PaginationQueryContextProvider(props) {
   function queryApiCall(params: QueryHandlerParams) {
     const { query, variables, pageNumber } = params;
     const routeId = getRouteId(getRouteByEndpoint(paginationQueryEndpoints, query), variables);
+
     return query({ ...variables, pageNumber })
       .then(data => {
         const routeSchema = dataToSchema(data.values);
@@ -54,6 +60,7 @@ function PaginationQueryContextProvider(props) {
           ...prevSate,
           [routeId]: {
             lastPageNumber: data.totalPage,
+            elementCountOfPage: data.elementCountOfPage,
             storage: [
               ...(lodashGet(prevSate, `${routeId}.storage`, []) as []),
               {
@@ -63,6 +70,7 @@ function PaginationQueryContextProvider(props) {
             ],
           },
         }));
+
         return data;
       })
       .finally(() => {
@@ -72,12 +80,8 @@ function PaginationQueryContextProvider(props) {
 
   function getDataByRouteId(routeId: string) {
     const routeSchemas = routeStorage[routeId].storage.map(storage => storage.schema);
-    const result = lodashContact(
-      [],
-      ...routeSchemas.map(schema =>
-        isArray(schema) ? schema.map(nestedSchema => parseSchema(nestedSchema)) : parseSchema(schema),
-      ),
-    );
+    const result = lodashContact([], ...routeSchemas.map(schema => parseSchema(schema)));
+
     return result;
   }
 
@@ -87,6 +91,9 @@ function PaginationQueryContextProvider(props) {
 
   function refetchQueries(queries: QueryHandlerParams[]) {
     return Promise.all(queries.map(query => queryApiCall(query)));
+  }
+  function resultCreator(routeId: string, lastPageNumber: number, elementCountOfPage: number) {
+    return { routeId, lastPageNumber, elementCountOfPage };
   }
 
   return (

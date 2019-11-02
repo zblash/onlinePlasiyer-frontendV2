@@ -6,6 +6,7 @@ import CollapsibleLibrary from 'react-collapsible';
 */
 interface CollapsibleProps {
   content: (handler: (isOpen: boolean) => void, isOpen: boolean) => React.ReactElement;
+  closeForce?: boolean;
 }
 const _Collapsible: React.SFC<CollapsibleProps> = props => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -23,7 +24,11 @@ const _Collapsible: React.SFC<CollapsibleProps> = props => {
   /*
   Collapsible Lifecycle
   */
-
+  React.useEffect(() => {
+    if (props.closeForce) {
+      setIsOpen(false);
+    }
+  }, [props.closeForce]);
   /*
   Collapsible Functions
   */

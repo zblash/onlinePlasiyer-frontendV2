@@ -17,7 +17,7 @@ function dataToSchema(data: any): MaybeArray<RouteSchema> {
     return null;
   }
 
-  let route: RouteSchema = {
+  const route: RouteSchema = {
     id: data.id,
     props: {},
   };

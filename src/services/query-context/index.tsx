@@ -37,11 +37,13 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
   function queryApiCall(params: QueryHandlerParams) {
     const { query, variables } = params;
     const routeId = getRouteId(getRouteByEndpoint(queryEndpoints, query), variables);
+
     return query(variables)
       .then(data => {
         const routeSchema = dataToSchema(data);
         setRouteSchemas(prevSate => ({ ...prevSate, [routeId]: routeSchema }));
         databaseObjectsContext.setObjectsFromBackendResponse(data);
+
         return data;
       })
       .finally(() => {
@@ -55,10 +57,7 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
 
   function getDataByRouteId(routeId: string) {
     const schema = routeSchemas[routeId];
-    if (isArray(schema)) {
-      return schema.map(nestedSchema => parseSchema(nestedSchema));
-    }
-    return parseSchema(schema as RouteSchema);
+    return parseSchema(schema);
   }
 
   function refetchQueries(queries: QueryHandlerParams[] = []) {

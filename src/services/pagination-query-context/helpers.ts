@@ -2,7 +2,9 @@ import { EndpointsResultType, EndpointsVariablesType } from '../helpers';
 import { paginationQueryEndpoints } from './pagination-query-endpoints';
 
 export interface PaginationQueryContextType {
-  queryHandler: (params: QueryHandlerParams) => Promise<{ routeId: string; lastPageNumber: number }>;
+  queryHandler: (
+    params: QueryHandlerParams,
+  ) => Promise<{ routeId: string; lastPageNumber: number; elementCountOfPage: number }>;
   refetchQueries: (params: QueryHandlerParams[]) => Promise<any>;
   getDataByRouteId: (id: string) => any;
 }
@@ -16,6 +18,7 @@ export interface PaginationResult<DataType> {
   totalElements: number;
   totalPage: number;
 }
+
 export type QueryHandlerParams = {
   query: (vars: any) => Promise<any>;
   variables: any;
@@ -37,6 +40,8 @@ export type UsePaginationQueryResult<Query> = {
   error: any;
   isDone: boolean;
   next: () => void;
+  currentPage: number;
+  elementCountOfPage: number;
 };
 
 export type UsePaginationQueryOptions<T> = {

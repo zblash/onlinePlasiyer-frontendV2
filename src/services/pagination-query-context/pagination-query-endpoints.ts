@@ -21,6 +21,7 @@ class QueryEndpoints {
 
   getAllInvoices: (s: { pageNumber: number }) => Promise<PaginationResult<Invoice>> = ({ pageNumber }) =>
     ApiCall.get('/invoices', { pageNumber });
+
   getAllOrders: (s: { pageNumber: number }) => Promise<PaginationResult<IOrder>> = ({ pageNumber }) =>
     ApiCall.get('/orders', { pageNumber });
 }

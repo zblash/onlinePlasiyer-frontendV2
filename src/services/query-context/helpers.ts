@@ -5,6 +5,7 @@ export type QueryHandlerParams = {
   query: (vars: any) => Promise<any>;
   variables: any;
 };
+
 export interface QueryContextType {
   queryHandler: (params: QueryHandlerParams) => Promise<string>;
   refetchQueries: (params: QueryHandlerParams[]) => Promise<any>;

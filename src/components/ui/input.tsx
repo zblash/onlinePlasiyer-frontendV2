@@ -33,6 +33,7 @@ const Input = styled.input`
   background-color: transparent !important ;
   box-shadow: none;
   outline: none;
+  width: 100%;
 `;
 
 const StyledLabel = styled.label`

@@ -88,6 +88,7 @@ const _ProductList: React.SFC<ProductListProps> = props => {
     <>
       {chunkedArray.map((items, index) => (
         <UICollapsible
+          closeForce={openedProductId === null}
           key={index}
           content={(trigger, isOpen) => (
             <StyledCardContainer>
@@ -108,11 +109,15 @@ const _ProductList: React.SFC<ProductListProps> = props => {
             </StyledCardContainer>
           )}
         >
-          <UITable data={specifyProducts} rowCount={8} columns={TABLE_SHOWN_DATA} />
+          <UITable id={props.selectedCategoryId} data={specifyProducts} rowCount={8} columns={TABLE_SHOWN_DATA} />
         </UICollapsible>
       ))}
     </>
   );
+
+  React.useEffect(() => {
+    setOpenedProductId(null);
+  }, [props.selectedCategoryId]);
 
   return __;
 };

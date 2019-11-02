@@ -1,5 +1,7 @@
-import { TOKEN_KEY } from '~/utils/constants';
 import axios from 'axios';
+import { TOKEN_KEY } from '~/utils/constants';
+import { UserRoleResponse } from './helpers/backend-models';
+import { UserRole, USER_ROLE_MAP } from './helpers/maps';
 
 const TOKEN = {
   get: () => localStorage.getItem(TOKEN_KEY),
@@ -51,8 +53,29 @@ function login(username: string, password: string) {
     TOKEN.set(`Bearer ${data.token}`);
     // eslint-disable-next-line
     location.reload();
+
     return data;
   });
+}
+function signup(data: {
+  cityId: string;
+  stateId: string;
+  details: string;
+  name: string;
+  username: string;
+  email: string;
+  password: string;
+  role: UserRole;
+  taxNumber: string;
+}) {
+  const _data = {
+    ...data,
+    roleType: USER_ROLE_MAP[data.role],
+  };
+
+  delete _data.role;
+
+  return axios.post(`${URL}/sign-up`, _data).then(d => d.data);
 }
 
 function logout() {
@@ -62,4 +85,4 @@ function logout() {
 }
 const hasToken = !!TOKEN.get();
 
-export { ApiCall, login, logout, hasToken };
+export { ApiCall, login, logout, hasToken, signup };
