@@ -1,9 +1,11 @@
 import * as React from 'react';
 import styled, { css } from '~/styled';
-import { UserRole, UserType } from '~/backend-model-helpers';
-import { queryEndpoints, mutationEndPoints } from '~/services';
-import { useQuery, useMutation } from '~/cache-management/hooks';
-import { Container, UICheckbox, UITable, UIIcon, UIButtonGroup } from '~/components/ui';
+import { Container, UITable, UIIcon, UIButtonGroup } from '~/components/ui';
+import { useQuery } from '~/services/query-context/context';
+import { useMutation } from '~/services/mutation-context/context';
+import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
+import { queryEndpoints } from '~/services/query-context/query-endpoints';
+import { UserRole, UserType } from '~/services/helpers/maps';
 
 /*
   UsersPage Helpers
@@ -78,14 +80,14 @@ const iconStyle = css`
   cursor: pointer;
 `;
 const UsersPage: React.SFC<UsersPageProps> = props => {
-  const [userRole, setUserRole] = React.useState<UserRole>('customers');
+  const [userRole, setUserRole] = React.useState<UserRole>('customer');
   const [type, setType] = React.useState<UserType>('all');
-  const [users] = useQuery(queryEndpoints.getUsers, {
+  const { data: users } = useQuery(queryEndpoints.getUsers, {
     variables: { role: userRole, type },
     defaultValue: [],
   });
 
-  const [changeUserStatus, _, loading] = useMutation(mutationEndPoints.changeUserStatus);
+  const { mutation: changeUserStatus, loading } = useMutation(mutationEndPoints.changeUserStatus);
 
   const __ = (
     <StyledUsersPageWrapper>
@@ -102,7 +104,7 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
               }}
               options={[
                 {
-                  id: 'customers',
+                  id: 'customer',
                   text: UsersPageStrings.customers,
                 },
                 {
@@ -110,7 +112,7 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
                   text: UsersPageStrings.admin,
                 },
                 {
-                  id: 'merchants',
+                  id: 'merchant',
                   text: UsersPageStrings.merchants,
                 },
               ]}
@@ -167,19 +169,23 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
                   },
                   {
                     title: '',
-                    itemRenderer: item => (
-                      <EditingOperationsWrapper>
-                        <UIIcon
-                          size={20}
-                          className={iconStyle}
-                          name={loading ? 'loading' : item.status ? 'trash' : 'checkMark'}
-                          color={item.status ? UsersPageColors.danger : UsersPageColors.primary}
-                          onClick={e => {
-                            changeUserStatus({ id: item.id, status: !item.status });
-                          }}
-                        />
-                      </EditingOperationsWrapper>
-                    ),
+                    itemRenderer: item => {
+                      const iconName = item.status ? 'trash' : 'checkMark';
+
+                      return (
+                        <EditingOperationsWrapper>
+                          <UIIcon
+                            size={20}
+                            className={iconStyle}
+                            name={loading ? 'loading' : iconName}
+                            color={item.status ? UsersPageColors.danger : UsersPageColors.primary}
+                            onClick={e => {
+                              changeUserStatus({ id: item.id, status: !item.status });
+                            }}
+                          />
+                        </EditingOperationsWrapper>
+                      );
+                    },
                   },
                 ],
           )}

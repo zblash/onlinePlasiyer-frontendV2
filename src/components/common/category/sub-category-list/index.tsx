@@ -10,6 +10,7 @@ interface SubCategoryListProps extends StylableProps {
   categories: CategoryFields[];
   onItemClick?: (category: CategoryFields) => void;
 }
+
 export const SubCategoryListColors = {
   danger: '#e2574c',
   primary: '#0075ff',

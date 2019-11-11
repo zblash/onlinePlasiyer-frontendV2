@@ -1,7 +1,7 @@
 import { isArray } from '~/utils';
 
 describe('Example Test', () => {
-  test('true is equal true', () => {
+  test('Is Array', () => {
     expect(isArray([])).toEqual(true);
   });
 });

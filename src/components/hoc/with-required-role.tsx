@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { Redirect } from 'react-router-dom';
 import { getDisplayName } from '~/utils';
-import { UserRoleResponse } from '~/backend-model-helpers';
-import { useApplicationContext } from '~/utils/hooks';
+import { useApplicationContext } from '~/app/context';
+import { UserRole } from '~/services/helpers/maps';
 
 const withRequiredRole = <T, C>(
   WrappedComponent: React.ComponentClass<T> | React.FunctionComponent<T>,
   {
     authorize,
   }: {
-    authorize?: UserRoleResponse[];
+    authorize?: UserRole[];
   },
 ) => {
   const WithRequiredRoleHoc: React.SFC<React.ComponentProps<typeof WrappedComponent>> = props => {

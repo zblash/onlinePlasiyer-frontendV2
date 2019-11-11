@@ -1,5 +1,4 @@
 import React from 'react';
-import { ApplicationContext } from '~/components/app/context';
 
 function useStateFromProp<T>(initialValue: T): [T, React.Dispatch<React.SetStateAction<T>>] {
   const [value, setValue] = React.useState(initialValue);
@@ -7,10 +6,6 @@ function useStateFromProp<T>(initialValue: T): [T, React.Dispatch<React.SetState
   React.useEffect(() => setValue(initialValue), [initialValue]);
 
   return [value, setValue];
-}
-
-function useApplicationContext() {
-  return React.useContext(ApplicationContext);
 }
 
 function usePrevious<T>(value: T): T {
@@ -34,26 +29,6 @@ function useKeepValue<T>(value: T | undefined, wantedValue: T): T {
   return ref.current;
 }
 
-function useLocalStorage<T>(key: string, initialValue: T | null = null): [T | null, (newVal: T) => void, () => void] {
-  const item = JSON.parse(window.localStorage.getItem(key));
-  const [storedValue, setStoredValue] = React.useState(item || initialValue);
-
-  React.useEffect(() => {
-    setStoredValue(item);
-  }, [item]);
-
-  const setValue = value => {
-    setStoredValue(value);
-    window.localStorage.setItem(key, JSON.stringify(value));
-  };
-  const removeItem = () => {
-    localStorage.removeItem(key);
-    setStoredValue(null);
-  };
-
-  return [storedValue, setValue, removeItem];
-}
-
 function useStateWithCallback<T>(
   initialState: T,
   callback: (s: T) => void,
@@ -65,4 +40,4 @@ function useStateWithCallback<T>(
   return [state, setState];
 }
 
-export { useStateFromProp, useApplicationContext, usePrevious, useKeepValue, useLocalStorage, useStateWithCallback };
+export { useStateFromProp, usePrevious, useKeepValue, useStateWithCallback };

@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 import * as React from 'react';
 import styled from '~/styled';
 import { Loading } from './loading';

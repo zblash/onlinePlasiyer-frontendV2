@@ -1,6 +1,8 @@
 import * as React from 'react';
-import styled, { StylableProps } from '~/styled';
-import { UIButton } from '~/components/ui';
+import styled, { StylableProps, css } from '~/styled';
+import { UIButton, UIIcon } from '~/components/ui';
+import { useMutation } from '~/services/mutation-context/context';
+import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 
 /*
   ProductCard Helpers
@@ -23,8 +25,10 @@ interface ProductCardProps extends StylableProps, ProductData {
 export const ProductCardColors = {
   primary: '#0075ff',
   primaryDark: '#0062d4',
+  danger: '#e2574c',
   wrapperBackground: '#fff',
 };
+
 /*
   ProductCard Strings 
 */
@@ -60,6 +64,24 @@ const StyledCardImgWrapper = styled.div`
   height: 160px;
   overflow: hidden;
 `;
+const deleteIconStyle = css`
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  z-index: 1;
+  cursor: pointer;
+  opacity: 0;
+`;
+
+const StyledContent = styled.div`
+  position: relative;
+  height: 120px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #fff;
+`;
 
 const StyledCardWrapper = styled.div`
   position: relative;
@@ -80,16 +102,10 @@ const StyledCardWrapper = styled.div`
     ${StyledCardImg} {
       transform: scale(1.5);
     }
+    .${deleteIconStyle}{
+      opacity: 1;
+    }
   }
-`;
-
-const StyledContent = styled.div`
-  height: 120px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  background-color: #fff;
 `;
 
 const StyledTitle = styled.h2`
@@ -127,8 +143,10 @@ const StyledContentCenter = styled.div`
 `;
 
 const StyledContentSpan = styled.span``;
-
 const ProductCard: React.SFC<ProductCardProps> = props => {
+  const { mutation: removeProduct, loading } = useMutation(mutationEndPoints.removeProduct, {
+    variables: { id: props.id },
+  });
   const __ = (
     <StyledCardWrapper className={props.className}>
       <StyledShadowElement />
@@ -136,6 +154,19 @@ const ProductCard: React.SFC<ProductCardProps> = props => {
         <StyledCardImg src={props.img} />
       </StyledCardImgWrapper>
       <StyledContent>
+        <UIIcon
+          size={18}
+          name={loading ? 'loading' : 'trash'}
+          className={deleteIconStyle}
+          color={ProductCardColors.danger}
+          onClick={e => {
+            e.stopPropagation();
+            if (!loading) {
+              removeProduct();
+            }
+          }}
+        />
+
         <StyledTitle>{props.name}</StyledTitle>
         <StyledContentCenter>
           <StyledContentSpan>

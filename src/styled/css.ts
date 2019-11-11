@@ -47,8 +47,8 @@ function globalCss(_styles: TemplateStringsArray, ...args: CssExpressionType) {
 }
 
 function keyframes(_styles: TemplateStringsArray, ...args: CssExpressionType) {
-  const _keyframe = styledKeyframes(_styles, ...args);
-  // @ts-ignore
+  // eslint-disable-next-line
+  const _keyframe = styledKeyframes(_styles, ...args) as any;
   const _keyframeCss = _keyframe.rules.join('');
 
   globals.push(_keyframeCss);
@@ -71,7 +71,7 @@ const _css: {
   styled: typeof styledCss;
   global: typeof globalCss;
   keyframes: typeof keyframes;
-  cx: (...s: any) => string;
+  cx: typeof cx;
 } = css;
 
 export { _css as css, globalStyle };

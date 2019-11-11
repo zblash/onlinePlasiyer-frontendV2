@@ -3,9 +3,11 @@ import Tooltip from 'rc-tooltip';
 import styled, { css } from '~/styled';
 import { UIIcon } from '~/components/ui';
 import { SubCategoryList } from './sub-category-list';
-import { useMutation } from '~/cache-management/hooks';
-import { mutationEndPoints, queryEndpoints } from '~/services';
-import { useApplicationContext } from '~/utils/hooks';
+import { useApplicationContext } from '~/app/context';
+import { useMutation } from '~/services/mutation-context/context';
+import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
+import { refetchFactory } from '~/services/utils';
+import { queryEndpoints } from '~/services/query-context/query-endpoints';
 
 /*
   CategoryItem Helpers
@@ -142,14 +144,8 @@ const editIconStyle = css`
 const CategoryItem: React.SFC<CategoryItemProps> = props => {
   const [isClickSubitem, setIsClickSubitem] = React.useState(false);
   const { popups } = useApplicationContext();
-  const [deleteCategory, _, deleteCategoryLoading] = useMutation(mutationEndPoints.deleteCategory, {
+  const { mutation: deleteCategory, loading: deleteCategoryLoading } = useMutation(mutationEndPoints.removeCategory, {
     variables: { id: props.id },
-    refetchQueries: [
-      {
-        query: queryEndpoints.getCategories,
-        variables: { type: 'all' },
-      },
-    ],
   });
 
   const tooltipProps = isClickSubitem ? { visible: false } : {};
@@ -183,6 +179,7 @@ const CategoryItem: React.SFC<CategoryItemProps> = props => {
       <StyledCategoryName>{props.name}</StyledCategoryName>
       <StyledSelectedStatus isShown={props.isHighlighted} />
       {props.subCategories.length > 0 && (
+        // TODO(0): move rc-tooltip  to custom tooltip component
         <Tooltip
           {...tooltipProps}
           overlay={

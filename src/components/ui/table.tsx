@@ -15,6 +15,8 @@ interface UiTableProps<T> {
   data: T[];
   columns: UITableColumns<T>[];
   rowCount?: number;
+  id: string;
+  onChangePage?: (pageIndex: number, totalPageCount: number) => void;
 }
 
 /*
@@ -142,7 +144,7 @@ function _UITable<T>(props: UiTableProps<T>) {
     }
 
     return data;
-  }, [props.data, props.rowCount, hasRowCount, rowCount, pageIndex]);
+  }, [props.data, props.rowCount, hasRowCount, rowCount, pageIndex, props.id]);
 
   const pageCount = Math.floor(props.data.length / rowCount);
 
@@ -159,11 +161,17 @@ function _UITable<T>(props: UiTableProps<T>) {
         <StyledTableBody>
           {tableData.map((item, index) => (
             <StyledBodyTr key={index}>
-              {props.columns.map(({ itemRenderer }, indexNested) => (
-                <StyledBodyTd key={indexNested}>
-                  {item ? (typeof itemRenderer === 'function' ? itemRenderer(item) : itemRenderer) : null}
-                </StyledBodyTd>
-              ))}
+              {props.columns.map(({ itemRenderer }, indexNested) => {
+                if (!item) {
+                  return <StyledBodyTd key={indexNested} />;
+                }
+
+                return (
+                  <StyledBodyTd key={indexNested}>
+                    {typeof itemRenderer === 'function' ? itemRenderer(item) : itemRenderer}
+                  </StyledBodyTd>
+                );
+              })}
             </StyledBodyTr>
           ))}
         </StyledTableBody>
@@ -195,13 +203,22 @@ function _UITable<T>(props: UiTableProps<T>) {
   /*
   UiTable Lifecycle
   */
+  React.useEffect(() => {
+    setPageIndex(0);
+  }, [props.id]);
 
   /*
   UiTable Functions
   */
 
   function setPageIndexCallback(index: number) {
-    setPageIndex(Math.max(0, Math.min(pageCount, index)));
+    const nextPage = Math.max(0, Math.min(pageCount, index));
+    if (pageIndex !== nextPage) {
+      setPageIndex(nextPage);
+      if (props.onChangePage) {
+        props.onChangePage(nextPage, pageCount);
+      }
+    }
   }
 
   return __;

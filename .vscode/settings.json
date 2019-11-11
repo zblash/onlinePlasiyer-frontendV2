@@ -2,6 +2,6 @@
   "files.exclude": {
     // "dist/**": true
   },
-  "eslint.options": { "configFile": "d:/project/onlinePlasiyer/frontend/.eslintrc" },
+  "eslint.options": { "configFile": "d:/project/onlinePlasiyer/.eslintrc.js" },
   "eslint.enable": true
 }

@@ -1,10 +1,11 @@
 import * as React from 'react';
 import _chunk from 'lodash.chunk';
+import { UITableColumns, UITable } from '~/components/ui/table';
+import { usePaginationQuery } from '~/services/pagination-query-context/context';
+import { ProductCardWrapper, ProductCard } from '../product-card';
 import styled from '~/styled';
-import { ProductCardWrapper, ProductCard, ProductData } from '../product-card';
-import { UICollapsible, UITable } from '~/components/ui';
-import { UITableColumns } from '~/components/ui/table';
-
+import { paginationQueryEndpoints } from '~/services/pagination-query-context/pagination-query-endpoints';
+import { UICollapsible } from '~/components/ui';
 /*
   ProductList Helpers
 */
@@ -16,9 +17,7 @@ export interface SpecifyProductData {
 }
 
 interface ProductListProps {
-  items: ProductData[];
-  selectedProductSpecifies: SpecifyProductData[];
-  onItemClick?: (id: string) => void;
+  selectedCategoryId?: string;
 }
 
 const CHUNK_SIZE = 4;
@@ -59,13 +58,37 @@ const StyledCardContainer = styled.div`
 `;
 
 const _ProductList: React.SFC<ProductListProps> = props => {
-  const chunkedArray = React.useMemo(() => _chunk(props.items, CHUNK_SIZE), [props.items]);
   const [openedProductId, setOpenedProductId] = React.useState<string>(null);
+  const { data: products } = usePaginationQuery(paginationQueryEndpoints.getAllProductsByCategoryId, {
+    variables: { categoryId: props.selectedCategoryId },
+    skip: !props.selectedCategoryId,
+    defaultValue: [],
+  });
+  const { data: specifyProducts } = usePaginationQuery(paginationQueryEndpoints.getAllSpecifyProductsByProductId, {
+    variables: { productId: openedProductId },
+    defaultValue: [],
+    skip: !openedProductId,
+  });
+  const chunkedArray = React.useMemo(
+    () =>
+      _chunk(
+        products.map(product => ({
+          id: product.id,
+          name: product.name,
+          taxRate: product.tax,
+          img: product.photoUrl,
+          barcode: product.barcode,
+        })),
+        CHUNK_SIZE,
+      ),
+    [JSON.stringify(products)],
+  );
+
   const __ = (
     <>
       {chunkedArray.map((items, index) => (
-        // TODO: move to new file
         <UICollapsible
+          closeForce={openedProductId === null}
           key={index}
           content={(trigger, isOpen) => (
             <StyledCardContainer>
@@ -77,9 +100,6 @@ const _ProductList: React.SFC<ProductListProps> = props => {
                     if (openedProductId !== product.id) {
                       setOpenedProductId(product.id);
                       trigger(true);
-                      if (props.onItemClick) {
-                        props.onItemClick(product.id);
-                      }
                     } else {
                       trigger(!isOpen);
                     }
@@ -89,11 +109,15 @@ const _ProductList: React.SFC<ProductListProps> = props => {
             </StyledCardContainer>
           )}
         >
-          <UITable data={props.selectedProductSpecifies} rowCount={8} columns={TABLE_SHOWN_DATA} />
+          <UITable id={props.selectedCategoryId} data={specifyProducts} rowCount={8} columns={TABLE_SHOWN_DATA} />
         </UICollapsible>
       ))}
     </>
   );
+
+  React.useEffect(() => {
+    setOpenedProductId(null);
+  }, [props.selectedCategoryId]);
 
   return __;
 };

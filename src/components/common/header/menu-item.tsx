@@ -92,6 +92,7 @@ const MenuItem: React.SFC<MenuItemProps> = props => {
       </Tooltip>
     );
   }
+
   return (
     <StyledMenuItemWrapper>
       <UIIcon

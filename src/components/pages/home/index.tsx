@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { Container } from '~/components/ui';
-import { useQuery } from '~/cache-management/hooks';
-import { queryEndpoints } from '~/services';
 import { CategoryHorizontalList } from '~/components/common/category-horizontal-list';
+import { useQuery } from '~/services/query-context/context';
+import { queryEndpoints } from '~/services/query-context/query-endpoints';
 
 interface HomeProps {}
 
 const Home: React.SFC<HomeProps> = props => {
-  const [allCategories] = useQuery(queryEndpoints.getCategories, {
+  const { data: allCategories } = useQuery(queryEndpoints.getCategories, {
     variables: { type: 'all' },
     defaultValue: [],
   });

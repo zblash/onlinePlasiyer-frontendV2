@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { MaybeArray } from '~/helpers';
 
-import { IUserCommonResponse, UserRoleResponse } from '~/backend-model-helpers';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 export function makeid(length: number) {
   let result = '';
@@ -11,11 +11,16 @@ export function makeid(length: number) {
 
   return result;
 }
-const isArray = (o: any) => Array.isArray(o);
+function isArray<T>(o: MaybeArray<T>): o is Array<T> {
+  return Array.isArray(o);
+}
 const isObject = (o: any) => !isArray(o) && typeof o === 'object' && o !== null && o !== undefined;
 
 function objectKeys<K extends string>(obj: Record<K, any>): K[] {
   return Object.keys(obj) as K[];
+}
+function objectForeach<K extends string, V>(obj: Record<K, V>, callback: (key: K, value: V) => void) {
+  Object.keys(obj).forEach(key => callback(key as K, obj[key]));
 }
 function isBarcodeCorrectSize(barcode: string) {
   return barcode.length > 12 && barcode.length < 100;
@@ -27,34 +32,6 @@ function objectValues<K>(obj: Record<string, K>): K[] {
 
 function getDisplayName(WrappedComponent: any): string {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
-}
-
-function isUserAdmin(user: IUserCommonResponse) {
-  if (user) {
-    return user.role === 'ADMIN';
-  }
-
-  return false;
-}
-
-function isUserCustomer(user: IUserCommonResponse) {
-  if (user) {
-    return user.role === 'CUSTOMER';
-  }
-
-  return false;
-}
-
-function isUserMerchant(user: IUserCommonResponse) {
-  if (user) {
-    return user.role === 'MERCHANT';
-  }
-
-  return false;
-}
-
-function isPublicRole(role: UserRoleResponse) {
-  return role === 'MERCHANT' || role === 'CUSTOMER';
 }
 
 function narrowObject(obj: Record<string, any>): Record<string, string | number | boolean | null | undefined> {
@@ -82,16 +59,13 @@ function getKeyByValue(obj, value): string {
 
 export {
   getDisplayName,
-  isUserAdmin,
-  isUserMerchant,
   narrowObject,
   stringLitArray,
   isArray,
   isObject,
   getKeyByValue,
-  isPublicRole,
   objectKeys,
   objectValues,
+  objectForeach,
   isBarcodeCorrectSize,
-  isUserCustomer,
 };

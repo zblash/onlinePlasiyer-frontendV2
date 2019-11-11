@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from '~/styled';
 
 type Size = 'small' | 'medium' | 'large';
+type Position = 'left' | 'right' | 'center';
 
 interface UIButton<T> {
   text: string;
@@ -19,8 +20,18 @@ interface ButtonProps {
   isSelected: boolean;
   disabled?: boolean;
   size: Size;
-  position: 'left' | 'right' | 'center';
+  position: Position;
 }
+const SIZE_TO_PADDING_MAP: Record<Size, number> = {
+  large: 8,
+  medium: 6,
+  small: 2,
+};
+const INDEX_TO_POSITION_MAP: Record<number, Position> = {
+  0: 'left',
+  1: 'center',
+  2: 'right',
+};
 
 const ButtonGroupColors = {
   white: '#fff',
@@ -41,7 +52,7 @@ const StyledButton = styled.span<ButtonProps>`
   border: 1px solid ${ButtonGroupColors.primary};
   border-left-width: ${props => (props.position === 'center' ? 0 : 1)}px;
   border-right-width: ${props => (props.position === 'center' ? 0 : 1)}px;
-  padding: ${props => (props.size === 'small' ? 2 : props.size === 'medium' ? 6 : 8)}px 6px;
+  padding: ${props => SIZE_TO_PADDING_MAP[props.size]}px 6px;
   color: ${props => (props.isSelected ? ButtonGroupColors.white : 'currentColor')};
   background-color: ${props => (props.isSelected ? ButtonGroupColors.primary : ButtonGroupColors.white)};
 `;
@@ -49,8 +60,9 @@ const StyledButton = styled.span<ButtonProps>`
 function UIButtonGroup<T = string>(props: ButtonGroupProps<T>) {
   const options = props.options.map((item, index) => ({
     ...item,
-    position: index === 0 ? 'left' : index === 1 ? 'center' : ('right' as ButtonProps['position']),
+    position: INDEX_TO_POSITION_MAP[index],
   }));
+
   return (
     <StyledUserTypesWrapper>
       {options.map(item => (

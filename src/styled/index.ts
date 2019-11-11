@@ -28,14 +28,17 @@ type StyledJSXIntrinsics = {
 
 type StyledFunction = <T>(c: React.ReactType<T>) => StyledTag<T>;
 
-// @ts-ignore
-const styled: StyledJSXIntrinsics &
+type Styled = StyledJSXIntrinsics &
   StyledFunction & {
     readonly [key: string]: StyledTag<{
       children?: React.ReactNode;
       [key: string]: any;
     }>;
-  } = _styled;
+  };
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+// @ts-ignore
+const styled: Styled = _styled as Styled;
 
 export { css, createGlobalStyle, mixins };
 

@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { useParams } from 'react-router';
-import styled from '~/styled';
-import { Container } from '~/components/ui';
+import lodashGet from 'lodash.get';
+
+import styled, { css } from '~/styled';
+import { Container, UIButton, UIIcon } from '~/components/ui';
 import { ProductList } from '~/components/common/product-list';
-import { useQuery } from '~/cache-management/hooks';
-import { queryEndpoints } from '~/services';
 import { CategoryHorizontalList } from '~/components/common/category-horizontal-list';
+import { useQuery } from '~/services/query-context/context';
+import { queryEndpoints } from '~/services/query-context/query-endpoints';
 
 /*
   ProductsPage Helpers
@@ -20,43 +22,54 @@ interface ProductsPageProps {}
   ProductsPage Colors
 */
 export const ProductsPageColors = {
-  wrapperBackground: '#fff',
   titleText: '#333',
+  white: '#fff',
+  primary: '#0075ff',
+  primaryDark: '#0062d4',
+  scrollbarTrack: '#e1e1e1',
+  addButtonInactive: '#ddd',
+  scrollbarThumb: '#878787',
 };
 
 /*
   ProductsPage Styles
 */
 
-const StyledSelectedParentCategoryTitle = styled.h2`
+const StyledProductListTopWrapper = styled.div`
+  align-items: baseline;
+  display: flex;
+  justify-content: space-between;
+`;
+const StyledSelectedCategoryName = styled.h2`
   font-size: 20px;
   color: ${ProductsPageColors.titleText};
+`;
+const StyledAddButton = styled(UIButton)`
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s;
+  background-color: ${ProductsPageColors.addButtonInactive};
+  color: ${ProductsPageColors.white};
+  padding: 4px 8px;
+  border-radius: 8px;
+  :active {
+    background-color: ${ProductsPageColors.primaryDark} !important;
+  }
+  :hover {
+    background-color: ${ProductsPageColors.primary};
+  }
+`;
+const addIconStyle = css`
+  margin-left: 8px;
 `;
 
 const _ProductsPage: React.SFC<ProductsPageProps> = props => {
   const { categoryId: selectedCategoryId } = useParams<RouteParams>();
   const [selectedCategoryName, setSelectedCategoryName] = React.useState('');
-  const [selectedProductId, setSelectedProductId] = React.useState<string>(null);
-  const [allCategories] = useQuery(queryEndpoints.getCategories, {
+  const { data: allCategories } = useQuery(queryEndpoints.getCategories, {
     variables: { type: 'all' },
     defaultValue: [],
-    onCompleted: categories => {
-      if (selectedCategoryId) {
-        setSelectedCategoryName(categories.find(category => category.id === selectedCategoryId).name);
-      }
-    },
   });
-  const [products] = useQuery(queryEndpoints.getAllProductsByCategoryId, {
-    variables: { categoryId: selectedCategoryId },
-    skip: !selectedCategoryId,
-    defaultValue: [],
-  });
-  const [specifyProducts] = useQuery(queryEndpoints.getAllSpecifyProductsByProductId, {
-    variables: { productId: selectedProductId },
-    skip: !selectedProductId,
-    defaultValue: [],
-  });
-
   const categoriesMap = allCategories
     .filter(category => !category.subCategory)
     .map(category => ({
@@ -71,24 +84,24 @@ const _ProductsPage: React.SFC<ProductsPageProps> = props => {
         selectedCateogryId={selectedCategoryId}
         shouldUseProductsPageLink
       />
-      <StyledSelectedParentCategoryTitle>{selectedCategoryName}</StyledSelectedParentCategoryTitle>
-      <ProductList
-        onItemClick={id => setSelectedProductId(id)}
-        selectedProductSpecifies={specifyProducts}
-        items={products.map(product => ({
-          id: product.id,
-          name: product.name,
-          taxRate: product.tax,
-          img: product.photoUrl,
-          barcode: product.barcode,
-        }))}
-      />
+      <StyledProductListTopWrapper>
+        <StyledSelectedCategoryName>{selectedCategoryName}</StyledSelectedCategoryName>
+
+        <StyledAddButton>
+          {/* // TODO(0): move string object */}
+          Ekle <UIIcon name="add" color={ProductsPageColors.white} size={10} className={addIconStyle} />
+        </StyledAddButton>
+      </StyledProductListTopWrapper>
+      <ProductList selectedCategoryId={selectedCategoryId} />
     </Container>
   );
 
   /*
   ProductsPage Lifecycle
   */
+  React.useEffect(() => {
+    setSelectedCategoryName(lodashGet(allCategories.find(category => category.id === selectedCategoryId), 'name'));
+  }, [selectedCategoryId, JSON.stringify(allCategories)]);
 
   /*
   ProductsPage Functions

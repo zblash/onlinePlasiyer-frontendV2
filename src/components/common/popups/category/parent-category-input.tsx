@@ -1,9 +1,10 @@
 import * as React from 'react';
+import lodashGet from 'lodash.get';
 import { UIAutoComplete, UIIcon } from '~/components/ui';
 import { StyledInput, commonInputStyle, inputIconStyle, CategoryPopupColors } from '.';
-import { queryEndpoints } from '~/services';
 import { useKeepValue } from '~/utils/hooks';
-import { useQuery } from '~/cache-management/hooks';
+import { useQuery } from '~/services/query-context/context';
+import { queryEndpoints } from '~/services/query-context/query-endpoints';
 
 /*
   ParentCategoryInput Helpers
@@ -18,6 +19,7 @@ interface ParentCategoryInputProps {
   disabled?: boolean;
   isHighlighted?: boolean;
   onSelect: (category: Category) => void;
+  selectedCategoryId: string;
 }
 
 /*
@@ -35,7 +37,7 @@ const _ParentCategoryInput: React.SFC<ParentCategoryInputProps> = props => {
   const [autocompleteValue, setAutoCompleteValue] = React.useState('');
   const isActivate = !useKeepValue(props.disabled, false);
 
-  const [parentCategories, getParentCategoriesLoading, getParentCategoriesError] = useQuery(
+  const { data: parentCategories, loading: getParentCategoriesLoading, error: getParentCategoriesError } = useQuery(
     queryEndpoints.getCategories,
     { variables: { type: 'parent' }, skip: !isActivate, defaultValue: [] },
   );
@@ -66,7 +68,7 @@ const _ParentCategoryInput: React.SFC<ParentCategoryInputProps> = props => {
         />
       }
       renderItem={(item, highlighted) => (
-        // TODO: update this element
+        // TODO(0): update this element
         <div
           key={item.id}
           style={{ backgroundColor: highlighted ? '#eee' : 'transparent', padding: 5, cursor: 'pointer' }}
@@ -84,6 +86,13 @@ const _ParentCategoryInput: React.SFC<ParentCategoryInputProps> = props => {
   /*
   ParentCategoryInput Lifecycle
   */
+  React.useEffect(() => {
+    if (props.selectedCategoryId) {
+      setAutoCompleteValue(
+        lodashGet(parentCategories.find(category => category.id === props.selectedCategoryId), 'name', ''),
+      );
+    }
+  }, [parentCategories.length]);
 
   /*
   ParentCategoryInput Functions
