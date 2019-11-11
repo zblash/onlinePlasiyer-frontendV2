@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { TOKEN_KEY } from '~/utils/constants';
 import { UserRoleResponse } from './helpers/backend-models';
-import { UserRole, USER_ROLE_MAP } from './helpers/maps';
 
 const TOKEN = {
   get: () => localStorage.getItem(TOKEN_KEY),
@@ -65,12 +64,12 @@ function signup(data: {
   username: string;
   email: string;
   password: string;
-  role: UserRole;
+  role: UserRoleResponse;
   taxNumber: string;
 }) {
   const _data = {
     ...data,
-    roleType: USER_ROLE_MAP[data.role],
+    roleType: data.role,
   };
 
   delete _data.role;

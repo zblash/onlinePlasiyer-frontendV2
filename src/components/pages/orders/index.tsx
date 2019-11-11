@@ -13,10 +13,6 @@ interface OrdersPageProps {}
 /*
   OrdersPage Colors
 */
-const OrdersPageColors = {
-  wrapperBackground: '#fff',
-};
-
 /*
   OrdersPage Strings
 */
@@ -50,6 +46,7 @@ const OrdersPage: React.SFC<OrdersPageProps> = props => {
     <Container>
       <StyledPageContainer>
         <UITable
+          id="orders-page-table"
           onChangePage={(pageIndex, pageCount) => {
             if (pageIndex + 2 === pageCount) {
               next();

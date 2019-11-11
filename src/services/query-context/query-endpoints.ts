@@ -7,8 +7,9 @@ import {
   IUserCommonResponse,
   IAddressStateResponse,
   IAddressCityResponse,
+  UserRoleResponse,
 } from '~/services/helpers/backend-models';
-import { UserRole, UserType } from '../helpers/maps';
+import { UserType } from '../helpers/maps';
 
 type GetCategoriesType = 'sub' | 'parent' | 'all';
 
@@ -28,19 +29,19 @@ class QueryEndpoints {
 
   getCard: () => Promise<ICardResponse> = () => ApiCall.get(`/cart/`);
 
-  getUsers: (s: { role: UserRole; type: UserType }) => Promise<IUserCommonResponse[]> = ({ type, role }) => {
-    const userTypeRouteMap: Record<UserRole, Record<UserType, string>> = {
-      customer: {
+  getUsers: (s: { role: UserRoleResponse; type: UserType }) => Promise<IUserCommonResponse[]> = ({ type, role }) => {
+    const userTypeRouteMap: Record<UserRoleResponse, Record<UserType, string>> = {
+      CUSTOMER: {
         active: '/users/customers/active',
         all: '/users/customers/',
         passive: '/users/customers/passive',
       },
-      merchant: {
+      MERCHANT: {
         active: '/users/merchant/active',
         passive: '/users/merchant/passive',
         all: '/users/merchant/',
       },
-      admin: {
+      ADMIN: {
         active: '/users/admin',
         passive: '/users/admin',
         all: '/users/admin',

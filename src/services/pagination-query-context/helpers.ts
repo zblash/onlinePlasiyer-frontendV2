@@ -34,6 +34,7 @@ export interface QueryContextType {
 export type BasePaginationQuery = typeof paginationQueryEndpoints[keyof typeof paginationQueryEndpoints];
 
 export type UsePaginationQueryResult<Query> = {
+  // eslint-disable-next-line  @typescript-eslint/ban-ts-ignore
   // @ts-ignore
   data: EndpointsResultType<Query>['values'];
   loading: boolean;
@@ -46,6 +47,7 @@ export type UsePaginationQueryResult<Query> = {
 
 export type UsePaginationQueryOptions<T> = {
   skip?: boolean;
+  // eslint-disable-next-line  @typescript-eslint/ban-ts-ignore
   // @ts-ignore
   defaultValue?: Partial<EndpointsResultType<T>['values']>;
   variables?: Omit<EndpointsVariablesType<T>, 'pageNumber'>;

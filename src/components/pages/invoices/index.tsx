@@ -34,6 +34,7 @@ const InvoicesPage: React.SFC<InvoicesPageProps> = props => {
     <Container>
       <StyledPageContainer>
         <UITable
+          id="invoices-page-table"
           data={invoices}
           rowCount={14}
           columns={[

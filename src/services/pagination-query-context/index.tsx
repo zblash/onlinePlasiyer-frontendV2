@@ -9,7 +9,6 @@ import { QueryHandlerParams } from './helpers';
 import { MaybeArray } from '~/helpers';
 import { dataToSchema } from '../utils/route-schema';
 import { RouteSchema } from '../helpers';
-import { isArray } from '~/utils';
 import { paginationQueryEndpoints } from './pagination-query-endpoints';
 
 type RouteStorage = {

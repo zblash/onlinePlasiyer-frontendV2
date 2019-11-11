@@ -6,8 +6,6 @@ import { SubCategoryList } from './sub-category-list';
 import { useApplicationContext } from '~/app/context';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
-import { refetchFactory } from '~/services/utils';
-import { queryEndpoints } from '~/services/query-context/query-endpoints';
 
 /*
   CategoryItem Helpers

@@ -5,7 +5,8 @@ import { useQuery } from '~/services/query-context/context';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
-import { UserRole, UserType } from '~/services/helpers/maps';
+import { UserType } from '~/services/helpers/maps';
+import { UserRoleResponse } from '~/services/helpers/backend-models';
 
 /*
   UsersPage Helpers
@@ -80,7 +81,7 @@ const iconStyle = css`
   cursor: pointer;
 `;
 const UsersPage: React.SFC<UsersPageProps> = props => {
-  const [userRole, setUserRole] = React.useState<UserRole>('customer');
+  const [userRole, setUserRole] = React.useState<UserRoleResponse>('CUSTOMER');
   const [type, setType] = React.useState<UserType>('all');
   const { data: users } = useQuery(queryEndpoints.getUsers, {
     variables: { role: userRole, type },
@@ -95,24 +96,24 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
         <StyledTopFilterWrapper>
           <StyledUserRoleFilterWrapper>
             <StyledFilterQuestion>{UsersPageStrings.wichUserQuestion}</StyledFilterQuestion>
-            <UIButtonGroup<UserRole>
+            <UIButtonGroup<UserRoleResponse>
               onItemClick={id => {
-                if (id === 'admin') {
+                if (id === 'ADMIN') {
                   setType('all');
                 }
                 setUserRole(id);
               }}
               options={[
                 {
-                  id: 'customer',
+                  id: 'CUSTOMER',
                   text: UsersPageStrings.customers,
                 },
                 {
-                  id: 'admin',
+                  id: 'ADMIN',
                   text: UsersPageStrings.admin,
                 },
                 {
-                  id: 'merchant',
+                  id: 'MERCHANT',
                   text: UsersPageStrings.merchants,
                 },
               ]}
@@ -127,7 +128,7 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
                 {
                   id: 'active',
                   text: UsersPageStrings.activeUserType,
-                  disabled: userRole === 'admin',
+                  disabled: userRole === 'ADMIN',
                 },
                 {
                   id: 'all',
@@ -136,7 +137,7 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
                 {
                   id: 'passive',
                   text: UsersPageStrings.passiveUserType,
-                  disabled: userRole === 'admin',
+                  disabled: userRole === 'ADMIN',
                 },
               ]}
               onItemClick={id => setType(id)}
@@ -144,6 +145,7 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
           </StyledUserTypeFilterWrapper>
         </StyledTopFilterWrapper>
         <UITable
+          id={`${type}${userRole}`}
           data={users}
           rowCount={12}
           columns={[
@@ -160,7 +162,7 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
               title: UsersPageStrings.email,
             },
           ].concat(
-            userRole === 'admin'
+            userRole === 'ADMIN'
               ? []
               : [
                   {

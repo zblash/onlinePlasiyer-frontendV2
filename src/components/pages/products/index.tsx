@@ -21,7 +21,7 @@ interface ProductsPageProps {}
 /*
   ProductsPage Colors
 */
-export const ProductsPageColors = {
+const ProductsPageColors = {
   titleText: '#333',
   white: '#fff',
   primary: '#0075ff',
@@ -29,6 +29,10 @@ export const ProductsPageColors = {
   scrollbarTrack: '#e1e1e1',
   addButtonInactive: '#ddd',
   scrollbarThumb: '#878787',
+};
+
+const ProductsPageStrings = {
+  add: 'Ekle',
 };
 
 /*
@@ -88,8 +92,8 @@ const _ProductsPage: React.SFC<ProductsPageProps> = props => {
         <StyledSelectedCategoryName>{selectedCategoryName}</StyledSelectedCategoryName>
 
         <StyledAddButton>
-          {/* // TODO(0): move string object */}
-          Ekle <UIIcon name="add" color={ProductsPageColors.white} size={10} className={addIconStyle} />
+          {ProductsPageStrings.add}{' '}
+          <UIIcon name="add" color={ProductsPageColors.white} size={10} className={addIconStyle} />
         </StyledAddButton>
       </StyledProductListTopWrapper>
       <ProductList selectedCategoryId={selectedCategoryId} />

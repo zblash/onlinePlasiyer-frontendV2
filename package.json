@@ -12,7 +12,7 @@
     "dev": "cross-env NODE_ENV=development webpack-dev-server --config=webpack/development.js",
     "start": "node server.js",
     "test": "jest --coverage  --config=jest.json",
-    "check-rule": "yarn lint && yarn prettier && yarn tsc"
+    "check-rule": "yarn tsc && yarn lint && yarn prettier && yarn test"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.4",

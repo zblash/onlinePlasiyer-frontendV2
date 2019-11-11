@@ -3,7 +3,6 @@ import { ApplicationContext, usePopup } from './context';
 import Routes from '~/components/pages';
 import { ApplicationProviderProps } from './helpers';
 import { PopupsWrapper } from './popups-wrapper';
-import { USER_ROLE_MAP } from '~/services/helpers/maps';
 
 function App(props: ApplicationProviderProps) {
   const createCategory = usePopup();
@@ -12,7 +11,7 @@ function App(props: ApplicationProviderProps) {
   return (
     <ApplicationContext.Provider
       value={{
-        user: { ...props.user, role: USER_ROLE_MAP[props.user.role] },
+        user: props.user,
         popups: {
           createCategory,
           updateCategory,

@@ -12,8 +12,8 @@ function CheckUser() {
 
   React.useEffect(() => {
     ApiCall.get('/users/getmyinfos')
-      .then(user => {
-        setUser(user);
+      .then(_user => {
+        setUser(_user);
         setIsLoading(false);
       })
       .catch(() => {

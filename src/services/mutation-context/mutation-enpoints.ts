@@ -1,6 +1,5 @@
-import axios from 'axios';
-import { ApiCall, URL } from '~/services/api';
-import { ICardResponse, UnitTypeResponse, UserRoleResponse, IProductResponse } from '~/services/helpers/backend-models';
+import { ApiCall } from '~/services/api';
+import { ICardResponse, UnitTypeResponse, IProductResponse } from '~/services/helpers/backend-models';
 
 interface CreateCategoryVariables {
   parentId?: string | null;

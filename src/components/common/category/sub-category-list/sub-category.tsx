@@ -5,8 +5,6 @@ import { UIIcon } from '~/components/ui';
 import { SubCategoryListColors } from '.';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
-import { refetchFactory } from '~/services/utils';
-import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { useApplicationContext } from '~/app/context';
 
 const StyledCategoryWrapper = styled.div`

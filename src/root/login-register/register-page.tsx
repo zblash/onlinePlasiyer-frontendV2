@@ -1,8 +1,7 @@
 import * as React from 'react';
-import styled, { css } from '~/styled';
+import styled from '~/styled';
 import { UIInput, UIAutoComplete, UIButtonGroup, UIButton, Loading } from '~/components/ui';
-import { UserRole } from '~/services/helpers/maps';
-import { IAddressCityResponse, IAddressStateResponse } from '~/services/helpers/backend-models';
+import { IAddressCityResponse, IAddressStateResponse, UserRoleResponse } from '~/services/helpers/backend-models';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { signup } from '~/services/api';
 
@@ -118,7 +117,7 @@ const RegisterPage: React.SFC<RegisterPageProps> = props => {
   const [username, setUsername] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const [role, setRole] = React.useState<UserRole>('admin');
+  const [role, setRole] = React.useState<UserRoleResponse>('ADMIN');
   const [taxNumber, setTaxNumber] = React.useState('');
   const [name, setName] = React.useState('');
 
@@ -217,20 +216,20 @@ const RegisterPage: React.SFC<RegisterPageProps> = props => {
       />
       <StyledUserTypeWrapper>
         <StyledMemberTypeSpan>{RegisterPageStrings.memberType}</StyledMemberTypeSpan>
-        <UIButtonGroup<UserRole>
+        <UIButtonGroup<UserRoleResponse>
           size="small"
           onItemClick={id => setRole(id)}
           options={[
             {
-              id: 'customer',
+              id: 'CUSTOMER',
               text: RegisterPageStrings.customer,
             },
             {
-              id: 'admin',
+              id: 'ADMIN',
               text: RegisterPageStrings.admin,
             },
             {
-              id: 'merchant',
+              id: 'MERCHANT',
               text: RegisterPageStrings.merchant,
             },
           ]}

@@ -10,12 +10,12 @@ import { Page404 } from '~/components/pages/404-component';
 import { Header } from '../common/header';
 import { OrdersPage } from './orders';
 import { InvoicesPage } from './invoices';
-import { UserRole } from '~/services/helpers/maps';
+import { UserRoleResponse } from '~/services/helpers/backend-models';
 
 interface IRoute {
   path: string;
   component: React.ComponentClass | React.FunctionComponent;
-  authorize?: UserRole[];
+  authorize?: UserRoleResponse[];
   disabled?: boolean;
 }
 
@@ -27,7 +27,7 @@ const routes: IRoute[] = [
   {
     path: '/users',
     component: UsersPage,
-    authorize: ['admin'],
+    authorize: ['ADMIN'],
   },
   {
     path: '/products/:categoryId?',

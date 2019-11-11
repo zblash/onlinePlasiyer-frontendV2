@@ -24,11 +24,11 @@ const CHUNK_SIZE = 4;
 
 const TABLE_SHOWN_DATA: UITableColumns<SpecifyProductData>[] = [
   {
-    itemRenderer: 'sellerName',
+    itemRenderer: specifyProduct => specifyProduct.sellerName,
     title: 'Satici',
   },
   {
-    itemRenderer: 'totalPrice',
+    itemRenderer: specifyProduct => specifyProduct.totalPrice,
     title: 'Toplam fiyat',
   },
 ];

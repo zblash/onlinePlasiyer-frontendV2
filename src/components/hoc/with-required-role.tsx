@@ -2,14 +2,14 @@ import * as React from 'react';
 import { Redirect } from 'react-router-dom';
 import { getDisplayName } from '~/utils';
 import { useApplicationContext } from '~/app/context';
-import { UserRole } from '~/services/helpers/maps';
+import { UserRoleResponse } from '~/services/helpers/backend-models';
 
 const withRequiredRole = <T, C>(
   WrappedComponent: React.ComponentClass<T> | React.FunctionComponent<T>,
   {
     authorize,
   }: {
-    authorize?: UserRole[];
+    authorize?: UserRoleResponse[];
   },
 ) => {
   const WithRequiredRoleHoc: React.SFC<React.ComponentProps<typeof WrappedComponent>> = props => {
@@ -20,6 +20,7 @@ const withRequiredRole = <T, C>(
     if (!shouldAuth) {
       return wrappedElement;
     }
+
     if (Array.isArray(authorize) && !authorize.includes(user.role)) {
       return <Redirect to="/" />;
     }

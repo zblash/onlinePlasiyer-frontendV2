@@ -3,7 +3,6 @@ import { QueryContext } from './context';
 import { QueryHandlerParams } from './helpers';
 import { getRouteId, getRouteByEndpoint } from '../utils';
 import { useDatabaseObjectsContext } from '../database-object-context/context';
-import { isArray } from '~/utils';
 import { RouteSchema } from '../helpers';
 import { dataToSchema } from '../utils/route-schema';
 import { useParseSchema } from '../utils/useParseScheme';
@@ -57,6 +56,7 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
 
   function getDataByRouteId(routeId: string) {
     const schema = routeSchemas[routeId];
+
     return parseSchema(schema);
   }
 

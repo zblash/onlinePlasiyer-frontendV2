@@ -30,7 +30,7 @@ export const applicationContextInitialValue: ApplicationContextValues = {
     name: '',
     email: '',
     id: '',
-    role: 'admin',
+    role: 'ADMIN',
     username: '',
   },
   popups: {
