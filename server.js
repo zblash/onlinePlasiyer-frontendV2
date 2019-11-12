@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const portNumber = process.env.PORT || 3001;
-const sourceDir = 'dist';
+const sourceDir = 'bundle';
 
 app.use(express.static(sourceDir));
 app.get('/*', function(req, res) {
