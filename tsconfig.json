@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "./bundle/",
+    "outDir": "./dist/",
     "sourceMap": true,
     "noEmit": true,
     "noImplicitAny": false,
