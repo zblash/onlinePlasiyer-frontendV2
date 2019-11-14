@@ -4,6 +4,6 @@ import { globalStyle } from '~/styled/css';
 import 'rc-tooltip/assets/bootstrap_white.css';
 import '~/assets/style/app.scss';
 
-const GlobalStyle = createGlobalStyle`${globalStyle()}`;
+const globalStyleCreator = () => createGlobalStyle`${globalStyle()}`;
 
-export { GlobalStyle };
+export { globalStyleCreator };
