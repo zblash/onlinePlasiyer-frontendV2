@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled from '~/styled';
+import styled, { mixins } from '~/styled';
 import { LoginPage } from './login-page';
 import { RegisterPage } from './register-page';
 import logoPath from '~/assets/images/logo/primary.png';
@@ -33,11 +33,19 @@ const Container = styled.div`
 `;
 
 const CenteredCard = styled.div`
-  padding: 70px 70px;
+  padding: 70px;
   background-color: #fff;
   border-radius: 4px;
   box-shadow: 0 1px 3px 0 rgba(21, 27, 38, 0.15);
   line-height: 1.5;
+  ${mixins.mediaBreakpointDown('tablet')} {
+    padding: 24px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
 `;
 const StyledLogo = styled.div`
   background-image: url(${logoPath});
@@ -53,7 +61,7 @@ const StyledDontHaveAccountQuestion = styled.div`
   margin-top: 16px;
 `;
 const StyledHiglightedText = styled.span`
-  cursor: default;
+  cursor: pointer;
   color: ${LoginPageColors.primary};
   :hover {
     color: ${LoginPageColors.primaryDark};

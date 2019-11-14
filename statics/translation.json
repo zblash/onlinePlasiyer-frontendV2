@@ -1,0 +1,9 @@
+{
+  "tr": {
+    "common": {
+      "login": "Giris Yap",
+      "create": "Olustur",
+      "update": "Guncelle"
+    }
+  }
+}

@@ -1,11 +1,9 @@
 import * as React from 'react';
 import axios from 'axios';
 import { FullScreenLoading } from '~/components/common/full-screen-loading';
-import { CheckUser } from './check-user';
-import { URL, hasToken } from '../services/api';
-import { LoginRegisterPage } from './login-register';
+import { URL } from '../services/api';
 
-function CheckHealth() {
+function CheckHealth(props: React.PropsWithChildren<any>) {
   const [isLoading, setIsLoading] = React.useState(true);
   const [hasError, setHasError] = React.useState(false);
   React.useEffect(() => {
@@ -29,11 +27,7 @@ function CheckHealth() {
     return <h1>Baglanti Gerceklestiremedik en kisa surede duzelecek</h1>;
   }
 
-  if (!hasToken) {
-    return <LoginRegisterPage />;
-  }
-
-  return <CheckUser />;
+  return props.children;
 }
 
 export { CheckHealth };

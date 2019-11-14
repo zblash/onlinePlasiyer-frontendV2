@@ -1,5 +1,6 @@
 import * as React from 'react';
 import lodashGet from 'lodash.get';
+import { useTranslation } from 'react-i18next';
 import styled, { css } from '~/styled';
 import { UIInput, UIIcon, UICheckbox, UIButton, Loading } from '~/components/ui';
 import { useCategoryPopupReducer } from './reducer';
@@ -156,6 +157,7 @@ const imageIconStyle = css`
 const filePickerInputId = 'image-picker-create-category-popup';
 
 function _CategoryPopup<T extends 'update' | 'create'>(props: CategoryPopupProps<T>) {
+  const { t } = useTranslation();
   const { popups } = useApplicationContext();
   const [state, dispatch] = useCategoryPopupReducer({
     name: lodashGet(props.initialState, 'name', ''),
@@ -244,7 +246,7 @@ function _CategoryPopup<T extends 'update' | 'create'>(props: CategoryPopupProps
         {loading ? (
           <Loading color={CategoryPopupColors.primary} size={22} className={loadingStyle} />
         ) : (
-          <span>{props.type === 'create' ? CategoryPopupString.create : CategoryPopupString.update}</span>
+          <span>{props.type === 'create' ? t('common.create') : CategoryPopupString.update}</span>
         )}
       </StyledCategoryButton>
     </StyledCategoryPopupWrapper>

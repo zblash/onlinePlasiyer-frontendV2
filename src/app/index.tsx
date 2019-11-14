@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ApplicationContext, usePopup } from './context';
-import Routes from '~/components/pages';
+import Routes from '~/pages';
 import { ApplicationProviderProps } from './helpers';
 import { PopupsWrapper } from './popups-wrapper';
 

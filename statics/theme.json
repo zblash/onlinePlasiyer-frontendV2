@@ -1,0 +1,8 @@
+{
+  "defaultTheme": "light",
+  "themes": {
+    "light": {
+      "primary": "#fff"
+    }
+  }
+}
