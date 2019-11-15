@@ -5,7 +5,7 @@ import { UIIcon } from '~/components/ui';
 import { SubCategoryListColors } from '.';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
-import { useApplicationContext } from '~/app/context';
+import { usePopupContext } from '~/contexts/popup/context';
 
 const StyledCategoryWrapper = styled.div`
   padding: 8px;
@@ -42,7 +42,7 @@ const editIconStyle = css`
 `;
 
 const SubCategory: React.SFC<CategoryFields & { onClick?: Function }> = props => {
-  const { popups } = useApplicationContext();
+  const popups = usePopupContext();
   const { mutation: deleteCategory, loading: deleteCategoryLoading } = useMutation(mutationEndPoints.removeCategory, {
     variables: { id: props.id },
   });

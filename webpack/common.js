@@ -1,10 +1,9 @@
-const { resolve } = require('path');
 const { CheckerPlugin } = require('awesome-typescript-loader');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const paths = require('./paths');
 const loaders = require('./loaders');
-
-const appSrc = resolve(process.cwd(), 'src');
+const alias = require('./alias');
 
 const nodeEnv = process.env.NODE_ENV || 'production';
 const isProduction = nodeEnv === 'production';
@@ -12,11 +11,9 @@ const isProduction = nodeEnv === 'production';
 module.exports = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
-    alias: {
-      '~': appSrc,
-    },
+    alias,
   },
-  context: appSrc,
+  context: paths.appSrc,
   module: {
     rules: loaders,
   },

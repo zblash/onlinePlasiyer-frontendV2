@@ -1,14 +1,15 @@
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import lodashGet from 'lodash.get';
 import { UIAutoComplete, UIIcon } from '~/components/ui';
-import { StyledInput, commonInputStyle, inputIconStyle, CategoryPopupColors } from '.';
 import { useKeepValue } from '~/utils/hooks';
 import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { colors } from '~/styled';
+import { StyledInput, commonInputStyle, inputIconStyle } from '.';
 
 /*
-  ParentCategoryInput Helpers
+  CategoryInput Helpers
 */
 
 interface Category {
@@ -16,7 +17,7 @@ interface Category {
   name: string;
 }
 
-interface ParentCategoryInputProps {
+interface CategoryInputProps {
   disabled?: boolean;
   isHighlighted?: boolean;
   onSelect: (category: Category) => void;
@@ -24,17 +25,11 @@ interface ParentCategoryInputProps {
 }
 
 /*
-  ParentCategoryInput Strings
-*/
-const ParentCategoryInputStrings = {
-  inputPlaceholder: 'Ust Kategoriyi Secin',
-};
-
-/*
-  ParentCategoryInput Styles
+  CategoryInput Styles
 */
 
-const _ParentCategoryInput: React.SFC<ParentCategoryInputProps> = props => {
+const _CategoryInput: React.SFC<CategoryInputProps> = props => {
+  const { t } = useTranslation();
   const [autocompleteValue, setAutoCompleteValue] = React.useState('');
   const isActivate = !useKeepValue(props.disabled, false);
 
@@ -62,7 +57,7 @@ const _ParentCategoryInput: React.SFC<ParentCategoryInputProps> = props => {
           value={autocompleteValue}
           disabled={!!(props.disabled || getParentCategoriesLoading || getParentCategoriesError)}
           inputClassName={commonInputStyle}
-          placeholder={ParentCategoryInputStrings.inputPlaceholder}
+          placeholder={t('product-popup.category-input-placeholder')}
           onChange={e => setAutoCompleteValue(e)}
           id="category-parentid"
           leftIcon={inputIconElement}
@@ -85,7 +80,7 @@ const _ParentCategoryInput: React.SFC<ParentCategoryInputProps> = props => {
   );
 
   /*
-  ParentCategoryInput Lifecycle
+  CategoryInput Lifecycle
   */
   React.useEffect(() => {
     if (props.selectedCategoryId) {
@@ -96,13 +91,13 @@ const _ParentCategoryInput: React.SFC<ParentCategoryInputProps> = props => {
   }, [parentCategories.length]);
 
   /*
-  ParentCategoryInput Functions
+  CategoryInput Functions
   */
 
   return __;
 };
 
-const ParentCategoryInput = React.memo(_ParentCategoryInput, (prevProps, newProps) => {
+const CategoryInput = React.memo(_CategoryInput, (prevProps, newProps) => {
   if (prevProps.disabled !== newProps.disabled || prevProps.isHighlighted !== newProps.isHighlighted) {
     return false;
   }
@@ -110,4 +105,4 @@ const ParentCategoryInput = React.memo(_ParentCategoryInput, (prevProps, newProp
   return true;
 });
 
-export { ParentCategoryInput };
+export { CategoryInput };

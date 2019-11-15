@@ -1,26 +1,23 @@
 import * as React from 'react';
-import { ApplicationContext, usePopup } from './context';
+import { BrowserRouter } from 'react-router-dom';
+import { ApplicationContext } from './context';
 import Routes from '~/pages';
 import { ApplicationProviderProps } from './helpers';
-import { PopupsWrapper } from './popups-wrapper';
+import { PopupContextProvider } from '~/contexts/popup';
 
 function App(props: ApplicationProviderProps) {
-  const createCategory = usePopup();
-  const updateCategory = usePopup();
-
   return (
-    <ApplicationContext.Provider
-      value={{
-        user: props.user,
-        popups: {
-          createCategory,
-          updateCategory,
-        },
-      }}
-    >
-      <Routes />
-      <PopupsWrapper createCategory={createCategory} updateCategory={updateCategory} />
-    </ApplicationContext.Provider>
+    <BrowserRouter>
+      <ApplicationContext.Provider
+        value={{
+          user: props.user,
+        }}
+      >
+        <PopupContextProvider>
+          <Routes />
+        </PopupContextProvider>
+      </ApplicationContext.Provider>
+    </BrowserRouter>
   );
 }
 

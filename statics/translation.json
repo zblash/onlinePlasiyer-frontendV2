@@ -4,6 +4,9 @@
       "login": "Giris Yap",
       "create": "Olustur",
       "update": "Guncelle"
+    },
+    "product-popup": {
+      "category-input-placeholder": "Lutfen Bir Kategori Secin"
     }
   }
 }

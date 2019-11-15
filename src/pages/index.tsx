@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 
 import { Home } from '../pages/home';
 import { ProductsPage } from '../pages/products';
@@ -43,22 +43,20 @@ const routes: IRoute[] = [
 const Routes = React.memo(() => {
   return (
     <>
-      <Router>
-        <Header />
-        <Switch>
-          {routes.map(route => (
-            <Route
-              key={route.path}
-              path={route.path}
-              component={withRequiredRole(route.component, {
-                authorize: route.authorize,
-              })}
-              exact
-            />
-          ))}
-          <Route component={Page404} />
-        </Switch>
-      </Router>
+      <Header />
+      <Switch>
+        {routes.map(route => (
+          <Route
+            key={route.path}
+            path={route.path}
+            component={withRequiredRole(route.component, {
+              authorize: route.authorize,
+            })}
+            exact
+          />
+        ))}
+        <Route component={Page404} />
+      </Switch>
     </>
   );
 });

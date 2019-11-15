@@ -4,7 +4,7 @@ import { useHistory } from 'react-router';
 import styled, { css } from '~/styled';
 import { UIIcon, UIButton } from '~/components/ui';
 import { CategoryFields, CategoryItem } from '../category';
-import { useApplicationContext } from '~/app/context';
+import { usePopupContext } from '~/contexts/popup/context';
 
 /*
   CategoryList Helpers
@@ -119,7 +119,7 @@ const addIconStyle = css`
 `;
 
 const _CategoryHorizontalList: React.SFC<CategoryHorizontalListProps> = props => {
-  const { popups } = useApplicationContext();
+  const popups = usePopupContext();
   const routerHistory = useHistory();
   const [positionStatus, setPositionStatus] = React.useState({ isStart: true, isEnd: false });
   const wrapperRef = React.useRef<HTMLDivElement>();

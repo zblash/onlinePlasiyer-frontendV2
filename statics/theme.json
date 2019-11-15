@@ -2,7 +2,12 @@
   "defaultTheme": "light",
   "themes": {
     "light": {
-      "primary": "#fff"
+      "white": "#ffffff",
+      "whiteSolid": "#fafafa",
+      "primaryDark": "#0062d4",
+      "primary": "#0075ff",
+      "gray": "#737373",
+      "lightGray": "#e6e6e6"
     }
   }
 }

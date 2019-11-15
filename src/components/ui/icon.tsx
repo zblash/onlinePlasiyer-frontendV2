@@ -13,6 +13,9 @@ const icons = {
   chevronLeft: require('~/assets/icons/chevron-left.svg'),
   chevronRight: require('~/assets/icons/chevron-right.svg'),
   downArrow: require('~/assets/icons/down-arrow.svg'),
+  upArrow: require('~/assets/icons/up-arrow.svg'),
+  leftArrow: require('~/assets/icons/left-arrow.svg'),
+  rightArrow: require('~/assets/icons/right-arrow.svg'),
   login: require('~/assets/icons/login.svg'),
   danger: require('~/assets/icons/danger.svg'),
   addCircle: require('~/assets/icons/add-circle.svg'),
@@ -27,6 +30,7 @@ const icons = {
   save: require('~/assets/icons/save.svg'),
   checkMark: require('~/assets/icons/check-mark.svg'),
   clipboard: require('~/assets/icons/clipboard.svg'),
+  qrCode: require('~/assets/icons/qr-code.svg'),
 };
 
 export interface IconProps {
@@ -50,7 +54,7 @@ const StyledIconSvg = styled.svg<IconStyleProps>`
   color: ${props => props.color || ''};
 `;
 
-export const UIIcon = React.memo<IconProps>(props => {
+const UIIcon = React.memo<IconProps>(props => {
   const { size, name, className, color, setRef } = props;
   if (name === 'loading') {
     return <Loading size={size} color={color} className={className} />;
@@ -85,3 +89,5 @@ export const UIIcon = React.memo<IconProps>(props => {
     />
   );
 });
+
+export { UIIcon, icons };
