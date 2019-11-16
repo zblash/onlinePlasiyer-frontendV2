@@ -1,12 +1,20 @@
 import * as React from 'react';
+import lodashGet from 'lodash.get';
 import { useTranslation } from 'react-i18next';
 import styled, { colors, css } from '~/styled';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { UIIcon, UIInput, UIButton, Loading } from '~/components/ui';
+import { CategoryInput } from './category-input';
+import { usePopupContext } from '~/contexts/popup/context';
 
 /*  ProductPopup Helpers */
-interface ProductPopupProps {}
+export interface ProductPopupValues {
+  categoryId?: string;
+}
+interface ProductPopupProps {
+  initialState: ProductPopupValues;
+}
 
 /* ProductPopup Style Constants */
 
@@ -73,29 +81,152 @@ const StyledButton = styled(UIButton)<{ disabled: boolean }>`
   }
   transition: background-color 0.3s, color 0.3s;
 `;
+const StyledHiddenFilePicker = styled.input`
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -999;
+  pointer-events: none;
+`;
+
+const StyledCategoryImg = styled.img`
+  object-fit: cover;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+`;
+
+const StyledCategoryImgWrapper = styled.label`
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 24px;
+  border-radius: 50%;
+  border: 2px solid ${colors.primary};
+  cursor: pointer;
+`;
+
+const imageIconStyle = css`
+  padding: 8px;
+`;
+
+const filePickerInputId = 'image-picker-create-category-popup';
 
 function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
   const { t } = useTranslation();
-  const [barcode, setBarcode] = React.useState('');
+  const popups = usePopupContext();
   const [isBarcodeCorrect, setIsBarcodeCorrect] = React.useState(false);
-  const { mutation } = useMutation(mutationEndPoints.createProduct);
-  const { mutation: checkProduct, loading: checkProductLoading, error: checkProductError } = useMutation(
-    mutationEndPoints.checkProduct,
-    {
-      variables: { barcode },
+  const [isBarcodeSaved, setIsBarcodeSaved] = React.useState(false);
+  const [barcode, setBarcode] = React.useState('');
+  const [imgSrc, setImgSrc] = React.useState('');
+  const [img, setImg] = React.useState<File>(null);
+  const [categoryId, setCategoryId] = React.useState(lodashGet(props.initialState, 'categoryId', ''));
+  const [productName, setProductName] = React.useState('');
+  const [taxNumber, setTaxNumber] = React.useState('');
+  const { mutation: createProduct } = useMutation(mutationEndPoints.createProduct, {
+    // TODO: refetch pagination query
+    variables: {
+      barcode,
+      categoryId,
+      name: productName,
+      uploadfile: img,
+      tax: parseInt(taxNumber, 10),
     },
-  );
+  });
+  const { mutation: checkProduct, loading: checkProductLoading } = useMutation(mutationEndPoints.checkProduct, {
+    variables: { barcode },
+  });
 
-  const __ = <StyledProductPopupWrapper>{t('common.hello')}</StyledProductPopupWrapper>;
+  const __ = (
+    <StyledProductPopupWrapper>
+      <StyledHiddenFilePicker
+        hidden
+        id={filePickerInputId}
+        type="file"
+        onChange={event => {
+          if (event.target.files && event.target.files[0]) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = e => {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+              // @ts-ignore
+              setImgSrc(e.target.result as string);
+              setImg(file);
+            };
+            reader.readAsDataURL(file);
+          }
+        }}
+      />
+      <StyledCategoryImgWrapper htmlFor={filePickerInputId}>
+        {imgSrc && <StyledCategoryImg src={imgSrc} />}
+        {!imgSrc && <UIIcon name="photoCamera" size={42} className={imageIconStyle} />}
+      </StyledCategoryImgWrapper>
+      <StyledInput
+        inputClassName={commonInputStyle}
+        // TODO:move to translation
+        placeholder="Urun Ismini Girin"
+        value={productName}
+        onChange={e => setProductName(e)}
+        id="product-name"
+        leftIcon={
+          <UIIcon
+            className={inputIconStyle}
+            name="nameTag"
+            size={20}
+            color={productName ? colors.primary : colors.gray}
+          />
+        }
+      />
+      <StyledInput
+        inputClassName={commonInputStyle}
+        // TODO:move to translation
+        placeholder="Urun Tax Number Girin"
+        value={taxNumber}
+        onChange={e => setTaxNumber(e)}
+        id="tax-number"
+        leftIcon={
+          <UIIcon className={inputIconStyle} name="tax" size={20} color={productName ? colors.primary : colors.gray} />
+        }
+      />
+
+      <CategoryInput
+        /* TODO: unHidden for update product */
+        disabled
+        onSelect={category => {
+          setCategoryId(category.id);
+        }}
+        selectedCategoryId={categoryId}
+      />
+      <StyledButton
+        disabled={!barcode || !productName || !categoryId || !img || !taxNumber}
+        onClick={() =>
+          createProduct().then(() => {
+            popups.createProduct.hide();
+          })
+        }
+      >
+        {checkProductLoading ? (
+          <Loading color={colors.primary} size={22} className={loadingStyle} />
+        ) : (
+          <span>{t('common.create')}</span>
+        )}
+      </StyledButton>
+    </StyledProductPopupWrapper>
+  );
   const barcodeInput = (
     <StyledProductPopupWrapper>
       <StyledInput
         inputClassName={commonInputStyle}
         // TODO:move to translation
-        placeholder="Kategori Ismini Girin"
+        placeholder="Barkodu Girin"
         value={barcode}
         onChange={e => setBarcode(e)}
-        id="category-name"
+        id="barcode"
         leftIcon={
           <UIIcon
             className={inputIconStyle}
@@ -105,11 +236,26 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
           />
         }
       />
-      <StyledButton disabled={!barcode} onClick={() => checkProduct().catch(e => setIsBarcodeCorrect(true))}>
+      {/* TODO: move translation */}
+      {isBarcodeSaved && <strong style={{ marginBottom: 4 }}>daha once kayit edilmis</strong>}
+      <StyledButton
+        disabled={!barcode}
+        onClick={() =>
+          checkProduct()
+            .then(() => {
+              setIsBarcodeCorrect(false);
+              setIsBarcodeSaved(true);
+            })
+            .catch(() => {
+              setIsBarcodeCorrect(true);
+              setIsBarcodeSaved(false);
+            })
+        }
+      >
         {checkProductLoading ? (
           <Loading color={colors.primary} size={22} className={loadingStyle} />
         ) : (
-          <span>Ileri</span>
+          <span>{t('common.next')}</span>
         )}
       </StyledButton>
     </StyledProductPopupWrapper>

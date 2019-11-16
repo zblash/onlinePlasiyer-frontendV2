@@ -1,7 +1,7 @@
 import * as React from 'react';
 import lodashGet from 'lodash.get';
 import { UIAutoComplete, UIIcon } from '~/components/ui';
-import { StyledInput, commonInputStyle, inputIconStyle, CategoryPopupColors } from '.';
+import { StyledInput, commonInputStyle, inputIconStyle } from '.';
 import { useKeepValue } from '~/utils/hooks';
 import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';

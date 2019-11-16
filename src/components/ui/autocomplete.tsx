@@ -1,4 +1,5 @@
 import * as React from 'react';
+import lodashGet from 'lodash.get';
 import ReactAutocomplete from 'react-autocomplete';
 
 /*
@@ -12,9 +13,14 @@ interface UIAutoCompleteProps<T> {
   onSelect: (item: T) => void;
   shouldItemRender: (item: T, value: string) => boolean;
   value?: string;
+  overrides?: Partial<{
+    menuHeight: number;
+    menuMaxHeight: number;
+  }>;
 }
 
 function _UIAutoComplete<T>(props: UIAutoCompleteProps<T>) {
+  const overrides: UIAutoCompleteProps<T>['overrides'] = lodashGet(props, 'overrides', {});
   const __ = (
     <ReactAutocomplete
       items={props.items}
@@ -30,7 +36,8 @@ function _UIAutoComplete<T>(props: UIAutoCompleteProps<T>) {
         padding: '2px 0',
         position: 'fixed',
         overflow: 'auto',
-        maxHeight: '50%',
+        height: overrides.menuHeight || 'auto',
+        maxHeight: overrides.menuMaxHeight || '50%',
       }}
       renderInput={p => (
         <div {...p} style={{ position: 'relative' }} ref={null}>

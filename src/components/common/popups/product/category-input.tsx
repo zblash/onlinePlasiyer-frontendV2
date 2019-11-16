@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import lodashGet from 'lodash.get';
 import { UIAutoComplete, UIIcon } from '~/components/ui';
-import { useKeepValue } from '~/utils/hooks';
 import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { colors } from '~/styled';
@@ -28,14 +27,13 @@ interface CategoryInputProps {
   CategoryInput Styles
 */
 
-const _CategoryInput: React.SFC<CategoryInputProps> = props => {
+const CategoryInput: React.SFC<CategoryInputProps> = props => {
   const { t } = useTranslation();
   const [autocompleteValue, setAutoCompleteValue] = React.useState('');
-  const isActivate = !useKeepValue(props.disabled, false);
 
-  const { data: parentCategories, loading: getParentCategoriesLoading, error: getParentCategoriesError } = useQuery(
+  const { data: allCategories, loading: getParentCategoriesLoading, error: getParentCategoriesError } = useQuery(
     queryEndpoints.getCategories,
-    { variables: { type: 'parent' }, skip: !isActivate, defaultValue: [] },
+    { variables: { type: 'all' }, defaultValue: [] },
   );
 
   const inputIconElement = (
@@ -48,10 +46,11 @@ const _CategoryInput: React.SFC<CategoryInputProps> = props => {
   );
   const __ = (
     <UIAutoComplete
-      items={parentCategories}
+      items={allCategories}
       value={autocompleteValue}
       shouldItemRender={(item, value) => item.name.toLowerCase().indexOf(value.toLowerCase()) > -1}
       getItemValue={item => item.name}
+      overrides={{ menuMaxHeight: 400 }}
       renderInput={
         <StyledInput
           value={autocompleteValue}
@@ -85,10 +84,10 @@ const _CategoryInput: React.SFC<CategoryInputProps> = props => {
   React.useEffect(() => {
     if (props.selectedCategoryId) {
       setAutoCompleteValue(
-        lodashGet(parentCategories.find(category => category.id === props.selectedCategoryId), 'name', ''),
+        lodashGet(allCategories.find(category => category.id === props.selectedCategoryId), 'name', ''),
       );
     }
-  }, [parentCategories.length]);
+  }, [allCategories.length, props.selectedCategoryId]);
 
   /*
   CategoryInput Functions
@@ -97,12 +96,16 @@ const _CategoryInput: React.SFC<CategoryInputProps> = props => {
   return __;
 };
 
-const CategoryInput = React.memo(_CategoryInput, (prevProps, newProps) => {
-  if (prevProps.disabled !== newProps.disabled || prevProps.isHighlighted !== newProps.isHighlighted) {
+const _CategoryInput = React.memo(CategoryInput, (prevProps, newProps) => {
+  if (
+    prevProps.disabled !== newProps.disabled ||
+    prevProps.isHighlighted !== newProps.isHighlighted ||
+    prevProps.selectedCategoryId !== newProps.selectedCategoryId
+  ) {
     return false;
   }
 
   return true;
 });
 
-export { CategoryInput };
+export { _CategoryInput as CategoryInput };

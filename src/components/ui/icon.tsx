@@ -31,6 +31,7 @@ const icons = {
   checkMark: require('~/assets/icons/check-mark.svg'),
   clipboard: require('~/assets/icons/clipboard.svg'),
   qrCode: require('~/assets/icons/qr-code.svg'),
+  tax: require('~/assets/icons/tax.svg'),
 };
 
 export interface IconProps {

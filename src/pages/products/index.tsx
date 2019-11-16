@@ -93,7 +93,7 @@ const _ProductsPage: React.SFC<ProductsPageProps> = props => {
       <StyledProductListTopWrapper>
         <StyledSelectedCategoryName>{selectedCategoryName}</StyledSelectedCategoryName>
 
-        <StyledAddButton onClick={() => popups.createProduct.show()}>
+        <StyledAddButton onClick={() => popups.createProduct.show({ categoryId: selectedCategoryId })}>
           {ProductsPageStrings.add}{' '}
           <UIIcon name="add" color={ProductsPageColors.white} size={10} className={addIconStyle} />
         </StyledAddButton>
