@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "noEmit": true,
+    "noImplicitAny": false,
+    "module": "commonjs",
+    "target": "es5",
+    "jsx": "react",
+    "lib": ["es5", "es6", "dom"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "typeRoots": ["./node_modules/@types", "./src/helpers/declaration.d.ts"],
+    "paths": {
+      "~/*": ["src/*"]
+    }
+  },
+  "include": ["./src/**/*", "./tests/**/*.tsx", "./src/helpers/declaration.d.ts","./stories/**/*"],
+  "awesomeTypescriptLoaderOptions": {
+    "reportFiles": ["./src/**/*"]
+  },
+  "exclude": ["./node_modules/*"]
+}

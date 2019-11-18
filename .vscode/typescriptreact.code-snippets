@@ -1,0 +1,63 @@
+{
+  "Create Function": {
+    "prefix": "tsxFunctionAdvanced",
+    "body": [
+      "import * as React from 'react';",
+      "import {useTranslation} from 'react-i18next'",
+      "import styled,{colors} from '~/styled';",
+      "",
+      "/* $1 Helpers */",
+      "interface $1Props{}",
+      "",
+      "/* $1 Style Constants */",
+      "",
+      "/* $1 Styles */",
+      "const Styled$1Wrapper=styled.div`",
+      "background-color:${colors.primary}",
+      "`",
+      "",
+      "/* $1 Component  */",
+      "function $1(props:React.PropsWithChildren<$1Props>){",
+      "const {t}=useTranslation();",
+      "",
+      "const __ = (<Styled$1Wrapper>{t('common.hello')}</Styled$1Wrapper>);",
+      "",
+      "/* $1 Lifecycle  */",
+      "",
+      "/* $1 Functions  */",
+      "",
+      "return __;",
+      "",
+      "};",
+      "",
+      "const _$1 = $1;",
+      "",
+      "export { _$1 as $1 } "
+    ]
+  },
+  "Create Function2": {
+    "prefix": "tsxFunction",
+    "body": [
+      "import * as React from 'react';",
+      "",
+      "/* $1 Helpers */",
+      "interface $1Props{}",
+      "",
+      "function $1(props:React.PropsWithChildren<$1Props>){",
+      "",
+      "const __ = (<div/>);",
+      "",
+      "/* $1 Lifecycle  */",
+      "",
+      "/* $1 Functions  */",
+      "",
+      "return __;",
+      "",
+      "};",
+      "",
+      "const _$1 = $1;",
+      "",
+      "export { _$1 as $1 } "
+    ]
+  }
+}
