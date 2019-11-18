@@ -3,9 +3,9 @@ import Tooltip from 'rc-tooltip';
 import styled, { css } from '~/styled';
 import { UIIcon } from '~/components/ui';
 import { SubCategoryList } from './sub-category-list';
-import { useApplicationContext } from '~/app/context';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
+import { usePopupContext } from '~/contexts/popup/context';
 
 /*
   CategoryItem Helpers
@@ -141,7 +141,7 @@ const editIconStyle = css`
 
 const CategoryItem: React.SFC<CategoryItemProps> = props => {
   const [isClickSubitem, setIsClickSubitem] = React.useState(false);
-  const { popups } = useApplicationContext();
+  const popups = usePopupContext();
   const { mutation: deleteCategory, loading: deleteCategoryLoading } = useMutation(mutationEndPoints.removeCategory, {
     variables: { id: props.id },
   });
@@ -179,6 +179,7 @@ const CategoryItem: React.SFC<CategoryItemProps> = props => {
       {props.subCategories.length > 0 && (
         // TODO(0): move rc-tooltip  to custom tooltip component
         <Tooltip
+          mouseEnterDelay={0.35}
           {...tooltipProps}
           overlay={
             <SubCategoryList

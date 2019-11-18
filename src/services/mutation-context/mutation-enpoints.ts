@@ -82,6 +82,10 @@ class MutationEndpoints {
     return ApiCall.post('/products/create', formData);
   };
 
+  checkProduct = (params: { barcode: string }) => {
+    return ApiCall.post(`/products/checkProduct/${params.barcode}`);
+  };
+
   addToCard: (s: { specifyProductId: string; quantity: number }) => Promise<ICardResponse> = ({
     specifyProductId,
     quantity,

@@ -8,6 +8,7 @@ import { ProductList } from '~/components/common/product-list';
 import { CategoryHorizontalList } from '~/components/common/category-horizontal-list';
 import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
+import { usePopupContext } from '~/contexts/popup/context';
 
 /*
   ProductsPage Helpers
@@ -69,6 +70,7 @@ const addIconStyle = css`
 
 const _ProductsPage: React.SFC<ProductsPageProps> = props => {
   const { categoryId: selectedCategoryId } = useParams<RouteParams>();
+  const popups = usePopupContext();
   const [selectedCategoryName, setSelectedCategoryName] = React.useState('');
   const { data: allCategories } = useQuery(queryEndpoints.getCategories, {
     variables: { type: 'all' },
@@ -91,7 +93,7 @@ const _ProductsPage: React.SFC<ProductsPageProps> = props => {
       <StyledProductListTopWrapper>
         <StyledSelectedCategoryName>{selectedCategoryName}</StyledSelectedCategoryName>
 
-        <StyledAddButton>
+        <StyledAddButton onClick={() => popups.createProduct.show({ categoryId: selectedCategoryId })}>
           {ProductsPageStrings.add}{' '}
           <UIIcon name="add" color={ProductsPageColors.white} size={10} className={addIconStyle} />
         </StyledAddButton>

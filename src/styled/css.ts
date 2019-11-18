@@ -7,10 +7,6 @@ interface IStyles {
   css: string;
   className: string;
 }
-interface ICssVariable extends String {
-  set: (s: string | number) => string;
-  get: () => string;
-}
 
 type CssExpressionType = (string | number)[];
 

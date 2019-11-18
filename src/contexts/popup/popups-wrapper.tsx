@@ -1,9 +1,10 @@
 import React from 'react';
-import { Popups, Popup as ContextPopupHelper } from './helpers';
+import { PopupContextType } from './helpers';
 import { CategoryPopup } from '~/components/common/popups/category';
 import { Popup } from '~/components/ui/popup';
+import { ProductPopup } from '~/components/common/popups/product';
 
-interface PopupsWrapperProps extends Record<keyof Popups, ContextPopupHelper> {}
+interface PopupsWrapperProps extends PopupContextType {}
 
 function PopupsWrapper(props: PopupsWrapperProps) {
   return (
@@ -13,6 +14,9 @@ function PopupsWrapper(props: PopupsWrapperProps) {
       </Popup>
       <Popup onClose={props.updateCategory.hide} isShown={props.updateCategory.isShown}>
         <CategoryPopup type="update" initialState={props.updateCategory.options} />
+      </Popup>
+      <Popup onClose={props.createProduct.hide} isShown={props.createProduct.isShown}>
+        <ProductPopup initialState={props.createProduct.options} />
       </Popup>
     </>
   );

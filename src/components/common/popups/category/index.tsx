@@ -1,14 +1,15 @@
 import * as React from 'react';
 import lodashGet from 'lodash.get';
-import styled, { css } from '~/styled';
+import { useTranslation } from 'react-i18next';
+import styled, { css, colors } from '~/styled';
 import { UIInput, UIIcon, UICheckbox, UIButton, Loading } from '~/components/ui';
 import { useCategoryPopupReducer } from './reducer';
 import { ParentCategoryInput } from './parent-category-input';
-import { useApplicationContext } from '~/app/context';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { refetchFactory } from '~/services/utils';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
+import { usePopupContext } from '~/contexts/popup/context';
 
 /*
   CategoryPopup Helpers
@@ -30,12 +31,7 @@ type CategoryPopupProps<T> = {
   CategoryPopup Colors
 */
 export const CategoryPopupColors = {
-  primary: '#0075ff',
-  white: '#fff',
-  primaryDark: '#0062d4',
-  wrapperBackground: '#fff',
   iconBackground: '#fafafa',
-  textColor: '#737373',
   inputBorder: '#e6e6e6',
 };
 
@@ -53,7 +49,7 @@ export const CategoryPopupString = {
 */
 
 const StyledCategoryPopupWrapper = styled.div`
-  background-color: ${CategoryPopupColors.wrapperBackground};
+  background-color: ${colors.white};
   display: flex;
   flex-direction: column;
   padding: 16px;
@@ -70,20 +66,20 @@ export const inputIconStyle = css`
 
 export const commonInputStyle = css`
   margin: 0 8px;
-  color: ${CategoryPopupColors.textColor};
+  color: ${colors.gray};
 `;
 
 export const StyledInput = styled(UIInput)<{}>`
   margin-bottom: 16px;
   border: 1px solid ${CategoryPopupColors.inputBorder};
   :focus-within {
-    border: 1px solid ${CategoryPopupColors.primary};
+    border: 1px solid ${colors.primary};
     .${inputIconStyle} {
-      border-right: 1px solid ${CategoryPopupColors.primary};
-      color: ${CategoryPopupColors.primary};
+      border-right: 1px solid ${colors.primary};
+      color: ${colors.primary};
     }
     .${commonInputStyle} {
-      color: ${CategoryPopupColors.primary};
+      color: ${colors.primary};
     }
   }
 `;
@@ -100,7 +96,7 @@ const StyledCategoryImgWrapper = styled.label`
   height: 48px;
   margin-bottom: 24px;
   border-radius: 50%;
-  border: 2px solid ${CategoryPopupColors.primary};
+  border: 2px solid ${colors.primary};
   cursor: pointer;
 `;
 const StyledCategoryImg = styled.img`
@@ -109,6 +105,7 @@ const StyledCategoryImg = styled.img`
   width: 100%;
   height: 100%;
 `;
+
 const StyledHiddenFilePicker = styled.input`
   width: 0.1px;
   height: 0.1px;
@@ -127,21 +124,21 @@ const StyledCategoryButton = styled(UIButton)<{ disabled: boolean }>`
   justify-content: center;
   height: 36px;
   opacity: ${props => (props.disabled ? 0.6 : 1)};
-  border: 1px solid ${CategoryPopupColors.primary};
-  color: ${CategoryPopupColors.primary};
+  border: 1px solid ${colors.primary};
+  color: ${colors.primary};
   text-align: center;
   cursor: pointer;
   text-decoration: none;
   border-radius: 4px;
   :hover {
     color: #fff;
-    background-color: ${CategoryPopupColors.primary};
+    background-color: ${colors.primary};
     .${loadingStyle}:after {
-      border-color: ${CategoryPopupColors.white} transparent;
+      border-color: ${colors.white} transparent;
     }
   }
   :active {
-    background-color: ${CategoryPopupColors.primaryDark};
+    background-color: ${colors.primaryDark};
   }
   transition: background-color 0.3s, color 0.3s;
 `;
@@ -156,7 +153,8 @@ const imageIconStyle = css`
 const filePickerInputId = 'image-picker-create-category-popup';
 
 function _CategoryPopup<T extends 'update' | 'create'>(props: CategoryPopupProps<T>) {
-  const { popups } = useApplicationContext();
+  const { t } = useTranslation();
+  const popups = usePopupContext();
   const [state, dispatch] = useCategoryPopupReducer({
     name: lodashGet(props.initialState, 'name', ''),
     isSub: lodashGet(props.initialState, 'isSub', false),
@@ -199,6 +197,7 @@ function _CategoryPopup<T extends 'update' | 'create'>(props: CategoryPopupProps
       </StyledCategoryImgWrapper>
       <StyledInput
         inputClassName={commonInputStyle}
+        // TODO:move to translation
         placeholder="Kategori Ismini Girin"
         value={state.name}
         onChange={e => dispatch({ type: 'name', payload: e })}
@@ -208,7 +207,7 @@ function _CategoryPopup<T extends 'update' | 'create'>(props: CategoryPopupProps
             className={inputIconStyle}
             name="nameTag"
             size={20}
-            color={state.name ? CategoryPopupColors.primary : CategoryPopupColors.textColor}
+            color={state.name ? colors.primary : colors.gray}
           />
         }
       />
@@ -242,9 +241,9 @@ function _CategoryPopup<T extends 'update' | 'create'>(props: CategoryPopupProps
         }}
       >
         {loading ? (
-          <Loading color={CategoryPopupColors.primary} size={22} className={loadingStyle} />
+          <Loading color={colors.primary} size={22} className={loadingStyle} />
         ) : (
-          <span>{props.type === 'create' ? CategoryPopupString.create : CategoryPopupString.update}</span>
+          <span>{props.type === 'create' ? t('common.create') : CategoryPopupString.update}</span>
         )}
       </StyledCategoryButton>
     </StyledCategoryPopupWrapper>
