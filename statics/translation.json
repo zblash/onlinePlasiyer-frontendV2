@@ -6,6 +6,12 @@
       "update": "Guncelle",
       "next": "Ileri"
     },
+    "obligations": {
+      "title": "Toplam Odemeler",
+      "totalDebts": "Toplam Borcunuz",
+      "totalReceivables": "Toplam Alacak",
+      "details": "Detaylari Gor"
+    },
     "product-popup": {
       "category-input-placeholder": "Lutfen Bir Kategori Secin"
     }

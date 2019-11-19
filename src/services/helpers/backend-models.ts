@@ -113,6 +113,12 @@ export interface Invoice {
   unPaidPrice: number;
 }
 
+export interface IObligationTotals {
+  id: string;
+  totalDebts: number;
+  totalReceivables: number;
+}
+
 export type UserRoleResponse = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';
 
 export type UnitTypeResponse = 'KG' | 'KL' | 'AD';
