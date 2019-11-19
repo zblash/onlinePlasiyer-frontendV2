@@ -4,6 +4,7 @@ import {
   UseTranslationResponse as i18nUseTranslationResponse,
 } from 'react-i18next';
 import { TranslationKeys } from '~/helpers/static-types';
+
 type UseTranslationResponse = Omit<i18nUseTranslationResponse, 't'> & { t: (str: TranslationKeys) => string };
 
 function useStateFromProp<T>(initialValue: T): [T, React.Dispatch<React.SetStateAction<T>>] {
