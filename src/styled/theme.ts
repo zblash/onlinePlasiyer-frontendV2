@@ -1,3 +1,5 @@
+import { ColorKeys } from '~/helpers/static-types';
+
 // eslint-disable-next-line global-require,@typescript-eslint/no-var-requires
 const themeOptions = require('../../statics/theme.json');
 
@@ -13,7 +15,7 @@ const theme = (() => {
 
   return themeOptions.defaultTheme;
 })();
-const colors = themeOptions.themes[theme];
+const colors: Record<ColorKeys, string> = themeOptions.themes[theme];
 
 function setTheme(t: string) {
   if (allThemes.includes(t)) {

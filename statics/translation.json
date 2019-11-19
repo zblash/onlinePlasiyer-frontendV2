@@ -4,7 +4,8 @@
       "login": "Giris Yap",
       "create": "Olustur",
       "update": "Guncelle",
-      "next": "Ileri"
+      "next": "Ileri",
+      "add": "Ekle"
     },
     "product-popup": {
       "category-input-placeholder": "Lutfen Bir Kategori Secin"
