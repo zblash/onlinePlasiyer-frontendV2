@@ -34,7 +34,7 @@ const TABLE_SHOWN_DATA: UITableColumns<SpecifyProductData>[] = [
 ];
 
 /*
-  ProductList Colors
+  ProductList Colors // TODO : move theme.json
 */
 export const ProductListColors = {
   wrapperBackground: '#fff',

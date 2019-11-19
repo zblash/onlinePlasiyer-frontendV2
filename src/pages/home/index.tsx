@@ -5,6 +5,7 @@ import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { Container, UIButton } from '~/components/ui';
 import { CategoryHorizontalList } from '~/components/common/category-horizontal-list';
+import { CategoryHorizontalListFetcher } from '~/fetcher-components/common/category-horizontal-list';
 
 /* Home Helpers */
 interface HomeProps {}
@@ -81,19 +82,10 @@ function Home(props: React.PropsWithChildren<HomeProps>) {
   const { data: totalObligation } = useQuery(queryEndpoints.getObligationTotal, {
     defaultValue: {},
   });
-  const { data: allCategories } = useQuery(queryEndpoints.getCategories, {
-    variables: { type: 'all' },
-    defaultValue: [],
-  });
-  const categoriesMap = allCategories
-    .filter(category => !category.subCategory)
-    .map(category => ({
-      ...category,
-      subCategories: allCategories.filter(subCategory => subCategory.parentId === category.id),
-    }));
+  
   const __ = (
     <Container>
-      <CategoryHorizontalList categories={categoriesMap} shouldUseProductsPageLink />
+      <CategoryHorizontalListFetcher shouldUseProductsPageLink />
 
       <StyledTotalObligationWrapper>
         <StyledTotalObligationWrapperTitle>{t('obligations.title')}</StyledTotalObligationWrapperTitle>

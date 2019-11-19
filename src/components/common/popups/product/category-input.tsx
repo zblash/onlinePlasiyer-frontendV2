@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { useTranslation } from 'react-i18next';
 import lodashGet from 'lodash.get';
 import { UIAutoComplete, UIIcon } from '~/components/ui';
 import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { colors } from '~/styled';
 import { StyledInput, commonInputStyle, inputIconStyle } from '.';
+import { useTranslation } from '~/utils/hooks';
 
 /*
   CategoryInput Helpers

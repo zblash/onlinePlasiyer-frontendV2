@@ -20,7 +20,7 @@ interface UiTableProps<T> {
 }
 
 /*
-  UiTable Colors
+  UiTable Colors // TODO : move theme.json
 */
 export const UiTableColors = {
   primary: '#0075ff',

@@ -9,7 +9,7 @@ import { DefaultLoading } from './default-loading';
 interface FullScreenLoadingProps {}
 
 /*
-  FullScreenLoading Colors
+  FullScreenLoading Colors // TODO : move theme.json
 */
 const FullScreenLoadingColors = {
   wrapperBackground: '#fff',

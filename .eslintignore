@@ -1,3 +1,4 @@
 webpack/*
 server.js
 stories/config/*
+src/helpers/static-types.ts

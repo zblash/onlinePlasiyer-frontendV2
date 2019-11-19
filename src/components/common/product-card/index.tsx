@@ -20,7 +20,7 @@ interface ProductCardProps extends StylableProps, ProductData {
 }
 
 /*
-  ProductCard Colors
+  ProductCard Colors // TODO : move theme.json
 */
 export const ProductCardColors = {
   primary: '#0075ff',

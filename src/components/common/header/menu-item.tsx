@@ -14,7 +14,7 @@ export interface MenuItemProps {
 }
 
 /*
-  MenuItem Colors
+  MenuItem Colors // TODO : move theme.json
 */
 const MenuItemColors = {
   wrapperHoverBackground: '#212121',

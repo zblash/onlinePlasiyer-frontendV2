@@ -10,7 +10,7 @@ interface LinkProps extends StylableProps {
 }
 
 /*
-  Link Colors
+  Link Colors // TODO : move theme.json
 */
 export const LinkColors = {
   wrapperBackground: '#fff',

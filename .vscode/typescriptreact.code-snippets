@@ -3,7 +3,7 @@
     "prefix": "tsxFunctionAdvanced",
     "body": [
       "import * as React from 'react';",
-      "import {useTranslation} from 'react-i18next'",
+      "import { useTranslation } from '~/utils/hooks';",
       "import styled,{colors} from '~/styled';",
       "",
       "/* $1 Helpers */",

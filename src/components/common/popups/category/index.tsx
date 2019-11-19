@@ -1,6 +1,5 @@
 import * as React from 'react';
 import lodashGet from 'lodash.get';
-import { useTranslation } from 'react-i18next';
 import styled, { css, colors } from '~/styled';
 import { UIInput, UIIcon, UICheckbox, UIButton, Loading } from '~/components/ui';
 import { useCategoryPopupReducer } from './reducer';
@@ -10,6 +9,7 @@ import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints
 import { refetchFactory } from '~/services/utils';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { usePopupContext } from '~/contexts/popup/context';
+import { useTranslation } from '~/utils/hooks';
 
 /*
   CategoryPopup Helpers
@@ -28,7 +28,7 @@ type CategoryPopupProps<T> = {
 };
 
 /*
-  CategoryPopup Colors
+  CategoryPopup Colors // TODO : move theme.json
 */
 export const CategoryPopupColors = {
   iconBackground: '#fafafa',

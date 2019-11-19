@@ -4,6 +4,7 @@ import { ApplicationContext } from './context';
 import Routes from '~/pages';
 import { ApplicationProviderProps } from './helpers';
 import { PopupContextProvider } from '~/contexts/popup';
+import getPermissions from './getPermissions';
 
 function App(props: ApplicationProviderProps) {
   return (
@@ -11,6 +12,7 @@ function App(props: ApplicationProviderProps) {
       <ApplicationContext.Provider
         value={{
           user: props.user,
+          permissions: getPermissions(props.user),
         }}
       >
         <PopupContextProvider>

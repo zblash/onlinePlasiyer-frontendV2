@@ -11,7 +11,7 @@ import { AccountCard } from './cards/account-card';
 interface HeaderProps {}
 
 /*
-  Header Colors
+  Header Colors // TODO : move theme.json
 */
 const HeaderColors = {
   wrapperBackground: '#262626',

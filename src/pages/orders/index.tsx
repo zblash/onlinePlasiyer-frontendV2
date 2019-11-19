@@ -11,7 +11,7 @@ import { TOrderStatus } from '~/services/helpers/backend-models';
 interface OrdersPageProps {}
 
 /*
-  OrdersPage Colors
+  OrdersPage Colors // TODO : move theme.json
 */
 /*
   OrdersPage Strings

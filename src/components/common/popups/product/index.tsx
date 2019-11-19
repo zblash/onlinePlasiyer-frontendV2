@@ -1,12 +1,12 @@
 import * as React from 'react';
 import lodashGet from 'lodash.get';
-import { useTranslation } from 'react-i18next';
 import styled, { colors, css } from '~/styled';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { UIIcon, UIInput, UIButton, Loading } from '~/components/ui';
 import { CategoryInput } from './category-input';
 import { usePopupContext } from '~/contexts/popup/context';
+import { useTranslation } from '~/utils/hooks';
 
 /*  ProductPopup Helpers */
 export interface ProductPopupValues {
@@ -29,7 +29,7 @@ const StyledProductPopupWrapper = styled.div`
 
 export const commonInputStyle = css`
   margin: 0 8px;
-  color: ${colors.textColor};
+  color: ${colors.lightGray};
 `;
 
 export const inputIconStyle = css`

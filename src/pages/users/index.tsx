@@ -14,7 +14,7 @@ import { UserRoleResponse } from '~/services/helpers/backend-models';
 interface UsersPageProps {}
 
 /*
-  UsersPage Colors
+  UsersPage Colors // TODO : move theme.json
 */
 const UsersPageColors = {
   white: '#fff',

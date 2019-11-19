@@ -13,7 +13,7 @@ interface RegisterPageProps {
 }
 
 /*
-  RegisterPage Colors
+  RegisterPage Colors // TODO : move theme.json
 */
 const RegisterPageColors = {
   white: '#fff',
