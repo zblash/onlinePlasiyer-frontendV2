@@ -8,7 +8,7 @@ import { UIIcon, Loading, UIInput } from '~/components/ui';
 interface HeaderSearchBarProps {}
 
 /*
-  HeaderSearchBar Colors
+  HeaderSearchBar Colors // TODO : move theme.json
 */
 const HeaderSearchBarColors = {
   unFocused: '#797979',

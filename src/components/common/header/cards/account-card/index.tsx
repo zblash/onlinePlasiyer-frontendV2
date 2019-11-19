@@ -10,7 +10,7 @@ import { logout } from '~/services/api';
 interface AccountCardProps {}
 
 /*
-  AccountCard Colors
+  AccountCard Colors // TODO : move theme.json
 */
 const AccountCardColors = {
   primary: '#0075ff',

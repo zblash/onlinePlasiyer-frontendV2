@@ -28,7 +28,7 @@ type CategoryPopupProps<T> = {
 };
 
 /*
-  CategoryPopup Colors
+  CategoryPopup Colors // TODO : move theme.json
 */
 export const CategoryPopupColors = {
   iconBackground: '#fafafa',

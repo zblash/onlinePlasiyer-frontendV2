@@ -21,7 +21,7 @@ interface RouteParams {
 interface ProductsPageProps {}
 
 /*
-  ProductsPage Colors
+  ProductsPage Colors // TODO : move theme.json
 */
 const ProductsPageColors = {
   titleText: '#333',

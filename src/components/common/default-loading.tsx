@@ -8,7 +8,7 @@ import { Loading } from '../ui';
 interface DefaultLoadingProps {}
 
 /*
-  DefaultLoading Colors
+  DefaultLoading Colors // TODO : move theme.json
 */
 const DefaultLoadingColors = {
   wrapperBackground: 'transparent',

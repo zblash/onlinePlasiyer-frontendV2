@@ -5,5 +5,8 @@ const ApplicationContext = React.createContext<ApplicationContextValues>(applica
 function useApplicationContext() {
   return React.useContext(ApplicationContext);
 }
+function useUserPermissions() {
+  return React.useContext(ApplicationContext).permissions;
+}
 
-export { ApplicationContext, useApplicationContext };
+export { ApplicationContext, useApplicationContext, useUserPermissions };

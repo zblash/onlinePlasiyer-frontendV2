@@ -6,6 +6,7 @@ import { SubCategoryList } from './sub-category-list';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { usePopupContext } from '~/contexts/popup/context';
+import { useUserPermissions } from '~/app/context';
 
 /*
   CategoryItem Helpers
@@ -26,7 +27,7 @@ interface CategoryItemProps extends CategoryFields {
 }
 
 /*
-  CategoryItem Colors
+  CategoryItem Colors // TODO : move theme.json
 */
 const CategoryItemColors = {
   wrapperBackground: '#fff',
@@ -142,6 +143,7 @@ const editIconStyle = css`
 const CategoryItem: React.SFC<CategoryItemProps> = props => {
   const [isClickSubitem, setIsClickSubitem] = React.useState(false);
   const popups = usePopupContext();
+  const userPermissions = useUserPermissions();
   const { mutation: deleteCategory, loading: deleteCategoryLoading } = useMutation(mutationEndPoints.removeCategory, {
     variables: { id: props.id },
   });
@@ -151,27 +153,31 @@ const CategoryItem: React.SFC<CategoryItemProps> = props => {
   const __ = (
     <CategoryItemWrapper isHighlighted={props.isHighlighted} onClick={props.onClick}>
       <StyledModifyIconWrapper>
-        <UIIcon
-          size={18}
-          name="edit"
-          color={CategoryItemColors.primary}
-          className={editIconStyle}
-          onClick={e => {
-            e.stopPropagation();
-            popups.updateCategory.show({ isSub: false, name: props.name, imgSrc: props.photoUrl, id: props.id });
-          }}
-        />
-        <UIIcon
-          size={18}
-          name={deleteCategoryLoading ? 'loading' : 'trash'}
-          color={CategoryItemColors.danger}
-          onClick={e => {
-            e.stopPropagation();
-            if (!deleteCategoryLoading) {
-              deleteCategory();
-            }
-          }}
-        />
+        {userPermissions.category.edit && (
+          <UIIcon
+            size={18}
+            name="edit"
+            color={CategoryItemColors.primary}
+            className={editIconStyle}
+            onClick={e => {
+              e.stopPropagation();
+              popups.updateCategory.show({ isSub: false, name: props.name, imgSrc: props.photoUrl, id: props.id });
+            }}
+          />
+        )}
+        {userPermissions.category.delete && (
+          <UIIcon
+            size={18}
+            name={deleteCategoryLoading ? 'loading' : 'trash'}
+            color={CategoryItemColors.danger}
+            onClick={e => {
+              e.stopPropagation();
+              if (!deleteCategoryLoading) {
+                deleteCategory();
+              }
+            }}
+          />
+        )}
       </StyledModifyIconWrapper>
       <StyledCategoryImg src={props.photoUrl} />
       <StyledCategoryName>{props.name}</StyledCategoryName>

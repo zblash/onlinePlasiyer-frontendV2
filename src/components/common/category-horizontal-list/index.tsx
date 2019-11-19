@@ -5,6 +5,7 @@ import styled, { css } from '~/styled';
 import { UIIcon, UIButton } from '~/components/ui';
 import { CategoryFields, CategoryItem } from '../category';
 import { usePopupContext } from '~/contexts/popup/context';
+import { useUserPermissions } from '~/app/context';
 
 /*
   CategoryList Helpers
@@ -24,7 +25,7 @@ export interface CategoryHorizontalListComponentProps {
 interface CategoryHorizontalListProps extends CategoryHorizontalListData, CategoryHorizontalListComponentProps {}
 
 /*
-  CategoryList Colors
+  CategoryList Colors // TODO : move theme.json
 */
 const CategoryHorizontalListColors = {
   white: '#fff',
@@ -120,6 +121,7 @@ const addIconStyle = css`
 
 const _CategoryHorizontalList: React.SFC<CategoryHorizontalListProps> = props => {
   const popups = usePopupContext();
+  const userPermissions = useUserPermissions();
   const routerHistory = useHistory();
   const [positionStatus, setPositionStatus] = React.useState({ isStart: true, isEnd: false });
   const wrapperRef = React.useRef<HTMLDivElement>();
@@ -134,10 +136,12 @@ const _CategoryHorizontalList: React.SFC<CategoryHorizontalListProps> = props =>
       </IconWrapper>
 
       <StyledListTop>
-        <StyledAddButton onClick={() => popups.createCategory.show()}>
-          {/* // TODO(0): move string object */}
-          Ekle <UIIcon name="add" color={CategoryHorizontalListColors.white} size={10} className={addIconStyle} />
-        </StyledAddButton>
+        {userPermissions.category.create && (
+          <StyledAddButton onClick={() => popups.createCategory.show()}>
+            {/* // TODO(0): move string object */}
+            Ekle <UIIcon name="add" color={CategoryHorizontalListColors.white} size={10} className={addIconStyle} />
+          </StyledAddButton>
+        )}
       </StyledListTop>
       <CategoryScrollableList onScroll={onScrollWithDebounce} ref={wrapperRef}>
         {props.categories.map(categoryField => (

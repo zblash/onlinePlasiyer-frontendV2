@@ -12,7 +12,7 @@ interface PopupProps {
 }
 
 /*
-  Popup Colors
+  Popup Colors // TODO : move theme.json
 */
 export const PopupColors = {
   wrapperBackground: 'transparent',
