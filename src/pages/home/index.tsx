@@ -13,7 +13,6 @@ interface HomeProps {}
 
 /* Home Styles */
 
-
 const StyledTotalObligationWrapper = styled.div`
   width: 33.33%;
   float: right;
@@ -76,12 +75,12 @@ function Home(props: React.PropsWithChildren<HomeProps>) {
         <StyledTotalObligationWrapperTitle>{t('obligations.title')}</StyledTotalObligationWrapperTitle>
         <StyledTotalObligationElement>
           <StyledTotalObligationElementText>{t('obligations.totalDebts')}</StyledTotalObligationElementText>
-          {/*TODO TL Icon move to translation*/}
+          {/* TODO TL Icon move to translation */}
           <StyledTotalObligationElementText>{totalObligation.totalDebts} &#8378;</StyledTotalObligationElementText>
         </StyledTotalObligationElement>
         <StyledTotalObligationElement className={styleTotalObligationElementLast}>
           <StyledTotalObligationElementText>{t('obligations.totalReceivables')}</StyledTotalObligationElementText>
-          {/*TODO TL Icon move to translation*/}
+          {/* TODO TL Icon move to translation */}
           <StyledTotalObligationElementText>
             {totalObligation.totalReceivables} &#8378;
           </StyledTotalObligationElementText>
