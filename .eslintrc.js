@@ -27,6 +27,7 @@ const closedRules = {
   'react/prop-types': 0,
   'jsx-a11y/click-events-have-key-events': 0,
   'no-nested-ternary': 0,
+  'react/jsx-curly-newline': 0,
 };
 const errorRules = {
   eqeqeq: 2,
