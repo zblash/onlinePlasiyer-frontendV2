@@ -4,7 +4,7 @@ import { MutationHandlerParams, MutationContextProviderProps, RefetchQuery } fro
 import { useQueryContext } from '../query-context/context';
 import { useDatabaseObjectsContext } from '../database-object-context/context';
 import { usePaginationQueryContext } from '../pagination-query-context/context';
-import { asyncMap } from '../utils';
+import { asyncMap } from '~/utils';
 
 function MutationContextProvider(props: React.PropsWithChildren<MutationContextProviderProps>) {
   const queryContext = useQueryContext();
@@ -14,6 +14,7 @@ function MutationContextProvider(props: React.PropsWithChildren<MutationContextP
     return mutation(variables).then(mutationResult => {
       databaseObjectsContext.setObjectsFromBackendResponse(mutationResult);
       refetchQueriesHandler(refetchQueries);
+
       return mutationResult;
     });
   }
@@ -23,10 +24,12 @@ function MutationContextProvider(props: React.PropsWithChildren<MutationContextP
     asyncMap([
       () => {
         const a = queryContext.refetchQueries(normalRefetchQueries);
+
         return a;
       },
       () => {
         const b = paginationQueryContext.refetchQueries(paginationRefetchQueries);
+
         return b;
       },
     ]);

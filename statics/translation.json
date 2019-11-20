@@ -1,4 +1,4 @@
-{
+  {
   "tr": {
     "common": {
       "login": "Giris Yap",
@@ -6,6 +6,10 @@
       "update": "Guncelle",
       "next": "Ileri",
       "add": "Ekle"
+    },
+    "product-card": {
+      "show-price": "<0>Fiyatlari Goster</0> <1/>",
+      "hide-price": "<0>Fiyatlari Gizle</0> <1/>"
     },
     "product-popup": {
       "category-input-placeholder": "Lutfen Bir Kategori Secin"
@@ -15,9 +19,12 @@
     },
     "popups": {
       "delete-category": {
-        "are-you-sure-question": "<0/> tamamen silinecek. Eminmisin ?",
+        "are-you-sure-question": "{{categoryName}} tamamen silinecek. Eminmisin ?",
         "cancel": "Vazgec",
         "delete": "Sil"
+      },
+      "remove-product": {
+        "are-you-sure-question": "{{productName}} urunu tamamen silinecek. Eminmisin ?"
       }
     }
   }

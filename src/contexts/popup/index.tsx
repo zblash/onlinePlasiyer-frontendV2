@@ -12,6 +12,7 @@ function PopupContextProvider(props: React.PropsWithChildren<PopupContextProvide
     updateCategory: usePopup(),
     createProduct: usePopup(),
     deleteCategory: usePopup(),
+    deleteProduct: usePopup(),
   };
 
   return (

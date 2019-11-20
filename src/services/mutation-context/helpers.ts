@@ -1,7 +1,7 @@
-import { QueryHandlerParams } from '../query-context/helpers';
 import { EndpointsVariablesType, EndpointsResultType } from '../helpers';
 
 export interface MutationContextProviderProps {}
+
 export interface RefetchQuery<T = any> {
   query: (vars: EndpointsVariablesType<T>) => Promise<EndpointsResultType<T>>;
   variables: Omit<EndpointsVariablesType<T>, 'pageNumber'>;
@@ -19,6 +19,7 @@ export interface MutationContextType {
 }
 
 export type BaseEndpointType = (vars: any) => Promise<any>;
+
 export type UseMutationResult<Mutation> = {
   mutation: (vars?: EndpointsVariablesType<Mutation>) => Promise<EndpointsResultType<Mutation>>;
   loading: boolean;

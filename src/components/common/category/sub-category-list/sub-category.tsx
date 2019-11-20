@@ -3,8 +3,6 @@ import styled, { css } from '~/styled';
 import { CategoryFields } from '..';
 import { UIIcon } from '~/components/ui';
 import { SubCategoryListColors } from '.';
-import { useMutation } from '~/services/mutation-context/context';
-import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { usePopupContext } from '~/contexts/popup/context';
 import { useUserPermissions } from '~/app/context';
 
@@ -49,6 +47,7 @@ const editIconStyle = css`
 const SubCategory: React.SFC<SubCategoryProps> = props => {
   const popups = usePopupContext();
   const userPermissions = useUserPermissions();
+
   return (
     <StyledCategoryWrapper
       onClick={e => {
@@ -85,11 +84,11 @@ const SubCategory: React.SFC<SubCategoryProps> = props => {
         {userPermissions.category.delete && (
           <UIIcon
             size={18}
-            name={'trash'}
+            name="trash"
             color={SubCategoryListColors.danger}
             onClick={e => {
               e.stopPropagation();
-              popups.deleteCategory.show({ categoryId: props.id });
+              popups.deleteCategory.show({ ...props, isSub: true });
             }}
           />
         )}

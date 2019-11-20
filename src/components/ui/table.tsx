@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled, { css } from '~/styled';
+import styled, { css, StylableProps } from '~/styled';
 import { UIIcon } from '~/components/ui';
 
 /*
@@ -11,7 +11,7 @@ export type UITableColumns<T> = {
   itemRenderer: string | number | ((item: T) => React.ReactElement | string | number);
 };
 
-interface UiTableProps<T> {
+interface UiTableProps<T> extends StylableProps {
   data: T[];
   columns: UITableColumns<T>[];
   rowCount?: number;
@@ -149,7 +149,7 @@ function _UITable<T>(props: UiTableProps<T>) {
   const pageCount = Math.floor(props.data.length / rowCount);
 
   const __ = (
-    <UiTableWrapper>
+    <UiTableWrapper className={props.className}>
       <StyledUiTable>
         <StyledTHead>
           <StyledHeadTr>

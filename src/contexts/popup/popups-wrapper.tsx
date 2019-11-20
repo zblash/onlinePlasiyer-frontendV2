@@ -4,24 +4,29 @@ import { Popup } from '~/components/ui/popup';
 import { CategoryPopup } from '~/components/popups/category-create-or-update';
 import { ProductPopup } from '~/components/popups/product-create-or-update';
 import { CategoryDeletePopup } from '~/components/popups/category-delete';
+import { ProductDeletePopup } from '~/components/popups/product-delete';
 
 interface PopupsWrapperProps extends PopupContextType {}
 
 function PopupsWrapper(props: PopupsWrapperProps) {
+  const popupMapArray = [
+    { ...props.createCategory, comp: <CategoryPopup type="create" /> },
+    { ...props.updateCategory, comp: <CategoryPopup type="update" params={props.updateCategory.params} /> },
+    { ...props.createProduct, comp: <ProductPopup params={props.createProduct.params} /> },
+    {
+      ...props.deleteCategory,
+      comp: <CategoryDeletePopup params={props.deleteCategory.params} />,
+    },
+    { ...props.deleteProduct, comp: <ProductDeletePopup params={props.deleteProduct.params} /> },
+  ];
+
   return (
     <>
-      <Popup onClose={props.createCategory.hide} isShown={props.createCategory.isShown}>
-        <CategoryPopup type="create" />
-      </Popup>
-      <Popup onClose={props.updateCategory.hide} isShown={props.updateCategory.isShown}>
-        <CategoryPopup type="update" params={props.updateCategory.options} />
-      </Popup>
-      <Popup onClose={props.createProduct.hide} isShown={props.createProduct.isShown}>
-        <ProductPopup params={props.createProduct.options} />
-      </Popup>
-      <Popup onClose={props.deleteCategory.hide} isShown={props.deleteCategory.isShown}>
-        <CategoryDeletePopup params={props.deleteCategory.options} />
-      </Popup>
+      {popupMapArray.map((item, index) => (
+        <Popup onClose={item.hide} isShown={item.isShown} key={`popup${index}`}>
+          {item.comp}
+        </Popup>
+      ))}
     </>
   );
 }

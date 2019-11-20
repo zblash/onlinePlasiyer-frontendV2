@@ -52,6 +52,7 @@ export const separatingObjectsContainingId = (unmodifiedData: any) => {
 
 function refetchFactory<T>(query: T, variables: Omit<EndpointsVariablesType<T>, 'pageNumber'>): RefetchQuery<T> {
   return {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
     query,
     variables,
@@ -59,17 +60,4 @@ function refetchFactory<T>(query: T, variables: Omit<EndpointsVariablesType<T>, 
   };
 }
 
-async function asyncMap(array: (() => Promise<any>)[]): Promise<any> {
-  if (array.length === 0) {
-    return Promise.resolve();
-  }
-  if (array.length === 1) {
-    return array[0]();
-  }
-  for (let index = 0; index < array.length; index++) {
-    await array[index]();
-  }
-  return Promise.resolve();
-}
-
-export { getRouteId, getRouteByEndpoint, refetchFactory, asyncMap };
+export { getRouteId, getRouteByEndpoint, refetchFactory };

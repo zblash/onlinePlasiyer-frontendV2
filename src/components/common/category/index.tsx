@@ -3,8 +3,6 @@ import Tooltip from 'rc-tooltip';
 import styled, { css } from '~/styled';
 import { UIIcon } from '~/components/ui';
 import { SubCategoryList } from './sub-category-list';
-import { useMutation } from '~/services/mutation-context/context';
-import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { usePopupContext } from '~/contexts/popup/context';
 import { useUserPermissions } from '~/app/context';
 
@@ -164,11 +162,11 @@ const CategoryItem: React.SFC<CategoryItemProps> = props => {
         {userPermissions.category.delete && (
           <UIIcon
             size={18}
-            name={'trash'}
+            name="trash"
             color={CategoryItemColors.danger}
             onClick={e => {
               e.stopPropagation();
-              popups.deleteCategory.show({ categoryId: props.id });
+              popups.deleteCategory.show({ ...props, isSub: false });
             }}
           />
         )}
