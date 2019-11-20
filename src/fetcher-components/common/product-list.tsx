@@ -39,7 +39,7 @@ function ProductListFetcher(props: React.PropsWithChildren<ProductListFetcherPro
         }
       }}
       onChangeSpecifyProductPage={(pageIndex, pageCount) => {
-        if (pageIndex + 2 === pageCount) {
+        if (pageIndex + 2 >= pageCount) {
           next();
         }
       }}

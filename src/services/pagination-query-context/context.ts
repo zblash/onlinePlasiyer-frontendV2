@@ -58,8 +58,16 @@ function usePaginationQuery<T extends BasePaginationQuery>(
   }
 
   React.useEffect(() => {
+    if (state.pageNumber === 1) {
+      getQuery();
+    } else {
+      setState(prev => ({ ...prev, pageNumber: 1 }));
+    }
+  }, [JSON.stringify(options)]);
+
+  React.useEffect(() => {
     getQuery();
-  }, [JSON.stringify(options), state.pageNumber]);
+  }, [state.pageNumber]);
 
   function dataGetter() {
     if (state.routeId) {
@@ -78,7 +86,7 @@ function usePaginationQuery<T extends BasePaginationQuery>(
     isDone: state.pageNumber === state.lastPageNumber && !!state.routeId,
     next: () => {
       const nextPage = state.pageNumber + 1;
-      if (nextPage < state.lastPageNumber) {
+      if (nextPage <= state.lastPageNumber) {
         setState(prev => ({ ...prev, pageNumber: state.pageNumber + 1 }));
       }
     },

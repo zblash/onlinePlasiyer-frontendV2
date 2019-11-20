@@ -2,7 +2,7 @@ import * as React from 'react';
 import _chunk from 'lodash.chunk';
 import { UITableColumns, UITable } from '~/components/ui/table';
 import { ProductCardWrapper, ProductCard, ProductData } from '../product-card';
-import styled from '~/styled';
+import styled, { css } from '~/styled';
 import { UICollapsible } from '~/components/ui';
 /*
   ProductList Helpers
@@ -66,6 +66,10 @@ const StyledCardContainer = styled.div`
   }
 `;
 
+const tableStyle = css`
+  margin-bottom: 16px;
+`;
+
 const ProductList: React.SFC<ProductListProps> = props => {
   const [expandProductId, setExpandProductId] = React.useState<string>(null);
 
@@ -105,11 +109,12 @@ const ProductList: React.SFC<ProductListProps> = props => {
           )}
         >
           <UITable
-            id={props.selectedCategoryId}
+            id={expandProductId}
             data={props.specifyProducts}
             rowCount={SPECIFY_PRODUCT_ROW_COUNT}
             columns={TABLE_SHOWN_DATA}
             onChangePage={props.onChangeSpecifyProductPage}
+            className={tableStyle}
           />
         </UICollapsible>
       ))}

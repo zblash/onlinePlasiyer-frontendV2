@@ -37,9 +37,9 @@ function PaginationQueryContextProvider(props) {
       );
     }
     if (!queryQueue.current[routeId]) {
-      queryQueue.current[routeId] = queryApiCall(params).then(data =>
-        resultCreator(routeId, data.totalPage, data.elementCountOfPage),
-      );
+      queryQueue.current[routeId] = queryApiCall(params).then(data => {
+        return resultCreator(routeId, data.totalPage, data.elementCountOfPage);
+      });
     } else {
       queryQueue.current[routeId]
         .then(() => queryHandler(params))
@@ -83,7 +83,10 @@ function PaginationQueryContextProvider(props) {
   }
 
   function getDataByRouteId(routeId: string) {
-    const routeSchemas = routeStorage[routeId].storage.map(storage => storage.schema);
+    const routeSchemas = routeStorage[routeId].storage
+      .slice()
+      .reverse()
+      .map(storage => storage.schema);
     const result = lodashContact([], ...routeSchemas.map(schema => parseSchema(schema)));
 
     return result;
