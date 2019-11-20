@@ -1,15 +1,19 @@
-import { CategoryPopupUpdateCategoryValues } from '~/components/common/popups/category';
-import { ProductPopupValues } from '~/components/common/popups/product';
+import { CategoryPopupUpdateCategoryValues } from '~/components/popups/category-create-or-update';
+import { ProductPopupValues } from '~/components/popups/product-create-or-update';
+import { CategoryDeletePopupParams } from '~/components/popups/category-delete';
+import { ProductDeletePopupParams } from '~/components/popups/product-delete';
 
-export interface Popup<T = undefined> {
+export interface Popup<O = undefined> {
   isShown: boolean;
-  show: (options?: T) => void;
+  show: O extends undefined ? (options?: O) => void : (options: O) => void;
   hide: () => void;
-  options: T;
+  params: O;
 }
 
 export interface PopupContextType {
   createCategory: Popup;
   updateCategory: Popup<CategoryPopupUpdateCategoryValues>;
+  deleteCategory: Popup<CategoryDeletePopupParams>;
   createProduct: Popup<ProductPopupValues>;
+  deleteProduct: Popup<ProductDeletePopupParams>;
 }

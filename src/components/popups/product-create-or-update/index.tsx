@@ -6,14 +6,14 @@ import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints
 import { UIIcon, UIInput, UIButton, Loading } from '~/components/ui';
 import { CategoryInput } from './category-input';
 import { usePopupContext } from '~/contexts/popup/context';
-import { useTranslation } from '~/utils/hooks';
+import { useTranslation } from '~/i18n';
 
 /*  ProductPopup Helpers */
 export interface ProductPopupValues {
   categoryId?: string;
 }
 interface ProductPopupProps {
-  initialState: ProductPopupValues;
+  params: ProductPopupValues;
 }
 
 /* ProductPopup Style Constants */
@@ -125,7 +125,7 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
   const [barcode, setBarcode] = React.useState('');
   const [imgSrc, setImgSrc] = React.useState('');
   const [img, setImg] = React.useState<File>(null);
-  const [categoryId, setCategoryId] = React.useState(lodashGet(props.initialState, 'categoryId', ''));
+  const [categoryId, setCategoryId] = React.useState(lodashGet(props.params, 'categoryId', ''));
   const [productName, setProductName] = React.useState('');
   const [taxNumber, setTaxNumber] = React.useState('');
   const { mutation: createProduct } = useMutation(mutationEndPoints.createProduct, {

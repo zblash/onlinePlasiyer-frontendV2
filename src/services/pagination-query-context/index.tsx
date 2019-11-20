@@ -1,6 +1,7 @@
 import * as React from 'react';
 import lodashContact from 'lodash.concat';
 import lodashGet from 'lodash.get';
+import lodashUniqBy from 'lodash.uniqby';
 import { PaginationQueryContext } from './context';
 import { useParseSchema } from '../utils/useParseScheme';
 import { useDatabaseObjectsContext } from '../database-object-context/context';
@@ -10,6 +11,8 @@ import { MaybeArray } from '~/helpers';
 import { dataToSchema } from '../utils/route-schema';
 import { RouteSchema } from '../helpers';
 import { paginationQueryEndpoints } from './pagination-query-endpoints';
+import { RefetchQuery } from '../mutation-context/helpers';
+import { asyncMap } from '~/utils';
 
 type RouteStorage = {
   lastPageNumber: number;
@@ -35,9 +38,9 @@ function PaginationQueryContextProvider(props) {
       );
     }
     if (!queryQueue.current[routeId]) {
-      queryQueue.current[routeId] = queryApiCall(params).then(data =>
-        resultCreator(routeId, data.totalPage, data.elementCountOfPage),
-      );
+      queryQueue.current[routeId] = queryApiCall(params).then(data => {
+        return resultCreator(routeId, data.totalPage, data.elementCountOfPage);
+      });
     } else {
       queryQueue.current[routeId]
         .then(() => queryHandler(params))
@@ -60,13 +63,16 @@ function PaginationQueryContextProvider(props) {
           [routeId]: {
             lastPageNumber: data.totalPage,
             elementCountOfPage: data.elementCountOfPage,
-            storage: [
-              ...(lodashGet(prevSate, `${routeId}.storage`, []) as []),
-              {
-                pageNumber,
-                schema: routeSchema,
-              },
-            ],
+            storage: lodashUniqBy(
+              [
+                {
+                  pageNumber,
+                  schema: routeSchema,
+                },
+                ...(lodashGet(prevSate, `${routeId}.storage`, []) as []),
+              ],
+              'pageNumber',
+            ),
           },
         }));
 
@@ -78,7 +84,10 @@ function PaginationQueryContextProvider(props) {
   }
 
   function getDataByRouteId(routeId: string) {
-    const routeSchemas = routeStorage[routeId].storage.map(storage => storage.schema);
+    const routeSchemas = routeStorage[routeId].storage
+      .slice()
+      .reverse()
+      .map(storage => storage.schema);
     const result = lodashContact([], ...routeSchemas.map(schema => parseSchema(schema)));
 
     return result;
@@ -88,8 +97,31 @@ function PaginationQueryContextProvider(props) {
     return Boolean(routeStorage[routeId] && routeStorage[routeId].storage.find(item => item.pageNumber === pageNumber));
   }
 
-  function refetchQueries(queries: QueryHandlerParams[]) {
-    return Promise.all(queries.map(query => queryApiCall(query)));
+  function isRouteFetchedForAnyPage(routeId: string) {
+    return Boolean(routeStorage[routeId]);
+  }
+
+  function refetchQueries(queries: RefetchQuery[]) {
+    const fetchedQueries = queries.filter(({ query, variables }) =>
+      isRouteFetchedForAnyPage(getRouteId(getRouteByEndpoint(paginationQueryEndpoints, query), variables)),
+    );
+
+    return asyncMap(
+      fetchedQueries.map(({ query, variables }) => {
+        const routeId = getRouteId(getRouteByEndpoint(paginationQueryEndpoints, query), variables);
+
+        return () =>
+          asyncMap(
+            routeStorage[routeId].storage.map(({ pageNumber }) => () =>
+              queryApiCall({
+                pageNumber,
+                query,
+                variables,
+              }),
+            ),
+          );
+      }),
+    );
   }
   function resultCreator(routeId: string, lastPageNumber: number, elementCountOfPage: number) {
     return { routeId, lastPageNumber, elementCountOfPage };

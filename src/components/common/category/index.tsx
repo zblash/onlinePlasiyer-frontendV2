@@ -3,8 +3,6 @@ import Tooltip from 'rc-tooltip';
 import styled, { css } from '~/styled';
 import { UIIcon } from '~/components/ui';
 import { SubCategoryList } from './sub-category-list';
-import { useMutation } from '~/services/mutation-context/context';
-import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { usePopupContext } from '~/contexts/popup/context';
 import { useUserPermissions } from '~/app/context';
 
@@ -144,10 +142,6 @@ const CategoryItem: React.SFC<CategoryItemProps> = props => {
   const [isClickSubitem, setIsClickSubitem] = React.useState(false);
   const popups = usePopupContext();
   const userPermissions = useUserPermissions();
-  const { mutation: deleteCategory, loading: deleteCategoryLoading } = useMutation(mutationEndPoints.removeCategory, {
-    variables: { id: props.id },
-  });
-
   const tooltipProps = isClickSubitem ? { visible: false } : {};
 
   const __ = (
@@ -168,13 +162,11 @@ const CategoryItem: React.SFC<CategoryItemProps> = props => {
         {userPermissions.category.delete && (
           <UIIcon
             size={18}
-            name={deleteCategoryLoading ? 'loading' : 'trash'}
+            name="trash"
             color={CategoryItemColors.danger}
             onClick={e => {
               e.stopPropagation();
-              if (!deleteCategoryLoading) {
-                deleteCategory();
-              }
+              popups.deleteCategory.show({ ...props, isSub: false });
             }}
           />
         )}

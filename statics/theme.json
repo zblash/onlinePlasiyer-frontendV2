@@ -7,8 +7,10 @@
       "primaryDark": "#0062d4",
       "primary": "#0075ff",
       "gray": "#737373",
-      "darkGray": "#4d4d4d",
-      "lightGray": "#e6e6e6"
+      "darkGray": "#333333",
+      "lightGray": "#e6e6e6",
+      "danger": "#e2574c",
+      "dangerDark": "#bf453b"
     }
   }
 }

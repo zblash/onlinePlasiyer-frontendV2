@@ -1,16 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { isObject, isArray, narrowObject, objectKeys, getKeyByValue } from '~/utils';
 import { EndpointsVariablesType } from '../helpers';
+import { RefetchQuery } from '../mutation-context/helpers';
+import { queryEndpoints } from '../query-context/query-endpoints';
 
 const getRouteId = (route: string, variables?: Record<string, any>) => route + JSON.stringify(narrowObject(variables));
 const getRouteByEndpoint = (queries: any, query: any) => {
-  const route = getKeyByValue(queries, query);
-
-  if (!route) {
-    throw new Error(`Endpoint Bulunamadi`);
-  }
-
-  return route;
+  return getKeyByValue(queries, query);
 };
 
 const CURRENT_ID_KEY = 'id';
@@ -54,10 +50,13 @@ export const separatingObjectsContainingId = (unmodifiedData: any) => {
   return modifiedData;
 };
 
-function refetchFactory<T>(query: T, variables: EndpointsVariablesType<T>) {
+function refetchFactory<T>(query: T, variables: Omit<EndpointsVariablesType<T>, 'pageNumber'>): RefetchQuery<T> {
   return {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
     query,
     variables,
+    type: getRouteByEndpoint(queryEndpoints, query) ? 'normal' : 'pagination',
   };
 }
 

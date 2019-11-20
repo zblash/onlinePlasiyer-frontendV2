@@ -1,11 +1,12 @@
 import { EndpointsResultType, EndpointsVariablesType } from '../helpers';
 import { paginationQueryEndpoints } from './pagination-query-endpoints';
+import { RefetchQuery } from '../mutation-context/helpers';
 
 export interface PaginationQueryContextType {
   queryHandler: (
     params: QueryHandlerParams,
   ) => Promise<{ routeId: string; lastPageNumber: number; elementCountOfPage: number }>;
-  refetchQueries: (params: QueryHandlerParams[]) => Promise<any>;
+  refetchQueries: (params: RefetchQuery[]) => Promise<any>;
   getDataByRouteId: (id: string) => any;
 }
 

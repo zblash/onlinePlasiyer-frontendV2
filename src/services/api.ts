@@ -2,7 +2,7 @@ import axios from 'axios';
 import { TOKEN_KEY } from '~/utils/constants';
 import { UserRoleResponse } from './helpers/backend-models';
 
-const TOKEN = {
+export const TOKEN = {
   get: () => localStorage.getItem(TOKEN_KEY),
   set: (token: string) => localStorage.setItem(TOKEN_KEY, token),
   remove: () => localStorage.removeItem(TOKEN_KEY),

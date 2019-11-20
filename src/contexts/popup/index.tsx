@@ -1,25 +1,24 @@
 import * as React from 'react';
 import { PopupContext, usePopup } from './context';
 import { PopupsWrapper } from './popups-wrapper';
+import { PopupContextType } from './helpers';
 
 /* PopupContextProvider Helpers */
 interface PopupContextProviderProps {}
 
 function PopupContextProvider(props: React.PropsWithChildren<PopupContextProviderProps>) {
-  const createCategory = usePopup();
-  const updateCategory = usePopup();
-  const createProduct = usePopup();
+  const value: PopupContextType = {
+    createCategory: usePopup(),
+    updateCategory: usePopup(),
+    createProduct: usePopup(),
+    deleteCategory: usePopup(),
+    deleteProduct: usePopup(),
+  };
 
   return (
-    <PopupContext.Provider
-      value={{
-        createCategory,
-        updateCategory,
-        createProduct,
-      }}
-    >
+    <PopupContext.Provider value={value}>
       {props.children}
-      <PopupsWrapper createCategory={createCategory} updateCategory={updateCategory} createProduct={createProduct} />
+      <PopupsWrapper {...value} />
     </PopupContext.Provider>
   );
 }

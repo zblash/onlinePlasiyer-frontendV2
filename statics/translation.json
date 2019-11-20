@@ -1,4 +1,4 @@
-{
+  {
   "tr": {
     "common": {
       "login": "Giris Yap",
@@ -13,8 +13,25 @@
       "totalReceivables": "Toplam Alacak",
       "details": "Detaylari Gor"
     },
+    "product-card": {
+      "show-price": "<0>Fiyatlari Goster</0> <1/>",
+      "hide-price": "<0>Fiyatlari Gizle</0> <1/>"
+    },
     "product-popup": {
       "category-input-placeholder": "Lutfen Bir Kategori Secin"
+    },
+    "not-connect-page": {
+      "message": "Baglanti gerceklestiremedik!!! Gelistiricilerimiz bunu cozmeye calisiyorlar"
+    },
+    "popups": {
+      "delete-category": {
+        "are-you-sure-question": "{{categoryName}} tamamen silinecek. Eminmisin ?",
+        "cancel": "Vazgec",
+        "delete": "Sil"
+      },
+      "remove-product": {
+        "are-you-sure-question": "{{productName}} urunu tamamen silinecek. Eminmisin ?"
+      }
     }
   }
 }

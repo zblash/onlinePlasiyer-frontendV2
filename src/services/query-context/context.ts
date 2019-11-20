@@ -7,7 +7,7 @@ const initialValue: QueryContextType = {
   getDataByRouteId: () => null,
 };
 
-const QueryContext = React.createContext(initialValue);
+const QueryContext = React.createContext<QueryContextType>(initialValue);
 
 function useQueryContext() {
   return React.useContext(QueryContext);

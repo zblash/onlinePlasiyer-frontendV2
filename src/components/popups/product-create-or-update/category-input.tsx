@@ -5,7 +5,7 @@ import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { colors } from '~/styled';
 import { StyledInput, commonInputStyle, inputIconStyle } from '.';
-import { useTranslation } from '~/utils/hooks';
+import { useTranslation } from '~/i18n';
 
 /*
   CategoryInput Helpers

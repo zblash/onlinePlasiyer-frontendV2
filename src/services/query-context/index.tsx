@@ -8,6 +8,8 @@ import { dataToSchema } from '../utils/route-schema';
 import { useParseSchema } from '../utils/useParseScheme';
 import { MaybeArray } from '~/helpers';
 import { queryEndpoints } from './query-endpoints';
+import { RefetchQuery } from '../mutation-context/helpers';
+import { asyncMap } from '~/utils';
 
 interface QueryContextProviderProps {}
 
@@ -60,8 +62,16 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
     return parseSchema(schema);
   }
 
-  function refetchQueries(queries: QueryHandlerParams[] = []) {
-    return Promise.all(queries.map(query => queryApiCall(query)));
+  function refetchQueries(queries: RefetchQuery[] = []) {
+    const fetchedQueries = queries.filter(({ query, variables }) =>
+      isRouteFetched(getRouteId(getRouteByEndpoint(queryEndpoints, query), variables)),
+    );
+
+    return asyncMap(
+      fetchedQueries.map(({ query, variables }) => () => {
+        return queryApiCall({ variables, query });
+      }),
+    );
   }
 
   return (

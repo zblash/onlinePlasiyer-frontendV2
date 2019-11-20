@@ -1,6 +1,6 @@
 import React from 'react';
 import { FullScreenLoading } from '~/components/common/full-screen-loading';
-import { ApiCall, hasToken } from '~/services/api';
+import { ApiCall, hasToken, TOKEN } from '~/services/api';
 import { IUserCommonResponse } from '~/services/helpers/backend-models';
 import { LoginRegisterPage } from '~/components/common/login-register';
 
@@ -21,6 +21,7 @@ function CheckUser(props: Props) {
           setIsLoading(false);
         })
         .catch(() => {
+          TOKEN.remove();
           setHasError(true);
           setIsLoading(false);
         });
