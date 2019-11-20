@@ -45,6 +45,7 @@ const StyledMenuItemWrapper = styled(UIButton)`
   padding: 0 24px;
   align-items: center;
   border-radius: 8px;
+  background-color: transparent;
   :active {
     background-color: ${MenuItemColors.wrapperActiveBackground} !important;
   }

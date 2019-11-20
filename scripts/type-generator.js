@@ -1,6 +1,7 @@
 /*  eslint-disable @typescript-eslint/no-var-requires */
 const fs = require('fs');
 const path = require('path');
+const JsonToTS = require('fork-json2ts');
 const translationJson = require('../statics/translation.json');
 const themeJson = require('../statics/theme.json');
 
@@ -21,7 +22,7 @@ function narrowObject(obj) {
   return newobject;
 }
 const translationObj = {};
-const colorKeys = [];
+let colorObj = {};
 
 Object.keys(translationJson).forEach(key => {
   Object.keys(translationJson[key]).forEach(itemKey => {
@@ -29,18 +30,14 @@ Object.keys(translationJson).forEach(key => {
   });
 });
 
-Object.keys(themeJson.themes).forEach(theme => {
-  Object.keys(themeJson.themes[theme]).forEach(color => {
-    if (!colorKeys.includes(color)) {
-      colorKeys.push(color);
-    }
-  });
+Object.keys(themeJson.themes).forEach(key => {
+  colorObj = { ...colorObj, ...themeJson.themes[key] };
 });
 
 const translationKeys = Object.keys(narrowObject(translationObj));
 
 const typeFileContent = `export type TranslationKeys=${translationKeys.map(key => `'${key}'`).join('|')};
-export type ColorKeys=${colorKeys.map(key => `'${key}'`).join('|')};
+export ${JsonToTS(colorObj, { rootName: 'Type', prefix: 'StaticColor' }).join(';\n')}
 `;
 
 fs.writeFileSync(path.join(process.cwd(), 'src', 'helpers', 'static-types.ts'), typeFileContent);

@@ -9,7 +9,7 @@ import { CategoryHorizontalList } from '~/components/common/category-horizontal-
 import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { usePopupContext } from '~/contexts/popup/context';
-import { useTranslation } from '~/utils/hooks';
+import { useTranslation } from '~/i18n';
 
 /*
   ProductsPage Helpers

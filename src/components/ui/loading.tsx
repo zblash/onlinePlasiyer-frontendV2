@@ -33,7 +33,6 @@ const LdsRoller = styled.div<{ color: string; size: number }>`
     animation: ${ldsRollerKeyframes} 1.2s linear infinite;
   }
 `;
-
 const Loading: React.SFC<ILoadingProps> = props => {
   return <LdsRoller color={props.color || LoadingDefaultColor} size={props.size || 20} className={props.className} />;
 };

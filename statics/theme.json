@@ -7,7 +7,11 @@
       "primaryDark": "#0062d4",
       "primary": "#0075ff",
       "gray": "#737373",
-      "lightGray": "#e6e6e6"
+      "lightGray": "#e6e6e6",
+      "danger": "#e2574c",
+      "deletePopup": {
+        "danger": "#e2574c"
+      }
     }
   }
 }

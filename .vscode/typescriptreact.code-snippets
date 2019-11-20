@@ -9,7 +9,7 @@
       "/* $1 Helpers */",
       "interface $1Props{}",
       "",
-      "/* $1 Style Constants */",
+      "/* $1 Constants */",
       "",
       "/* $1 Styles */",
       "const Styled$1Wrapper=styled.div`",

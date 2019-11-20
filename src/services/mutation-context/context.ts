@@ -1,21 +1,6 @@
 import * as React from 'react';
-import { MutationContextType } from './helpers';
-import { EndpointsVariablesType, EndpointsResultType } from '../helpers';
-import { QueryHandlerParams } from '../query-context/helpers';
-
-type BaseEndpointType = (vars: any) => Promise<any>;
-// [mutation,loading,error,result]
-type UseMutationResult<Mutation> = {
-  mutation: (vars?: EndpointsVariablesType<Mutation>) => Promise<EndpointsResultType<Mutation>>;
-  loading: boolean;
-  error: any;
-  data: EndpointsResultType<Mutation>;
-};
-
-type UseMutationOptions<T> = {
-  refetchQueries?: QueryHandlerParams[];
-  variables?: EndpointsVariablesType<T>;
-};
+import { MutationContextType, BaseEndpointType, UseMutationOptions, UseMutationResult } from './helpers';
+import { EndpointsVariablesType } from '../helpers';
 
 const initialValue: MutationContextType = {
   mutationHandler: () => Promise.resolve(0),

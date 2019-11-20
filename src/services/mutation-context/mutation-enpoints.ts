@@ -17,8 +17,7 @@ interface UpdateCategoryVariables {
 }
 
 class MutationEndpoints {
-  removeCategory: (s: { id: string }) => Promise<any> = ({ id }) =>
-    ApiCall.delete(`/categories/delete/${id}`).then(data => ({ ...data, removed: true }));
+  removeCategory: (s: { id: string }) => Promise<any> = ({ id }) => ApiCall.delete(`/categories/delete/${id}`);
 
   updateCategory = (params: UpdateCategoryVariables) => {
     const formData = new FormData();

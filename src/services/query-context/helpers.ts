@@ -1,14 +1,15 @@
 import { EndpointsResultType, EndpointsVariablesType } from '../helpers';
 import { queryEndpoints } from './query-endpoints';
+import { RefetchQuery } from '../mutation-context/helpers';
 
-export type QueryHandlerParams = {
-  query: (vars: any) => Promise<any>;
-  variables: any;
+export type QueryHandlerParams<T = (v?: any) => Promise<any>> = {
+  query: (vars: EndpointsVariablesType<T>) => Promise<EndpointsResultType<T>>;
+  variables: EndpointsVariablesType<T>;
 };
 
 export interface QueryContextType {
   queryHandler: (params: QueryHandlerParams) => Promise<string>;
-  refetchQueries: (params: QueryHandlerParams[]) => Promise<any>;
+  refetchQueries: (params: RefetchQuery[]) => Promise<any>;
   getDataByRouteId: (id: string) => any;
 }
 

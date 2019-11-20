@@ -8,6 +8,11 @@ import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints
 import { usePopupContext } from '~/contexts/popup/context';
 import { useUserPermissions } from '~/app/context';
 
+interface SubCategoryComponentProps {
+  onClick?: Function;
+}
+interface SubCategoryProps extends CategoryFields, SubCategoryComponentProps {}
+
 const StyledCategoryWrapper = styled.div`
   padding: 8px;
   display: flex;
@@ -41,14 +46,9 @@ const StyledModifyIconWrapper = styled.div`
 const editIconStyle = css`
   margin-right: 8px;
 `;
-
-const SubCategory: React.SFC<CategoryFields & { onClick?: Function }> = props => {
+const SubCategory: React.SFC<SubCategoryProps> = props => {
   const popups = usePopupContext();
   const userPermissions = useUserPermissions();
-  const { mutation: deleteCategory, loading: deleteCategoryLoading } = useMutation(mutationEndPoints.removeCategory, {
-    variables: { id: props.id },
-  });
-
   return (
     <StyledCategoryWrapper
       onClick={e => {
@@ -85,13 +85,11 @@ const SubCategory: React.SFC<CategoryFields & { onClick?: Function }> = props =>
         {userPermissions.category.delete && (
           <UIIcon
             size={18}
-            name={deleteCategoryLoading ? 'loading' : 'trash'}
+            name={'trash'}
             color={SubCategoryListColors.danger}
             onClick={e => {
               e.stopPropagation();
-              if (!deleteCategoryLoading) {
-                deleteCategory();
-              }
+              popups.deleteCategory.show({ categoryId: props.id });
             }}
           />
         )}

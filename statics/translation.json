@@ -9,6 +9,16 @@
     },
     "product-popup": {
       "category-input-placeholder": "Lutfen Bir Kategori Secin"
+    },
+    "not-connect-page": {
+      "message": "Baglanti gerceklestiremedik!!! Gelistiricilerimiz bunu cozmeye calisiyorlar"
+    },
+    "popups": {
+      "delete-category": {
+        "are-you-sure-question": "<0/> tamamen silinecek. Eminmisin ?",
+        "cancel": "Vazgec",
+        "delete": "Sil"
+      }
     }
   }
 }

@@ -3,9 +3,9 @@ import _debounce from 'lodash.debounce';
 import { useHistory } from 'react-router';
 import styled, { css } from '~/styled';
 import { UIIcon, UIButton } from '~/components/ui';
-import { CategoryFields, CategoryItem } from '../category';
 import { usePopupContext } from '~/contexts/popup/context';
 import { useUserPermissions } from '~/app/context';
+import { CategoryFields, CategoryItem } from '../category';
 
 /*
   CategoryList Helpers

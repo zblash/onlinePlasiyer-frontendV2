@@ -1,13 +1,14 @@
 import * as React from 'react';
 import { Popup, PopupContextType } from './helpers';
 
-function usePopup<T = undefined>(): Popup<T> {
+function usePopup<T = any>(): Popup<T> {
   const [isShown, setIsShown] = React.useState(false);
   const [options, setOptions] = React.useState(null);
 
   return {
     isShown,
     options,
+    // @ts-ignore
     show: _options => {
       setOptions(_options);
       setIsShown(true);
@@ -29,6 +30,7 @@ const initialValue: PopupContextType = {
   createCategory: emptyPopup,
   updateCategory: emptyPopup,
   createProduct: emptyPopup,
+  deleteCategory: emptyPopup,
 };
 const PopupContext = React.createContext<PopupContextType>(initialValue);
 

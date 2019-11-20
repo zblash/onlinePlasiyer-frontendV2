@@ -1,15 +1,17 @@
 import * as React from 'react';
 import lodashContact from 'lodash.concat';
 import lodashGet from 'lodash.get';
+import lodashUniqBy from 'lodash.uniqby';
 import { PaginationQueryContext } from './context';
 import { useParseSchema } from '../utils/useParseScheme';
 import { useDatabaseObjectsContext } from '../database-object-context/context';
-import { getRouteId, getRouteByEndpoint } from '../utils';
+import { getRouteId, getRouteByEndpoint, asyncMap } from '../utils';
 import { QueryHandlerParams } from './helpers';
 import { MaybeArray } from '~/helpers';
 import { dataToSchema } from '../utils/route-schema';
 import { RouteSchema } from '../helpers';
 import { paginationQueryEndpoints } from './pagination-query-endpoints';
+import { RefetchQuery } from '../mutation-context/helpers';
 
 type RouteStorage = {
   lastPageNumber: number;
@@ -60,13 +62,16 @@ function PaginationQueryContextProvider(props) {
           [routeId]: {
             lastPageNumber: data.totalPage,
             elementCountOfPage: data.elementCountOfPage,
-            storage: [
-              ...(lodashGet(prevSate, `${routeId}.storage`, []) as []),
-              {
-                pageNumber,
-                schema: routeSchema,
-              },
-            ],
+            storage: lodashUniqBy(
+              [
+                {
+                  pageNumber,
+                  schema: routeSchema,
+                },
+                ...(lodashGet(prevSate, `${routeId}.storage`, []) as []),
+              ],
+              'pageNumber',
+            ),
           },
         }));
 
@@ -88,8 +93,29 @@ function PaginationQueryContextProvider(props) {
     return Boolean(routeStorage[routeId] && routeStorage[routeId].storage.find(item => item.pageNumber === pageNumber));
   }
 
-  function refetchQueries(queries: QueryHandlerParams[]) {
-    return Promise.all(queries.map(query => queryApiCall(query)));
+  function isRouteFetchedForAnyPage(routeId: string) {
+    return Boolean(routeStorage[routeId]);
+  }
+
+  function refetchQueries(queries: RefetchQuery[]) {
+    const fetchedQueries = queries.filter(({ query, variables }) =>
+      isRouteFetchedForAnyPage(getRouteId(getRouteByEndpoint(paginationQueryEndpoints, query), variables)),
+    );
+    return asyncMap(
+      fetchedQueries.map(({ query, variables }) => {
+        const routeId = getRouteId(getRouteByEndpoint(paginationQueryEndpoints, query), variables);
+        return () =>
+          asyncMap(
+            routeStorage[routeId].storage.map(({ pageNumber }) => () =>
+              queryApiCall({
+                pageNumber,
+                query,
+                variables,
+              }),
+            ),
+          );
+      }),
+    );
   }
   function resultCreator(routeId: string, lastPageNumber: number, elementCountOfPage: number) {
     return { routeId, lastPageNumber, elementCountOfPage };
