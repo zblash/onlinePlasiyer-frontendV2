@@ -1,8 +1,8 @@
 import * as React from 'react';
-import styled, { StylableProps, css } from '~/styled';
+import styled, { StylableProps, css, colors } from '~/styled';
 import { UIButton, UIIcon } from '~/components/ui';
-import { useMutation } from '~/services/mutation-context/context';
-import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
+import { Trans } from '~/i18n';
+import { usePopupContext } from '~/contexts/popup/context';
 
 /*
   ProductCard Helpers
@@ -17,6 +17,7 @@ export interface ProductData {
 
 interface ProductCardProps extends StylableProps, ProductData {
   onButtonClick?: () => void;
+  isExpand?: boolean;
 }
 
 /*
@@ -112,12 +113,16 @@ const StyledTitle = styled.h2`
   margin: 0;
 `;
 
-const StyledPreviewButton = styled(UIButton)`
-  display: inline-block;
-  border: 1px solid ${ProductCardColors.primary};
-  background-color: #fff;
-  -webkit-font-smoothing: antialiased;
-  color: #0075ff;
+const StyledButtonTextWrapper = styled.span`
+  transform: translate(20px, 0px);
+  transition: transform 1s;
+`;
+
+const StyledPreviewButton = styled(UIButton)<{ isExpand: boolean }>`
+  display: flex;
+  border: 1px solid ${props => (props.isExpand ? colors.danger : colors.primary)};
+  background-color: ${colors.white};
+  color: ${props => (props.isExpand ? colors.danger : colors.primary)};
   text-align: center;
   cursor: pointer;
   margin: 1px 4px 0;
@@ -125,14 +130,18 @@ const StyledPreviewButton = styled(UIButton)`
   padding: 7px 12px;
   font-size: 12px;
   font-weight: 700;
-  text-decoration: none;
   border-radius: 2px;
+  justify-content: center;
   :hover {
-    color: #fff;
-    background-color: ${ProductCardColors.primary};
+    color: ${colors.white};
+    background-color: ${props => (props.isExpand ? colors.danger : colors.primary)};
+    ${StyledButtonTextWrapper} {
+      transform: translate(0px, 0px);
+      transition: transform 0.5s;
+    }
   }
   :active {
-    background-color: ${ProductCardColors.primaryDark};
+    background-color: ${props => (props.isExpand ? colors.dangerDark : colors.primaryDark)};
   }
   transition: background-color 0.3s, color 0.3s;
 `;
@@ -141,12 +150,14 @@ const StyledContentCenter = styled.div`
   display: flex;
   flex-direction: column;
 `;
-
 const StyledContentSpan = styled.span``;
+
+const buttonIconStyle = css`
+  margin-left: 8px;
+`;
+
 const ProductCard: React.SFC<ProductCardProps> = props => {
-  const { mutation: removeProduct, loading } = useMutation(mutationEndPoints.removeProduct, {
-    variables: { id: props.id },
-  });
+  const popups = usePopupContext();
   const __ = (
     <StyledCardWrapper className={props.className}>
       <StyledShadowElement />
@@ -156,14 +167,12 @@ const ProductCard: React.SFC<ProductCardProps> = props => {
       <StyledContent>
         <UIIcon
           size={18}
-          name={loading ? 'loading' : 'trash'}
+          name="trash"
           className={deleteIconStyle}
           color={ProductCardColors.danger}
           onClick={e => {
             e.stopPropagation();
-            if (!loading) {
-              removeProduct();
-            }
+            popups.deleteProduct.show(props);
           }}
         />
 
@@ -176,7 +185,16 @@ const ProductCard: React.SFC<ProductCardProps> = props => {
             {ProductCardStrings.barcode} : {props.barcode}
           </StyledContentSpan>
         </StyledContentCenter>
-        <StyledPreviewButton onClick={props.onButtonClick}>{ProductCardStrings.showPrice}</StyledPreviewButton>
+        <StyledPreviewButton onClick={props.onButtonClick} isExpand={props.isExpand}>
+          <Trans i18nKey={props.isExpand ? 'product-card.hide-price' : 'product-card.show-price'}>
+            <StyledButtonTextWrapper />
+            <UIIcon
+              color={colors.white}
+              name={props.isExpand ? 'chevronUp' : 'chevronDown'}
+              className={buttonIconStyle}
+            />
+          </Trans>
+        </StyledPreviewButton>
       </StyledContent>
     </StyledCardWrapper>
   );

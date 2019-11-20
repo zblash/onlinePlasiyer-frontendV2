@@ -89,7 +89,7 @@ const SubCategory: React.SFC<SubCategoryProps> = props => {
             color={SubCategoryListColors.danger}
             onClick={e => {
               e.stopPropagation();
-              popups.deleteCategory.show({ categoryId: props.id });
+              popups.deleteCategory.show({ ...props, isSub: true });
             }}
           />
         )}

@@ -168,7 +168,7 @@ const CategoryItem: React.SFC<CategoryItemProps> = props => {
             color={CategoryItemColors.danger}
             onClick={e => {
               e.stopPropagation();
-              popups.deleteCategory.show({ categoryId: props.id });
+              popups.deleteCategory.show({ ...props, isSub: false });
             }}
           />
         )}
