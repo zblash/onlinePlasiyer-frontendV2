@@ -13,6 +13,7 @@ export interface SpecifyProductData {
   sellerName: string;
   totalPrice: number;
 }
+
 export interface ProductListComponentProps {
   selectedCategoryId: string;
   onChangeExpandProductId?: (id: string) => void;

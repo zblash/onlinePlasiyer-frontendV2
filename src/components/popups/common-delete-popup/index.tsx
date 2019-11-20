@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled, { colors, css } from '~/styled';
+import styled, { colors } from '~/styled';
 import { useTranslation } from '~/i18n';
 import { UIButton, Loading } from '~/components/ui';
 

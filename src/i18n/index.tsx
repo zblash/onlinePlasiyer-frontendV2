@@ -1,8 +1,6 @@
 import * as React from 'react';
 import i18n from 'i18next';
 
-import { TransComponentKeys, UseTranslationFunction } from '~/helpers/static-types';
-
 import {
   initReactI18next,
   useTranslation as i18nUseTranslation,
@@ -10,6 +8,7 @@ import {
   Trans as I18nTransComponent,
   TransProps as i18nTransProps,
 } from 'react-i18next';
+import { TransComponentKeys, UseTranslationFunction } from '~/helpers/static-types';
 
 type UseTranslationResponse = Omit<i18nUseTranslationResponse, 't'> & {
   t: UseTranslationFunction;

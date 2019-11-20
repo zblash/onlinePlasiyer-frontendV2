@@ -5,13 +5,14 @@ import lodashUniqBy from 'lodash.uniqby';
 import { PaginationQueryContext } from './context';
 import { useParseSchema } from '../utils/useParseScheme';
 import { useDatabaseObjectsContext } from '../database-object-context/context';
-import { getRouteId, getRouteByEndpoint, asyncMap } from '../utils';
+import { getRouteId, getRouteByEndpoint } from '../utils';
 import { QueryHandlerParams } from './helpers';
 import { MaybeArray } from '~/helpers';
 import { dataToSchema } from '../utils/route-schema';
 import { RouteSchema } from '../helpers';
 import { paginationQueryEndpoints } from './pagination-query-endpoints';
 import { RefetchQuery } from '../mutation-context/helpers';
+import { asyncMap } from '~/utils';
 
 type RouteStorage = {
   lastPageNumber: number;
@@ -104,9 +105,11 @@ function PaginationQueryContextProvider(props) {
     const fetchedQueries = queries.filter(({ query, variables }) =>
       isRouteFetchedForAnyPage(getRouteId(getRouteByEndpoint(paginationQueryEndpoints, query), variables)),
     );
+
     return asyncMap(
       fetchedQueries.map(({ query, variables }) => {
         const routeId = getRouteId(getRouteByEndpoint(paginationQueryEndpoints, query), variables);
+
         return () =>
           asyncMap(
             routeStorage[routeId].storage.map(({ pageNumber }) => () =>

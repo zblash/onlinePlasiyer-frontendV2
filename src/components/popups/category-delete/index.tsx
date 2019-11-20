@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { css } from '~/styled';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { useMutation } from '~/services/mutation-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
@@ -20,10 +19,6 @@ interface CategoryDeletePopupProps {
 /* CategoryDeletePopup Constants */
 
 /* CategoryDeletePopup Styles */
-
-const loadinStyle = css`
-  margin-right: 24px;
-`;
 
 /* CategoryDeletePopup Component  */
 function CategoryDeletePopup(props: React.PropsWithChildren<CategoryDeletePopupProps>) {

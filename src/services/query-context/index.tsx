@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { QueryContext } from './context';
 import { QueryHandlerParams } from './helpers';
-import { getRouteId, getRouteByEndpoint, asyncMap } from '../utils';
+import { getRouteId, getRouteByEndpoint } from '../utils';
 import { useDatabaseObjectsContext } from '../database-object-context/context';
 import { RouteSchema } from '../helpers';
 import { dataToSchema } from '../utils/route-schema';
@@ -9,6 +9,7 @@ import { useParseSchema } from '../utils/useParseScheme';
 import { MaybeArray } from '~/helpers';
 import { queryEndpoints } from './query-endpoints';
 import { RefetchQuery } from '../mutation-context/helpers';
+import { asyncMap } from '~/utils';
 
 interface QueryContextProviderProps {}
 
@@ -65,9 +66,9 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
     const fetchedQueries = queries.filter(({ query, variables }) =>
       isRouteFetched(getRouteId(getRouteByEndpoint(queryEndpoints, query), variables)),
     );
+
     return asyncMap(
       fetchedQueries.map(({ query, variables }) => () => {
-        const a = '';
         return queryApiCall({ variables, query });
       }),
     );

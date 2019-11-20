@@ -8,6 +8,7 @@ function usePopup<O = any>(): Popup<O> {
   return {
     isShown,
     params: options,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
     show: _options => {
       setOptions(_options);

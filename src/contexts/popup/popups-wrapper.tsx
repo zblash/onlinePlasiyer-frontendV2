@@ -19,6 +19,7 @@ function PopupsWrapper(props: PopupsWrapperProps) {
     },
     { ...props.deleteProduct, comp: <ProductDeletePopup params={props.deleteProduct.params} /> },
   ];
+
   return (
     <>
       {popupMapArray.map((item, index) => (
