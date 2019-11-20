@@ -1,5 +1,5 @@
 import { ApiCall } from '~/services/api';
-import { IProductResponse, ISpecifyProductResponse, Invoice, IOrder } from '~/services/helpers/backend-models';
+import { IProductResponse, ISpecifyProductResponse, Invoice, IOrder, IAnnouncement } from '~/services/helpers/backend-models';
 import { PaginationResult } from './helpers';
 
 class QueryEndpoints {
@@ -24,6 +24,9 @@ class QueryEndpoints {
 
   getAllOrders: (s: { pageNumber: number }) => Promise<PaginationResult<IOrder>> = ({ pageNumber }) =>
     ApiCall.get('/orders', { pageNumber });
+
+  getAllAnnouncements: (s: { pageNumber: number }) => Promise<PaginationResult<IAnnouncement>> = ({ pageNumber }) =>
+  ApiCall.get('/orders', { pageNumber });
 }
 const paginationQueryEndpoints = new QueryEndpoints();
 

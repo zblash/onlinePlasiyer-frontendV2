@@ -119,6 +119,14 @@ export interface IObligationTotals {
   totalReceivables: number;
 }
 
+export interface IAnnouncement {
+  id: string;
+  fileUrl: string;
+  lastDate: string;
+  message: string;
+  title: string;
+}
+
 export type UserRoleResponse = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';
 
 export type UnitTypeResponse = 'KG' | 'KL' | 'AD';

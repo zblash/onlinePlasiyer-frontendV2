@@ -5,6 +5,8 @@ import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { Container, UIButton } from '~/components/ui';
 import { CategoryHorizontalListFetcher } from '~/fetcher-components/common/category-horizontal-list';
+import { usePaginationQuery } from '~/services/pagination-query-context/context';
+import { paginationQueryEndpoints } from '~/services/pagination-query-context/pagination-query-endpoints';
 
 /* Home Helpers */
 interface HomeProps {}
