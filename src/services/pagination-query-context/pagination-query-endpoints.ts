@@ -24,9 +24,6 @@ class QueryEndpoints {
 
   getAllOrders: (s: { pageNumber: number }) => Promise<PaginationResult<IOrder>> = ({ pageNumber }) =>
     ApiCall.get('/orders', { pageNumber });
-
-  getAllAnnouncements: (s: { pageNumber: number }) => Promise<PaginationResult<IAnnouncement>> = ({ pageNumber }) =>
-  ApiCall.get('/orders', { pageNumber });
 }
 const paginationQueryEndpoints = new QueryEndpoints();
 

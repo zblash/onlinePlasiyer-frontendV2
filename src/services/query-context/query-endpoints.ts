@@ -9,6 +9,7 @@ import {
   IAddressCityResponse,
   UserRoleResponse,
   IObligationTotals,
+  IAnnouncement,
 } from '~/services/helpers/backend-models';
 import { UserType } from '../helpers/maps';
 
@@ -63,6 +64,9 @@ class QueryEndpoints {
   getStates: () => Promise<any> = () => axios.get(URL.concat('/definitions/states')).then(({ data }) => data);
 
   getObligationTotal: () => Promise<IObligationTotals> = () => ApiCall.get('/obligations/totals');
+
+  getAnnouncements: () => Promise<Array<IAnnouncement>> = () =>
+    ApiCall.get('/announcements');
 }
 const queryEndpoints = new QueryEndpoints();
 

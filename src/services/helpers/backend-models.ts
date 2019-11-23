@@ -127,6 +127,7 @@ export interface IAnnouncement {
   title: string;
 }
 
+
 export type UserRoleResponse = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';
 
 export type UnitTypeResponse = 'KG' | 'KL' | 'AD';

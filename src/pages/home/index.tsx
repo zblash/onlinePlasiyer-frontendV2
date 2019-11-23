@@ -7,6 +7,7 @@ import { Container, UIButton } from '~/components/ui';
 import { CategoryHorizontalListFetcher } from '~/fetcher-components/common/category-horizontal-list';
 import { usePaginationQuery } from '~/services/pagination-query-context/context';
 import { paginationQueryEndpoints } from '~/services/pagination-query-context/pagination-query-endpoints';
+import Slider from 'react-slick';
 
 /* Home Helpers */
 interface HomeProps {}
@@ -44,6 +45,25 @@ const styleTotalObligationElementLast = css`
   margin-left: 1%;
 `;
 
+const SliderWrapper = styled.div`
+  width: 60%;
+  float: left;
+  padding: 0 15px 24px 15px;
+  border: 1px solid ${colors.lightGray};
+  border-radius: 5px;
+  margin-bottom: 10px;
+`;
+
+const SliderImg = styled.img`
+  height: 600px;
+  width: 100%;
+`;
+
+const SliderWrapperTitle = styled.h3`
+  padding-bottom: 10px;
+  border-bottom: 1px solid ${colors.lightGray};
+`;
+
 const StyledTotalObligationButton = styled(UIButton)`
 display: flex;
 float: right;
@@ -62,33 +82,64 @@ border-radius: 8px;
 }
 `;
 
+const HomeWrapper = styled.div``;
+
 /* Home Component  */
 function Home(props: React.PropsWithChildren<HomeProps>) {
   const { t } = useTranslation();
   const { data: totalObligation } = useQuery(queryEndpoints.getObligationTotal, {
     defaultValue: {},
   });
+  const { data: announcements } = useQuery(queryEndpoints.getAnnouncements, {
+    defaultValue: [],
+  });
+
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    autoplaySpeed: 5000,
+    arrows: false,
+    autoplay: true,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    adaptiveHeight: true,
+  };
 
   const __ = (
     <Container>
       <CategoryHorizontalListFetcher shouldUseProductsPageLink />
+      <HomeWrapper>
+        <SliderWrapper>
+          <SliderWrapperTitle>Duyurular</SliderWrapperTitle>
+          <Slider {...settings}>
+            {announcements.map(item => (
+              <div key={item.id}>
+                <h3>{item.title}</h3>
+                <p>{item.message}</p>
+                <SliderImg src={item.fileUrl} />
+              </div>
+            ))}
+          </Slider>
+        </SliderWrapper>
 
-      <StyledTotalObligationWrapper>
-        <StyledTotalObligationWrapperTitle>{t('obligations.title')}</StyledTotalObligationWrapperTitle>
-        <StyledTotalObligationElement>
-          <StyledTotalObligationElementText>{t('obligations.totalDebts')}</StyledTotalObligationElementText>
-          {/* TODO TL Icon move to translation */}
-          <StyledTotalObligationElementText>{totalObligation.totalDebts} &#8378;</StyledTotalObligationElementText>
-        </StyledTotalObligationElement>
-        <StyledTotalObligationElement className={styleTotalObligationElementLast}>
-          <StyledTotalObligationElementText>{t('obligations.totalReceivables')}</StyledTotalObligationElementText>
-          {/* TODO TL Icon move to translation */}
-          <StyledTotalObligationElementText>
-            {totalObligation.totalReceivables} &#8378;
-          </StyledTotalObligationElementText>
-        </StyledTotalObligationElement>
-        <StyledTotalObligationButton>{t('obligations.details')}</StyledTotalObligationButton>
-      </StyledTotalObligationWrapper>
+        <StyledTotalObligationWrapper>
+          <StyledTotalObligationWrapperTitle>{t('obligations.title')}</StyledTotalObligationWrapperTitle>
+          <StyledTotalObligationElement>
+            <StyledTotalObligationElementText>{t('obligations.totalDebts')}</StyledTotalObligationElementText>
+            {/* TODO TL Icon move to translation */}
+            <StyledTotalObligationElementText>{totalObligation.totalDebts} &#8378;</StyledTotalObligationElementText>
+          </StyledTotalObligationElement>
+          <StyledTotalObligationElement className={styleTotalObligationElementLast}>
+            <StyledTotalObligationElementText>{t('obligations.totalReceivables')}</StyledTotalObligationElementText>
+            {/* TODO TL Icon move to translation */}
+            <StyledTotalObligationElementText>
+              {totalObligation.totalReceivables} &#8378;
+            </StyledTotalObligationElementText>
+          </StyledTotalObligationElement>
+          <StyledTotalObligationButton>{t('obligations.details')}</StyledTotalObligationButton>
+        </StyledTotalObligationWrapper>
+      </HomeWrapper>
     </Container>
   );
   /* Home Lifecycle  */
