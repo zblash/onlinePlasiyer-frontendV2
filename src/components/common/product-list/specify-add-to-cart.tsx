@@ -48,7 +48,7 @@ const tableColumnCartInputStyle = css`
 function SpecifyAddtoCart(props: React.PropsWithChildren<SpecifyAddtoCartProps>) {
   const [quantity, setQuantity] = React.useState(0);
 
-  let specifyProductId = props.specifyProductId;
+  const specifyProductId = props.specifyProductId;
   const { mutation: addToCart } = useMutation(mutationEndPoints.addToCard, {
     variables: {
       specifyProductId,
