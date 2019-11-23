@@ -65,8 +65,7 @@ class QueryEndpoints {
 
   getObligationTotal: () => Promise<IObligationTotals> = () => ApiCall.get('/obligations/totals');
 
-  getAnnouncements: () => Promise<Array<IAnnouncement>> = () =>
-    ApiCall.get('/announcements');
+  getAnnouncements: () => Promise<Array<IAnnouncement>> = () => ApiCall.get('/announcements');
 }
 const queryEndpoints = new QueryEndpoints();
 

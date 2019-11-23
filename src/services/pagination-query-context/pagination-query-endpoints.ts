@@ -1,5 +1,5 @@
 import { ApiCall } from '~/services/api';
-import { IProductResponse, ISpecifyProductResponse, Invoice, IOrder, IAnnouncement } from '~/services/helpers/backend-models';
+import { IProductResponse, ISpecifyProductResponse, Invoice, IOrder } from '~/services/helpers/backend-models';
 import { PaginationResult } from './helpers';
 
 class QueryEndpoints {
