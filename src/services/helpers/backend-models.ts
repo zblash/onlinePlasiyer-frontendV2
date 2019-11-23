@@ -113,6 +113,20 @@ export interface Invoice {
   unPaidPrice: number;
 }
 
+export interface IObligationTotals {
+  id: string;
+  totalDebts: number;
+  totalReceivables: number;
+}
+
+export interface IAnnouncement {
+  id: string;
+  fileUrl: string;
+  lastDate: string;
+  message: string;
+  title: string;
+}
+
 export type UserRoleResponse = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';
 
 export type UnitTypeResponse = 'KG' | 'KL' | 'AD';
