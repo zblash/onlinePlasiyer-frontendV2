@@ -10,85 +10,70 @@ import { MaybeArray } from '~/helpers';
 import { queryEndpoints } from './query-endpoints';
 import { RefetchQuery } from '../mutation-context/helpers';
 import { asyncMap } from '~/utils';
+import { useApiCallContext } from '../api-call-context/context';
 
 interface QueryContextProviderProps {}
 
 function QueryContextProvider(props: React.PropsWithChildren<QueryContextProviderProps>) {
   const databaseObjectsContext = useDatabaseObjectsContext();
+  const { fetchIfNotExist: getIfNotExist, fetch: get } = useApiCallContext();
   const parseSchema = useParseSchema();
   const [routeSchemas, setRouteSchemas] = React.useState<Record<string, MaybeArray<RouteSchema>>>({});
-  const queryQueue = React.useRef({});
 
-  function queryHandler(params: QueryHandlerParams) {
-    const { query, variables } = params;
-    const routeId = getRouteId(getRouteByEndpoint(queryEndpoints, query), variables);
-    const isCurrentRouteFetched = isRouteFetched(routeId);
-    if (isCurrentRouteFetched) {
-      return Promise.resolve(routeId);
-    }
-    if (!queryQueue.current[routeId]) {
-      queryQueue.current[routeId] = queryApiCall(params).then(() => routeId);
-    } else {
-      queryQueue.current[routeId]
-        .then(() => {
-          queryQueue.current[routeId] = queryApiCall(params);
-        })
-        .then(() => routeId);
-    }
-
-    return queryQueue.current[routeId];
-  }
-
-  function queryApiCall(params: QueryHandlerParams) {
-    const { query, variables } = params;
-    const routeId = getRouteId(getRouteByEndpoint(queryEndpoints, query), variables);
-
-    return query(variables)
-      .then(data => {
-        const routeSchema = dataToSchema(data);
-        setRouteSchemas(prevSate => ({ ...prevSate, [routeId]: routeSchema }));
-        databaseObjectsContext.setObjectsFromBackendResponse(data);
-
-        return data;
-      })
-      .finally(() => {
-        queryQueue.current[routeId] = undefined;
-      });
-  }
-
-  function isRouteFetched(routeId: string) {
-    return Boolean(routeSchemas[routeId]);
-  }
-
-  function getDataByRouteId(routeId: string) {
-    const schema = routeSchemas[routeId];
-
-    return parseSchema(schema);
-  }
-
-  function refetchQueries(queries: RefetchQuery[] = []) {
-    const fetchedQueries = queries.filter(({ query, variables }) =>
-      isRouteFetched(getRouteId(getRouteByEndpoint(queryEndpoints, query), variables)),
-    );
-
-    return asyncMap(
-      fetchedQueries.map(({ query, variables }) => () => {
-        return queryApiCall({ variables, query });
-      }),
-    );
-  }
-
-  return (
-    <QueryContext.Provider
-      value={{
-        queryHandler,
-        refetchQueries,
-        getDataByRouteId,
-      }}
-    >
-      {props.children}
-    </QueryContext.Provider>
+  const isRouteFetched = React.useCallback(
+    (routeId: string) => {
+      return Boolean(routeSchemas[routeId]);
+    },
+    [routeSchemas],
   );
+  const thenFactory = React.useCallback(
+    (params: QueryHandlerParams) => data => {
+      const routeId = getRouteId(getRouteByEndpoint(queryEndpoints, params.query), params.variables);
+      const routeSchema = dataToSchema(data);
+      setRouteSchemas(prevSate => ({ ...prevSate, [routeId]: routeSchema }));
+      databaseObjectsContext.setObjectsFromBackendResponse(data);
+
+      return routeId;
+    },
+    [databaseObjectsContext],
+  );
+  const queryHandler = React.useCallback(
+    (params: QueryHandlerParams) => getIfNotExist(params.query, params.variables).then(thenFactory(params)),
+    [getIfNotExist, thenFactory],
+  );
+
+  const getDataByRouteId = React.useCallback(
+    (routeId: string) => {
+      const schema = routeSchemas[routeId];
+
+      return parseSchema(schema);
+    },
+    [parseSchema, routeSchemas],
+  );
+  const refetchQueries = React.useCallback(
+    (queries: Array<RefetchQuery> = []) => {
+      const fetchedQueries = queries.filter(({ query, variables }) =>
+        isRouteFetched(getRouteId(getRouteByEndpoint(queryEndpoints, query), variables)),
+      );
+
+      return asyncMap(
+        fetchedQueries.map(({ query, variables }) => () => {
+          return get(query, variables).then(thenFactory({ query, variables }));
+        }),
+      );
+    },
+    [get, isRouteFetched, thenFactory],
+  );
+  const contextValues = React.useMemo(
+    () => ({
+      queryHandler,
+      refetchQueries,
+      getDataByRouteId,
+    }),
+    [getDataByRouteId, queryHandler, refetchQueries],
+  );
+
+  return <QueryContext.Provider value={contextValues}>{props.children}</QueryContext.Provider>;
 }
 
 export { QueryContextProvider };

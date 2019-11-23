@@ -7,7 +7,7 @@ type RouteSchema = {
     [key: string]: MaybeArray<RouteSchema>;
   };
 };
-
+// [hooks] sonra bak buraya
 function dataToSchema(data: any): MaybeArray<RouteSchema> {
   if (isArray(data)) {
     return data.map(childItem => dataToSchema(childItem) as RouteSchema);

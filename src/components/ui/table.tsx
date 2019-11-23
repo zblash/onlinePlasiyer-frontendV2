@@ -144,7 +144,7 @@ function _UITable<T>(props: UiTableProps<T>) {
     }
 
     return data;
-  }, [props.data, props.rowCount, hasRowCount, rowCount, pageIndex, props.id]);
+  }, [props.data, props.rowCount, hasRowCount, rowCount, pageIndex]);
 
   const pageCount = Math.floor(props.data.length / rowCount);
 

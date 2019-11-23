@@ -48,4 +48,25 @@ function useWindowEvent<T extends keyof WindowEventMap>(event: T, callback: (e: 
   }, [event, callback]);
 }
 
-export { useStateFromProp, usePrevious, useKeepValue, useStateWithCallback, useWindowEvent };
+function useObjectState<T>(initialState: T): [T, React.Dispatch<React.SetStateAction<Partial<T>>>] {
+  const [state, setState] = React.useState(initialState);
+  const setMergedState = React.useCallback(newState => setState(prevState => ({ ...prevState, ...newState })), []);
+
+  return [state, setMergedState];
+}
+function useArrayState<T>(initialState: T[]): [T[], React.Dispatch<React.SetStateAction<Partial<T>>>] {
+  const [state, setState] = React.useState(initialState);
+  const setMergedState = React.useCallback(newState => setState(prevState => [...prevState, ...newState]), []);
+
+  return [state, setMergedState];
+}
+
+export {
+  useStateFromProp,
+  usePrevious,
+  useKeepValue,
+  useStateWithCallback,
+  useWindowEvent,
+  useObjectState,
+  useArrayState,
+};

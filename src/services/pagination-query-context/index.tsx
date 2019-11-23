@@ -13,128 +13,109 @@ import { RouteSchema } from '../helpers';
 import { paginationQueryEndpoints } from './pagination-query-endpoints';
 import { RefetchQuery } from '../mutation-context/helpers';
 import { asyncMap } from '~/utils';
+import { useApiCallContext } from '../api-call-context/context';
+import { useObjectState } from '~/utils/hooks';
 
-type RouteStorage = {
-  lastPageNumber: number;
-  elementCountOfPage: number;
-  storage: Array<{
-    schema: MaybeArray<RouteSchema>;
-    pageNumber: number;
-  }>;
-};
+type RouteStorage = Array<{
+  schema: MaybeArray<RouteSchema>;
+  pageNumber: number;
+}>;
 
 function PaginationQueryContextProvider(props) {
-  const queryQueue = React.useRef({});
-  const databaseObjectsContext = useDatabaseObjectsContext();
+  const { fetchIfNotExist: getIfNotExist, fetch: get } = useApiCallContext();
+  const { setObjectsFromBackendResponse } = useDatabaseObjectsContext();
   const parseSchema = useParseSchema();
-  const [routeStorage, setRouteStorage] = React.useState<Record<string, RouteStorage>>({});
-  function queryHandler(params: QueryHandlerParams) {
-    const { query, variables } = params;
-    const routeId = getRouteId(getRouteByEndpoint(paginationQueryEndpoints, query), variables);
-    const isCurrentRouteFetched = isRouteFetched(routeId, params.pageNumber);
-    if (isCurrentRouteFetched) {
-      return Promise.resolve(
-        resultCreator(routeId, routeStorage[routeId].lastPageNumber, routeStorage[routeId].elementCountOfPage),
-      );
-    }
-    if (!queryQueue.current[routeId]) {
-      queryQueue.current[routeId] = queryApiCall(params).then(data => {
-        return resultCreator(routeId, data.totalPage, data.elementCountOfPage);
-      });
-    } else {
-      queryQueue.current[routeId]
-        .then(() => {
-          queryQueue.current[routeId] = queryApiCall(params);
+  const [routeStorage, setRouteStorage] = useObjectState<Record<string, RouteStorage>>({});
 
-          return queryQueue.current[routeId];
-        })
-        .then(data => resultCreator(routeId, data.totalPage, data.elementCountOfPage));
-    }
-
-    return queryQueue.current[routeId];
-  }
-
-  function queryApiCall(params: QueryHandlerParams) {
-    const { query, variables, pageNumber } = params;
-    const routeId = getRouteId(getRouteByEndpoint(paginationQueryEndpoints, query), variables);
-
-    return query({ ...variables, pageNumber }).then(data => {
+  const resultHandler = React.useCallback(
+    (routeId: string, pageNumber: number, data: any) => {
       const values = data.values.map(item => ({ ...item, pageIndex: pageNumber }));
       const routeSchema = dataToSchema(values);
-      databaseObjectsContext.setObjectsFromBackendResponse(values);
-      setRouteStorage(prevSate => ({
-        ...prevSate,
-        [routeId]: {
-          lastPageNumber: data.totalPage,
-          elementCountOfPage: data.elementCountOfPage,
-          storage: lodashUniqBy(
-            [
-              {
-                pageNumber,
-                schema: routeSchema,
-              },
-              ...(lodashGet(prevSate, `${routeId}.storage`, []) as []),
-            ],
-            'pageNumber',
-          ),
-        },
-      }));
+      setObjectsFromBackendResponse(values);
+      setRouteStorage({
+        [routeId]: lodashUniqBy(
+          [
+            {
+              pageNumber,
+              schema: routeSchema,
+            },
+            ...(lodashGet(routeStorage, `${routeId}.storage`, []) as []),
+          ],
+          'pageNumber',
+        ),
+      });
 
-      return { ...data, values };
-    });
-  }
-
-  function getDataByRouteId(routeId: string) {
-    const routeSchemas = routeStorage[routeId].storage
-      .slice()
-      .reverse()
-      .map(storage => storage.schema);
-    const result = lodashContact([], ...routeSchemas.map(schema => parseSchema(schema)));
-
-    return result;
-  }
-
-  function isRouteFetched(routeId: string, pageNumber: number): boolean {
-    const hasStorage = routeStorage[routeId];
-
-    return !!hasStorage && Boolean(routeStorage[routeId].storage.find(item => item.pageNumber === pageNumber));
-  }
-
-  function isRouteFetchedForAnyPage(routeId: string) {
-    return Boolean(routeStorage[routeId]);
-  }
-
-  function refetchQueries(queries: RefetchQuery[]) {
-    const fetchedQueries = queries.filter(({ query, variables }) =>
-      isRouteFetchedForAnyPage(getRouteId(getRouteByEndpoint(paginationQueryEndpoints, query), variables)),
-    );
-
-    return asyncMap(
-      fetchedQueries.map(({ query, variables }) => {
-        const routeId = getRouteId(getRouteByEndpoint(paginationQueryEndpoints, query), variables);
-
-        return () =>
-          asyncMap(
-            routeStorage[routeId].storage.map(({ pageNumber }) => () =>
-              queryApiCall({
-                pageNumber,
-                query,
-                variables,
-              }),
-            ),
-          );
-      }),
-    );
-  }
-  function resultCreator(routeId: string, lastPageNumber: number, elementCountOfPage: number) {
-    return { routeId, lastPageNumber, elementCountOfPage };
-  }
-
-  return (
-    <PaginationQueryContext.Provider value={{ queryHandler, refetchQueries, getDataByRouteId }}>
-      {props.children}
-    </PaginationQueryContext.Provider>
+      return { routeId, lastPageNumber: data.totalPage, elementCountOfPage: data.elementCountOfPage };
+    },
+    [routeStorage, setObjectsFromBackendResponse, setRouteStorage],
   );
+  const thenFactory = React.useCallback(
+    (params: QueryHandlerParams) => {
+      return data => {
+        const routeId = getRouteId(getRouteByEndpoint(paginationQueryEndpoints, params.query), params.variables);
+
+        return resultHandler(routeId, params.pageNumber, data);
+      };
+    },
+    [resultHandler],
+  );
+
+  const queryHandler = React.useCallback(
+    (params: QueryHandlerParams) =>
+      getIfNotExist(params.query, { ...params.variables, pageNumber: params.pageNumber }).then(thenFactory(params)),
+    [getIfNotExist, thenFactory],
+  );
+
+  const getDataByRouteId = React.useCallback(
+    (routeId: string) => {
+      const routeSchemas = routeStorage[routeId]
+        .slice()
+        .reverse()
+        .map(storage => storage.schema);
+      const result = lodashContact([], ...routeSchemas.map(schema => parseSchema(schema)));
+
+      return result;
+    },
+    [parseSchema, routeStorage],
+  );
+  const isRouteFetchedForAnyPage = React.useCallback(
+    (routeId: string) => {
+      return Boolean(routeStorage[routeId]);
+    },
+    [routeStorage],
+  );
+
+  const refetchQueries = React.useCallback(
+    (queries: RefetchQuery[]) => {
+      const fetchedQueries = queries.filter(({ query, variables }) =>
+        isRouteFetchedForAnyPage(getRouteId(getRouteByEndpoint(paginationQueryEndpoints, query), variables)),
+      );
+
+      return asyncMap(
+        fetchedQueries.map(({ query, variables }) => {
+          const routeId = getRouteId(getRouteByEndpoint(paginationQueryEndpoints, query), variables);
+
+          return () =>
+            asyncMap(
+              routeStorage[routeId].map(({ pageNumber }) => () =>
+                get(query, {
+                  pageNumber,
+                  ...variables,
+                }).then(thenFactory({ pageNumber, query, variables })),
+              ),
+            );
+        }),
+      );
+    },
+    [get, isRouteFetchedForAnyPage, routeStorage, thenFactory],
+  );
+  const contextValues = React.useMemo(() => ({ queryHandler, refetchQueries, getDataByRouteId }), [
+    getDataByRouteId,
+    queryHandler,
+    refetchQueries,
+  ]);
+
+  return <PaginationQueryContext.Provider value={contextValues}>{props.children}</PaginationQueryContext.Provider>;
 }
 
 export { PaginationQueryContextProvider };

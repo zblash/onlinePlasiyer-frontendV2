@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { isObject, isArray, narrowObject, objectKeys, getKeyByValue } from '~/utils';
+import { isObject, isArray, narrowObject, getKeyByValue } from '~/utils';
 import { EndpointsVariablesType } from '../helpers';
 import { RefetchQuery } from '../mutation-context/helpers';
 import { queryEndpoints } from '../query-context/query-endpoints';
@@ -10,15 +10,6 @@ const getRouteByEndpoint = (queries: any, query: any) => {
 };
 
 const CURRENT_ID_KEY = 'id';
-
-export function deepMergeIdObjects(cache: any, newData: any) {
-  const modifiedData = {};
-  objectKeys(newData).forEach(id => {
-    modifiedData[id] = { ...cache[id], ...newData[id] };
-  });
-
-  return modifiedData;
-}
 
 export const separatingObjectsContainingId = (unmodifiedData: any) => {
   let modifiedData: Record<string, any> = {};
@@ -50,6 +41,7 @@ export const separatingObjectsContainingId = (unmodifiedData: any) => {
   return modifiedData;
 };
 
+// [hooks] replace to callback usememo and move services hooks
 function refetchFactory<T>(query: T, variables: Omit<EndpointsVariablesType<T>, 'pageNumber'>): RefetchQuery<T> {
   return {
     // eslint-disable-next-line @typescript-eslint/ban-ts-ignore

@@ -93,7 +93,7 @@ const _ParentCategoryInput: React.SFC<ParentCategoryInputProps> = props => {
         lodashGet(parentCategories.find(category => category.id === props.selectedCategoryId), 'name', ''),
       );
     }
-  }, [parentCategories.length]);
+  }, [parentCategories, props.selectedCategoryId]);
 
   /*
   ParentCategoryInput Functions

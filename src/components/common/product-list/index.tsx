@@ -75,7 +75,7 @@ const tableStyle = css`
 
 const ProductList: React.SFC<ProductListProps> = props => {
   const [expandProductId, setExpandProductId] = React.useState<string>(null);
-  const chunkedArray = React.useMemo(() => _chunk(props.products, CHUNK_SIZE), [JSON.stringify(props.products)]);
+  const chunkedArray = React.useMemo(() => _chunk(props.products, CHUNK_SIZE), [props.products]);
 
   const __ = (
     <>

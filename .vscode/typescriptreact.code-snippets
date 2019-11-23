@@ -18,19 +18,19 @@
       "",
       "/* $1 Component  */",
       "function $1(props:React.PropsWithChildren<$1Props>){",
+      "/* $1 Variables */",
       "const {t}=useTranslation();",
-      "",
-      "const __ = (<Styled$1Wrapper>{t('common.hello')}</Styled$1Wrapper>);",
+      "/* $1 Callbacks */",
       "",
       "/* $1 Lifecycle  */",
       "",
-      "/* $1 Functions  */",
       "",
-      "return __;",
+      "return <Styled$1Wrapper>{t('common.hello')}</Styled$1Wrapper>;",
       "",
       "};",
+      "const Pure$1=React.memo($1)",
       "",
-      "export { $1 } "
+      "export { Pure$1:$1 } "
     ]
   },
   "Create Function2": {
@@ -42,18 +42,18 @@
       "interface $1Props{}",
       "",
       "function $1(props:React.PropsWithChildren<$1Props>){",
+      "/* Variables  */",
       "",
-      "const __ = (<div/>);",
+      "/* Callbacks  */",
       "",
-      "/* $1 Lifecycle  */",
+      "/* Lifecycle  */",
       "",
-      "/* $1 Functions  */",
-      "",
-      "return __;",
+      "return <div/>;",
       "",
       "};",
+      "const Pure$1=React.memo($1)",
       "",
-      "export { $1 } "
+      "export { Pure$1:$1 } "
     ]
   }
 }

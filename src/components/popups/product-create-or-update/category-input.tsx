@@ -87,7 +87,7 @@ const CategoryInput: React.SFC<CategoryInputProps> = props => {
         lodashGet(allCategories.find(category => category.id === props.selectedCategoryId), 'name', ''),
       );
     }
-  }, [allCategories.length, props.selectedCategoryId]);
+  }, [allCategories, props.selectedCategoryId]);
 
   /*
   CategoryInput Functions

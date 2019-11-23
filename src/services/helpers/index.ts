@@ -5,16 +5,7 @@ export interface RouteSchema {
   };
 }
 
-export interface ServicesContextProviderComponentState {
-  dataCache: Record<string, any>;
-  routeCache: Record<
-    string,
-    {
-      usedIds: string[];
-      schema: RouteSchema | RouteSchema[];
-    }
-  >;
-}
+export type BasicQuery = (vars: any) => Promise<any>;
 
 export type ArgumentTypes<F extends Function> = F extends (...args: infer A) => any ? A : never;
 

@@ -8,7 +8,7 @@ interface ProductListFetcherProps extends ProductListComponentProps {}
 
 function ProductListFetcher(props: React.PropsWithChildren<ProductListFetcherProps>) {
   const [expandProductId, setExpandProductId] = React.useState<string>(null);
-  const { data: products, next: getNextProductPage, lastPage, currentPage } = usePaginationQuery(
+  const { data: products, lastPage, currentPage } = usePaginationQuery(
     paginationQueryEndpoints.getAllProductsByCategoryId,
     {
       variables: { categoryId: props.selectedCategoryId },
@@ -24,11 +24,9 @@ function ProductListFetcher(props: React.PropsWithChildren<ProductListFetcherPro
       skip: !expandProductId,
     },
   );
-  const __ = (
-    <ProductList
-      productsLastPageIndex={lastPage}
-      productsCurrentPage={currentPage}
-      products={products
+  const mappedArray = React.useMemo(
+    () =>
+      products
         .filter(product => product.pageIndex === currentPage)
         .map(product => ({
           id: product.id,
@@ -36,7 +34,14 @@ function ProductListFetcher(props: React.PropsWithChildren<ProductListFetcherPro
           taxRate: product.tax,
           img: product.photoUrl,
           barcode: product.barcode,
-        }))}
+        })),
+    [currentPage, products],
+  );
+  const __ = (
+    <ProductList
+      productsLastPageIndex={lastPage}
+      productsCurrentPage={currentPage}
+      products={mappedArray}
       specifyProducts={specifyProducts}
       {...props}
       onChangeExpandProductId={id => {

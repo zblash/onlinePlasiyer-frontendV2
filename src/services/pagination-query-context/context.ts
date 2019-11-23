@@ -5,6 +5,7 @@ import {
   UsePaginationQueryResult,
   UsePaginationQueryOptions,
 } from './helpers';
+import { useObjectState } from '~/utils/hooks';
 
 const initialValue: PaginationQueryContextType = {
   getDataByRouteId: () => null,
@@ -20,8 +21,8 @@ function usePaginationQuery<T extends BasePaginationQuery>(
   query: T,
   options: UsePaginationQueryOptions<T> = {},
 ): UsePaginationQueryResult<T> {
-  const paginationQueryContext = usePaginationQueryContext();
-  const [state, setState] = React.useState({
+  const { queryHandler, getDataByRouteId } = usePaginationQueryContext();
+  const [state, setState] = useObjectState({
     routeId: null,
     error: null,
     elementCountOfPage: 0,
@@ -30,73 +31,85 @@ function usePaginationQuery<T extends BasePaginationQuery>(
     pageNumber: options.pageNumber || 1,
     lastPage: 1,
   });
-  function getQuery() {
+
+  const data = React.useMemo(() => {
+    if (state.routeId) {
+      return getDataByRouteId(state.routeId);
+    }
+
+    return options.defaultValue || null;
+  }, [getDataByRouteId, options.defaultValue, state.routeId]);
+
+  const getQuery = React.useCallback(() => {
     if (options.skip) {
       return;
     }
-    setState({ ...state, loading: true });
-    paginationQueryContext
-      .queryHandler({
-        query,
-        variables: options.variables || {},
-        pageNumber: state.pageNumber,
-      })
+    setState({ loading: true });
+    queryHandler({
+      query,
+      variables: options.variables || {},
+      pageNumber: state.pageNumber,
+    })
       .then(({ routeId, lastPageNumber, elementCountOfPage }) => {
-        setState(prev => ({
-          ...prev,
+        setState({
           routeId,
           elementCountOfPage,
           lastPage: lastPageNumber,
           loading: false,
           isCompleted: true,
-        }));
+        });
       })
       .catch(e => {
-        setState(prev => ({ ...prev, error: e, loading: false }));
+        setState({ error: e, loading: false });
         throw e;
       });
-  }
+  }, [options.skip, options.variables, query, queryHandler, setState, state.pageNumber]);
 
   React.useEffect(() => {
     if (state.pageNumber === 1) {
       getQuery();
     } else {
-      setState(prev => ({ ...prev, pageNumber: 1 }));
+      setState({ pageNumber: 1 });
     }
-  }, [JSON.stringify(options)]);
+  }, [getQuery, setState, state.pageNumber]);
 
   React.useEffect(() => {
     getQuery();
-  }, [state.pageNumber]);
+  }, [getQuery, state.pageNumber]);
+
   React.useEffect(() => {
     if (options.pageNumber) {
-      setState(prev => ({ ...prev, pageNumber: options.pageNumber }));
+      setState({ pageNumber: options.pageNumber });
     }
-  }, [options.pageNumber]);
+  }, [options.pageNumber, setState]);
 
-  function dataGetter() {
-    if (state.routeId) {
-      return paginationQueryContext.getDataByRouteId(state.routeId);
-    }
-
-    return options.defaultValue || null;
-  }
-
-  return {
-    elementCountOfPage: state.elementCountOfPage,
-    data: dataGetter(),
-    currentPage: state.pageNumber,
-    loading: state.loading,
-    lastPage: state.lastPage,
-    error: state.error,
-    isDone: state.pageNumber === state.lastPage && !!state.routeId,
-    next: () => {
-      const nextPage = state.pageNumber + 1;
-      if (nextPage <= state.lastPage) {
-        setState(prev => ({ ...prev, pageNumber: state.pageNumber + 1 }));
-      }
-    },
-  };
+  return React.useMemo(
+    () => ({
+      elementCountOfPage: state.elementCountOfPage,
+      data,
+      currentPage: state.pageNumber,
+      loading: state.loading,
+      lastPage: state.lastPage,
+      error: state.error,
+      isDone: state.pageNumber === state.lastPage && !!state.routeId,
+      next: () => {
+        const nextPage = state.pageNumber + 1;
+        if (nextPage <= state.lastPage) {
+          setState({ pageNumber: state.pageNumber + 1 });
+        }
+      },
+    }),
+    [
+      data,
+      setState,
+      state.elementCountOfPage,
+      state.error,
+      state.lastPage,
+      state.loading,
+      state.pageNumber,
+      state.routeId,
+    ],
+  );
 }
 
 export { PaginationQueryContext, usePaginationQuery, usePaginationQueryContext };

@@ -14,18 +14,18 @@ function useQueryContext() {
 }
 
 function useQuery<T extends BaseQuery>(query: T, options?: UseQueryOptions<T>): UseQueryResult<T> {
+  const { defaultValue, onCompleted, skip, variables } = options;
   const queryContext = useQueryContext();
-  const [state, setState] = React.useState({ routeId: null, error: null, loading: !options.skip, isCompleted: false });
-
-  function getQuery() {
-    if (options.skip) {
+  const [state, setState] = React.useState({ routeId: null, error: null, loading: !skip, isCompleted: false });
+  const getQuery = React.useCallback(() => {
+    if (skip) {
       return;
     }
     setState({ ...state, loading: true, isCompleted: false });
     queryContext
       .queryHandler({
         query,
-        variables: options.variables || {},
+        variables: variables || {},
       })
       .then(routeId => {
         setState(prev => ({
@@ -39,28 +39,27 @@ function useQuery<T extends BaseQuery>(query: T, options?: UseQueryOptions<T>): 
         setState(prev => ({ ...prev, error: e, loading: false }));
         throw e;
       });
-  }
+  }, [skip, variables, query, queryContext, state]);
 
   React.useEffect(() => {
     getQuery();
-  }, [JSON.stringify(options)]);
-
-  React.useEffect(() => {
-    if (state.isCompleted && options.onCompleted) {
-      options.onCompleted(dataGetter());
-    }
-  }, [state.isCompleted]);
-
-  function dataGetter() {
+  }, [getQuery]);
+  const data = React.useMemo(() => {
     if (state.routeId) {
       return queryContext.getDataByRouteId(state.routeId);
     }
 
-    return options.defaultValue || null;
-  }
+    return defaultValue || null;
+  }, [defaultValue, queryContext, state.routeId]);
+
+  React.useEffect(() => {
+    if (state.isCompleted && onCompleted) {
+      onCompleted(data);
+    }
+  }, [data, onCompleted, state.isCompleted]);
 
   return {
-    data: dataGetter(),
+    data,
     loading: state.loading,
     error: state.error,
   };

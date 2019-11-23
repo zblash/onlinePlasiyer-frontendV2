@@ -10,32 +10,41 @@ function MutationContextProvider(props: React.PropsWithChildren<MutationContextP
   const queryContext = useQueryContext();
   const paginationQueryContext = usePaginationQueryContext();
   const databaseObjectsContext = useDatabaseObjectsContext();
-  function mutationHandler({ mutation, variables, refetchQueries }: MutationHandlerParams) {
-    return mutation(variables).then(mutationResult => {
-      databaseObjectsContext.setObjectsFromBackendResponse(mutationResult);
-      refetchQueriesHandler(refetchQueries);
+  const refetchQueriesHandler = React.useCallback(
+    (refetchQueries: RefetchQuery[] = []) => {
+      const normalRefetchQueries = refetchQueries.filter(t => t.type === 'normal');
+      const paginationRefetchQueries = refetchQueries.filter(t => t.type === 'pagination');
+      asyncMap([
+        () => {
+          const a = queryContext.refetchQueries(normalRefetchQueries);
 
-      return mutationResult;
-    });
-  }
-  function refetchQueriesHandler(refetchQueries: RefetchQuery[] = []) {
-    const normalRefetchQueries = refetchQueries.filter(t => t.type === 'normal');
-    const paginationRefetchQueries = refetchQueries.filter(t => t.type === 'pagination');
-    asyncMap([
-      () => {
-        const a = queryContext.refetchQueries(normalRefetchQueries);
+          return a;
+        },
+        () => {
+          const b = paginationQueryContext.refetchQueries(paginationRefetchQueries);
 
-        return a;
-      },
-      () => {
-        const b = paginationQueryContext.refetchQueries(paginationRefetchQueries);
+          return b;
+        },
+      ]);
+    },
+    [paginationQueryContext, queryContext],
+  );
 
-        return b;
-      },
-    ]);
-  }
+  const mutationHandler = React.useCallback(
+    ({ mutation, variables, refetchQueries }: MutationHandlerParams) => {
+      return mutation(variables).then(mutationResult => {
+        databaseObjectsContext.setObjectsFromBackendResponse(mutationResult);
+        refetchQueriesHandler(refetchQueries);
 
-  return <MutationContext.Provider value={{ mutationHandler }}>{props.children}</MutationContext.Provider>;
+        return mutationResult;
+      });
+    },
+    [databaseObjectsContext, refetchQueriesHandler],
+  );
+
+  const contextValues = React.useMemo(() => ({ mutationHandler }), [mutationHandler]);
+
+  return <MutationContext.Provider value={contextValues}>{props.children}</MutationContext.Provider>;
 }
 
 const _MutationContextProvider = MutationContextProvider;
