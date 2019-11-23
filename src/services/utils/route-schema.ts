@@ -12,19 +12,19 @@ const CURRENT_ID_KEY = 'id';
 // [hooks] sonra bak buraya
 function dataToSchema(data: any): MaybeArray<RouteSchema> {
   if (typeof data !== 'object') {
-    throw new Error('Mutlaka obje olmali');
+    return null;
   }
   if (isArray(data)) {
     const arraySchema = data.map(childItem => dataToSchema(childItem) as RouteSchema);
     if (arraySchema.find(item => item === null)) {
-      throw new Error('Elemanlar Id icermeli');
+      return null;
     }
 
     return arraySchema;
   }
 
   if (!data.id) {
-    throw new Error('Obje Bir Id Icermeli');
+    return null;
   }
 
   const route: RouteSchema = {
@@ -37,7 +37,7 @@ function dataToSchema(data: any): MaybeArray<RouteSchema> {
       if (cacheMap.filter(cache => cache === null).length === 0) {
         route.props = { ...route.props, [key]: cacheMap };
       } else {
-        throw new Error('Elemanlar Uygun degil');
+        return null;
       }
     } else if (isObject(value)) {
       const result = dataToSchema(value);

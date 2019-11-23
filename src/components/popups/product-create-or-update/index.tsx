@@ -8,7 +8,7 @@ import { CategoryInput } from './category-input';
 import { usePopupContext } from '~/contexts/popup/context';
 import { useTranslation } from '~/i18n';
 import { refetchFactory } from '~/services/utils';
-import { paginationQueryEndpoints } from '~/services/pagination-query-context/pagination-query-endpoints';
+import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
 
 /*  ProductPopup Helpers */
 export interface ProductPopupValues {

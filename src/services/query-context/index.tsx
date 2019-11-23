@@ -12,7 +12,9 @@ import { useApiCallContext } from '../api-call-context/context';
 import { useObjectState } from '~/utils/hooks';
 import { MaybeArray } from '~/helpers';
 import { RouteSchema } from '../helpers';
+import { paginationQueryEndpoints } from './pagination-query-endpoints';
 
+const allQueries = { ...queryEndpoints, ...paginationQueryEndpoints };
 interface QueryContextProviderProps {}
 
 function QueryContextProvider(props: React.PropsWithChildren<QueryContextProviderProps>) {
@@ -21,15 +23,15 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
   const [routeDataStore, setRouteDataStore] = useObjectState<Record<string, any>>({});
   const [routeSchemas, setRouteSchemas] = useObjectState<Record<string, MaybeArray<RouteSchema>>>({});
 
-  const isRouteCacheTaken = React.useCallback((routeId: string) => routeSchemas[routeId] && routeDataStore[routeId], [
-    routeDataStore,
-    routeSchemas,
-  ]);
+  const isRouteCacheTaken = React.useCallback(
+    (routeId: string) => Boolean(routeSchemas[routeId] && routeDataStore[routeId]),
+    [routeDataStore, routeSchemas],
+  );
 
   // TODO: refactor this function
   const thenFactory = React.useCallback(
     (params: QueryHandlerParams) => data => {
-      const currenRouteId = getRouteId(getRouteByEndpoint(queryEndpoints, params.query), params.variables);
+      const currenRouteId = getRouteId(getRouteByEndpoint(allQueries, params.query), params.variables);
       const seperatedObj = backendObjectFunctions.separateData(data);
       const idDatabaseNewValue = deepMergeIdObjects(databaseContext.getObjects(), seperatedObj);
       const newSchema = backendObjectFunctions.dataToSchema(data);
@@ -38,6 +40,9 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
       changedRoutes.forEach(route => {
         newStorageObj[route] = backendObjectFunctions.schemaToData(routeSchemas[route], idDatabaseNewValue);
       });
+      if (!deepEqual(idDatabaseNewValue, databaseContext.getObjects())) {
+        databaseContext.setObjectsFromBackendResponse(seperatedObj);
+      }
       if (isRouteCacheTaken(currenRouteId)) {
         const currentRoutePrevSchema = routeSchemas[currenRouteId];
         const isChangeCurrentRoute = !deepEqual(
@@ -57,9 +62,6 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
       } else {
         setRouteDataStore({ [currenRouteId]: data });
         setRouteSchemas({ [currenRouteId]: newSchema });
-      }
-      if (!deepEqual(idDatabaseNewValue, databaseContext.getObjects())) {
-        databaseContext.setObjectsFromBackendResponse(seperatedObj);
       }
 
       return currenRouteId;
@@ -84,7 +86,9 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
       }
     });
     changedRoutes.forEach(route => {
-      newStorageObj[route] = backendObjectFunctions.schemaToData(routeSchemas[route], databaseObjects);
+      if (Object.keys(databaseObjects).length > 0) {
+        newStorageObj[route] = backendObjectFunctions.schemaToData(routeSchemas[route], databaseObjects);
+      }
     });
     if (!deepEqual(routeDataStore, { ...routeDataStore, ...newStorageObj })) {
       setRouteDataStore(newStorageObj);
@@ -101,7 +105,7 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
   const refetchQueries = React.useCallback(
     (queries: Array<RefetchQuery> = []) => {
       const fetchedQueries = queries.filter(({ query, variables }) =>
-        isRouteCacheTaken(getRouteId(getRouteByEndpoint(queryEndpoints, query), variables)),
+        isRouteCacheTaken(getRouteId(getRouteByEndpoint(allQueries, query), variables)),
       );
 
       return asyncMap(

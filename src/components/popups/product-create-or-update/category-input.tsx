@@ -6,6 +6,7 @@ import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { colors } from '~/styled';
 import { StyledInput, commonInputStyle, inputIconStyle } from '.';
 import { useTranslation } from '~/i18n';
+import { UseQueryOptions } from '~/services/query-context/helpers';
 
 /*
   CategoryInput Helpers
@@ -27,13 +28,18 @@ interface CategoryInputProps {
   CategoryInput Styles
 */
 
+const getAllCategoriesOptions: UseQueryOptions<typeof queryEndpoints['getCategories']> = {
+  variables: { type: 'all' },
+  defaultValue: [],
+};
+
 const CategoryInput: React.SFC<CategoryInputProps> = props => {
   const { t } = useTranslation();
   const [autocompleteValue, setAutoCompleteValue] = React.useState('');
 
   const { data: allCategories, loading: getParentCategoriesLoading, error: getParentCategoriesError } = useQuery(
     queryEndpoints.getCategories,
-    { variables: { type: 'all' }, defaultValue: [] },
+    getAllCategoriesOptions,
   );
 
   const inputIconElement = (

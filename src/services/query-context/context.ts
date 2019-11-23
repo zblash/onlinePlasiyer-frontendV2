@@ -16,7 +16,8 @@ function useQueryContext() {
 }
 
 function useQuery<T extends BaseQuery>(query: T, userOptions?: UseQueryOptions<T>): UseQueryResult<T> {
-  const options = React.useMemo(() => ({ variables: {}, ...userOptions }), [userOptions]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const options = React.useMemo(() => ({ variables: {}, ...userOptions }), [JSON.stringify(userOptions)]);
   const { queryHandler, getDataByRouteId } = useQueryContext();
   const [state, setState] = useObjectState({ routeId: null, error: null, loading: !options.skip, isCompleted: false });
   const prevOptions = usePrevious(options);
@@ -48,6 +49,7 @@ function useQuery<T extends BaseQuery>(query: T, userOptions?: UseQueryOptions<T
   React.useEffect(() => {
     getQuery();
   }, [getQuery]);
+
   const data = React.useMemo(() => {
     if (state.routeId) {
       return getDataByRouteId(state.routeId);

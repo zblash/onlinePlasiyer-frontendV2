@@ -3,11 +3,11 @@ import { ApiCallContext } from './context';
 import { ApiCallContextProviderProps, QueryQueue, ApiCallContextType } from './helpers';
 import { getRouteId, getRouteByEndpoint } from '../utils';
 import { queryEndpoints } from '../query-context/query-endpoints';
-import { paginationQueryEndpoints } from '../pagination-query-context/pagination-query-endpoints';
 import { BasicQuery } from '../helpers';
 import Queue from '../utils/queue';
+import { paginationQueryEndpoints } from '../query-context/pagination-query-endpoints';
 
-const allEndpoints = { ...queryEndpoints, ...paginationQueryEndpoints };
+const allQueries = { ...queryEndpoints, ...paginationQueryEndpoints };
 
 function ApiCallContextProvider(props: React.PropsWithChildren<ApiCallContextProviderProps>) {
   const queryResults = React.useRef({});
@@ -17,7 +17,7 @@ function ApiCallContextProvider(props: React.PropsWithChildren<ApiCallContextPro
 
   const fetchIfNotExist = React.useCallback(
     (query: BasicQuery, variables: any) => {
-      const routeId = getRouteId(getRouteByEndpoint(allEndpoints, query), variables);
+      const routeId = getRouteId(getRouteByEndpoint(allQueries, query), variables);
       if (isRouteFetched(routeId)) {
         return Promise.resolve(queryResults.current[routeId]);
       }
@@ -30,8 +30,11 @@ function ApiCallContextProvider(props: React.PropsWithChildren<ApiCallContextPro
       return queryQueue.current[routeId].push(() =>
         query(variables).then(result => {
           queryResults.current[routeId] = result;
+          if (Array.isArray(result)) {
+            return result;
+          }
 
-          return result;
+          return { id: routeId, ...result };
         }),
       );
     },
@@ -40,7 +43,7 @@ function ApiCallContextProvider(props: React.PropsWithChildren<ApiCallContextPro
 
   const fetch = React.useCallback(
     (query: BasicQuery, variables: any) => {
-      const routeId = getRouteId(getRouteByEndpoint(allEndpoints, query), variables);
+      const routeId = getRouteId(getRouteByEndpoint(allQueries, query), variables);
 
       const queue = getQueue(routeId);
       if (!queue) {
@@ -50,8 +53,11 @@ function ApiCallContextProvider(props: React.PropsWithChildren<ApiCallContextPro
       return queryQueue.current[routeId].push(() =>
         query(variables).then(result => {
           queryResults.current[routeId] = result;
+          if (Array.isArray(result)) {
+            return result;
+          }
 
-          return result;
+          return { id: routeId, ...result };
         }),
       );
     },
