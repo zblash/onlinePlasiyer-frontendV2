@@ -4,6 +4,7 @@ import { DatabaseObjectsContextType } from './helpers';
 const initialValue: DatabaseObjectsContextType = {
   setObjectsFromBackendResponse: () => {},
   getObjects: () => ({}),
+  getObject: () => ({}),
 };
 
 const DatabaseObjectContext = React.createContext<DatabaseObjectsContextType>(initialValue);

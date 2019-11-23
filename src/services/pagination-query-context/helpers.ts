@@ -34,17 +34,16 @@ export interface QueryContextType {
 
 export type BasePaginationQuery = typeof paginationQueryEndpoints[keyof typeof paginationQueryEndpoints];
 
-export type UsePaginationQueryResult<Query> = {
+export type UsePaginationQueryResult<T> = PaginationResult<T> & {
   // eslint-disable-next-line  @typescript-eslint/ban-ts-ignore
   // @ts-ignore
-  data: EndpointsResultType<Query>['values'];
+  allData: EndpointsResultType<Query>['values'];
   loading: boolean;
   error: any;
   isDone: boolean;
   next: () => void;
   currentPage: number;
   elementCountOfPage: number;
-  lastPage: number;
 };
 
 export type UsePaginationQueryOptions<T> = {

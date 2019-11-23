@@ -1,30 +1,23 @@
 import * as React from 'react';
 import { DatabaseObjectContext } from './context';
-import { separatingObjectsContainingId } from '../utils';
 import { DatabaseObjectContextProviderProps } from './helpers';
-import { objectKeys } from '~/utils';
+import { useObjectState } from '~/utils/hooks';
+import { deepMergeIdObjects } from '../utils';
 
-// [hooks] sonra bak buraya
-function deepMergeIdObjects(cache: any, newData: any) {
-  const modifiedData = {};
-  objectKeys(newData).forEach(id => {
-    modifiedData[id] = { ...cache[id], ...newData[id] };
-  });
-
-  return modifiedData;
-}
 function DatabaseObjectContextProvider(props: React.PropsWithChildren<DatabaseObjectContextProviderProps>) {
-  const [databaseObjects, setDatabaseObjects] = React.useState({});
-  const setObjects = React.useCallback((backendResponse: any) => {
-    setDatabaseObjects(prev => ({
-      ...prev,
-      ...deepMergeIdObjects(prev, separatingObjectsContainingId(backendResponse)),
-    }));
-  }, []);
+  const [databaseObjects, setDatabaseObjects] = useObjectState({});
+  const setObjects = React.useCallback(
+    (seperatedData: any) => {
+      setDatabaseObjects(deepMergeIdObjects(databaseObjects, seperatedData));
+    },
+    [databaseObjects, setDatabaseObjects],
+  );
   const getObjects = React.useCallback(() => databaseObjects, [databaseObjects]);
-  const contextValues = React.useMemo(() => ({ setObjectsFromBackendResponse: setObjects, getObjects }), [
+  const getObject = React.useCallback((id: string) => databaseObjects[id], [databaseObjects]);
+  const contextValues = React.useMemo(() => ({ setObjectsFromBackendResponse: setObjects, getObjects, getObject }), [
     getObjects,
     setObjects,
+    getObject,
   ]);
 
   return <DatabaseObjectContext.Provider value={contextValues}>{props.children}</DatabaseObjectContext.Provider>;

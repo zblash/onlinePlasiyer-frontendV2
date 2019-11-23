@@ -1,5 +1,7 @@
 import * as React from 'react';
+import deepEqual from 'deep-equal';
 import { QueryContextType, BaseQuery, UseQueryResult, UseQueryOptions } from './helpers';
+import { useObjectState, usePrevious } from '~/utils/hooks';
 
 const initialValue: QueryContextType = {
   queryHandler: () => Promise.resolve(''),
@@ -13,56 +15,55 @@ function useQueryContext() {
   return React.useContext(QueryContext);
 }
 
-function useQuery<T extends BaseQuery>(query: T, options?: UseQueryOptions<T>): UseQueryResult<T> {
-  const { defaultValue, onCompleted, skip, variables } = options;
-  const queryContext = useQueryContext();
-  const [state, setState] = React.useState({ routeId: null, error: null, loading: !skip, isCompleted: false });
+function useQuery<T extends BaseQuery>(query: T, userOptions?: UseQueryOptions<T>): UseQueryResult<T> {
+  const options = React.useMemo(() => ({ variables: {}, ...userOptions }), [userOptions]);
+  const { queryHandler, getDataByRouteId } = useQueryContext();
+  const [state, setState] = useObjectState({ routeId: null, error: null, loading: !options.skip, isCompleted: false });
+  const prevOptions = usePrevious(options);
   const getQuery = React.useCallback(() => {
-    if (skip) {
+    if (options.skip) {
       return;
     }
-    setState({ ...state, loading: true, isCompleted: false });
-    queryContext
-      .queryHandler({
+    if (!deepEqual(prevOptions, options)) {
+      setState({ loading: true, isCompleted: false });
+
+      queryHandler({
         query,
-        variables: variables || {},
+        variables: options.variables,
       })
-      .then(routeId => {
-        setState(prev => ({
-          ...prev,
-          routeId,
-          loading: false,
-          isCompleted: true,
-        }));
-      })
-      .catch(e => {
-        setState(prev => ({ ...prev, error: e, loading: false }));
-        throw e;
-      });
-  }, [skip, variables, query, queryContext, state]);
+        .then(routeId => {
+          setState({
+            routeId,
+            loading: false,
+            isCompleted: true,
+          });
+        })
+        .catch(e => {
+          setState({ error: e, loading: false });
+          throw e;
+        });
+    }
+  }, [options, prevOptions, setState, queryHandler, query]);
 
   React.useEffect(() => {
     getQuery();
   }, [getQuery]);
   const data = React.useMemo(() => {
     if (state.routeId) {
-      return queryContext.getDataByRouteId(state.routeId);
+      return getDataByRouteId(state.routeId);
     }
 
-    return defaultValue || null;
-  }, [defaultValue, queryContext, state.routeId]);
+    return options.defaultValue || null;
+  }, [getDataByRouteId, options.defaultValue, state.routeId]);
 
-  React.useEffect(() => {
-    if (state.isCompleted && onCompleted) {
-      onCompleted(data);
-    }
-  }, [data, onCompleted, state.isCompleted]);
-
-  return {
-    data,
-    loading: state.loading,
-    error: state.error,
-  };
+  return React.useMemo(
+    () => ({
+      data,
+      loading: state.loading,
+      error: state.error,
+    }),
+    [data, state.error, state.loading],
+  );
 }
 
 export { QueryContext, useQuery, useQueryContext };

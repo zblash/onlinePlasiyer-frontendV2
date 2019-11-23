@@ -11,10 +11,10 @@ import {
 } from '~/services/helpers/backend-models';
 import { UserType } from '../helpers/maps';
 
-type GetCategoriesType = 'sub' | 'parent' | 'all';
+export type GetCategoriesVariables = { type: 'sub' | 'parent' | 'all' };
 
 class QueryEndpoints {
-  getCategories: (s: { type: GetCategoriesType }) => Promise<ICategoryResponse[]> = ({ type }) =>
+  getCategories: (s: GetCategoriesVariables) => Promise<ICategoryResponse[]> = ({ type }) =>
     ApiCall.get(`/categories`, {
       filter: type !== 'all',
       sub: type === 'sub',

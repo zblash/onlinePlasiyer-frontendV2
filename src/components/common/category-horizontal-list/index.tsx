@@ -198,6 +198,6 @@ const _CategoryHorizontalList: React.SFC<CategoryHorizontalListProps> = props =>
   return __;
 };
 
-const CategoryHorizontalList = _CategoryHorizontalList;
+const CategoryHorizontalList = React.memo(_CategoryHorizontalList);
 
 export { CategoryHorizontalList };
