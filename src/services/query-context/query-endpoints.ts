@@ -29,7 +29,7 @@ class QueryEndpoints {
 
   getProductById: (s: { id: string }) => Promise<IProductResponse> = ({ id }) => ApiCall.get(`/products/${id}`);
 
-  getCard: () => Promise<ICardResponse> = () => ApiCall.get(`/cart/`);
+  getCard: () => Promise<ICardResponse> = () => ApiCall.get(`/cart`);
 
   getUsers: (s: { role: UserRoleResponse; type: UserType }) => Promise<IUserCommonResponse[]> = ({ type, role }) => {
     const userTypeRouteMap: Record<UserRoleResponse, Record<UserType, string>> = {

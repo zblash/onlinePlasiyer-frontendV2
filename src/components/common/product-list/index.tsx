@@ -4,6 +4,7 @@ import { UITableColumns, UITable } from '~/components/ui/table';
 import { ProductCardWrapper, ProductCard, ProductData } from '../product-card';
 import styled, { css } from '~/styled';
 import { UICollapsible } from '~/components/ui';
+import { SpecifyAddtoCart } from './specify-add-to-cart';
 /*
   ProductList Helpers
 */
@@ -40,6 +41,10 @@ const TABLE_SHOWN_DATA: UITableColumns<SpecifyProductData>[] = [
   {
     itemRenderer: specifyProduct => specifyProduct.totalPrice,
     title: 'Toplam fiyat',
+  },
+  {
+    itemRenderer: specifyProduct => <SpecifyAddtoCart key={specifyProduct.id} specifyProductId={specifyProduct.id} />,
+    title: 'Sepete Ekle',
   },
 ];
 

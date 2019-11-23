@@ -4,6 +4,8 @@ import { HeaderLogo } from './header-logo';
 import { MenuItemProps, MenuItem } from './menu-item';
 import { HeaderSearchBar } from './search-bar';
 import { AccountCard } from './cards/account-card';
+import { useQuery } from '~/services/query-context/context';
+import { queryEndpoints } from '~/services/query-context/query-endpoints';
 
 /*
   Header Helpers
@@ -50,6 +52,11 @@ const StyledMenuItemsWrapper = styled.div`
 `;
 
 const _Header: React.SFC<HeaderProps> = props => {
+
+  const { data: cart } = useQuery(queryEndpoints.getCard, {
+    defaultValue: {},
+  });
+
   const menuItems: MenuItemProps[] = [
     {
       iconName: 'account',
@@ -58,7 +65,7 @@ const _Header: React.SFC<HeaderProps> = props => {
     },
     {
       iconName: 'shopingBasket',
-      text: 'Sepet (3)',
+      text: `Sepet (${cart.quantity})`,
       cardContent: null,
     },
   ];
