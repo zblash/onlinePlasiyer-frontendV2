@@ -22,6 +22,8 @@ export interface ProductListComponentProps {
 interface ProductListData {
   products: ProductData[];
   specifyProducts: SpecifyProductData[];
+  productsLastPageIndex: number;
+  productsCurrentPage: number;
 }
 interface ProductListProps extends ProductListComponentProps, ProductListData {}
 
@@ -73,13 +75,13 @@ const tableStyle = css`
 
 const ProductList: React.SFC<ProductListProps> = props => {
   const [expandProductId, setExpandProductId] = React.useState<string>(null);
-
   const chunkedArray = React.useMemo(() => _chunk(props.products, CHUNK_SIZE), [JSON.stringify(props.products)]);
 
   const __ = (
     <>
       {chunkedArray.map((items, index) => (
         <UICollapsible
+          lazyRender
           closeForce={expandProductId === null}
           key={index}
           content={(trigger, isOpen) => (

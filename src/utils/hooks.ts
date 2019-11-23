@@ -40,4 +40,12 @@ function useStateWithCallback<T>(
   return [state, setState];
 }
 
-export { useStateFromProp, usePrevious, useKeepValue, useStateWithCallback };
+function useWindowEvent<T extends keyof WindowEventMap>(event: T, callback: (e: WindowEventMap[T]) => void) {
+  React.useEffect(() => {
+    window.addEventListener(event, callback);
+
+    return () => window.removeEventListener(event, callback);
+  }, [event, callback]);
+}
+
+export { useStateFromProp, usePrevious, useKeepValue, useStateWithCallback, useWindowEvent };

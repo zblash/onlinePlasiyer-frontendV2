@@ -29,7 +29,11 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
     if (!queryQueue.current[routeId]) {
       queryQueue.current[routeId] = queryApiCall(params).then(() => routeId);
     } else {
-      queryQueue.current[routeId].then(() => queryHandler(params)).then(() => routeId);
+      queryQueue.current[routeId]
+        .then(() => {
+          queryQueue.current[routeId] = queryApiCall(params);
+        })
+        .then(() => routeId);
     }
 
     return queryQueue.current[routeId];
@@ -75,7 +79,13 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
   }
 
   return (
-    <QueryContext.Provider value={{ queryHandler, refetchQueries, getDataByRouteId }}>
+    <QueryContext.Provider
+      value={{
+        queryHandler,
+        refetchQueries,
+        getDataByRouteId,
+      }}
+    >
       {props.children}
     </QueryContext.Provider>
   );

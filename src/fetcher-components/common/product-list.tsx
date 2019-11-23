@@ -8,12 +8,15 @@ interface ProductListFetcherProps extends ProductListComponentProps {}
 
 function ProductListFetcher(props: React.PropsWithChildren<ProductListFetcherProps>) {
   const [expandProductId, setExpandProductId] = React.useState<string>(null);
-  const { data: products } = usePaginationQuery(paginationQueryEndpoints.getAllProductsByCategoryId, {
-    variables: { categoryId: props.selectedCategoryId },
-    skip: !props.selectedCategoryId,
-    defaultValue: [],
-  });
-  const { data: specifyProducts, next } = usePaginationQuery(
+  const { data: products, next: getNextProductPage, lastPage, currentPage } = usePaginationQuery(
+    paginationQueryEndpoints.getAllProductsByCategoryId,
+    {
+      variables: { categoryId: props.selectedCategoryId },
+      skip: !props.selectedCategoryId,
+      defaultValue: [],
+    },
+  );
+  const { data: specifyProducts, next: nextSpecifyProductPage } = usePaginationQuery(
     paginationQueryEndpoints.getAllSpecifyProductsByProductId,
     {
       variables: { productId: expandProductId },
@@ -23,13 +26,17 @@ function ProductListFetcher(props: React.PropsWithChildren<ProductListFetcherPro
   );
   const __ = (
     <ProductList
-      products={products.map(product => ({
-        id: product.id,
-        name: product.name,
-        taxRate: product.tax,
-        img: product.photoUrl,
-        barcode: product.barcode,
-      }))}
+      productsLastPageIndex={lastPage}
+      productsCurrentPage={currentPage}
+      products={products
+        .filter(product => product.pageIndex === currentPage)
+        .map(product => ({
+          id: product.id,
+          name: product.name,
+          taxRate: product.tax,
+          img: product.photoUrl,
+          barcode: product.barcode,
+        }))}
       specifyProducts={specifyProducts}
       {...props}
       onChangeExpandProductId={id => {
@@ -40,14 +47,13 @@ function ProductListFetcher(props: React.PropsWithChildren<ProductListFetcherPro
       }}
       onChangeSpecifyProductPage={(pageIndex, pageCount) => {
         if (pageIndex + 2 >= pageCount) {
-          next();
+          nextSpecifyProductPage();
         }
       }}
     />
   );
 
   /* ProductListFetcher Lifecycle  */
-
   /* ProductListFetcher Functions  */
 
   return __;

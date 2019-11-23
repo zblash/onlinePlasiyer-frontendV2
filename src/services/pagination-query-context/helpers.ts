@@ -15,7 +15,7 @@ export interface PaginationResult<DataType> {
   last: boolean;
   nextPage: number;
   previusPageIndex: number;
-  values: DataType[];
+  values: (DataType & { pageIndex: number })[];
   totalElements: number;
   totalPage: number;
 }
@@ -44,6 +44,7 @@ export type UsePaginationQueryResult<Query> = {
   next: () => void;
   currentPage: number;
   elementCountOfPage: number;
+  lastPage: number;
 };
 
 export type UsePaginationQueryOptions<T> = {
@@ -52,4 +53,5 @@ export type UsePaginationQueryOptions<T> = {
   // @ts-ignore
   defaultValue?: Partial<EndpointsResultType<T>['values']>;
   variables?: Omit<EndpointsVariablesType<T>, 'pageNumber'>;
+  pageNumber?: number;
 };

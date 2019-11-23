@@ -27,8 +27,8 @@ function usePaginationQuery<T extends BasePaginationQuery>(
     elementCountOfPage: 0,
     loading: !options.skip,
     isCompleted: false,
-    pageNumber: 1,
-    lastPageNumber: 1,
+    pageNumber: options.pageNumber || 1,
+    lastPage: 1,
   });
   function getQuery() {
     if (options.skip) {
@@ -46,7 +46,7 @@ function usePaginationQuery<T extends BasePaginationQuery>(
           ...prev,
           routeId,
           elementCountOfPage,
-          lastPageNumber,
+          lastPage: lastPageNumber,
           loading: false,
           isCompleted: true,
         }));
@@ -68,6 +68,11 @@ function usePaginationQuery<T extends BasePaginationQuery>(
   React.useEffect(() => {
     getQuery();
   }, [state.pageNumber]);
+  React.useEffect(() => {
+    if (options.pageNumber) {
+      setState(prev => ({ ...prev, pageNumber: options.pageNumber }));
+    }
+  }, [options.pageNumber]);
 
   function dataGetter() {
     if (state.routeId) {
@@ -82,11 +87,12 @@ function usePaginationQuery<T extends BasePaginationQuery>(
     data: dataGetter(),
     currentPage: state.pageNumber,
     loading: state.loading,
+    lastPage: state.lastPage,
     error: state.error,
-    isDone: state.pageNumber === state.lastPageNumber && !!state.routeId,
+    isDone: state.pageNumber === state.lastPage && !!state.routeId,
     next: () => {
       const nextPage = state.pageNumber + 1;
-      if (nextPage <= state.lastPageNumber) {
+      if (nextPage <= state.lastPage) {
         setState(prev => ({ ...prev, pageNumber: state.pageNumber + 1 }));
       }
     },

@@ -43,7 +43,11 @@ function PaginationQueryContextProvider(props) {
       });
     } else {
       queryQueue.current[routeId]
-        .then(() => queryHandler(params))
+        .then(() => {
+          queryQueue.current[routeId] = queryApiCall(params);
+
+          return queryQueue.current[routeId];
+        })
         .then(data => resultCreator(routeId, data.totalPage, data.elementCountOfPage));
     }
 
@@ -54,33 +58,30 @@ function PaginationQueryContextProvider(props) {
     const { query, variables, pageNumber } = params;
     const routeId = getRouteId(getRouteByEndpoint(paginationQueryEndpoints, query), variables);
 
-    return query({ ...variables, pageNumber })
-      .then(data => {
-        const routeSchema = dataToSchema(data.values);
-        databaseObjectsContext.setObjectsFromBackendResponse(data.values);
-        setRouteStorage(prevSate => ({
-          ...prevSate,
-          [routeId]: {
-            lastPageNumber: data.totalPage,
-            elementCountOfPage: data.elementCountOfPage,
-            storage: lodashUniqBy(
-              [
-                {
-                  pageNumber,
-                  schema: routeSchema,
-                },
-                ...(lodashGet(prevSate, `${routeId}.storage`, []) as []),
-              ],
-              'pageNumber',
-            ),
-          },
-        }));
+    return query({ ...variables, pageNumber }).then(data => {
+      const values = data.values.map(item => ({ ...item, pageIndex: pageNumber }));
+      const routeSchema = dataToSchema(values);
+      databaseObjectsContext.setObjectsFromBackendResponse(values);
+      setRouteStorage(prevSate => ({
+        ...prevSate,
+        [routeId]: {
+          lastPageNumber: data.totalPage,
+          elementCountOfPage: data.elementCountOfPage,
+          storage: lodashUniqBy(
+            [
+              {
+                pageNumber,
+                schema: routeSchema,
+              },
+              ...(lodashGet(prevSate, `${routeId}.storage`, []) as []),
+            ],
+            'pageNumber',
+          ),
+        },
+      }));
 
-        return data;
-      })
-      .finally(() => {
-        queryQueue.current[routeId] = undefined;
-      });
+      return { ...data, values };
+    });
   }
 
   function getDataByRouteId(routeId: string) {
@@ -93,8 +94,10 @@ function PaginationQueryContextProvider(props) {
     return result;
   }
 
-  function isRouteFetched(routeId: string, pageNumber: number) {
-    return Boolean(routeStorage[routeId] && routeStorage[routeId].storage.find(item => item.pageNumber === pageNumber));
+  function isRouteFetched(routeId: string, pageNumber: number): boolean {
+    const hasStorage = routeStorage[routeId];
+
+    return !!hasStorage && Boolean(routeStorage[routeId].storage.find(item => item.pageNumber === pageNumber));
   }
 
   function isRouteFetchedForAnyPage(routeId: string) {
