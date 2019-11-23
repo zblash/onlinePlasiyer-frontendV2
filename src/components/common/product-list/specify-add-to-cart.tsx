@@ -50,7 +50,7 @@ function SpecifyAddtoCart(props: React.PropsWithChildren<SpecifyAddtoCartProps>)
   const { mutation: addToCart } = useMutation(mutationEndPoints.addToCard, {
     variables: {
       specifyProductId: props.specifyProductId,
-      quantity
+      quantity,
     },
   });
 
