@@ -8,6 +8,7 @@ import { Page404 } from './404-component';
 
 import { Header } from '~/components/common/header';
 import { OrdersPage } from './orders';
+import { CartPage } from '../pages/cart';
 import { InvoicesPage } from './invoices';
 import { UserRoleResponse } from '~/services/helpers/backend-models';
 import { withRequiredRole } from '~/components/hoc/with-required-role';
@@ -28,6 +29,11 @@ const routes: IRoute[] = [
     path: '/users',
     component: UsersPage,
     authorize: ['ADMIN'],
+  },
+  {
+    path: '/cart',
+    component: CartPage,
+    authorize: ['CUSTOMER'],
   },
   {
     path: '/products/:categoryId?',

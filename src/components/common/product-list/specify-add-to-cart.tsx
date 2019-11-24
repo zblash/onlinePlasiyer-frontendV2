@@ -53,11 +53,12 @@ function SpecifyAddtoCart(props: React.PropsWithChildren<SpecifyAddtoCartProps>)
       quantity,
     },
   });
-
-  const handleChange = (e: any) => {
+  
+  const handleChange = React.useCallback( (e: any) => {
     e.preventDefault();
     setQuantity(parseInt(e.target.value, 10) > 0 ? e.target.value : 1);
-  };
+  },[setQuantity] 
+  )
 
   const __ = (
     <WrapperTableCartColumn key={props.specifyProductId}>

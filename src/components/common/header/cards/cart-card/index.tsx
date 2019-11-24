@@ -1,25 +1,14 @@
 import * as React from 'react';
 import styled, { colors, css } from '~/styled';
 import { UIButton } from '~/components/ui';
+import { ICardResponse } from '~/services/helpers/backend-models';
+import { useHistory } from 'react-router';
 
 /* CartCard Helpers */
 interface CartCardProps {
-  cart: Cart;
+  cart: ICardResponse;
 }
 
-interface Cart {
-  items: Array<CartItem>;
-  quantity: number;
-  totalPrice: number;
-}
-
-interface CartItem {
-  productName: string;
-  productPhotoUrl: string;
-  quantity: number;
-  sellerName: string;
-  totalPrice: number;
-}
 /* CartCard Constants */
 
 /* CartCard Styles */
@@ -107,6 +96,7 @@ const cartDesPrice = css`
 
 /* CartCard Component  */
 function CartCard(props: React.PropsWithChildren<CartCardProps>) {
+  const routerHistory = useHistory();
   const __ = (
     <StyledCartCardWrapper>
       <StyledCartHeader>
@@ -114,7 +104,7 @@ function CartCard(props: React.PropsWithChildren<CartCardProps>) {
         <StyledCartHeaderSpan>{props.cart.quantity} Urun</StyledCartHeaderSpan>
       </StyledCartHeader>
       {props.cart.items.map(cartItem => (
-        <StyledCartItem>
+        <StyledCartItem key={cartItem.id}>
           <StyledCartImgDiv>
             <StyledCartImg src={cartItem.productPhotoUrl} />
           </StyledCartImgDiv>
@@ -128,7 +118,7 @@ function CartCard(props: React.PropsWithChildren<CartCardProps>) {
       ))}
       <StyledCartBottom>
         <span>Toplam: {props.cart.totalPrice} TL</span>
-        <StyledCartButton>Sepete Git</StyledCartButton>
+        <StyledCartButton onClick={() => routerHistory.push(`/cart`)}>Sepete Git</StyledCartButton>
       </StyledCartBottom>
     </StyledCartCardWrapper>
   );
