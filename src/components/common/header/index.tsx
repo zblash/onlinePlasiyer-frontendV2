@@ -6,6 +6,7 @@ import { HeaderSearchBar } from './search-bar';
 import { AccountCard } from './cards/account-card';
 import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
+import { CartCard } from './cards/cart-card';
 
 /*
   Header Helpers
@@ -65,7 +66,7 @@ const _Header: React.SFC<HeaderProps> = props => {
     {
       iconName: 'shopingBasket',
       text: `Sepet (${cart.quantity})`,
-      cardContent: null,
+      cardContent: () => <CartCard cart={cart} />,
     },
   ];
 

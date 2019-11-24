@@ -46,7 +46,7 @@ const tableColumnCartInputStyle = css`
 
 /* SpecifyAddtoCart Component  */
 function SpecifyAddtoCart(props: React.PropsWithChildren<SpecifyAddtoCartProps>) {
-  const [quantity, setQuantity] = React.useState(0);
+  const [quantity, setQuantity] = React.useState(1);
   const { mutation: addToCart } = useMutation(mutationEndPoints.addToCard, {
     variables: {
       specifyProductId: props.specifyProductId,
@@ -56,13 +56,13 @@ function SpecifyAddtoCart(props: React.PropsWithChildren<SpecifyAddtoCartProps>)
 
   const handleChange = (e: any) => {
     e.preventDefault();
-    setQuantity(e.target.value);
+    setQuantity(parseInt(e.target.value, 10) > 0 ? e.target.value : 1);
   };
 
   const __ = (
     <WrapperTableCartColumn key={props.specifyProductId}>
       <label className={tableColumnCartInputStyle}>Adet: </label>
-      <StyledAddCartInput value={quantity} onChange={handleChange} />
+      <StyledAddCartInput type="number" value={quantity} onChange={handleChange} />
       <StyledAddCartButton onClick={() => addToCart()}>Sepete Ekle</StyledAddCartButton>
     </WrapperTableCartColumn>
   );
