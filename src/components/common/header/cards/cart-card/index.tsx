@@ -1,6 +1,5 @@
 import * as React from 'react';
 import styled, { colors, css } from '~/styled';
-import { useTranslation } from '~/i18n';
 import { UIButton } from '~/components/ui';
 
 /* CartCard Helpers */
@@ -87,16 +86,16 @@ const StyledCartDesP = styled.p`
 `;
 
 const StyledCartButton = styled(UIButton)`
-float: right;
-transition: background-color 0.3s;
-background-color: ${colors.primary};
-color: ${colors.white};
-padding: 4px 8px;
-:hover {
-  background-color: ${colors.lightGray};
-  color: ${colors.primaryDark};
+  float: right;
   transition: background-color 0.3s;
-}
+  background-color: ${colors.primary};
+  color: ${colors.white};
+  padding: 4px 8px;
+  :hover {
+    background-color: ${colors.lightGray};
+    color: ${colors.primaryDark};
+    transition: background-color 0.3s;
+  }
 `;
 
 const cartDesPrice = css`
@@ -108,8 +107,6 @@ const cartDesPrice = css`
 
 /* CartCard Component  */
 function CartCard(props: React.PropsWithChildren<CartCardProps>) {
-  const { t } = useTranslation();
-
   const __ = (
     <StyledCartCardWrapper>
       <StyledCartHeader>
@@ -129,8 +126,9 @@ function CartCard(props: React.PropsWithChildren<CartCardProps>) {
           </StyledCartDes>
         </StyledCartItem>
       ))}
-      <StyledCartBottom><span>Toplam: {props.cart.totalPrice} TL</span>
-      <StyledCartButton>Sepete Git</StyledCartButton>
+      <StyledCartBottom>
+        <span>Toplam: {props.cart.totalPrice} TL</span>
+        <StyledCartButton>Sepete Git</StyledCartButton>
       </StyledCartBottom>
     </StyledCartCardWrapper>
   );
