@@ -22,8 +22,13 @@ function objectKeys<K extends string>(obj: Record<K, any>): K[] {
 function objectForeach<K extends string, V>(obj: Record<K, V>, callback: (key: K, value: V) => void) {
   Object.keys(obj).forEach(key => callback(key as K, obj[key]));
 }
-function isBarcodeCorrectSize(barcode: string) {
-  return barcode.length > 12 && barcode.length < 100;
+function objectMap<K extends string, V, G>(obj: Record<K, V>, callback: (key: K, value: V) => G): Record<K, G> {
+  const newObject: Record<K, G> = {} as any;
+  Object.keys(obj).forEach(key => {
+    newObject[key] = callback(key as K, obj[key]);
+  });
+
+  return newObject;
 }
 
 function objectValues<K>(obj: Record<string, K>): K[] {
@@ -82,6 +87,6 @@ export {
   objectKeys,
   objectValues,
   objectForeach,
-  isBarcodeCorrectSize,
   asyncMap,
+  objectMap,
 };

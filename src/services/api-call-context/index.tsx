@@ -13,55 +13,56 @@ function ApiCallContextProvider(props: React.PropsWithChildren<ApiCallContextPro
   const queryResults = React.useRef({});
   const queryQueue = React.useRef<QueryQueue>({});
   const isRouteFetched = React.useCallback((routeId: string) => Boolean(queryResults.current[routeId]), []);
-  const getQueue = React.useCallback((routeId: string) => queryQueue.current[routeId], []);
-
-  const fetchIfNotExist = React.useCallback(
-    (query: BasicQuery, variables: any) => {
-      const routeId = getRouteId(getRouteByEndpoint(allQueries, query), variables);
-      if (isRouteFetched(routeId)) {
-        return Promise.resolve(queryResults.current[routeId]);
-      }
+  const getQueryResult = React.useCallback((routeId: string) => queryResults.current[routeId], []);
+  const getQueue = React.useCallback((routeId: string) => {
+    return queryQueue.current[routeId];
+  }, []);
+  const getQueueOrCreate = React.useCallback(
+    (routeId: string) => {
       const queue = getQueue(routeId);
       if (queue) {
-        return queue.push(() => fetchIfNotExist(query, variables));
+        return queue;
       }
       queryQueue.current[routeId] = new Queue();
 
-      return queryQueue.current[routeId].push(() =>
-        query(variables).then(result => {
-          queryResults.current[routeId] = result;
-          if (Array.isArray(result)) {
-            return result;
-          }
-
-          return { id: routeId, ...result };
-        }),
-      );
+      return queryQueue.current[routeId];
     },
-    [getQueue, isRouteFetched],
+    [getQueue],
   );
 
   const fetch = React.useCallback(
     (query: BasicQuery, variables: any) => {
       const routeId = getRouteId(getRouteByEndpoint(allQueries, query), variables);
 
-      const queue = getQueue(routeId);
-      if (!queue) {
-        queryQueue.current[routeId] = new Queue();
-      }
-
-      return queryQueue.current[routeId].push(() =>
+      return getQueueOrCreate(routeId).push(async () =>
         query(variables).then(result => {
-          queryResults.current[routeId] = result;
-          if (Array.isArray(result)) {
-            return result;
+          let data = result;
+          if (!Array.isArray(result) && Array.isArray(result.values)) {
+            data = { ...result, id: routeId };
           }
+          queryResults.current[routeId] = data;
 
-          return { id: routeId, ...result };
+          return data;
         }),
       );
     },
-    [getQueue],
+    [getQueueOrCreate],
+  );
+
+  const fetchIfNotExist = React.useCallback(
+    (query: BasicQuery, variables: any) => {
+      const routeId = getRouteId(getRouteByEndpoint(allQueries, query), variables);
+      if (isRouteFetched(routeId)) {
+        return Promise.resolve(getQueryResult(routeId));
+      }
+      const queue = getQueue(routeId);
+      if (queue) {
+        return queue.push(async () => fetchIfNotExist(query, variables));
+      }
+
+      return fetch(query, variables);
+    },
+    [isRouteFetched, getQueue, getQueryResult, fetch],
   );
   const contextValue = React.useMemo<ApiCallContextType>(() => ({ fetchIfNotExist, fetch }), [fetchIfNotExist, fetch]);
 

@@ -10,24 +10,27 @@ function ProductListFetcher(props: React.PropsWithChildren<ProductListFetcherPro
   const [expandProductId, setExpandProductId] = React.useState<string>(null);
   const [productPageNumber, setProductPageNumber] = React.useState(1);
   const [sepicifyProductPageNumber, setSpecifyProductPageNumber] = React.useState(1);
-  const { data: products, totalPage } = usePaginationQuery(paginationQueryEndpoints.getAllProductsByCategoryId, {
+  const {
+    data: { values: products, totalPage: productPageTotalPage },
+  } = usePaginationQuery(paginationQueryEndpoints.getAllProductsByCategoryId, {
     variables: { categoryId: props.selectedCategoryId, pageNumber: productPageNumber },
     skip: !props.selectedCategoryId,
-    defaultValue: [],
+    defaultValue: { values: [] },
   });
-  const { data: specifyProducts, totalPage: spT } = usePaginationQuery(
-    paginationQueryEndpoints.getAllSpecifyProductsByProductId,
-    {
-      variables: { productId: expandProductId, pageNumber: sepicifyProductPageNumber },
-      defaultValue: [],
-      skip: !expandProductId,
-    },
-  );
+  const {
+    data: { values: specifyProducts, totalPage: specifyProductsTotalPage },
+  } = usePaginationQuery(paginationQueryEndpoints.getAllSpecifyProductsByProductId, {
+    variables: { productId: expandProductId, pageNumber: sepicifyProductPageNumber },
+    defaultValue: { values: [] },
+    skip: !expandProductId,
+  });
+
   const nextSpecifyProductPage = React.useCallback(() => {
-    if (spT > sepicifyProductPageNumber) {
+    if (sepicifyProductPageNumber < specifyProductsTotalPage) {
       setSpecifyProductPageNumber(sepicifyProductPageNumber + 1);
     }
-  }, [spT, sepicifyProductPageNumber]);
+  }, [sepicifyProductPageNumber, specifyProductsTotalPage]);
+
   const mappedArray = React.useMemo(
     () =>
       products.map(product => ({
@@ -41,7 +44,7 @@ function ProductListFetcher(props: React.PropsWithChildren<ProductListFetcherPro
   );
   const __ = (
     <ProductList
-      productsLastPageIndex={totalPage}
+      productsLastPageIndex={0}
       productsCurrentPage={productPageNumber}
       products={mappedArray}
       specifyProducts={specifyProducts}

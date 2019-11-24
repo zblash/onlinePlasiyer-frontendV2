@@ -12,10 +12,12 @@ const useMutationContext = () => React.useContext(MutationContext);
 
 function useMutation<T extends BaseEndpointType>(
   mutationFunction: T,
-  options: UseMutationOptions<T> = {},
+  userOptions: UseMutationOptions<T> = {},
 ): UseMutationResult<T> {
   const mutationContext = useMutationContext();
   const [state, setState] = React.useState({ data: null, error: null, loading: false });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const options = React.useMemo(() => ({ variables: {}, ...userOptions }), [JSON.stringify(userOptions)]);
   const mutation = React.useCallback(
     (variables?: EndpointsVariablesType<T>) => {
       setState({ ...state, error: null, loading: true });

@@ -40,11 +40,13 @@ const StyledPageContainer = styled.div`
 
 const OrdersPage: React.SFC<OrdersPageProps> = props => {
   const [ordersQueryPageNumber, setOrdersQueryPageNumber] = React.useState(1);
-  const getOrderQueryOptions = React.useMemo(
-    () => ({ defaultValue: [], variables: { pageNumber: ordersQueryPageNumber } }),
-    [ordersQueryPageNumber],
-  );
-  const { data: orders, totalPage } = usePaginationQuery(paginationQueryEndpoints.getAllOrders, getOrderQueryOptions);
+
+  const {
+    data: { values: orders, totalPage },
+  } = usePaginationQuery(paginationQueryEndpoints.getAllOrders, {
+    defaultValue: { values: [] },
+    variables: { pageNumber: ordersQueryPageNumber },
+  });
   const __ = (
     <Container>
       <StyledPageContainer>

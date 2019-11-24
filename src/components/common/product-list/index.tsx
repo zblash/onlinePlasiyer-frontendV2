@@ -82,7 +82,7 @@ const ProductList: React.SFC<ProductListProps> = props => {
       {chunkedArray.map((items, index) => (
         <UICollapsible
           lazyRender
-          closeForce={expandProductId === null}
+          closeForce={!items.find(item => item.id === expandProductId)}
           key={index}
           content={(trigger, isOpen) => (
             <StyledCardContainer>

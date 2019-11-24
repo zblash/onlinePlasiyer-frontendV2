@@ -27,10 +27,12 @@ const InvoicesPageStrings = {
 const StyledPageContainer = styled.div`
   margin-top: 48px;
 `;
-const options = { defaultValue: [] };
 
 const InvoicesPage: React.SFC<InvoicesPageProps> = props => {
-  const { data: invoices } = usePaginationQuery(paginationQueryEndpoints.getAllInvoices, options);
+  const {
+    data: { values: invoices },
+  } = usePaginationQuery(paginationQueryEndpoints.getAllInvoices, { defaultValue: { values: [] } });
+  // TODO: fetch next page on change page
   const __ = (
     <Container>
       <StyledPageContainer>

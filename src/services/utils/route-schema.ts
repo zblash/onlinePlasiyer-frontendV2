@@ -34,46 +34,67 @@ function dataToSchema(data: any): MaybeArray<RouteSchema> {
   objectForeach(data, (key, value) => {
     if (isArray(value)) {
       const cacheMap = dataToSchema(value) as Array<RouteSchema>;
-      if (cacheMap.filter(cache => cache === null).length === 0) {
+      if (cacheMap !== null) {
         route.props = { ...route.props, [key]: cacheMap };
-      } else {
-        return null;
       }
     } else if (isObject(value)) {
       const result = dataToSchema(value);
-      if (result === null) {
-        throw new Error('Elemanlar Uygun degil');
+      if (result !== null) {
+        route.props = { ...route.props, [key]: dataToSchema(value) };
       }
-      route.props = { ...route.props, [key]: dataToSchema(value) };
     }
   });
 
   return route;
 }
+function isDbObject(obj: any) {
+  if (isObject(obj) && obj[CURRENT_ID_KEY]) {
+    return true;
+  }
 
-const separateData = (unmodifiedData: any) => {
+  return false;
+}
+
+function isDbArray(obj: any) {
+  if (isArray(obj)) {
+    if (
+      obj.filter(item => {
+        if (isDbObject(item)) {
+          return true;
+        }
+        if (isDbArray(item)) {
+          return true;
+        }
+
+        return false;
+      }).length === obj.length
+    ) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+const separateData = (unmodifiedData: any, isInline = false) => {
   let modifiedData: Record<string, any> = {};
-
-  if (isArray(unmodifiedData)) {
-    (unmodifiedData as any[]).forEach(nestedUnmodifiedData => {
+  if (isDbArray(unmodifiedData)) {
+    unmodifiedData.forEach(nestedUnmodifiedData => {
       modifiedData = { ...modifiedData, ...separateData(nestedUnmodifiedData) };
     });
-  } else if (isObject(unmodifiedData) && unmodifiedData[CURRENT_ID_KEY]) {
+  } else if (isDbObject(unmodifiedData)) {
     const unmodifiedDataId = unmodifiedData[CURRENT_ID_KEY];
     modifiedData[unmodifiedDataId] = modifiedData[unmodifiedDataId] || {};
-    Object.keys(unmodifiedData).forEach(key => {
-      const dataField = unmodifiedData[key];
-      if (isObject(dataField) || isArray(dataField)) {
+    objectForeach(unmodifiedData, (key, dataField) => {
+      if (isDbObject(dataField) || isDbArray(dataField)) {
         const nestedModifiedData = separateData(dataField);
-        if (nestedModifiedData) {
-          modifiedData = { ...modifiedData, ...nestedModifiedData };
-        } else {
-          modifiedData[unmodifiedDataId][key] = dataField;
-        }
+        modifiedData = { ...modifiedData, ...nestedModifiedData };
       } else {
         modifiedData[unmodifiedDataId][key] = dataField;
       }
     });
+  } else if (isInline) {
+    return unmodifiedData;
   } else {
     return null;
   }
@@ -84,6 +105,9 @@ const separateData = (unmodifiedData: any) => {
 function schemaToData(schema: MaybeArray<RouteSchema>, seperatedObj: any) {
   if (isArray(schema)) {
     return schema.map(item => schemaToData(item, seperatedObj));
+  }
+  if (!schema || typeof schema !== 'object') {
+    return null;
   }
   const baseItem = seperatedObj[schema.id];
   if (!baseItem) {

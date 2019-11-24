@@ -14,8 +14,10 @@ const getCategoriesOptions: UseQueryOptions<typeof queryEndpoints['getCategories
   variables: { type: 'all' },
   defaultValue: [],
 };
+
 function CategoryHorizontalListFetcher(props: React.PropsWithChildren<CategoryHorizontalListFetcherProps>) {
   const { data: allCategories } = useQuery(queryEndpoints.getCategories, getCategoriesOptions);
+
   const categoriesMap = React.useMemo(
     () =>
       allCategories

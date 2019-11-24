@@ -121,6 +121,8 @@ class MutationEndpoints {
   clearCard: () => Promise<any> = () => ApiCall.post('/cart/clear/');
 
   cardCheckout: () => Promise<any> = () => ApiCall.post('/cart/checkout/');
+
+  deneme = () => Promise.resolve({ id: '12341' });
 }
 
 const mutationEndPoints = new MutationEndpoints();

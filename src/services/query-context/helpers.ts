@@ -40,31 +40,29 @@ export interface PaginationQueryContextType {
   getDataByRouteId: (id: string) => any;
 }
 
-export interface PaginationResult<DataType> {
+export interface PaginationResult<Q> {
   first: boolean;
   last: boolean;
   nextPage: number;
   previusPageIndex: number;
-  values: (DataType & { pageIndex: number })[];
+  values: (EndpointsResultType<Q> & { pageIndex: number })[];
   totalElements: number;
   totalPage: number;
 }
 
 export type BasePaginationQuery = typeof paginationQueryEndpoints[keyof typeof paginationQueryEndpoints];
 
-export type UsePaginationQueryResult<T> = PaginationResult<T> & {
-  // eslint-disable-next-line  @typescript-eslint/ban-ts-ignore
-  // @ts-ignore
+export type UsePaginationQueryResult<T> = {
   loading: boolean;
-  data: PaginationResult<T>['values'];
+  getDataByPage: (pageNumber: number) => PaginationResult<T>;
+  data: PaginationResult<T>;
   error: any;
-  isDone: boolean;
 };
 
 export type UsePaginationQueryOptions<T> = {
   skip?: boolean;
   // eslint-disable-next-line  @typescript-eslint/ban-ts-ignore
   // @ts-ignore
-  defaultValue?: Partial<EndpointsResultType<T>['values']>;
+  defaultValue?: Partial<PaginationResult<T>>;
   variables?: EndpointsVariablesType<T> & PaginationQueryRequiredVariables;
 };
