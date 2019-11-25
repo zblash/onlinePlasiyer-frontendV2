@@ -253,7 +253,7 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
               cart.items.map(cartItem => (
                 <StyledCartContentItemBox key={cartItem.id}>
                   <StyledCartContentItemBoxImgDiv>
-                    <img className={cartItemImg} src={cartItem.productPhotoUrl} />
+                    <img alt={cartItem.productName} className={cartItemImg} src={cartItem.productPhotoUrl} />
                   </StyledCartContentItemBoxImgDiv>
                   <StyledCartContentItemBoxDetail>
                     <h3 className={cartItemTitle}>{cartItem.productName}</h3>

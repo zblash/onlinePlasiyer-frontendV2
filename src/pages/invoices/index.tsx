@@ -1,8 +1,8 @@
 import * as React from 'react';
 import styled from '~/styled';
 import { Container, UITable } from '~/components/ui';
-import { usePaginationQuery } from '~/services/pagination-query-context/context';
-import { paginationQueryEndpoints } from '~/services/pagination-query-context/pagination-query-endpoints';
+import { usePaginationQuery } from '~/services/query-context/use-pagination-quey';
+import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
 
 /*
   InvoicesPage Helpers
@@ -29,7 +29,10 @@ const StyledPageContainer = styled.div`
 `;
 
 const InvoicesPage: React.SFC<InvoicesPageProps> = props => {
-  const { data: invoices } = usePaginationQuery(paginationQueryEndpoints.getAllInvoices, { defaultValue: [] });
+  const {
+    data: { values: invoices },
+  } = usePaginationQuery(paginationQueryEndpoints.getAllInvoices, { defaultValue: { values: [] }, pageNumber: 1 });
+  // TODO: fetch next page on change page
   const __ = (
     <Container>
       <StyledPageContainer>

@@ -3,6 +3,7 @@ import lodashGet from 'lodash.get';
 import styled, { colors } from '~/styled';
 import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
+import { UseQueryOptions } from '~/services/query-context/helpers';
 
 /* CategoryNameTitle Helpers */
 interface CategoryNameTitleProps {
@@ -18,13 +19,14 @@ const StyledSelectedCategoryName = styled.h2`
   color: ${colors.darkGray};
 `;
 
+const getCategoriesOptions: UseQueryOptions<typeof queryEndpoints['getCategories']> = {
+  variables: { type: 'all' },
+  defaultValue: [],
+};
 /* CategoryNameTitle Component  */
 function CategoryNameTitle(props: React.PropsWithChildren<CategoryNameTitleProps>) {
   const [selectedCategoryName, setSelectedCategoryName] = React.useState('');
-  const { data: allCategories } = useQuery(queryEndpoints.getCategories, {
-    variables: { type: 'all' },
-    defaultValue: [],
-  });
+  const { data: allCategories } = useQuery(queryEndpoints.getCategories, getCategoriesOptions);
 
   const __ = <StyledSelectedCategoryName>{selectedCategoryName}</StyledSelectedCategoryName>;
 
@@ -33,7 +35,7 @@ function CategoryNameTitle(props: React.PropsWithChildren<CategoryNameTitleProps
     setSelectedCategoryName(
       lodashGet(allCategories.find(category => category.id === props.selectedCategoryId), 'name'),
     );
-  }, [props.selectedCategoryId, JSON.stringify(allCategories)]);
+  }, [allCategories, props.selectedCategoryId]);
 
   /* CategoryNameTitle Functions  */
 

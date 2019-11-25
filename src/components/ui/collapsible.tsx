@@ -7,6 +7,7 @@ import CollapsibleLibrary from 'react-collapsible';
 interface CollapsibleProps {
   content: (handler: (isOpen: boolean) => void, isOpen: boolean) => React.ReactElement;
   closeForce?: boolean;
+  lazyRender?: boolean;
 }
 const _Collapsible: React.SFC<CollapsibleProps> = props => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -16,7 +17,13 @@ const _Collapsible: React.SFC<CollapsibleProps> = props => {
     }
   }, isOpen);
   const __ = (
-    <CollapsibleLibrary open={isOpen} triggerDisabled trigger={trigger} triggerTagName="div">
+    <CollapsibleLibrary
+      open={isOpen}
+      triggerDisabled
+      trigger={trigger}
+      triggerTagName="div"
+      lazyRender={props.lazyRender}
+    >
       {props.children}
     </CollapsibleLibrary>
   );

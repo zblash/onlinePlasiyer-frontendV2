@@ -6,6 +6,7 @@ import { useKeepValue } from '~/utils/hooks';
 import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { colors } from '~/styled';
+import { UseQueryOptions } from '~/services/query-context/helpers';
 
 /*
   ParentCategoryInput Helpers
@@ -38,9 +39,13 @@ const _ParentCategoryInput: React.SFC<ParentCategoryInputProps> = props => {
   const [autocompleteValue, setAutoCompleteValue] = React.useState('');
   const isActivate = !useKeepValue(props.disabled, false);
 
+  const getParentCategoriesQueryOptions = React.useMemo<UseQueryOptions<typeof queryEndpoints['getCategories']>>(
+    () => ({ variables: { type: 'parent' }, skip: !isActivate, defaultValue: [] }),
+    [isActivate],
+  );
   const { data: parentCategories, loading: getParentCategoriesLoading, error: getParentCategoriesError } = useQuery(
     queryEndpoints.getCategories,
-    { variables: { type: 'parent' }, skip: !isActivate, defaultValue: [] },
+    getParentCategoriesQueryOptions,
   );
 
   const inputIconElement = (
@@ -93,7 +98,7 @@ const _ParentCategoryInput: React.SFC<ParentCategoryInputProps> = props => {
         lodashGet(parentCategories.find(category => category.id === props.selectedCategoryId), 'name', ''),
       );
     }
-  }, [parentCategories.length]);
+  }, [parentCategories, props.selectedCategoryId]);
 
   /*
   ParentCategoryInput Functions

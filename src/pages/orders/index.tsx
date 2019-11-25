@@ -1,9 +1,9 @@
 import * as React from 'react';
 import styled from '~/styled';
-import { usePaginationQuery } from '~/services/pagination-query-context/context';
-import { paginationQueryEndpoints } from '~/services/pagination-query-context/pagination-query-endpoints';
 import { Container, UITable } from '~/components/ui';
 import { TOrderStatus } from '~/services/helpers/backend-models';
+import { usePaginationQuery } from '~/services/query-context/use-pagination-quey';
+import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
 
 /*
   OrdersPage Helpers
@@ -39,8 +39,13 @@ const StyledPageContainer = styled.div`
 `;
 
 const OrdersPage: React.SFC<OrdersPageProps> = props => {
-  const { data: orders, next } = usePaginationQuery(paginationQueryEndpoints.getAllOrders, {
-    defaultValue: [],
+  const [ordersQueryPageNumber, setOrdersQueryPageNumber] = React.useState(1);
+
+  const {
+    data: { values: orders, totalPage },
+  } = usePaginationQuery(paginationQueryEndpoints.getAllOrders, {
+    defaultValue: { values: [] },
+    pageNumber: ordersQueryPageNumber,
   });
   const __ = (
     <Container>
@@ -48,8 +53,8 @@ const OrdersPage: React.SFC<OrdersPageProps> = props => {
         <UITable
           id="orders-page-table"
           onChangePage={(pageIndex, pageCount) => {
-            if (pageIndex + 2 === pageCount) {
-              next();
+            if (pageIndex + 2 === pageCount && ordersQueryPageNumber < totalPage) {
+              setOrdersQueryPageNumber(ordersQueryPageNumber + 1);
             }
           }}
           data={orders}

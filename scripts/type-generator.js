@@ -21,15 +21,7 @@ function narrowObject(obj) {
 
   return newobject;
 }
-function makeid(length) {
-  var result = '';
-  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  var charactersLength = characters.length;
-  for (var i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-}
+
 const translationObj = {};
 let colorObj = {};
 
@@ -50,11 +42,12 @@ const hangleTranslation = key =>
   translationNarrowObject[key].includes('>');
 
 const UseTranslationItems = Object.keys(translationNarrowObject)
-  .map(key => {
+  .map((key, index) => {
     const typeNames = [...translationNarrowObject[key].matchAll(/{{(.*?)}}/g)].map(i => `${i[1]}:string`);
+
     return {
       key,
-      name: makeid(15),
+      name: `TranlationWord${index}`,
       type: typeNames.length === 0 ? 'never' : `{${typeNames.join(',')}}`,
     };
   })

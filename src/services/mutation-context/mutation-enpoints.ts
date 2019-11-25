@@ -85,6 +85,13 @@ class MutationEndpoints {
     return ApiCall.post(`/products/checkProduct/${params.barcode}`);
   };
 
+  hasProduct = (params: { barcode: string }) => {
+    return ApiCall.post(`/products/hasProduct/${params.barcode}`).then(data => ({
+      id: `has-product-${params.barcode}`,
+      hasBarcode: data,
+    }));
+  };
+
   addToCard: (s: { specifyProductId: string; quantity: number }) => Promise<ICardResponse> = ({
     specifyProductId,
     quantity,
@@ -114,6 +121,8 @@ class MutationEndpoints {
   clearCard: () => Promise<any> = () => ApiCall.post('/cart/clear/');
 
   cardCheckout: () => Promise<any> = () => ApiCall.post('/cart/checkout/');
+
+  deneme = () => Promise.resolve({ id: '12341' });
 }
 
 const mutationEndPoints = new MutationEndpoints();
