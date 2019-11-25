@@ -1,7 +1,7 @@
 import * as React from 'react';
 import deepEqual from 'deep-equal';
 import { QueryContext } from './context';
-import { QueryHandlerParams } from './helpers';
+import { QueryHandlerParams, QueryContextType } from './helpers';
 import { getRouteId, deepMergeIdObjects } from '../utils';
 import { useDatabaseObjectsContext } from '../database-object-context/context';
 import { backendObjectFunctions } from '../utils/route-schema';
@@ -34,7 +34,7 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
     }
   }, []);
 
-  const thenFactory = React.useCallback(
+  const staticDataParser = React.useCallback(
     (params: QueryHandlerParams) => data => {
       const variables = params.paginationVariables
         ? { ...params.variables, ...params.paginationVariables }
@@ -118,16 +118,19 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
   const queryHandler = React.useCallback(
     (params: QueryHandlerParams) => {
       return getIfNotExist(params.query, { ...params.variables, ...params.paginationVariables }).then(
-        thenFactory(params),
+        staticDataParser(params),
       );
     },
-    [getIfNotExist, thenFactory],
+    [getIfNotExist, staticDataParser],
   );
 
   const refetchQueries = React.useCallback(
-    (queries: Array<RefetchQuery> = []) => {
+    (queries: Array<RefetchQuery> = [], mutationResult: any) => {
       const fetchingQueries = queries.filter(
         ({ query, variables, type }) => isRouteCacheTaken(getRouteId(query, variables)) && type === 'normal',
+      );
+      const chainQueries = queries.filter(
+        ({ query, variables, type }) => isRouteCacheTaken(getRouteId(query, variables)) && type === 'chain',
       );
       queries
         .filter(({ type }) => type === 'pagination')
@@ -141,13 +144,16 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
           }
         });
 
-      return asyncMap(
-        fetchingQueries.map(({ query, variables }) => () => {
-          return get(query, variables).then(thenFactory({ query, variables }));
-        }),
-      );
+      return asyncMap([
+        ...fetchingQueries.map(({ query, variables }) => () =>
+          get(query, variables).then(staticDataParser({ query, variables })),
+        ),
+        ...chainQueries.map(({ query, variables }) => async () =>
+          staticDataParser({ query, variables })(mutationResult),
+        ),
+      ]);
     },
-    [get, isRouteCacheTaken, thenFactory],
+    [get, isRouteCacheTaken, staticDataParser],
   );
 
   const getDataByRouteId = React.useCallback((routeId: string) => routeDataStore[routeId], [routeDataStore]);
@@ -155,13 +161,14 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
     updateStoreIfUsedIdsChange();
   }, [updateStoreIfUsedIdsChange]);
 
-  const contextValues = React.useMemo(
+  const contextValues = React.useMemo<QueryContextType>(
     () => ({
+      staticDataParser,
       queryHandler,
       refetchQueries,
       getDataByRouteId,
     }),
-    [getDataByRouteId, queryHandler, refetchQueries],
+    [getDataByRouteId, queryHandler, refetchQueries, staticDataParser],
   );
 
   return <QueryContext.Provider value={contextValues}>{props.children}</QueryContext.Provider>;

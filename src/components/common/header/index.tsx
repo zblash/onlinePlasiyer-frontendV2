@@ -6,7 +6,6 @@ import { HeaderSearchBar } from './search-bar';
 import { AccountCard } from './cards/account-card';
 import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
-import { UILink } from '~/components/ui';
 
 /*
   Header Helpers
@@ -54,7 +53,7 @@ const StyledMenuItemsWrapper = styled.div`
 
 const _Header: React.SFC<HeaderProps> = props => {
   const { data: cart } = useQuery(queryEndpoints.getCard, {
-    defaultValue: {},
+    defaultValue: { quantity: 0, items: [] },
   });
 
   const menuItems: MenuItemProps[] = [
@@ -67,7 +66,9 @@ const _Header: React.SFC<HeaderProps> = props => {
     {
       id: 'shoping-basket',
       iconName: 'shopingBasket',
-      text: <UILink to="/cart">Sepet ({cart.quantity ? cart.quantity : 0})</UILink>,
+      // text: `Sepet (${cart.quantity})`,
+      text: `Sepet (${cart.items.length})`,
+      link: '/cart',
     },
   ];
 

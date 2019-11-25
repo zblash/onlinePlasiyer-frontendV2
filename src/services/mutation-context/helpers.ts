@@ -5,7 +5,7 @@ export interface MutationContextProviderProps {}
 export interface RefetchQuery<T = any> {
   query: (vars: EndpointsVariablesType<T>) => Promise<EndpointsResultType<T>>;
   variables: Omit<EndpointsVariablesType<T>, 'pageNumber'>;
-  type: 'normal' | 'pagination';
+  type: 'normal' | 'pagination' | 'chain';
 }
 
 export type MutationHandlerParams = {

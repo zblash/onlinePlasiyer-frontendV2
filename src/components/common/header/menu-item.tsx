@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Tooltip from 'rc-tooltip';
 import { IconName } from '~/components/ui/icon';
-import { UIIcon, UIButton } from '~/components/ui';
+import { UIIcon, UIButton, UILink } from '~/components/ui';
 import styled, { css } from '~/styled';
 
 /*
@@ -11,6 +11,7 @@ export interface MenuItemProps {
   id: string;
   iconName: IconName;
   text: string | React.ReactElement;
+  link?: string;
   cardContent?: (closeCard: () => void) => React.ReactElement;
 }
 
@@ -64,11 +65,15 @@ const StyledPopuCardWrapper = styled.div`
   box-shadow: ${MenuItemColors.popupCardWrapperShadow} 0 4px 16px;
 `;
 
+const StyledLink = styled(UILink)`
+  display: flex;
+`;
+
 const MenuItem: React.SFC<MenuItemProps> = props => {
   const [isClosed, setIsClosed] = React.useState(false);
   const tooltipProps = isClosed ? { visible: false } : {};
 
-  if (props.cardContent) {
+  if (props.cardContent && !props.link) {
     return (
       <Tooltip
         overlay={
@@ -96,15 +101,17 @@ const MenuItem: React.SFC<MenuItemProps> = props => {
   }
 
   return (
-    <StyledMenuItemWrapper>
-      <UIIcon
-        name={props.iconName}
-        size={20}
-        className={css.cx(cssIconStyle, cssCommonOpacity)}
-        color={MenuItemColors.text}
-      />
-      <StyledMenuItemText className={cssCommonOpacity}>{props.text}</StyledMenuItemText>
-    </StyledMenuItemWrapper>
+    <StyledLink to={props.link}>
+      <StyledMenuItemWrapper>
+        <UIIcon
+          name={props.iconName}
+          size={20}
+          className={css.cx(cssIconStyle, cssCommonOpacity)}
+          color={MenuItemColors.text}
+        />
+        <StyledMenuItemText className={cssCommonOpacity}>{props.text}</StyledMenuItemText>
+      </StyledMenuItemWrapper>
+    </StyledLink>
   );
 };
 

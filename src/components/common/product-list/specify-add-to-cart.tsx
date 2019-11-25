@@ -3,6 +3,8 @@ import { UIButton } from '~/components/ui';
 import styled, { colors, css } from '~/styled';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
+import { refetchFactory } from '~/services/utils';
+import { queryEndpoints } from '~/services/query-context/query-endpoints';
 
 /* SpecifyAddtoCart Helpers */
 interface SpecifyAddtoCartProps {
@@ -52,6 +54,7 @@ function SpecifyAddtoCart(props: React.PropsWithChildren<SpecifyAddtoCartProps>)
       specifyProductId: props.specifyProductId,
       quantity,
     },
+    refetchQueries: [refetchFactory(queryEndpoints.getCard, null, true)],
   });
 
   const handleChange = React.useCallback(

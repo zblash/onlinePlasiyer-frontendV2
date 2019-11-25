@@ -14,7 +14,7 @@ function MutationContextProvider(props: React.PropsWithChildren<MutationContextP
       return mutation(variables).then(mutationResult => {
         databaseObjectsContext.setObjectsFromBackendResponse(backendObjectFunctions.separateData(mutationResult));
         if (refetchQueries && refetchQueries.length) {
-          queryContext.refetchQueries(refetchQueries);
+          queryContext.refetchQueries(refetchQueries, mutationResult);
         }
 
         return mutationResult;
