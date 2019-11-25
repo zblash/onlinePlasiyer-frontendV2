@@ -20,7 +20,11 @@ export const LinkColors = {
   Link Styles
 */
 
-const StyledLinkWrapper = styled(NavLink)``;
+const StyledLinkWrapper = styled(NavLink)`
+  color: white;
+  cursor: pointer;
+  text-decoration: none;
+`;
 
 const _Link: React.SFC<LinkProps> = props => {
   const __ = (

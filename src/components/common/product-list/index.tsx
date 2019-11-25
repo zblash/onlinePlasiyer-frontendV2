@@ -6,6 +6,7 @@ import { UITableColumns, UITable } from '~/components/ui/table';
 import { ProductCardWrapper, ProductCard, ProductData } from '../product-card';
 import styled, { css, colors } from '~/styled';
 import { UICollapsible } from '~/components/ui';
+import { SpecifyAddtoCart } from './specify-add-to-cart';
 /*
   ProductList Helpers
 */
@@ -46,6 +47,10 @@ const TABLE_SHOWN_DATA: UITableColumns<SpecifyProductData>[] = [
   {
     itemRenderer: specifyProduct => specifyProduct.totalPrice,
     title: 'Toplam fiyat',
+  },
+  {
+    itemRenderer: specifyProduct => <SpecifyAddtoCart key={specifyProduct.id} specifyProductId={specifyProduct.id} />,
+    title: 'Sepete Ekle',
   },
 ];
 
@@ -176,16 +181,18 @@ const ProductList: React.SFC<ProductListProps> = props => {
           />
         </UICollapsible>
       ))}
-      <StyledPaginateWrapper>
-        <ReactPaginate
-          pageRangeDisplayed={3}
-          marginPagesDisplayed={2}
-          activeLinkClassName={activeStyle}
-          containerClassName={containerStyle}
-          pageCount={props.productsPageCount}
-          onPageChange={onPageChange}
-        />
-      </StyledPaginateWrapper>
+      {props.products.length > 0 && (
+        <StyledPaginateWrapper>
+          <ReactPaginate
+            pageRangeDisplayed={3}
+            marginPagesDisplayed={2}
+            activeLinkClassName={activeStyle}
+            containerClassName={containerStyle}
+            pageCount={props.productsPageCount}
+            onPageChange={onPageChange}
+          />
+        </StyledPaginateWrapper>
+      )}
     </StyledProductListContainer>
   );
 };

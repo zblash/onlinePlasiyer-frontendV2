@@ -7,46 +7,11 @@ type RouteSchema = {
     [key: string]: MaybeArray<RouteSchema>;
   };
 };
+
+export type SeperatedData = Record<string, any>;
+
 const CURRENT_ID_KEY = 'id';
 
-// [hooks] sonra bak buraya
-function dataToSchema(data: any): MaybeArray<RouteSchema> {
-  if (typeof data !== 'object') {
-    return null;
-  }
-  if (isArray(data)) {
-    const arraySchema = data.map(childItem => dataToSchema(childItem) as RouteSchema);
-    if (arraySchema.find(item => item === null)) {
-      return null;
-    }
-
-    return arraySchema;
-  }
-
-  if (!data.id) {
-    return null;
-  }
-
-  const route: RouteSchema = {
-    id: data.id,
-    props: {},
-  };
-  objectForeach(data, (key, value) => {
-    if (isArray(value)) {
-      const cacheMap = dataToSchema(value) as Array<RouteSchema>;
-      if (cacheMap !== null) {
-        route.props = { ...route.props, [key]: cacheMap };
-      }
-    } else if (isObject(value)) {
-      const result = dataToSchema(value);
-      if (result !== null) {
-        route.props = { ...route.props, [key]: dataToSchema(value) };
-      }
-    }
-  });
-
-  return route;
-}
 function isDbObject(obj: any) {
   if (isObject(obj) && obj[CURRENT_ID_KEY]) {
     return true;
@@ -74,6 +39,44 @@ function isDbArray(obj: any) {
   }
 
   return false;
+}
+
+function dataToSchema(data: any): MaybeArray<RouteSchema> {
+  if (typeof data !== 'object') {
+    return null;
+  }
+  if (isArray(data)) {
+    const arraySchema = data.map(childItem => dataToSchema(childItem) as RouteSchema);
+    if (arraySchema.filter(item => item === null).length > 0) {
+      return null;
+    }
+
+    return arraySchema;
+  }
+
+  if (!data.id) {
+    return null;
+  }
+
+  const route: RouteSchema = {
+    id: data.id,
+    props: {},
+  };
+  objectForeach(data, (key, value) => {
+    if (isArray(value)) {
+      const result = dataToSchema(value) as Array<RouteSchema>;
+      if (result !== null) {
+        route.props = { ...route.props, [key]: result };
+      }
+    } else if (isObject(value)) {
+      const result = dataToSchema(value);
+      if (result !== null) {
+        route.props = { ...route.props, [key]: dataToSchema(value) };
+      }
+    }
+  });
+
+  return route;
 }
 
 const separateData = (unmodifiedData: any, isInline = false) => {

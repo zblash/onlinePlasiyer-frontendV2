@@ -37,7 +37,7 @@ export interface ISpecifyProductResponse {
 
 export interface ICardItemResponse {
   id: string;
-  productBarcode: string;
+  productBarcodeList: string[];
   productName: string;
   productPhotoUrl: string;
   productPrice: number;

@@ -15,8 +15,19 @@ export type QueryHandlerParams<T = (v?: any) => Promise<any>> = {
 
 export interface QueryContextType {
   queryHandler: (params: QueryHandlerParams) => Promise<{ routeId: string; queryResult: any } & QueryHandlerParams>;
-  refetchQueries: (params: RefetchQuery[]) => Promise<any>;
+  refetchQueries: (params: RefetchQuery[], mutationResult: any) => Promise<any>;
   getDataByRouteId: (id: string) => any;
+  staticDataParser: (
+    params: QueryHandlerParams<(v?: any) => Promise<any>>,
+  ) => (
+    data: any,
+  ) => {
+    queryResult: any;
+    query: (vars: any) => Promise<any>;
+    variables: any;
+    paginationVariables?: PaginationQueryRequiredVariables;
+    routeId: string;
+  };
 }
 
 export type BaseQuery = typeof queryEndpoints[keyof typeof queryEndpoints];

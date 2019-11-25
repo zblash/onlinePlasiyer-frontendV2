@@ -7,6 +7,13 @@ const initialValue: QueryContextType = {
   queryHandler: () => Promise.resolve({ routeId: '', query: async () => {}, variables: {}, queryResult: {} }),
   refetchQueries: () => Promise.resolve(0),
   getDataByRouteId: () => null,
+  staticDataParser: () => () =>
+    Promise.resolve({
+      queryResult: null,
+      query: vars => Promise.resolve({} as any),
+      variables: null,
+      routeId: '',
+    }) as any,
 };
 
 const QueryContext = React.createContext<QueryContextType>(initialValue);

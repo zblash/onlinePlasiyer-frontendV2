@@ -5,6 +5,7 @@ import { RefetchQuery } from '../mutation-context/helpers';
 import { queryEndpoints } from '../query-context/query-endpoints';
 import { paginationQueryEndpoints } from '../query-context/pagination-query-endpoints';
 import { QueryHandlerParams } from '../query-context/helpers';
+import { SeperatedData } from './route-schema';
 
 const getRouteId = (query: QueryHandlerParams['query'], variables?: Record<string, any>) =>
   getRouteByEndpoint({ ...queryEndpoints, ...paginationQueryEndpoints }, query) +
@@ -14,16 +15,20 @@ const getRouteByEndpoint = (queries: any, query: any) => {
 };
 
 // [hooks] replace to callback usememo and move services hooks
-function refetchFactory<T>(query: T, variables: Omit<EndpointsVariablesType<T>, 'pageNumber'>): RefetchQuery<T> {
+function refetchFactory<T>(
+  query: T,
+  variables: Omit<EndpointsVariablesType<T>, 'pageNumber'>,
+  chain?: boolean,
+): RefetchQuery<T> {
   return {
     // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
     query,
-    variables,
-    type: getRouteByEndpoint(queryEndpoints, query) ? 'normal' : 'pagination',
+    variables: { ...variables },
+    type: chain ? 'chain' : getRouteByEndpoint(queryEndpoints, query) ? 'normal' : 'pagination',
   };
 }
-function deepMergeIdObjects(cache: any, newData: any) {
+function deepMergeIdObjects(cache: SeperatedData, newData: SeperatedData): SeperatedData {
   const modifiedData = {};
   objectKeys(newData).forEach(id => {
     modifiedData[id] = { ...cache[id], ...newData[id] };

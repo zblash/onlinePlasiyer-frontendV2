@@ -4,6 +4,8 @@ import { HeaderLogo } from './header-logo';
 import { MenuItemProps, MenuItem } from './menu-item';
 import { HeaderSearchBar } from './search-bar';
 import { AccountCard } from './cards/account-card';
+import { useQuery } from '~/services/query-context/context';
+import { queryEndpoints } from '~/services/query-context/query-endpoints';
 
 /*
   Header Helpers
@@ -50,16 +52,23 @@ const StyledMenuItemsWrapper = styled.div`
 `;
 
 const _Header: React.SFC<HeaderProps> = props => {
+  const { data: cart } = useQuery(queryEndpoints.getCard, {
+    defaultValue: { quantity: 0, items: [] },
+  });
+
   const menuItems: MenuItemProps[] = [
     {
+      id: 'account-card',
       iconName: 'account',
       text: HeaderStrings.accont,
       cardContent: () => <AccountCard />,
     },
     {
+      id: 'shoping-basket',
       iconName: 'shopingBasket',
-      text: 'Sepet (3)',
-      cardContent: null,
+      // text: `Sepet (${cart.quantity})`,
+      text: `Sepet (${cart.items.length})`,
+      link: '/cart',
     },
   ];
 
@@ -69,19 +78,11 @@ const _Header: React.SFC<HeaderProps> = props => {
       <HeaderSearchBar />
       <StyledMenuItemsWrapper>
         {menuItems.map(item => (
-          <MenuItem {...item} key={item.text} />
+          <MenuItem {...item} key={item.id} />
         ))}
       </StyledMenuItemsWrapper>
     </StyledHeaderStickyWrapper>
   );
-
-  /*
-  Header Lifecycle
-  */
-
-  /*
-  Header Functions
-  */
 
   return __;
 };
