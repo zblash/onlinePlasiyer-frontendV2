@@ -3,6 +3,7 @@ import { MutationContext } from './context';
 import { MutationHandlerParams, MutationContextProviderProps } from './helpers';
 import { useQueryContext } from '../query-context/context';
 import { useDatabaseObjectsContext } from '../database-object-context/context';
+import { backendObjectFunctions } from '../utils/route-schema';
 
 function MutationContextProvider(props: React.PropsWithChildren<MutationContextProviderProps>) {
   const queryContext = useQueryContext();
@@ -11,7 +12,7 @@ function MutationContextProvider(props: React.PropsWithChildren<MutationContextP
   const mutationHandler = React.useCallback(
     ({ mutation, variables, refetchQueries }: MutationHandlerParams) => {
       return mutation(variables).then(mutationResult => {
-        databaseObjectsContext.setObjectsFromBackendResponse(mutationResult);
+        databaseObjectsContext.setObjectsFromBackendResponse(backendObjectFunctions.separateData(mutationResult));
         if (refetchQueries && refetchQueries.length) {
           queryContext.refetchQueries(refetchQueries);
         }

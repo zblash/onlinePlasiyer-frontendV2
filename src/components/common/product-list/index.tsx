@@ -181,16 +181,18 @@ const ProductList: React.SFC<ProductListProps> = props => {
           />
         </UICollapsible>
       ))}
-      <StyledPaginateWrapper>
-        <ReactPaginate
-          pageRangeDisplayed={3}
-          marginPagesDisplayed={2}
-          activeLinkClassName={activeStyle}
-          containerClassName={containerStyle}
-          pageCount={props.productsPageCount}
-          onPageChange={onPageChange}
-        />
-      </StyledPaginateWrapper>
+      {props.products.length > 0 && (
+        <StyledPaginateWrapper>
+          <ReactPaginate
+            pageRangeDisplayed={3}
+            marginPagesDisplayed={2}
+            activeLinkClassName={activeStyle}
+            containerClassName={containerStyle}
+            pageCount={props.productsPageCount}
+            onPageChange={onPageChange}
+          />
+        </StyledPaginateWrapper>
+      )}
     </StyledProductListContainer>
   );
 };

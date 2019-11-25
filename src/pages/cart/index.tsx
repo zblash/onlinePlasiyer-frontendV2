@@ -262,7 +262,8 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
                       {cartItem.sellerName}
                     </p>
                     <p className={cartItemBoxP}>
-                      <strong>Barkod: </strong>8888888888888
+                      <strong>Barkod: </strong>
+                      {cartItem.productBarcodeList.join(',')}
                     </p>
                   </StyledCartContentItemBoxDetail>
                   <StyledCartContentItemBoxQuantity>

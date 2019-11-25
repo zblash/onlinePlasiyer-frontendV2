@@ -99,6 +99,7 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
           routeDataStore[routeId],
           backendObjectFunctions.schemaToData(currentRoutePrevSchema, databaseObjects),
         );
+
         if (isChangeCurrentRoute) {
           changedRoutes.push(routeId);
         }

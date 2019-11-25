@@ -8,8 +8,9 @@ import styled, { css } from '~/styled';
   MenuItem Helpers
 */
 export interface MenuItemProps {
+  id: string;
   iconName: IconName;
-  text: string;
+  text: string | React.ReactElement;
   cardContent?: (closeCard: () => void) => React.ReactElement;
 }
 

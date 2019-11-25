@@ -6,7 +6,7 @@ import { HeaderSearchBar } from './search-bar';
 import { AccountCard } from './cards/account-card';
 import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
-import { CartCard } from './cards/cart-card';
+import { UILink } from '~/components/ui';
 
 /*
   Header Helpers
@@ -59,14 +59,15 @@ const _Header: React.SFC<HeaderProps> = props => {
 
   const menuItems: MenuItemProps[] = [
     {
+      id: 'account-card',
       iconName: 'account',
       text: HeaderStrings.accont,
       cardContent: () => <AccountCard />,
     },
     {
+      id: 'shoping-basket',
       iconName: 'shopingBasket',
-      text: `Sepet (${cart.quantity ? cart.quantity : 0})`,
-      cardContent: () => <CartCard cart={cart} />,
+      text: <UILink to="/cart">Sepet ({cart.quantity ? cart.quantity : 0})</UILink>,
     },
   ];
 
@@ -76,19 +77,11 @@ const _Header: React.SFC<HeaderProps> = props => {
       <HeaderSearchBar />
       <StyledMenuItemsWrapper>
         {menuItems.map(item => (
-          <MenuItem {...item} key={item.text} />
+          <MenuItem {...item} key={item.id} />
         ))}
       </StyledMenuItemsWrapper>
     </StyledHeaderStickyWrapper>
   );
-
-  /*
-  Header Lifecycle
-  */
-
-  /*
-  Header Functions
-  */
 
   return __;
 };

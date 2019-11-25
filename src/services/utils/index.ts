@@ -5,6 +5,7 @@ import { RefetchQuery } from '../mutation-context/helpers';
 import { queryEndpoints } from '../query-context/query-endpoints';
 import { paginationQueryEndpoints } from '../query-context/pagination-query-endpoints';
 import { QueryHandlerParams } from '../query-context/helpers';
+import { SeperatedData } from './route-schema';
 
 const getRouteId = (query: QueryHandlerParams['query'], variables?: Record<string, any>) =>
   getRouteByEndpoint({ ...queryEndpoints, ...paginationQueryEndpoints }, query) +
@@ -23,7 +24,7 @@ function refetchFactory<T>(query: T, variables: Omit<EndpointsVariablesType<T>, 
     type: getRouteByEndpoint(queryEndpoints, query) ? 'normal' : 'pagination',
   };
 }
-function deepMergeIdObjects(cache: any, newData: any) {
+function deepMergeIdObjects(cache: SeperatedData, newData: SeperatedData): SeperatedData {
   const modifiedData = {};
   objectKeys(newData).forEach(id => {
     modifiedData[id] = { ...cache[id], ...newData[id] };
