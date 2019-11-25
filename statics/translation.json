@@ -7,6 +7,12 @@
       "next": "Ileri",
       "add": "Ekle"
     },
+    "obligations": {
+      "title": "Toplam Odemeler",
+      "totalDebts": "Toplam Borcunuz",
+      "totalReceivables": "Toplam Alacak",
+      "details": "Detaylari Gor"
+    },
     "product-card": {
       "show-price": "<0>Fiyatlari Goster</0> <1/>",
       "hide-price": "<0>Fiyatlari Gizle</0> <1/>"
