@@ -16,4 +16,10 @@ export interface StaticColorType {
   lightGray: string;
   danger: string;
   dangerDark: string;
+  paginate: StaticColorPaginate;
+};
+interface StaticColorPaginate {
+  blue: string;
+  darkBlue: string;
+  gray: string;
 }

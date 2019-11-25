@@ -1,13 +1,9 @@
 import * as React from 'react';
 import { ApiCallContext } from './context';
 import { ApiCallContextProviderProps, QueryQueue, ApiCallContextType } from './helpers';
-import { getRouteId, getRouteByEndpoint } from '../utils';
-import { queryEndpoints } from '../query-context/query-endpoints';
+import { getRouteId } from '../utils';
 import { BasicQuery } from '../helpers';
 import Queue from '../utils/queue';
-import { paginationQueryEndpoints } from '../query-context/pagination-query-endpoints';
-
-const allQueries = { ...queryEndpoints, ...paginationQueryEndpoints };
 
 function ApiCallContextProvider(props: React.PropsWithChildren<ApiCallContextProviderProps>) {
   const queryResults = React.useRef({});
@@ -32,7 +28,7 @@ function ApiCallContextProvider(props: React.PropsWithChildren<ApiCallContextPro
 
   const fetch = React.useCallback(
     (query: BasicQuery, variables: any) => {
-      const routeId = getRouteId(getRouteByEndpoint(allQueries, query), variables);
+      const routeId = getRouteId(query, variables);
 
       return getQueueOrCreate(routeId).push(async () =>
         query(variables).then(result => {
@@ -51,7 +47,7 @@ function ApiCallContextProvider(props: React.PropsWithChildren<ApiCallContextPro
 
   const fetchIfNotExist = React.useCallback(
     (query: BasicQuery, variables: any) => {
-      const routeId = getRouteId(getRouteByEndpoint(allQueries, query), variables);
+      const routeId = getRouteId(query, variables);
       if (isRouteFetched(routeId)) {
         return Promise.resolve(getQueryResult(routeId));
       }

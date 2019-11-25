@@ -39,8 +39,11 @@ function getDisplayName(WrappedComponent: any): string {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
 
-function narrowObject(obj: Record<string, any>): Record<string, string | number | boolean | null | undefined> {
-  const newobject = {};
+function narrowObject<T extends boolean>(
+  obj: Record<string, any>,
+  isString?: T,
+): T extends true ? string : Record<string, string | number | boolean | null | undefined> {
+  const newobject: any = {};
   Object.keys(obj).forEach(key => {
     const value = obj[key];
     if (isObject(value) || isArray(value)) {
@@ -52,6 +55,10 @@ function narrowObject(obj: Record<string, any>): Record<string, string | number 
       newobject[key] = value;
     }
   });
+
+  if (isString) {
+    return JSON.stringify(newobject) as any;
+  }
 
   return newobject;
 }

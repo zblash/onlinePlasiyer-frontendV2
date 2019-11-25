@@ -10,7 +10,12 @@
       "darkGray": "#333333",
       "lightGray": "#e6e6e6",
       "danger": "#e2574c",
-      "dangerDark": "#bf453b"
+      "dangerDark": "#bf453b",
+      "paginate": {
+        "blue": "#337ab7",
+        "darkBlue": "#23527c",
+        "gray": "#dddddd"
+      }
     }
   }
 }

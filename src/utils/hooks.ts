@@ -47,10 +47,16 @@ function useWindowEvent<T extends keyof WindowEventMap>(event: T, callback: (e: 
     return () => window.removeEventListener(event, callback);
   }, [event, callback]);
 }
-
-function useObjectState<T>(initialState: T): [T, React.Dispatch<React.SetStateAction<Partial<T>>>] {
+type UseObjectStateSetStateAction<T> = (newValue: Partial<T>, isCompletely?: boolean) => void;
+function useObjectState<T>(initialState: T): [T, UseObjectStateSetStateAction<T>] {
   const [state, setState] = React.useState(initialState);
-  const setMergedState = React.useCallback(newState => setState(prevState => ({ ...prevState, ...newState })), []);
+  const setMergedState = React.useCallback((newState, isCompletely) => {
+    if (isCompletely) {
+      setState(prevState => newState);
+    } else {
+      setState(prevState => ({ ...prevState, ...newState }));
+    }
+  }, []);
 
   return [state, setMergedState];
 }

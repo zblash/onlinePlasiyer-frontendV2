@@ -2239,6 +2239,27 @@
   dependencies:
     "@types/lodash" "*"
 
+"@types/lodash.omit@^4.5.6":
+  version "4.5.6"
+  resolved "https://registry.yarnpkg.com/@types/lodash.omit/-/lodash.omit-4.5.6.tgz#f2a9518259e481a48ff7ec423420fa8fd58933e2"
+  integrity sha512-KXPpOSNX2h0DAG2w7ajpk7TXvWF28ZHs5nJhOJyP0BQHkehgr948RVsToItMme6oi0XJkp19CbuNXkIX8FiBlQ==
+  dependencies:
+    "@types/lodash" "*"
+
+"@types/lodash.pick@^4.4.6":
+  version "4.4.6"
+  resolved "https://registry.yarnpkg.com/@types/lodash.pick/-/lodash.pick-4.4.6.tgz#ae4e8f109e982786313bb6aac4b1a73aefa6e9be"
+  integrity sha512-u8bzA16qQ+8dY280z3aK7PoWb3fzX5ATJ0rJB6F+uqchOX2VYF02Aqa+8aYiHiHgPzQiITqCgeimlyKFy4OA6g==
+  dependencies:
+    "@types/lodash" "*"
+
+"@types/lodash.sortby@^4.7.6":
+  version "4.7.6"
+  resolved "https://registry.yarnpkg.com/@types/lodash.sortby/-/lodash.sortby-4.7.6.tgz#eed689835f274b553db4ae16a4a23f58b79618a1"
+  integrity sha512-EnvAOmKvEg7gdYpYrS6+fVFPw5dL9rBnJi3vcKI7wqWQcLJVF/KRXK9dH29HjGNVvFUj0s9prRP3J8jEGnGKDw==
+  dependencies:
+    "@types/lodash" "*"
+
 "@types/lodash.uniq@^4.5.6":
   version "4.5.6"
   resolved "https://registry.yarnpkg.com/@types/lodash.uniq/-/lodash.uniq-4.5.6.tgz#adb052f6c7eeb38b920c13166e7a972dd960b4c5"
@@ -2304,6 +2325,13 @@
   integrity sha512-E7F+P/UG4Utu+kh8Hy544i0m4CzpHw1awNX6hVfkhlu4mXSlAn6KLZzKEkPBbHm7g1kspmZTiuP23HAKZpASPw==
   dependencies:
     "@types/prop-types" "*"
+    "@types/react" "*"
+
+"@types/react-paginate@^6.2.1":
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/@types/react-paginate/-/react-paginate-6.2.1.tgz#2329088d78010ea49661559c8467a24ecd942784"
+  integrity sha512-+q8k1N0WzbMyOCsIEH/p5D6/KQD8dXYLzfvSvriYn//94icd2sqhAL2rWXkgwGvqHGCSTU9AoHtsWCJxPfquUQ==
+  dependencies:
     "@types/react" "*"
 
 "@types/react-router-dom@^5.1.0":
@@ -8995,6 +9023,11 @@ lodash.memoize@4.x, lodash.memoize@^4.1.2:
   resolved "https://registry.yarnpkg.com/lodash.memoize/-/lodash.memoize-4.1.2.tgz#bcc6c49a42a2840ed997f323eada5ecd182e0bfe"
   integrity sha1-vMbEmkKihA7Zl/Mj6tpezRguC/4=
 
+lodash.omit@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.omit/-/lodash.omit-4.5.0.tgz#6eb19ae5a1ee1dd9df0b969e66ce0b7fa30b5e60"
+  integrity sha1-brGa5aHuHdnfC5aeZs4Lf6MLXmA=
+
 lodash.pick@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.pick/-/lodash.pick-4.4.0.tgz#52f05610fff9ded422611441ed1fc123a03001b3"
@@ -11365,6 +11398,13 @@ react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
+
+react-paginate@^6.3.2:
+  version "6.3.2"
+  resolved "https://registry.yarnpkg.com/react-paginate/-/react-paginate-6.3.2.tgz#4e18cbdb2654d308566775fa14df11e820188391"
+  integrity sha512-Ch++Njfv8UHpLtIMiQouAPeJQA5Ki86kIYfCer6c1B96Rvn3UF27se+goCilCP8oHNXNsA2R2kxvzanY1YIkyg==
+  dependencies:
+    prop-types "^15.6.1"
 
 react-popper-tooltip@^2.8.3:
   version "2.10.0"

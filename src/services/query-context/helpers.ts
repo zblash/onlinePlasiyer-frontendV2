@@ -10,10 +10,11 @@ interface PaginationQueryRequiredVariables {
 export type QueryHandlerParams<T = (v?: any) => Promise<any>> = {
   query: (vars: EndpointsVariablesType<T>) => Promise<EndpointsResultType<T>>;
   variables: EndpointsVariablesType<T>;
+  paginationVariables?: PaginationQueryRequiredVariables;
 };
 
 export interface QueryContextType {
-  queryHandler: (params: QueryHandlerParams) => Promise<string>;
+  queryHandler: (params: QueryHandlerParams) => Promise<{ routeId: string; queryResult: any } & QueryHandlerParams>;
   refetchQueries: (params: RefetchQuery[]) => Promise<any>;
   getDataByRouteId: (id: string) => any;
 }
@@ -59,10 +60,10 @@ export type UsePaginationQueryResult<T> = {
   error: any;
 };
 
-export type UsePaginationQueryOptions<T> = {
+export type UsePaginationQueryOptions<T> = PaginationQueryRequiredVariables & {
   skip?: boolean;
   // eslint-disable-next-line  @typescript-eslint/ban-ts-ignore
   // @ts-ignore
   defaultValue?: Partial<PaginationResult<T>>;
-  variables?: EndpointsVariablesType<T> & PaginationQueryRequiredVariables;
+  variables?: Omit<EndpointsVariablesType<T>, 'pageNumber'>;
 };

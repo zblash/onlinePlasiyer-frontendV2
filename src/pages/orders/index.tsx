@@ -45,7 +45,7 @@ const OrdersPage: React.SFC<OrdersPageProps> = props => {
     data: { values: orders, totalPage },
   } = usePaginationQuery(paginationQueryEndpoints.getAllOrders, {
     defaultValue: { values: [] },
-    variables: { pageNumber: ordersQueryPageNumber },
+    pageNumber: ordersQueryPageNumber,
   });
   const __ = (
     <Container>

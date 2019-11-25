@@ -1,26 +1,57 @@
 import * as React from 'react';
+import lodashOmit from 'lodash.omit';
+import lodashSortBy from 'lodash.sortby';
 import deepEqual from 'deep-equal';
 import { BasePaginationQuery, UsePaginationQueryOptions, UsePaginationQueryResult, PaginationResult } from './helpers';
 import { useQueryContext } from './context';
 import { useObjectState, usePrevious } from '~/utils/hooks';
+import { objectValues, narrowObject } from '~/utils';
+import { getRouteId } from '../utils';
 
-function usePaginationQuery<T extends BasePaginationQuery>(
-  query: T,
-  userOptions: UsePaginationQueryOptions<T> = {},
-): UsePaginationQueryResult<T> {
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const options = React.useMemo(() => ({ variables: { pageNumber: 1 }, ...userOptions }), [
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    JSON.stringify(userOptions),
-  ]);
-  const prevOptions = usePrevious(options);
-  const [state, setState] = useObjectState({
+function initialState(
+  options: any,
+  defaultValue: any = {},
+): {
+  routeIdsByPage: Record<string, { routeId: string; pageNumber: string }>;
+  error: any;
+  loading: boolean;
+  isCompleted: boolean;
+  routeIdWithOutPageNumber: string;
+  totalPage: number;
+} {
+  return {
     routeIdsByPage: {},
     error: null,
     loading: !options.skip,
     isCompleted: false,
-  });
+    routeIdWithOutPageNumber: null,
+    totalPage: 0,
+    ...defaultValue,
+  };
+}
+function usePaginationQuery<T extends BasePaginationQuery>(
+  query: T,
+  userOptions: UsePaginationQueryOptions<T> = { pageNumber: 1 },
+): UsePaginationQueryResult<T> {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const options = React.useMemo(() => ({ variables: {}, ...userOptions }), [
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    narrowObject(userOptions, true),
+  ]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const optionsWithOutPageNumber = React.useMemo(() => ({ variables: {}, ...userOptions }), [
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    narrowObject(lodashOmit(userOptions, 'pageNumber'), true),
+  ]);
+  const prevOptions = usePrevious(options);
+  const [state, setState] = useObjectState(initialState(options));
   const { queryHandler, getDataByRouteId } = useQueryContext();
+
+  React.useEffect(() => {
+    setState(initialState(optionsWithOutPageNumber), true);
+  }, [optionsWithOutPageNumber, setState]);
+
   const getQuery = React.useCallback(() => {
     if (options.skip) {
       return;
@@ -31,11 +62,27 @@ function usePaginationQuery<T extends BasePaginationQuery>(
       queryHandler({
         query,
         variables: options.variables,
+        paginationVariables: { pageNumber: options.pageNumber },
       })
-        .then(routeId => {
+        .then(({ routeId, variables, queryResult }) => {
+          const routeIdWithOutPageNumber = getRouteId(query, lodashOmit(variables, 'pageNumber'));
+          let routeIdsByPage = {
+            [options.pageNumber + routeId]: {
+              routeId,
+              pageNumber: options.pageNumber.toString(),
+            },
+          };
+          if (!state.routeIdWithOutPageNumber || state.routeIdWithOutPageNumber === routeIdWithOutPageNumber) {
+            routeIdsByPage = {
+              ...state.routeIdsByPage,
+              ...routeIdsByPage,
+            };
+          }
           setState({
-            routeIdsByPage: { ...state.routeIdsByPage, [options.variables.pageNumber]: routeId },
+            routeIdsByPage,
+            routeIdWithOutPageNumber,
             loading: false,
+            totalPage: queryResult.totalPage,
             isCompleted: true,
           });
         })
@@ -44,17 +91,16 @@ function usePaginationQuery<T extends BasePaginationQuery>(
           throw e;
         });
     }
-  }, [options, prevOptions, setState, queryHandler, query, state.routeIdsByPage]);
+  }, [options, prevOptions, setState, queryHandler, query, state.routeIdWithOutPageNumber, state.routeIdsByPage]);
   React.useEffect(() => {
     getQuery();
   }, [getQuery]);
-
   const data = React.useMemo<PaginationResult<T>>(() => {
-    const pages = Object.keys(state.routeIdsByPage).sort();
+    const pages = lodashSortBy(objectValues(state.routeIdsByPage), 'pageNumber');
     if (pages.length > 0) {
       let baseObj: PaginationResult<T> = { values: [] } as any;
       pages.forEach(page => {
-        const routeResult = getDataByRouteId(state.routeIdsByPage[page]);
+        const routeResult = getDataByRouteId(page.routeId);
         baseObj = { ...routeResult, values: [...baseObj.values, ...routeResult.values] };
       });
 
@@ -66,14 +112,16 @@ function usePaginationQuery<T extends BasePaginationQuery>(
 
   const getDataByPage = React.useCallback(
     (pageNumber: number) => {
-      const routeId = state.routeIdsByPage[pageNumber];
+      const routeId = objectValues(state.routeIdsByPage).find(
+        item => item && item.pageNumber === pageNumber.toString(),
+      );
       if (routeId) {
-        return getDataByRouteId(routeId);
+        return getDataByRouteId(routeId.routeId);
       }
 
-      return null;
+      return { ...options.defaultValue, totalPage: state.totalPage };
     },
-    [getDataByRouteId, state.routeIdsByPage],
+    [getDataByRouteId, options.defaultValue, state.routeIdsByPage, state.totalPage],
   );
 
   return React.useMemo<UsePaginationQueryResult<T>>(

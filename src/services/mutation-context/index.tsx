@@ -1,30 +1,25 @@
 import * as React from 'react';
 import { MutationContext } from './context';
-import { MutationHandlerParams, MutationContextProviderProps, RefetchQuery } from './helpers';
+import { MutationHandlerParams, MutationContextProviderProps } from './helpers';
 import { useQueryContext } from '../query-context/context';
 import { useDatabaseObjectsContext } from '../database-object-context/context';
 
 function MutationContextProvider(props: React.PropsWithChildren<MutationContextProviderProps>) {
   const queryContext = useQueryContext();
   const databaseObjectsContext = useDatabaseObjectsContext();
-  const refetchQueriesHandler = React.useCallback(
-    (refetchQueries: RefetchQuery[] = []) => {
-      const normalRefetchQueries = refetchQueries.filter(t => t.type === 'normal');
-      queryContext.refetchQueries(normalRefetchQueries);
-    },
-    [queryContext],
-  );
 
   const mutationHandler = React.useCallback(
     ({ mutation, variables, refetchQueries }: MutationHandlerParams) => {
       return mutation(variables).then(mutationResult => {
         databaseObjectsContext.setObjectsFromBackendResponse(mutationResult);
-        refetchQueriesHandler(refetchQueries);
+        if (refetchQueries && refetchQueries.length) {
+          queryContext.refetchQueries(refetchQueries);
+        }
 
         return mutationResult;
       });
     },
-    [databaseObjectsContext, refetchQueriesHandler],
+    [databaseObjectsContext, queryContext],
   );
 
   const contextValues = React.useMemo(() => ({ mutationHandler }), [mutationHandler]);

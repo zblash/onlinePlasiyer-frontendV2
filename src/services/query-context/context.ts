@@ -4,7 +4,7 @@ import { QueryContextType, BaseQuery, UseQueryResult, UseQueryOptions } from './
 import { useObjectState, usePrevious } from '~/utils/hooks';
 
 const initialValue: QueryContextType = {
-  queryHandler: () => Promise.resolve(''),
+  queryHandler: () => Promise.resolve({ routeId: '', query: async () => {}, variables: {} }),
   refetchQueries: () => Promise.resolve(0),
   getDataByRouteId: () => null,
 };
@@ -32,7 +32,7 @@ function useQuery<T extends BaseQuery>(query: T, userOptions?: UseQueryOptions<T
         query,
         variables: options.variables,
       })
-        .then(routeId => {
+        .then(({ routeId }) => {
           setState({
             routeId,
             loading: false,

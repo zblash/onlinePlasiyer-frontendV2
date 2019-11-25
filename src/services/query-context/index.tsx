@@ -2,23 +2,21 @@ import * as React from 'react';
 import deepEqual from 'deep-equal';
 import { QueryContext } from './context';
 import { QueryHandlerParams } from './helpers';
-import { getRouteId, getRouteByEndpoint, deepMergeIdObjects } from '../utils';
+import { getRouteId, deepMergeIdObjects } from '../utils';
 import { useDatabaseObjectsContext } from '../database-object-context/context';
 import { backendObjectFunctions } from '../utils/route-schema';
-import { queryEndpoints } from './query-endpoints';
 import { RefetchQuery } from '../mutation-context/helpers';
-import { asyncMap, objectForeach } from '~/utils';
+import { asyncMap, objectForeach, isArray } from '~/utils';
 import { useApiCallContext } from '../api-call-context/context';
 import { useObjectState } from '~/utils/hooks';
 import { MaybeArray } from '~/helpers';
 import { RouteSchema } from '../helpers';
-import { paginationQueryEndpoints } from './pagination-query-endpoints';
 
-const allQueries = { ...queryEndpoints, ...paginationQueryEndpoints };
 interface QueryContextProviderProps {}
 
 function QueryContextProvider(props: React.PropsWithChildren<QueryContextProviderProps>) {
   const databaseContext = useDatabaseObjectsContext();
+  const paginationFetchedPages = React.useRef<Record<string, Array<number>>>({});
   const { fetchIfNotExist: getIfNotExist, fetch: get } = useApiCallContext();
   const [routeDataStore, setRouteDataStore] = useObjectState<Record<string, any>>({});
   const [routeSchemas, setRouteSchemas] = useObjectState<Record<string, MaybeArray<RouteSchema>>>({});
@@ -28,10 +26,24 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
     [routeDataStore, routeSchemas],
   );
 
-  // TODO: refactor this function
+  const addPageToPaginationStore = React.useCallback((routeId: string, pageNumber: number) => {
+    if (paginationFetchedPages.current[routeId]) {
+      paginationFetchedPages.current[routeId].push(pageNumber);
+    } else {
+      paginationFetchedPages.current[routeId] = [pageNumber];
+    }
+  }, []);
+
   const thenFactory = React.useCallback(
     (params: QueryHandlerParams) => data => {
-      const currenRouteId = getRouteId(getRouteByEndpoint(allQueries, params.query), params.variables);
+      const variables = params.paginationVariables
+        ? { ...params.variables, ...params.paginationVariables }
+        : params.variables;
+      const currenRouteId = getRouteId(params.query, variables);
+      const currenRouteIdWithoutPageNumber = getRouteId(params.query, params.variables);
+      if (params.paginationVariables && typeof params.paginationVariables.pageNumber === 'number') {
+        addPageToPaginationStore(currenRouteIdWithoutPageNumber, params.paginationVariables.pageNumber);
+      }
       const seperatedObj = backendObjectFunctions.separateData(data);
       const idDatabaseNewValue = deepMergeIdObjects(databaseContext.getObjects(), seperatedObj);
       const newSchema = backendObjectFunctions.dataToSchema(data);
@@ -64,11 +76,18 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
         setRouteSchemas({ [currenRouteId]: newSchema });
       }
 
-      return currenRouteId;
+      return { routeId: currenRouteId, ...params, queryResult: data };
     },
-    [databaseContext, isRouteCacheTaken, routeDataStore, routeSchemas, setRouteDataStore, setRouteSchemas],
+    [
+      addPageToPaginationStore,
+      databaseContext,
+      isRouteCacheTaken,
+      routeDataStore,
+      routeSchemas,
+      setRouteDataStore,
+      setRouteSchemas,
+    ],
   );
-
   const updateStoreIfUsedIdsChange = React.useCallback(() => {
     const changedRoutes = [];
     const newStorageObj = {};
@@ -97,19 +116,32 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
 
   const queryHandler = React.useCallback(
     (params: QueryHandlerParams) => {
-      return getIfNotExist(params.query, params.variables).then(thenFactory(params));
+      return getIfNotExist(params.query, { ...params.variables, ...params.paginationVariables }).then(
+        thenFactory(params),
+      );
     },
     [getIfNotExist, thenFactory],
   );
 
   const refetchQueries = React.useCallback(
     (queries: Array<RefetchQuery> = []) => {
-      const fetchedQueries = queries.filter(({ query, variables }) =>
-        isRouteCacheTaken(getRouteId(getRouteByEndpoint(allQueries, query), variables)),
+      const fetchingQueries = queries.filter(
+        ({ query, variables, type }) => isRouteCacheTaken(getRouteId(query, variables)) && type === 'normal',
       );
+      queries
+        .filter(({ type }) => type === 'pagination')
+        .forEach(({ query, variables, type }) => {
+          const routeId = getRouteId(query, variables);
+          const fetchedPages = paginationFetchedPages.current[routeId];
+          if (isArray(fetchedPages)) {
+            fetchedPages.forEach(pageNumber => {
+              fetchingQueries.push({ query, variables: { ...variables, pageNumber }, type });
+            });
+          }
+        });
 
       return asyncMap(
-        fetchedQueries.map(({ query, variables }) => () => {
+        fetchingQueries.map(({ query, variables }) => () => {
           return get(query, variables).then(thenFactory({ query, variables }));
         }),
       );
