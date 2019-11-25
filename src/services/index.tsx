@@ -2,19 +2,19 @@ import * as React from 'react';
 import { DatabaseObjectContextProvider } from './database-object-context';
 import { MutationContextProvider } from './mutation-context';
 import { QueryContextProvider } from './query-context';
-import { PaginationQueryContextProvider } from './pagination-query-context';
+import { ApiCallContextProvider } from './api-call-context';
 
 interface ServicesContextProviderProps {}
 
 function ServicesContextProvider(props: React.PropsWithChildren<ServicesContextProviderProps>) {
   return (
-    <DatabaseObjectContextProvider>
-      <QueryContextProvider>
-        <PaginationQueryContextProvider>
+    <ApiCallContextProvider>
+      <DatabaseObjectContextProvider>
+        <QueryContextProvider>
           <MutationContextProvider>{props.children}</MutationContextProvider>
-        </PaginationQueryContextProvider>
-      </QueryContextProvider>
-    </DatabaseObjectContextProvider>
+        </QueryContextProvider>
+      </DatabaseObjectContextProvider>
+    </ApiCallContextProvider>
   );
 }
 

@@ -129,26 +129,53 @@ const iconStyle = css`
   margin: 0 8px;
 `;
 
-function _UITable<T>(props: UiTableProps<T>) {
+function UITable<T>(props: UiTableProps<T>) {
   const hasRowCount = typeof props.rowCount === 'number';
   const rowCount = hasRowCount ? props.rowCount : props.data.length;
-  const [pageIndex, setPageIndex] = React.useState(0);
-  const tableData = React.useMemo(() => {
-    const data = Array.from(props.data);
-    if (hasRowCount) {
+  const [pageIndex, setPageIndex] = React.useState(1);
+  const dataWithEmptyRow = React.useMemo(() => {
+    if (hasRowCount && props.data.length) {
+      const data = Array.from(props.data);
       while (data.length % rowCount !== 0 || data.length === 0) {
         data.push(null as T);
       }
 
-      return data.slice(pageIndex * rowCount, (pageIndex + 1) * props.rowCount);
+      return data;
+    }
+    if (props.data.length === 0) {
+      const data = [];
+      while (data.length % rowCount !== 0 || data.length === 0) {
+        data.push(null as T);
+      }
+
+      return data;
     }
 
-    return data;
-  }, [props.data, props.rowCount, hasRowCount, rowCount, pageIndex, props.id]);
+    return [];
+  }, [hasRowCount, props.data, rowCount]);
+  const tableData = React.useMemo(() => {
+    return dataWithEmptyRow.slice((pageIndex - 1) * rowCount, pageIndex * props.rowCount);
+  }, [dataWithEmptyRow, pageIndex, rowCount, props.rowCount]);
+  const pageCount = dataWithEmptyRow.length / rowCount;
 
-  const pageCount = Math.floor(props.data.length / rowCount);
+  /*
+  UiTable Lifecycle
+  */
+  function setPageIndexCallback(index: number) {
+    const nextPage = Math.max(1, Math.min(pageCount, index));
+    if (pageIndex !== nextPage) {
+      setPageIndex(nextPage);
+      if (props.onChangePage) {
+        props.onChangePage(nextPage, pageCount);
+      }
+    }
+  }
 
-  const __ = (
+  React.useEffect(() => {
+    setPageIndex(1);
+  }, [props.id]);
+
+  return (
     <UiTableWrapper className={props.className}>
       <StyledUiTable>
         <StyledTHead>
@@ -186,7 +213,7 @@ function _UITable<T>(props: UiTableProps<T>) {
             onClick={() => setPageIndexCallback(pageIndex - 1)}
           />
           <StyledPageInfoSpan>
-            {pageIndex + 1} / {pageCount + 1}
+            {pageIndex} / {pageCount || 1}
           </StyledPageInfoSpan>
           <UIIcon
             name="chevronRight"
@@ -199,31 +226,7 @@ function _UITable<T>(props: UiTableProps<T>) {
       )}
     </UiTableWrapper>
   );
-
-  /*
-  UiTable Lifecycle
-  */
-  React.useEffect(() => {
-    setPageIndex(0);
-  }, [props.id]);
-
-  /*
-  UiTable Functions
-  */
-
-  function setPageIndexCallback(index: number) {
-    const nextPage = Math.max(0, Math.min(pageCount, index));
-    if (pageIndex !== nextPage) {
-      setPageIndex(nextPage);
-      if (props.onChangePage) {
-        props.onChangePage(nextPage, pageCount);
-      }
-    }
-  }
-
-  return __;
 }
 
-const UITable = _UITable;
-
+// TODO: add memo
 export { UITable };

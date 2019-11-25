@@ -291,7 +291,7 @@ const RegisterPage: React.SFC<RegisterPageProps> = props => {
     if (hasError) {
       setHasError(false);
     }
-  }, [email, username, name, taxNumber, selectedStateId, selectedCityId, details, password]);
+  }, [email, username, name, taxNumber, selectedStateId, selectedCityId, details, password, hasError]);
   /*
   RegisterPage Functions
   */

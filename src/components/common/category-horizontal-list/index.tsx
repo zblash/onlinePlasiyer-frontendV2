@@ -125,7 +125,20 @@ const _CategoryHorizontalList: React.SFC<CategoryHorizontalListProps> = props =>
   const routerHistory = useHistory();
   const [positionStatus, setPositionStatus] = React.useState({ isStart: true, isEnd: false });
   const wrapperRef = React.useRef<HTMLDivElement>();
-  const onScrollWithDebounce = React.useCallback(_debounce(onScroll, 500), [positionStatus]);
+
+  const onScroll = React.useCallback(
+    _debounce(() => {
+      const currentTarget = wrapperRef.current;
+      if (currentTarget) {
+        const isStart = currentTarget.scrollLeft === 0;
+        const isEnd = currentTarget.scrollLeft + currentTarget.offsetWidth === currentTarget.scrollWidth;
+        if (positionStatus.isStart !== isStart || positionStatus.isEnd !== isEnd) {
+          setPositionStatus({ isStart, isEnd });
+        }
+      }
+    }, 500),
+    [positionStatus.isEnd, positionStatus.isStart],
+  );
 
   const onItemClick = props.onItemClick || (() => {});
 
@@ -143,7 +156,7 @@ const _CategoryHorizontalList: React.SFC<CategoryHorizontalListProps> = props =>
           </StyledAddButton>
         )}
       </StyledListTop>
-      <CategoryScrollableList onScroll={onScrollWithDebounce} ref={wrapperRef}>
+      <CategoryScrollableList onScroll={onScroll} ref={wrapperRef}>
         {props.categories.map(categoryField => (
           <CategoryItem
             onSubItemClick={subItem => {
@@ -173,32 +186,18 @@ const _CategoryHorizontalList: React.SFC<CategoryHorizontalListProps> = props =>
     </CategoryListContainer>
   );
 
-  /*
-  CategoryList Functions
-  */
-  function onScroll() {
-    const currentTarget = wrapperRef.current;
-    if (currentTarget) {
-      const isStart = currentTarget.scrollLeft === 0;
-      const isEnd = currentTarget.scrollLeft + currentTarget.offsetWidth === currentTarget.scrollWidth;
-      if (positionStatus.isStart !== isStart || positionStatus.isEnd !== isEnd) {
-        setPositionStatus({ isStart, isEnd });
-      }
-    }
-  }
-
-  function scrollManually(position: 'left' | 'right') {
+  const scrollManually = React.useCallback((position: 'left' | 'right') => {
     if (wrapperRef.current) {
       const currentScrollPosition = wrapperRef.current.scrollLeft;
       const willAddPosition = position === 'left' ? -200 : 200;
       // TODO(0): implement animation
       wrapperRef.current.scrollTo(currentScrollPosition + willAddPosition, 0);
     }
-  }
+  }, []);
 
   return __;
 };
 
-const CategoryHorizontalList = _CategoryHorizontalList;
+const CategoryHorizontalList = React.memo(_CategoryHorizontalList);
 
 export { CategoryHorizontalList };

@@ -27,10 +27,6 @@ function cssToString(_styles: TemplateStringsArray, ...args: CssExpressionType) 
 
 function css(_styles: TemplateStringsArray, ...args: CssExpressionType) {
   const _css = cssToString(_styles, ...args);
-  const oldStyle = styles.find(sty => sty.css === _css);
-  if (oldStyle) {
-    return oldStyle.className;
-  }
 
   const className = makeid(9);
   styles.push({ className, css: _css });

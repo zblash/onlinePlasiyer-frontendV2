@@ -40,4 +40,39 @@ function useStateWithCallback<T>(
   return [state, setState];
 }
 
-export { useStateFromProp, usePrevious, useKeepValue, useStateWithCallback };
+function useWindowEvent<T extends keyof WindowEventMap>(event: T, callback: (e: WindowEventMap[T]) => void) {
+  React.useEffect(() => {
+    window.addEventListener(event, callback);
+
+    return () => window.removeEventListener(event, callback);
+  }, [event, callback]);
+}
+type UseObjectStateSetStateAction<T> = (newValue: Partial<T>, isCompletely?: boolean) => void;
+function useObjectState<T>(initialState: T): [T, UseObjectStateSetStateAction<T>] {
+  const [state, setState] = React.useState(initialState);
+  const setMergedState = React.useCallback((newState, isCompletely) => {
+    if (isCompletely) {
+      setState(prevState => newState);
+    } else {
+      setState(prevState => ({ ...prevState, ...newState }));
+    }
+  }, []);
+
+  return [state, setMergedState];
+}
+function useArrayState<T>(initialState: T[]): [T[], React.Dispatch<React.SetStateAction<Partial<T>>>] {
+  const [state, setState] = React.useState(initialState);
+  const setMergedState = React.useCallback(newState => setState(prevState => [...prevState, ...newState]), []);
+
+  return [state, setMergedState];
+}
+
+export {
+  useStateFromProp,
+  usePrevious,
+  useKeepValue,
+  useStateWithCallback,
+  useWindowEvent,
+  useObjectState,
+  useArrayState,
+};
