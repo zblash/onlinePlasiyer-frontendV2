@@ -1,6 +1,5 @@
 import * as React from 'react';
 import styled, { colors, css } from '~/styled';
-import { useTranslation } from '~/i18n';
 import { Container, UIButton } from '~/components/ui';
 import { CategoryHorizontalListFetcher } from '~/fetcher-components/common/category-horizontal-list';
 import { useQuery } from '~/services/query-context/context';
@@ -174,7 +173,7 @@ const StyledCartCheckoutBtn = styled(UIButton)`
   color: ${colors.white};
   border-radius: 8px;
   margin: auto;
-  width:75%;
+  width: 75%;
   :active {
     background-color: ${colors.primaryDark};
     color: ${colors.white};
@@ -229,7 +228,6 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
   const { data: cart } = useQuery(queryEndpoints.getCard, {
     defaultValue: {},
   });
-  console.log(cart);
   const __ = (
     <Container>
       <CategoryHorizontalListFetcher shouldUseProductsPageLink />
@@ -255,7 +253,7 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
               cart.items.map(cartItem => (
                 <StyledCartContentItemBox key={cartItem.id}>
                   <StyledCartContentItemBoxImgDiv>
-                    <img className={cartItemImg} src={cartItem.productPhotoUrl}></img>
+                    <img className={cartItemImg} src={cartItem.productPhotoUrl} />
                   </StyledCartContentItemBoxImgDiv>
                   <StyledCartContentItemBoxDetail>
                     <h3 className={cartItemTitle}>{cartItem.productName}</h3>

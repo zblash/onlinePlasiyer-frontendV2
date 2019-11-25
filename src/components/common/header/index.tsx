@@ -56,7 +56,7 @@ const _Header: React.SFC<HeaderProps> = props => {
   const { data: cart } = useQuery(queryEndpoints.getCard, {
     defaultValue: {},
   });
-  
+
   const menuItems: MenuItemProps[] = [
     {
       iconName: 'account',

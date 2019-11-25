@@ -18,7 +18,7 @@ function MutationContextProvider(props: React.PropsWithChildren<MutationContextP
       return mutationResult;
     });
   }
-  function refetchQueriesHandler(refetchQueries: RefetchQuery[]=[]) {
+  function refetchQueriesHandler(refetchQueries: RefetchQuery[] = []) {
     const normalRefetchQueries = refetchQueries.filter(t => t.type === 'normal');
     const paginationRefetchQueries = refetchQueries.filter(t => t.type === 'pagination');
     asyncMap([

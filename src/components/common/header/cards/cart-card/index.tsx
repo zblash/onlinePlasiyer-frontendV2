@@ -1,8 +1,8 @@
 import * as React from 'react';
+import { useHistory } from 'react-router';
 import styled, { colors, css } from '~/styled';
 import { UIButton } from '~/components/ui';
 import { ICardResponse } from '~/services/helpers/backend-models';
-import { useHistory } from 'react-router';
 
 /* CartCard Helpers */
 interface CartCardProps {
