@@ -132,6 +132,5 @@ const backendObjectFunctions = {
   separateData,
   dataToSchema,
 };
-window.back = backendObjectFunctions;
 
 export { backendObjectFunctions };
