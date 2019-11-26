@@ -1,7 +1,6 @@
 import * as React from 'react';
 import lodashDebounce from 'lodash.debounce';
 import styled, { colors, css } from '~/styled';
-import { useTranslation } from '~/i18n';
 import { UIButton } from '~/components/ui';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
@@ -170,7 +169,6 @@ function CartItem(props: React.PropsWithChildren<CartItemProps>) {
     refetchQueries: [refetchFactory(queryEndpoints.getCard, null, true)],
   });
 
-  const { t } = useTranslation();
   /* CartItem Callbacks */
 
   const handleChangeQuantityMutation = React.useCallback(lodashDebounce(() => changeQuantity(), 500), [quantity]);
