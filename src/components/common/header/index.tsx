@@ -66,8 +66,7 @@ const _Header: React.SFC<HeaderProps> = props => {
     {
       id: 'shoping-basket',
       iconName: 'shopingBasket',
-      // text: `Sepet (${cart.quantity})`,
-      text: `Sepet (${cart.items.length})`,
+      text: `Sepet (${cart.quantity})`,
       link: '/cart',
     },
   ];
