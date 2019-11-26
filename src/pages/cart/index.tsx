@@ -8,6 +8,8 @@ import { CartItem } from '~/components/common/cart/cart-item';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { refetchFactory } from '~/services/utils';
+import { DefaultLoading } from '~/components/common/default-loading';
+import { ApplicationContext, useApplicationContext } from '~/app/context';
 
 /* CartPage Helpers */
 interface CartPageProps {}
@@ -108,6 +110,7 @@ const titleP = css`
 
 /* CartPage Component  */
 function CartPage(props: React.PropsWithChildren<CartPageProps>) {
+  const applicationContext = useApplicationContext();
   const { data: cart } = useQuery(queryEndpoints.getCard, {
     defaultValue: {},
   });
@@ -116,8 +119,11 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
   });
 
   const handleClearCart = React.useCallback(() => {
-    clearCart();
-  }, [clearCart]);
+    applicationContext.loading.show();
+    clearCart().finally(() => {
+      applicationContext.loading.hide();
+    });
+  }, [applicationContext.loading, clearCart]);
   const __ = (
     <Container>
       <CategoryHorizontalListFetcher shouldUseProductsPageLink />

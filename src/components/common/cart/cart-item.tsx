@@ -6,6 +6,7 @@ import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { refetchFactory } from '~/services/utils';
+import { useApplicationContext } from '~/app/context';
 
 /* CartItem Helpers */
 interface CartItemProps {
@@ -151,7 +152,9 @@ function CartItem(props: React.PropsWithChildren<CartItemProps>) {
   /* CartItem Variables */
   const [quantity, setQuantity] = React.useState(props.cartItem.quantity);
 
-  const { mutation: changeQuantity } = useMutation(mutationEndPoints.addToCard, {
+  const applicationContext = useApplicationContext();
+
+  const { mutation: changeQuantity, loading: changeQuantityLoading } = useMutation(mutationEndPoints.addToCard, {
     variables: {
       specifyProductId: props.cartItem.productId,
       quantity,
@@ -168,7 +171,15 @@ function CartItem(props: React.PropsWithChildren<CartItemProps>) {
 
   /* CartItem Callbacks */
 
-  const handleChangeQuantityMutation = React.useCallback(lodashDebounce(() => changeQuantity(), 500), [quantity]);
+  const handleChangeQuantityMutation = React.useCallback(
+    lodashDebounce(() => {
+      applicationContext.loading.show();
+      changeQuantity().finally(() => {
+        applicationContext.loading.hide();
+      });
+    }, 500),
+    [quantity],
+  );
 
   const handleQuantityChange = React.useCallback((e: any) => {
     setQuantity(parseInt(e.target.value, 10) > 0 ? e.target.value : 1);
@@ -185,8 +196,11 @@ function CartItem(props: React.PropsWithChildren<CartItemProps>) {
   }, [quantity]);
 
   const removeItemHandler = React.useCallback(() => {
-    removeToCart();
-  }, [removeToCart]);
+    applicationContext.loading.show();
+    removeToCart().finally(() => {
+      applicationContext.loading.hide();
+    });
+  }, [applicationContext.loading, removeToCart]);
 
   /* CartItem Lifecycle  */
   React.useEffect(() => {

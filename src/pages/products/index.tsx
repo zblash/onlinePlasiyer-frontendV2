@@ -8,6 +8,7 @@ import { useTranslation } from '~/i18n';
 import { CategoryHorizontalListFetcher } from '~/fetcher-components/common/category-horizontal-list';
 import { CategoryNameTitle } from './category-name-title';
 import { ProductListFetcher } from '~/fetcher-components/common/product-list';
+import { useUserPermissions } from '~/app/context';
 
 /*
   ProductsPage Helpers
@@ -62,6 +63,7 @@ const addIconStyle = css`
 
 const _ProductsPage: React.SFC<ProductsPageProps> = props => {
   const { t } = useTranslation();
+  const userPermissions = useUserPermissions();
   const { categoryId: selectedCategoryId } = useParams<RouteParams>();
   const popups = usePopupContext();
 
@@ -70,9 +72,11 @@ const _ProductsPage: React.SFC<ProductsPageProps> = props => {
       <CategoryHorizontalListFetcher selectedCateogryId={selectedCategoryId} shouldUseProductsPageLink />
       <StyledProductListTopWrapper>
         <CategoryNameTitle selectedCategoryId={selectedCategoryId} />
-        <StyledAddButton onClick={() => popups.createProduct.show({ categoryId: selectedCategoryId })}>
-          {t('common.add')} <UIIcon name="add" color={ProductsPageColors.white} size={10} className={addIconStyle} />
-        </StyledAddButton>
+        {userPermissions.product.create && (
+          <StyledAddButton onClick={() => popups.createProduct.show({ categoryId: selectedCategoryId })}>
+            {t('common.add')} <UIIcon name="add" color={ProductsPageColors.white} size={10} className={addIconStyle} />
+          </StyledAddButton>
+        )}
       </StyledProductListTopWrapper>
       <ProductListFetcher selectedCategoryId={selectedCategoryId} />
     </Container>

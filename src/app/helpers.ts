@@ -10,11 +10,16 @@ interface Permission {
 export interface UserPermissions {
   category: Permission;
   product: Permission;
+  showCart: boolean;
 }
 
 export interface ApplicationContextValues {
   user: User;
   permissions: UserPermissions;
+  loading: {
+    show: () => void;
+    hide: () => void;
+  };
 }
 
 const initialPermission: Permission = {
@@ -34,6 +39,11 @@ export const applicationContextInitialValue: ApplicationContextValues = {
   permissions: {
     category: initialPermission,
     product: initialPermission,
+    showCart: false,
+  },
+  loading: {
+    show: () => {},
+    hide: () => {},
   },
 };
 
