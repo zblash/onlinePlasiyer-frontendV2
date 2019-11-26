@@ -154,7 +154,7 @@ function CartItem(props: React.PropsWithChildren<CartItemProps>) {
 
   const applicationContext = useApplicationContext();
 
-  const { mutation: changeQuantity} = useMutation(mutationEndPoints.addToCard, {
+  const { mutation: changeQuantity } = useMutation(mutationEndPoints.addToCard, {
     variables: {
       specifyProductId: props.cartItem.productId,
       quantity,
