@@ -140,11 +140,32 @@ const _CategoryHorizontalList: React.SFC<CategoryHorizontalListProps> = props =>
     [positionStatus.isEnd, positionStatus.isStart],
   );
 
-  const onItemClick = props.onItemClick || (() => {});
+  const scrollManually = React.useCallback(e => {
+    if (wrapperRef.current) {
+      const currentScrollPosition = wrapperRef.current.scrollLeft;
+      const willAddPosition = e.currentTarget.getAttribute('data-position') === 'left' ? -400 : 400;
+      // TODO(0): implement animation
+      wrapperRef.current.scrollTo({
+        left: currentScrollPosition + willAddPosition,
+        behavior: 'smooth',
+      });
+    }
+  }, []);
 
-  const __ = (
+  const categoryItemOnClick = React.useCallback(
+    categoryField => {
+      if (props.shouldUseProductsPageLink) {
+        routerHistory.push(`/products/${categoryField.id}`);
+      } else if (props.onItemClick) {
+        props.onItemClick(categoryField);
+      }
+    },
+    [props, routerHistory],
+  );
+
+  return (
     <CategoryListContainer>
-      <IconWrapper position="left" isShown={!positionStatus.isStart} onClick={() => scrollManually('left')}>
+      <IconWrapper position="left" data-position="left" isShown={!positionStatus.isStart} onClick={scrollManually}>
         <UIIcon name="chevronLeft" color={CategoryHorizontalListColors.white} size={20} />
       </IconWrapper>
 
@@ -168,34 +189,18 @@ const _CategoryHorizontalList: React.SFC<CategoryHorizontalListProps> = props =>
               }
             }}
             key={categoryField.id}
-            {...categoryField}
+            item={categoryField}
             isHighlighted={categoryField.id === props.selectedCateogryId}
-            onClick={() => {
-              if (props.shouldUseProductsPageLink) {
-                routerHistory.push(`/products/${categoryField.id}`);
-              }
-              onItemClick(categoryField);
-            }}
+            onClick={categoryItemOnClick}
           />
         ))}
       </CategoryScrollableList>
 
-      <IconWrapper position="right" isShown={!positionStatus.isEnd} onClick={() => scrollManually('right')}>
+      <IconWrapper position="right" data-position="right" isShown={!positionStatus.isEnd} onClick={scrollManually}>
         <UIIcon name="chevronRight" color={CategoryHorizontalListColors.white} size={20} />
       </IconWrapper>
     </CategoryListContainer>
   );
-
-  const scrollManually = React.useCallback((position: 'left' | 'right') => {
-    if (wrapperRef.current) {
-      const currentScrollPosition = wrapperRef.current.scrollLeft;
-      const willAddPosition = position === 'left' ? -200 : 200;
-      // TODO(0): implement animation
-      wrapperRef.current.scrollTo(currentScrollPosition + willAddPosition, 0);
-    }
-  }, []);
-
-  return __;
 };
 
 const CategoryHorizontalList = React.memo(_CategoryHorizontalList);

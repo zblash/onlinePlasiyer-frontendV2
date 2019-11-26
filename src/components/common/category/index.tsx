@@ -18,9 +18,10 @@ export interface CategoryFields {
   subCategories?: Omit<CategoryFields, 'subCategories'>[];
 }
 
-interface CategoryItemProps extends CategoryFields {
+interface CategoryItemProps {
+  item: CategoryFields;
   isHighlighted?: boolean;
-  onClick?: () => void;
+  onClick?: (item: CategoryFields) => void;
   onSubItemClick?: (category: CategoryFields) => void;
 }
 
@@ -143,9 +144,10 @@ const CategoryItem: React.SFC<CategoryItemProps> = props => {
   const popups = usePopupContext();
   const userPermissions = useUserPermissions();
   const tooltipProps = isClickSubitem ? { visible: false } : {};
+  const onClick = React.useCallback(() => (props.onClick ? props.onClick(props.item) : null), [props]);
 
   const __ = (
-    <CategoryItemWrapper isHighlighted={props.isHighlighted} onClick={props.onClick}>
+    <CategoryItemWrapper isHighlighted={props.isHighlighted} onClick={onClick}>
       <StyledModifyIconWrapper>
         {userPermissions.category.edit && (
           <UIIcon
@@ -155,7 +157,12 @@ const CategoryItem: React.SFC<CategoryItemProps> = props => {
             className={editIconStyle}
             onClick={e => {
               e.stopPropagation();
-              popups.updateCategory.show({ isSub: false, name: props.name, imgSrc: props.photoUrl, id: props.id });
+              popups.updateCategory.show({
+                isSub: false,
+                name: props.item.name,
+                imgSrc: props.item.photoUrl,
+                id: props.item.id,
+              });
             }}
           />
         )}
@@ -166,22 +173,22 @@ const CategoryItem: React.SFC<CategoryItemProps> = props => {
             color={CategoryItemColors.danger}
             onClick={e => {
               e.stopPropagation();
-              popups.deleteCategory.show({ ...props, isSub: false });
+              popups.deleteCategory.show({ ...props.item, isSub: false });
             }}
           />
         )}
       </StyledModifyIconWrapper>
-      <StyledCategoryImg src={props.photoUrl} />
-      <StyledCategoryName>{props.name}</StyledCategoryName>
+      <StyledCategoryImg src={props.item.photoUrl} />
+      <StyledCategoryName>{props.item.name}</StyledCategoryName>
       <StyledSelectedStatus isShown={props.isHighlighted} />
-      {props.subCategories.length > 0 && (
+      {props.item.subCategories.length > 0 && (
         // TODO(0): move rc-tooltip  to custom tooltip component
         <Tooltip
           mouseEnterDelay={0.35}
           {...tooltipProps}
           overlay={
             <SubCategoryList
-              categories={props.subCategories}
+              categories={props.item.subCategories}
               onItemClick={category => {
                 setIsClickSubitem(true);
                 if (props.onSubItemClick) {

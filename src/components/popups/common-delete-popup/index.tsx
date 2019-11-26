@@ -7,6 +7,7 @@ import { UIButton, Loading } from '~/components/ui';
 interface CommonDeletePopupProps {
   title: string | React.ReactElement;
   isLoading: boolean;
+  errorText?: string;
   onDeleteClick: Function;
   onCancelClick: Function;
 }
@@ -29,8 +30,12 @@ const StyledQuestionTitle = styled.h4`
 
 const StyledButtonWrappers = styled.div`
   display: flex;
-  width: 100%;
   justify-content: flex-end;
+`;
+const StyledBottomWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
 `;
 
 const StyledDeleteButton = styled(UIButton)`
@@ -52,6 +57,9 @@ const StyledCancelButton = styled(UIButton)`
     color: ${colors.white};
   }
 `;
+const StyledErrorMessage = styled.span`
+  color: red;
+`;
 
 /* CommonDeletePopup Component  */
 function CommonDeletePopup(props: React.PropsWithChildren<CommonDeletePopupProps>) {
@@ -60,14 +68,17 @@ function CommonDeletePopup(props: React.PropsWithChildren<CommonDeletePopupProps
   const __ = (
     <StyledCommonDeletePopupWrapper>
       <StyledQuestionTitle>{props.title}</StyledQuestionTitle>
-      <StyledButtonWrappers>
-        <StyledCancelButton onClick={() => props.onCancelClick()}>
-          {t('popups.delete-category.cancel')}
-        </StyledCancelButton>
-        <StyledDeleteButton onClick={() => props.onDeleteClick}>
-          {props.isLoading ? <Loading color={colors.white} /> : t('popups.delete-category.delete')}
-        </StyledDeleteButton>
-      </StyledButtonWrappers>
+      <StyledBottomWrapper>
+        <StyledErrorMessage>{props.errorText}</StyledErrorMessage>
+        <StyledButtonWrappers>
+          <StyledCancelButton onClick={() => props.onCancelClick()}>
+            {t('popups.delete-category.cancel')}
+          </StyledCancelButton>
+          <StyledDeleteButton onClick={() => props.onDeleteClick()}>
+            {props.isLoading ? <Loading /> : t('popups.delete-category.delete')}
+          </StyledDeleteButton>
+        </StyledButtonWrappers>
+      </StyledBottomWrapper>
     </StyledCommonDeletePopupWrapper>
   );
 

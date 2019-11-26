@@ -30,7 +30,7 @@
       "};",
       "const Pure$1=React.memo($1)",
       "",
-      "export { Pure$1:$1 } "
+      "export { Pure$1 as $1 } "
     ]
   },
   "Create Function2": {
@@ -41,6 +41,7 @@
       "/* $1 Helpers */",
       "interface $1Props{}",
       "",
+      "/* $1 Component */",
       "function $1(props:React.PropsWithChildren<$1Props>){",
       "/* Variables  */",
       "",
@@ -53,7 +54,7 @@
       "};",
       "const Pure$1=React.memo($1)",
       "",
-      "export { Pure$1:$1 } "
+      "export { Pure$1 as $1 } "
     ]
   }
 }

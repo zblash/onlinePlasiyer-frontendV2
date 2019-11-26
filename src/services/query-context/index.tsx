@@ -33,6 +33,14 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
       paginationFetchedPages.current[routeId] = [pageNumber];
     }
   }, []);
+  const getDataByRouteId = React.useCallback(
+    (routeId: string) => {
+      const result = routeDataStore[routeId];
+
+      return result;
+    },
+    [routeDataStore],
+  );
 
   const staticDataParser = React.useCallback(
     (params: QueryHandlerParams) => data => {
@@ -44,14 +52,15 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
       if (params.paginationVariables && typeof params.paginationVariables.pageNumber === 'number') {
         addPageToPaginationStore(currenRouteIdWithoutPageNumber, params.paginationVariables.pageNumber);
       }
-      const seperatedObj = backendObjectFunctions.separateData(data);
-      const idDatabaseNewValue = deepMergeIdObjects(databaseContext.getObjects(), seperatedObj);
-      const newSchema = backendObjectFunctions.dataToSchema(data);
       const changedRoutes = [];
       const newStorageObj = {};
       changedRoutes.forEach(route => {
         newStorageObj[route] = backendObjectFunctions.schemaToData(routeSchemas[route], idDatabaseNewValue);
       });
+
+      const newSchema = backendObjectFunctions.dataToSchema(data);
+      const seperatedObj = backendObjectFunctions.separateData(data);
+      const idDatabaseNewValue = deepMergeIdObjects(databaseContext.getObjects(), seperatedObj);
       if (!deepEqual(idDatabaseNewValue, databaseContext.getObjects())) {
         databaseContext.setObjectsFromBackendResponse(seperatedObj);
       }
@@ -71,10 +80,11 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
         if (!deepEqual(routeDataStore, { ...routeDataStore, ...newStorageObj })) {
           setRouteDataStore(newStorageObj);
         }
-      } else {
-        setRouteDataStore({ [currenRouteId]: data });
-        setRouteSchemas({ [currenRouteId]: newSchema });
+
+        return { routeId: currenRouteId, ...params, queryResult: data };
       }
+      setRouteDataStore({ [currenRouteId]: data });
+      setRouteSchemas({ [currenRouteId]: newSchema });
 
       return { routeId: currenRouteId, ...params, queryResult: data };
     },
@@ -149,14 +159,13 @@ function QueryContextProvider(props: React.PropsWithChildren<QueryContextProvide
           get(query, variables).then(staticDataParser({ query, variables })),
         ),
         ...chainQueries.map(({ query, variables }) => async () =>
-          staticDataParser({ query, variables })(mutationResult),
+          get(query, variables, mutationResult).then(staticDataParser({ query, variables })),
         ),
       ]);
     },
     [get, isRouteCacheTaken, staticDataParser],
   );
 
-  const getDataByRouteId = React.useCallback((routeId: string) => routeDataStore[routeId], [routeDataStore]);
   React.useEffect(() => {
     updateStoreIfUsedIdsChange();
   }, [updateStoreIfUsedIdsChange]);

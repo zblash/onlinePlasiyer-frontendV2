@@ -8,7 +8,7 @@ import { useObjectState, usePrevious } from '~/utils/hooks';
 import { objectValues, narrowObject } from '~/utils';
 import { getRouteId } from '../utils';
 
-function initialState(
+function initialState<T>(
   options: any,
   defaultValue: any = {},
 ): {
@@ -18,6 +18,7 @@ function initialState(
   isCompleted: boolean;
   routeIdWithOutPageNumber: string;
   totalPage: number;
+  mergedValues: PaginationResult<T>;
 } {
   return {
     routeIdsByPage: {},
@@ -26,6 +27,7 @@ function initialState(
     isCompleted: false,
     routeIdWithOutPageNumber: null,
     totalPage: 0,
+    mergedValues: null,
     ...defaultValue,
   };
 }
@@ -92,23 +94,14 @@ function usePaginationQuery<T extends BasePaginationQuery>(
         });
     }
   }, [options, prevOptions, setState, queryHandler, query, state.routeIdWithOutPageNumber, state.routeIdsByPage]);
-  React.useEffect(() => {
-    getQuery();
-  }, [getQuery]);
-  const data = React.useMemo<PaginationResult<T>>(() => {
-    const pages = lodashSortBy(objectValues(state.routeIdsByPage), 'pageNumber');
-    if (pages.length > 0) {
-      let baseObj: PaginationResult<T> = { values: [] } as any;
-      pages.forEach(page => {
-        const routeResult = getDataByRouteId(page.routeId);
-        baseObj = { ...routeResult, values: [...baseObj.values, ...routeResult.values] };
-      });
 
-      return baseObj;
+  const data = React.useMemo<PaginationResult<T>>(() => {
+    if (state.mergedValues) {
+      return state.mergedValues;
     }
 
     return (options.defaultValue || null) as any;
-  }, [getDataByRouteId, options.defaultValue, state.routeIdsByPage]);
+  }, [options.defaultValue, state.mergedValues]);
 
   const getDataByPage = React.useCallback(
     (pageNumber: number) => {
@@ -123,6 +116,25 @@ function usePaginationQuery<T extends BasePaginationQuery>(
     },
     [getDataByRouteId, options.defaultValue, state.routeIdsByPage, state.totalPage],
   );
+
+  React.useEffect(() => {
+    getQuery();
+  }, [getQuery]);
+
+  React.useEffect(() => {
+    const prevState = state.mergedValues;
+    const pages = lodashSortBy(objectValues(state.routeIdsByPage), 'pageNumber');
+    if (pages.length > 0) {
+      let baseObj: PaginationResult<T> = { values: [] } as any;
+      pages.forEach(page => {
+        const routeResult = getDataByRouteId(page.routeId);
+        baseObj = { ...routeResult, values: lodashSortBy([...baseObj.values, ...routeResult.values], 'pageIndex') };
+      });
+      if (!deepEqual(prevState, baseObj)) {
+        setState({ mergedValues: baseObj });
+      }
+    }
+  }, [getDataByRouteId, options.defaultValue, setState, state.mergedValues, state.routeIdsByPage]);
 
   return React.useMemo<UsePaginationQueryResult<T>>(
     () => ({

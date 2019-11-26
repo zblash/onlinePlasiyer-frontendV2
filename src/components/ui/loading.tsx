@@ -6,7 +6,7 @@ interface ILoadingProps extends StylableProps {
   size?: number;
 }
 
-const LoadingDefaultColor = '#000';
+const LOADING_DEFAULT_COLOR = 'currentColor';
 
 const ldsRollerKeyframes = css.keyframes`
   0% {
@@ -34,7 +34,7 @@ const LdsRoller = styled.div<{ color: string; size: number }>`
   }
 `;
 const Loading: React.SFC<ILoadingProps> = props => {
-  return <LdsRoller color={props.color || LoadingDefaultColor} size={props.size || 20} className={props.className} />;
+  return <LdsRoller color={props.color || LOADING_DEFAULT_COLOR} size={props.size || 20} className={props.className} />;
 };
 
 export { Loading };

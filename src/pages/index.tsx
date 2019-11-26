@@ -12,6 +12,7 @@ import { CartPage } from '../pages/cart';
 import { InvoicesPage } from './invoices';
 import { UserRoleResponse } from '~/services/helpers/backend-models';
 import { withRequiredRole } from '~/components/hoc/with-required-role';
+import { AllProductPage } from './all-products';
 
 interface IRoute {
   path: string;
@@ -44,6 +45,7 @@ const routes: IRoute[] = [
     component: OrdersPage,
   },
   { path: '/invoices', component: InvoicesPage },
+  { path: '/all-products', component: AllProductPage, authorize: ['ADMIN'] },
 ];
 
 const Routes = React.memo(() => {

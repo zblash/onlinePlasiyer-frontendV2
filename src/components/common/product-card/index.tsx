@@ -10,9 +10,9 @@ import { usePopupContext } from '~/contexts/popup/context';
 export interface ProductData {
   id: string;
   name: string;
-  img: string;
-  taxRate: number;
-  barcode: string;
+  photoUrl: string;
+  tax: number;
+  barcodeList: string[];
 }
 
 interface ProductCardProps extends StylableProps, ProductData {
@@ -162,7 +162,7 @@ const ProductCard: React.SFC<ProductCardProps> = props => {
     <StyledCardWrapper className={props.className}>
       <StyledShadowElement />
       <StyledCardImgWrapper>
-        <StyledCardImg src={props.img} />
+        <StyledCardImg src={props.photoUrl} />
       </StyledCardImgWrapper>
       <StyledContent>
         <UIIcon
@@ -179,10 +179,10 @@ const ProductCard: React.SFC<ProductCardProps> = props => {
         <StyledTitle>{props.name}</StyledTitle>
         <StyledContentCenter>
           <StyledContentSpan>
-            {ProductCardStrings.taxRate} %{props.taxRate}
+            {ProductCardStrings.taxRate} %{props.tax}
           </StyledContentSpan>
           <StyledContentSpan>
-            {ProductCardStrings.barcode} : {props.barcode}
+            {ProductCardStrings.barcode} : {props.barcodeList[0]}
           </StyledContentSpan>
         </StyledContentCenter>
         <StyledPreviewButton onClick={props.onButtonClick} isExpand={props.isExpand}>

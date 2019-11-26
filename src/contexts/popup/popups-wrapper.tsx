@@ -12,12 +12,13 @@ function PopupsWrapper(props: PopupsWrapperProps) {
   const popupMapArray = [
     { ...props.createCategory, comp: <CategoryPopup type="create" /> },
     { ...props.updateCategory, comp: <CategoryPopup type="update" params={props.updateCategory.params} /> },
-    { ...props.createProduct, comp: <ProductPopup params={props.createProduct.params} /> },
+    { ...props.createProduct, comp: <ProductPopup params={props.createProduct.params} type="create" /> },
     {
       ...props.deleteCategory,
       comp: <CategoryDeletePopup params={props.deleteCategory.params} />,
     },
     { ...props.deleteProduct, comp: <ProductDeletePopup params={props.deleteProduct.params} /> },
+    { ...props.updateProduct, comp: <ProductPopup params={props.updateProduct.params} type="update" /> },
   ];
 
   return (

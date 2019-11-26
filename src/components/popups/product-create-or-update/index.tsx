@@ -9,13 +9,17 @@ import { usePopupContext } from '~/contexts/popup/context';
 import { useTranslation } from '~/i18n';
 import { refetchFactory } from '~/services/utils';
 import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
+import { IProductResponse } from '~/services/helpers/backend-models';
 
 /*  ProductPopup Helpers */
 export interface ProductPopupValues {
   categoryId?: string;
+  initialValue?: IProductResponse;
 }
+
 interface ProductPopupProps {
   params: ProductPopupValues;
+  type: 'create' | 'update';
 }
 
 /* ProductPopup Style Constants */
@@ -128,14 +132,16 @@ const filePickerInputId = 'image-picker-create-category-popup';
 function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
   const { t } = useTranslation();
   const popups = usePopupContext();
+  const initialValue = props.params.initialValue || ({} as any);
   const [isBarcodeCorrect, setIsBarcodeCorrect] = React.useState(false);
   const [isBarcodeSaved, setIsBarcodeSaved] = React.useState(false);
   const [barcode, setBarcode] = React.useState('');
-  const [imgSrc, setImgSrc] = React.useState('');
+  const [imgSrc, setImgSrc] = React.useState(initialValue.photoUrl);
   const [img, setImg] = React.useState<File>(null);
   const [categoryId, setCategoryId] = React.useState(lodashGet(props.params, 'categoryId', ''));
-  const [productName, setProductName] = React.useState('');
-  const [taxNumber, setTaxNumber] = React.useState('');
+  const [productName, setProductName] = React.useState(initialValue.name);
+  const [taxNumber, setTaxNumber] = React.useState(initialValue.tax);
+
   const { mutation: createProduct } = useMutation(mutationEndPoints.createProduct, {
     refetchQueries: [
       refetchFactory(paginationQueryEndpoints.getAllProductsByCategoryId, { categoryId: props.params.categoryId }),
@@ -223,7 +229,7 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
         {checkProductLoading ? (
           <Loading color={colors.primary} size={22} className={loadingStyle} />
         ) : (
-          <span>{t('common.create')}</span>
+          <span>{props.type === 'create' ? t('common.create') : t('common.update')}</span>
         )}
       </StyledButton>
     </StyledProductPopupWrapper>
@@ -270,7 +276,7 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
 
   /* ProductPopup Functions  */
 
-  if (!isBarcodeCorrect) {
+  if (!isBarcodeCorrect && props.type === 'create') {
     return barcodeInput;
   }
 

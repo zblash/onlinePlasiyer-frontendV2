@@ -228,6 +228,7 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
   const { data: cart } = useQuery(queryEndpoints.getCard, {
     defaultValue: {},
   });
+
   const __ = (
     <Container>
       <CategoryHorizontalListFetcher shouldUseProductsPageLink />

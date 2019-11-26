@@ -15,5 +15,6 @@ export interface PopupContextType {
   updateCategory: Popup<CategoryPopupUpdateCategoryValues>;
   deleteCategory: Popup<CategoryDeletePopupParams>;
   createProduct: Popup<ProductPopupValues>;
+  updateProduct: Popup<ProductPopupValues>;
   deleteProduct: Popup<ProductDeletePopupParams>;
 }
