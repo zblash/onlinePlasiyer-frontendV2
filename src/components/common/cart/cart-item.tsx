@@ -116,9 +116,6 @@ const StyledCartContentItemBoxQuantityInputBtnPlus = styled.button`
   height: 32px;
 `;
 
-const StyledCartItemWrapper = styled.div`
-  background-color: ${colors.primary};
-`;
 const cartItemImg = css`
   width: 100%;
   height: 75px;
