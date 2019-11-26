@@ -1,4 +1,4 @@
-  {
+{
   "tr": {
     "common": {
       "login": "Giris Yap",
@@ -23,6 +23,16 @@
     "not-connect-page": {
       "message": "Baglanti gerceklestiremedik!!! Gelistiricilerimiz bunu cozmeye calisiyorlar"
     },
+    "all-products-page": {
+      "table": {
+        "name": "Isim",
+        "category-name": "Kategori Ismi",
+        "barcode": "Barcode",
+        "active-status": "Aktiflik Durumu",
+        "active": "Aktif",
+        "passive": "Pasif"
+      }
+    },
     "popups": {
       "delete-category": {
         "are-you-sure-question": "{{categoryName}} tamamen silinecek. Eminmisin ?",
@@ -30,7 +40,8 @@
         "delete": "Sil"
       },
       "remove-product": {
-        "are-you-sure-question": "{{productName}} urunu tamamen silinecek. Eminmisin ?"
+        "are-you-sure-question": "{{productName}} urunu tamamen silinecek. Eminmisin ?",
+        "failed-message": "Silme Islemi Basarisiz"
       }
     }
   }

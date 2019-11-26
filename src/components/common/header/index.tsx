@@ -38,12 +38,18 @@ const HeaderStrings = {
 const StyledHeaderStickyWrapper = styled.div`
   background-color: ${HeaderColors.wrapperBackground};
   height: 56px;
-  position: sticky;
+  position: fixed;
   top: 0;
+  right: 0;
+  left: 0;
   padding: 0 48px 0 24px;
   display: flex;
   align-items: center;
   z-index: 2;
+`;
+const HeaderBack = styled.div`
+  height: 56px;
+  opacity: 0;
 `;
 
 const StyledMenuItemsWrapper = styled.div`

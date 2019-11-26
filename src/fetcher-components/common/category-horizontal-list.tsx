@@ -32,6 +32,4 @@ function CategoryHorizontalListFetcher(props: React.PropsWithChildren<CategoryHo
   return <CategoryHorizontalList {...props} categories={categoriesMap} />;
 }
 
-const _CategoryHorizontalListFetcher = CategoryHorizontalListFetcher;
-
-export { _CategoryHorizontalListFetcher as CategoryHorizontalListFetcher };
+export { CategoryHorizontalListFetcher };

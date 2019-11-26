@@ -13,8 +13,9 @@ export interface IAddressCityResponse {
 
 export interface IProductResponse {
   active: boolean;
-  barcode: string;
+  barcodeList: string[];
   categoryName: string;
+  categoryId: string;
   id: string;
   name: string;
   photoUrl: string;

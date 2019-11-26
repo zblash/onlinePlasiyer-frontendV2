@@ -41,6 +41,7 @@
       "/* $1 Helpers */",
       "interface $1Props{}",
       "",
+      "/* $1 Component */",
       "function $1(props:React.PropsWithChildren<$1Props>){",
       "/* Variables  */",
       "",

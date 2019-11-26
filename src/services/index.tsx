@@ -8,13 +8,13 @@ interface ServicesContextProviderProps {}
 
 function ServicesContextProvider(props: React.PropsWithChildren<ServicesContextProviderProps>) {
   return (
-    <ApiCallContextProvider>
-      <DatabaseObjectContextProvider>
+    <DatabaseObjectContextProvider>
+      <ApiCallContextProvider>
         <QueryContextProvider>
           <MutationContextProvider>{props.children}</MutationContextProvider>
         </QueryContextProvider>
-      </DatabaseObjectContextProvider>
-    </ApiCallContextProvider>
+      </ApiCallContextProvider>
+    </DatabaseObjectContextProvider>
   );
 }
 

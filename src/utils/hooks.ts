@@ -8,14 +8,22 @@ function useStateFromProp<T>(initialValue: T): [T, React.Dispatch<React.SetState
   return [value, setValue];
 }
 
-function usePrevious<T>(value: T): T {
-  const ref = React.useRef<T>();
+function usePrevious<T>(value: T, setInitial?: boolean): T {
+  const ref = React.useRef<T>(setInitial ? value : undefined);
 
   React.useEffect(() => {
     ref.current = value;
   }, [value]);
 
   return ref.current;
+}
+
+function useMemoWithPrevDeps<T, D>(factory: (prevDeps: ReadonlyArray<D>) => T, deps: ReadonlyArray<D>): T {
+  const depsMemo = React.useMemo(() => deps, deps); // eslint-disable-line
+  const prevDeps = usePrevious(depsMemo);
+  const factoryMemo = React.useCallback(() => factory(prevDeps || []), deps); // eslint-disable-line
+
+  return React.useMemo(() => factoryMemo(), [factoryMemo]);
 }
 
 function useKeepValue<T>(value: T | undefined, wantedValue: T): T {
@@ -75,4 +83,5 @@ export {
   useWindowEvent,
   useObjectState,
   useArrayState,
+  useMemoWithPrevDeps,
 };

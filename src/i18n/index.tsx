@@ -15,11 +15,15 @@ type UseTranslationResponse = Omit<i18nUseTranslationResponse, 't'> & {
 };
 function useTranslation(): UseTranslationResponse {
   const i18nTranlation = i18nUseTranslation();
+  const result = React.useMemo(
+    () => ({
+      ...i18nTranlation,
+      t: (...args) => i18nTranlation.t(...(args as [string])),
+    }),
+    [i18nTranlation],
+  );
 
-  return {
-    ...i18nTranlation,
-    t: (...args) => i18nTranlation.t(...(args as [string])),
-  };
+  return result;
 }
 
 interface TransProps extends Omit<i18nTransProps, 'i18nKey'> {

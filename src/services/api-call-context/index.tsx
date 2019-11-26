@@ -4,8 +4,11 @@ import { ApiCallContextProviderProps, QueryQueue, ApiCallContextType } from './h
 import { getRouteId } from '../utils';
 import { BasicQuery } from '../helpers';
 import Queue from '../utils/queue';
+import { useDatabaseObjectsContext } from '../database-object-context/context';
+import { backendObjectFunctions } from '../utils/route-schema';
 
 function ApiCallContextProvider(props: React.PropsWithChildren<ApiCallContextProviderProps>) {
+  const databaseContext = useDatabaseObjectsContext();
   const queryResults = React.useRef({});
   const queryQueue = React.useRef<QueryQueue>({});
   const isRouteFetched = React.useCallback((routeId: string) => Boolean(queryResults.current[routeId]), []);
@@ -25,24 +28,30 @@ function ApiCallContextProvider(props: React.PropsWithChildren<ApiCallContextPro
     },
     [getQueue],
   );
+  const dataWriter = React.useCallback((result, routeId) => {
+    let data = result;
+    if (!Array.isArray(result) && Array.isArray(result.values)) {
+      data = { ...result, id: routeId };
+    }
+    queryResults.current[routeId] = data;
+
+    return data;
+  }, []);
 
   const fetch = React.useCallback(
-    (query: BasicQuery, variables: any) => {
+    (query: BasicQuery, variables: any, staticData?: any) => {
       const routeId = getRouteId(query, variables);
+      if (staticData) {
+        return dataWriter(staticData, routeId);
+      }
 
       return getQueueOrCreate(routeId).push(async () =>
         query(variables).then(result => {
-          let data = result;
-          if (!Array.isArray(result) && Array.isArray(result.values)) {
-            data = { ...result, id: routeId };
-          }
-          queryResults.current[routeId] = data;
-
-          return data;
+          return dataWriter(result, routeId);
         }),
       );
     },
-    [getQueueOrCreate],
+    [dataWriter, getQueueOrCreate],
   );
 
   const fetchIfNotExist = React.useCallback(
@@ -60,6 +69,12 @@ function ApiCallContextProvider(props: React.PropsWithChildren<ApiCallContextPro
     },
     [isRouteFetched, getQueue, getQueryResult, fetch],
   );
+  React.useEffect(() => {
+    Object.keys(queryResults.current).forEach(routeId => {
+      const schema = backendObjectFunctions.dataToSchema(getQueryResult(routeId));
+      queryResults.current[routeId] = backendObjectFunctions.schemaToData(schema, databaseContext.getObjects());
+    });
+  }, [databaseContext, getQueryResult]);
   const contextValue = React.useMemo<ApiCallContextType>(() => ({ fetchIfNotExist, fetch }), [fetchIfNotExist, fetch]);
 
   return <ApiCallContext.Provider value={contextValue}>{props.children}</ApiCallContext.Provider>;
