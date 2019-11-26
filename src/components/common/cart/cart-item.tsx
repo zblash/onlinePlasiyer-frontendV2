@@ -191,7 +191,6 @@ function CartItem(props: React.PropsWithChildren<CartItemProps>) {
   /* CartItem Lifecycle  */
   React.useEffect(() => {
     if (quantity !== props.cartItem.quantity) {
-      console.log(quantity);
       handleChangeQuantityMutation();
     }
   }, [handleChangeQuantityMutation, props.cartItem.quantity, quantity]);
