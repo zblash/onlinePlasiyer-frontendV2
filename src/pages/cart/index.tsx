@@ -8,8 +8,7 @@ import { CartItem } from '~/components/common/cart/cart-item';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { refetchFactory } from '~/services/utils';
-import { DefaultLoading } from '~/components/common/default-loading';
-import { ApplicationContext, useApplicationContext } from '~/app/context';
+import { useApplicationContext } from '~/app/context';
 
 /* CartPage Helpers */
 interface CartPageProps {}
