@@ -81,17 +81,20 @@ const _Header: React.SFC<HeaderProps> = props => {
   ];
 
   const __ = (
-    <StyledHeaderStickyWrapper>
-      <HeaderLogo />
-      <HeaderSearchBar />
-      <StyledMenuItemsWrapper>
-        {menuItems
-          .filter(item => item.id !== 'shoping-basket' || userPermissions.showCart)
-          .map(item => (
-            <MenuItem {...item} key={item.id} />
-          ))}
-      </StyledMenuItemsWrapper>
-    </StyledHeaderStickyWrapper>
+    <>
+      <StyledHeaderStickyWrapper>
+        <HeaderLogo />
+        <HeaderSearchBar />
+        <StyledMenuItemsWrapper>
+          {menuItems
+            .filter(item => item.id !== 'shoping-basket' || userPermissions.showCart)
+            .map(item => (
+              <MenuItem {...item} key={item.id} />
+            ))}
+        </StyledMenuItemsWrapper>
+      </StyledHeaderStickyWrapper>
+      <HeaderBack />
+    </>
   );
 
   return __;
