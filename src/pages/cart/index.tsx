@@ -9,6 +9,8 @@ import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { refetchFactory } from '~/services/utils';
 import { useApplicationContext } from '~/app/context';
+import { useHistory } from 'react-router';
+import { IOrder } from '~/services/helpers/backend-models';
 
 /* CartPage Helpers */
 interface CartPageProps {}
@@ -110,11 +112,16 @@ const titleP = css`
 /* CartPage Component  */
 function CartPage(props: React.PropsWithChildren<CartPageProps>) {
   const applicationContext = useApplicationContext();
+  const routerHistory = useHistory();
   const { data: cart } = useQuery(queryEndpoints.getCard, {
     defaultValue: {},
   });
   const { mutation: clearCart } = useMutation(mutationEndPoints.clearCard, {
     refetchQueries: [refetchFactory(queryEndpoints.getCard, null, true)],
+  });
+
+  const { mutation: checkoutCart } = useMutation(mutationEndPoints.cardCheckout, {
+    refetchQueries: [refetchFactory(queryEndpoints.getCard, null, false)],
   });
 
   const handleClearCart = React.useCallback(() => {
@@ -123,6 +130,13 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
       applicationContext.loading.hide();
     });
   }, [applicationContext.loading, clearCart]);
+
+  const handleCartCheckout = React.useCallback(() => {
+    checkoutCart().then((order: IOrder) => {
+      routerHistory.push(`/order/${order.id}`);
+    });
+  }, [routerHistory, checkoutCart]);
+
   const __ = (
     <Container>
       <CategoryHorizontalListFetcher shouldUseProductsPageLink />
@@ -152,7 +166,7 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
         <StyledCartRightBox>
           <h3>Genel Toplam ({cart.quantity})</h3>
           <h2>{cart.totalPrice} TL</h2>
-          <StyledCartCheckoutBtn>Siparisi Tamamla</StyledCartCheckoutBtn>
+          <StyledCartCheckoutBtn onClick={handleCartCheckout}>Siparisi Tamamla</StyledCartCheckoutBtn>
         </StyledCartRightBox>
       </StyledCartPageWrapper>
     </Container>
