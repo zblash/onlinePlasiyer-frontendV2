@@ -5,7 +5,21 @@
       "create": "Olustur",
       "update": "Guncelle",
       "next": "Ileri",
-      "add": "Ekle"
+      "add": "Ekle",
+      "merchant": "Satıcı",
+      "price": "Fiyat",
+      "barcode": "Barkod",
+      "total-price": "Toplam Fiyat"
+
+    },
+    "cart": {
+      "orders-completed": "Siparişleriniz Tamamlandı",
+      "show-order-detail": "Sipariş Detaylarını Gör",
+      "recommended-sales-price": "Tavsiye Edilen Satış Fiyatı"
+    },
+    "order": {
+      "code": "Sipariş Kodu",
+      "quantity": "Sipariş Adet"
     },
     "obligations": {
       "title": "Toplam Odemeler",

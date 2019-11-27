@@ -14,6 +14,7 @@ import { UserRoleResponse } from '~/services/helpers/backend-models';
 import { withRequiredRole } from '~/components/hoc/with-required-role';
 import { AllProductPage } from './all-products';
 import { OrderPage } from './order';
+import { CartCheckoutPage } from './cart-checkout';
 
 interface IRoute {
   path: string;
@@ -35,6 +36,11 @@ const routes: IRoute[] = [
   {
     path: '/cart',
     component: CartPage,
+    authorize: ['CUSTOMER'],
+  },
+  {
+    path: '/cart/checkout',
+    component: CartCheckoutPage,
     authorize: ['CUSTOMER'],
   },
   {
