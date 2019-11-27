@@ -1,6 +1,5 @@
 import * as React from 'react';
 import styled, { colors } from '~/styled';
-import { useTranslation } from '~/i18n';
 
 /* OrderPage Helpers */
 interface OrderPageProps {
@@ -17,7 +16,6 @@ const StyledOrderPageWrapper = styled.div`
 /* OrderPage Component  */
 function OrderPage(props: React.PropsWithChildren<OrderPageProps>) {
   /* OrderPage Variables */
-  const { t } = useTranslation();
   /* OrderPage Callbacks */
 
   /* OrderPage Lifecycle  */

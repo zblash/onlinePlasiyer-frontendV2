@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useHistory } from 'react-router';
 import styled, { colors, css } from '~/styled';
 import { Container, UIButton } from '~/components/ui';
 import { CategoryHorizontalListFetcher } from '~/fetcher-components/common/category-horizontal-list';
@@ -9,7 +10,6 @@ import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { refetchFactory } from '~/services/utils';
 import { useApplicationContext } from '~/app/context';
-import { useHistory } from 'react-router';
 import { IOrder } from '~/services/helpers/backend-models';
 
 /* CartPage Helpers */
