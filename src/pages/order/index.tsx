@@ -22,7 +22,7 @@ function OrderPage(props: React.PropsWithChildren<OrderPageProps>) {
 
   /* OrderPage Lifecycle  */
 
-  return <StyledOrderPageWrapper>{t('common.hello')}</StyledOrderPageWrapper>;
+  return <StyledOrderPageWrapper>Deneme</StyledOrderPageWrapper>;
 }
 const PureOrderPage = React.memo(OrderPage);
 
