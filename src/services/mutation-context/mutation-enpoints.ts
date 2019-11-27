@@ -1,5 +1,5 @@
 import { ApiCall } from '~/services/api';
-import { ICardResponse, UnitTypeResponse, IProductResponse } from '~/services/helpers/backend-models';
+import { ICardResponse, UnitTypeResponse, IProductResponse, IOrder } from '~/services/helpers/backend-models';
 
 interface CreateCategoryVariables {
   parentId?: string | null;
@@ -120,7 +120,7 @@ class MutationEndpoints {
 
   clearCard: () => Promise<any> = () => ApiCall.post('/cart/clear/');
 
-  cardCheckout: () => Promise<any> = () => ApiCall.post('/cart/checkout/');
+  cardCheckout: () => Promise<IOrder> = () => ApiCall.post('/cart/checkout/');
 
   deneme = () => Promise.resolve({ id: '12341' });
 }

@@ -1,9 +1,16 @@
 import * as React from 'react';
+import { useHistory } from 'react-router';
 import styled, { colors, css } from '~/styled';
 import { Container, UIButton } from '~/components/ui';
 import { CategoryHorizontalListFetcher } from '~/fetcher-components/common/category-horizontal-list';
 import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
+import { CartItem } from '~/components/common/cart/cart-item';
+import { useMutation } from '~/services/mutation-context/context';
+import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
+import { refetchFactory } from '~/services/utils';
+import { useApplicationContext } from '~/app/context';
+import { IOrder } from '~/services/helpers/backend-models';
 
 /* CartPage Helpers */
 interface CartPageProps {}
@@ -73,97 +80,6 @@ const StyledCartContentBoxTitlePrice = styled.div`
   height: 55px;
   align-items: center;
 `;
-
-const StyledCartContentItemBox = styled.div`
-    width: 100%;
-    border-bottom 1px solid ${colors.lightGray};
-    padding: 15px 0 15px 0;
-    float: left;
-`;
-
-const StyledCartContentItemBoxImgDiv = styled.div`
-  width: 19%;
-  float: left;
-  margin-left: 3%;
-  height: 75px;
-`;
-
-const StyledCartContentItemBoxDetail = styled.div`
-  width: 25%;
-  float: left;
-  margin-left: 2%;
-  height: 75px;
-`;
-
-const StyledCartContentItemBoxQuantity = styled.div`
-  width: 19%;
-  float: left;
-  margin-left: 1%;
-  height: 75px;
-  display: flex;
-  align-items: center;
-`;
-
-const StyledCartContentItemBoxPrice = styled.div`
-  width: 29%;
-  float: left;
-  margin-left: 1%;
-  height: 75px;
-  text-align: center;
-`;
-
-const StyledCartContentItemBoxDeleteBtn = styled(UIButton)`
-  float: right;
-  border-radius: 100px 
-  background-color: ${colors.lightGray};
-  color: ${colors.dangerDark};
-  padding: 4px 8px;
-  :hover {
-    background-color: ${colors.lightGray};
-    color: ${colors.dangerDark};
-  }
-  :active {
-    background-color: ${colors.lightGray} !important;
-    color: ${colors.dangerDark};
-  }
-`;
-
-const StyledCartContentItemBoxQuantityInput = styled.input`
-  float: left;
-  background: #fff;
-  border: none;
-  width: 45px;
-  height: 30px;
-  line-height: 32px;
-  text-align: center;
-  padding: 0 5px;
-  border-top: 1px solid ${colors.darkGray};
-  border-bottom: 1px solid ${colors.darkGray};
-`;
-
-const StyledCartContentItemBoxQuantityInputBtnMinus = styled.button`
-  color: ${colors.primary};
-  border: 1px solid ${colors.darkGray};
-  background-color: ${colors.lightGray};
-  border-right: none;
-  border-top-left-radius: 3px;
-  border-bottom-left-radius: 3px;
-  width: 30px;
-  float: left;
-  height: 32px;
-`;
-
-const StyledCartContentItemBoxQuantityInputBtnPlus = styled.button`
-  color: ${colors.primary};
-  border: 1px solid ${colors.darkGray};
-  background-color: ${colors.lightGray};
-  border-left: none;
-  border-top-right-radius: 3px;
-  border-bottom-right-radius: 3px;
-  width: 30px;
-  height: 32px;
-`;
-
 const StyledCartCheckoutBtn = styled(UIButton)`
   text-align: center;
   display: block !important;
@@ -193,41 +109,33 @@ const titleP = css`
   text-align: center;
 `;
 
-const cartItemImg = css`
-  width: 100%;
-  height: 75px;
-`;
-
-const cartItemTitle = css`
-  font-size: 16px;
-  margin: 0;
-`;
-
-const cartItemBoxP = css`
-  font-size: 12px;
-  width: 100%;
-  margin: 0;
-`;
-
-const cartItemTotalPrice = css`
-  font-size: 20px;
-`;
-
-const floatRight = css`
-  float: right;
-  width: 100%;
-`;
-
-const itemQuantityInputDiv = css`
-  width: 115px;
-  margin auto;
-`;
-
 /* CartPage Component  */
 function CartPage(props: React.PropsWithChildren<CartPageProps>) {
+  const applicationContext = useApplicationContext();
+  const routerHistory = useHistory();
   const { data: cart } = useQuery(queryEndpoints.getCard, {
     defaultValue: {},
   });
+  const { mutation: clearCart } = useMutation(mutationEndPoints.clearCard, {
+    refetchQueries: [refetchFactory(queryEndpoints.getCard, null, true)],
+  });
+
+  const { mutation: checkoutCart } = useMutation(mutationEndPoints.cardCheckout, {
+    refetchQueries: [refetchFactory(queryEndpoints.getCard, null, false)],
+  });
+
+  const handleClearCart = React.useCallback(() => {
+    applicationContext.loading.show();
+    clearCart().finally(() => {
+      applicationContext.loading.hide();
+    });
+  }, [applicationContext.loading, clearCart]);
+
+  const handleCartCheckout = React.useCallback(() => {
+    checkoutCart().then((order: IOrder) => {
+      routerHistory.push(`/order/${order.id}`);
+    });
+  }, [routerHistory, checkoutCart]);
 
   const __ = (
     <Container>
@@ -241,7 +149,9 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
             <StyledCartContentBoxTitle>
               <StyledCartContentBoxTitleDetail>
                 <p className={titleText}>Sepette {cart.quantity} urun var</p>
-                <p className={titleText}>Sepeti Temizle</p>
+                <p className={titleText} onClick={handleClearCart}>
+                  Sepeti Temizle
+                </p>
               </StyledCartContentBoxTitleDetail>
               <StyledCartContentBoxTitleQuantity>
                 <p className={titleP}>Adet</p>
@@ -250,44 +160,13 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
                 <p className={titleP}>Fiyat</p>
               </StyledCartContentBoxTitlePrice>
             </StyledCartContentBoxTitle>
-            {cart.items &&
-              cart.items.map(cartItem => (
-                <StyledCartContentItemBox key={cartItem.id}>
-                  <StyledCartContentItemBoxImgDiv>
-                    <img alt={cartItem.productName} className={cartItemImg} src={cartItem.productPhotoUrl} />
-                  </StyledCartContentItemBoxImgDiv>
-                  <StyledCartContentItemBoxDetail>
-                    <h3 className={cartItemTitle}>{cartItem.productName}</h3>
-                    <p className={cartItemBoxP}>
-                      <strong>Satici: </strong>
-                      {cartItem.sellerName}
-                    </p>
-                    <p className={cartItemBoxP}>
-                      <strong>Barkod: </strong>
-                      {cartItem.productBarcodeList.join(',')}
-                    </p>
-                  </StyledCartContentItemBoxDetail>
-                  <StyledCartContentItemBoxQuantity>
-                    <div className={itemQuantityInputDiv}>
-                      <StyledCartContentItemBoxQuantityInputBtnMinus>-</StyledCartContentItemBoxQuantityInputBtnMinus>
-                      <StyledCartContentItemBoxQuantityInput type="text" />
-                      <StyledCartContentItemBoxQuantityInputBtnPlus>+</StyledCartContentItemBoxQuantityInputBtnPlus>
-                    </div>
-                  </StyledCartContentItemBoxQuantity>
-                  <StyledCartContentItemBoxPrice>
-                    <strong className={cartItemTotalPrice}>{cartItem.totalPrice} TL</strong>
-                    <div className={floatRight}>
-                      <StyledCartContentItemBoxDeleteBtn>Sil</StyledCartContentItemBoxDeleteBtn>
-                    </div>
-                  </StyledCartContentItemBoxPrice>
-                </StyledCartContentItemBox>
-              ))}
+            {cart.items && cart.items.map(cartItem => <CartItem key={cartItem.id} cartItem={cartItem} />)}
           </StyledCartContentBox>
         </StyledCartContent>
         <StyledCartRightBox>
           <h3>Genel Toplam ({cart.quantity})</h3>
           <h2>{cart.totalPrice} TL</h2>
-          <StyledCartCheckoutBtn>Siparisi Tamamla</StyledCartCheckoutBtn>
+          <StyledCartCheckoutBtn onClick={handleCartCheckout}>Siparisi Tamamla</StyledCartCheckoutBtn>
         </StyledCartRightBox>
       </StyledCartPageWrapper>
     </Container>

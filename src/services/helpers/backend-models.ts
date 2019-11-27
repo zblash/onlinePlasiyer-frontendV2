@@ -38,6 +38,7 @@ export interface ISpecifyProductResponse {
 
 export interface ICardItemResponse {
   id: string;
+  productId: string;
   productBarcodeList: string[];
   productName: string;
   productPhotoUrl: string;

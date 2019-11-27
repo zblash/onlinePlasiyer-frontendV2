@@ -6,6 +6,7 @@ import { HeaderSearchBar } from './search-bar';
 import { AccountCard } from './cards/account-card';
 import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
+import { useUserPermissions } from '~/app/context';
 
 /*
   Header Helpers
@@ -62,6 +63,8 @@ const _Header: React.SFC<HeaderProps> = props => {
     defaultValue: { quantity: 0, items: [] },
   });
 
+  const userPermissions = useUserPermissions();
+
   const menuItems: MenuItemProps[] = React.useMemo(
     () => [
       {
@@ -86,9 +89,11 @@ const _Header: React.SFC<HeaderProps> = props => {
         <HeaderLogo />
         <HeaderSearchBar />
         <StyledMenuItemsWrapper>
-          {menuItems.map(item => (
-            <MenuItem {...item} key={item.id} />
-          ))}
+          {menuItems
+            .filter(item => item.id !== 'shoping-basket' || userPermissions.showCart)
+            .map(item => (
+              <MenuItem {...item} key={item.id} />
+            ))}
         </StyledMenuItemsWrapper>
       </StyledHeaderStickyWrapper>
       <HeaderBack />

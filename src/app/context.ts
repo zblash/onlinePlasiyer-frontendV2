@@ -21,6 +21,11 @@ export const applicationContextInitialValue: ApplicationContextValues = {
   permissions: {
     category: initialPermission,
     product: initialPermission,
+    showCart: false,
+  },
+  loading: {
+    show: () => {},
+    hide: () => {},
   },
 };
 
