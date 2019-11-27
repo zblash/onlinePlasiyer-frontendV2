@@ -65,20 +65,23 @@ const _Header: React.SFC<HeaderProps> = props => {
 
   const userPermissions = useUserPermissions();
 
-  const menuItems: MenuItemProps[] = [
-    {
-      id: 'account-card',
-      iconName: 'account',
-      text: HeaderStrings.accont,
-      cardContent: () => <AccountCard />,
-    },
-    {
-      id: 'shoping-basket',
-      iconName: 'shopingBasket',
-      text: `Sepet (${cart.quantity})`,
-      link: '/cart',
-    },
-  ];
+  const menuItems: MenuItemProps[] = React.useMemo(
+    () => [
+      {
+        id: 'account-card',
+        iconName: 'account',
+        text: HeaderStrings.accont,
+        cardContent: close => <AccountCard close={close} />,
+      },
+      {
+        id: 'shoping-basket',
+        iconName: 'shopingBasket',
+        text: `Sepet (${cart.quantity})`,
+        link: '/cart',
+      },
+    ],
+    [cart.quantity],
+  );
 
   const __ = (
     <>

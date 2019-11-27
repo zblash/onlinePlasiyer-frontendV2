@@ -1,7 +1,7 @@
 import { User } from '~/services/helpers/maps';
 import { IUserCommonResponse } from '~/services/helpers/backend-models';
 
-interface Permission {
+export interface Permission {
   edit: boolean;
   delete: boolean;
   create: boolean;
@@ -35,6 +35,11 @@ export const applicationContextInitialValue: ApplicationContextValues = {
     id: '',
     role: 'ADMIN',
     username: '',
+    isAdmin: false,
+    isCustomer: false,
+    isMerchant: false,
+    status: false,
+    taxNumber: 'TR123',
   },
   permissions: {
     category: initialPermission,

@@ -19,7 +19,12 @@ function App(props: ApplicationProviderProps) {
     <BrowserRouter>
       <ApplicationContext.Provider
         value={{
-          user: props.user,
+          user: {
+            ...props.user,
+            isAdmin: props.user.role === 'ADMIN',
+            isCustomer: props.user.role === 'CUSTOMER',
+            isMerchant: props.user.role === 'MERCHANT',
+          },
           permissions: getPermissions(props.user),
           loading: {
             show: () => {
