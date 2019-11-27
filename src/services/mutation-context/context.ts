@@ -45,10 +45,13 @@ function useMutation<T extends BaseEndpointType>(
     [mutationContext, mutationFunction, options.refetchQueries, options.variables, state],
   );
 
-  return {
-    ...state,
-    mutation,
-  };
+  return React.useMemo(
+    () => ({
+      ...state,
+      mutation,
+    }),
+    [mutation, state],
+  );
 }
 
 export { MutationContext, useMutation };

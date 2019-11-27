@@ -12,7 +12,7 @@ export interface MenuItemProps {
   iconName: IconName;
   text: string | React.ReactElement;
   link?: string;
-  cardContent?: (closeCard: () => void) => React.ReactElement;
+  cardContent?: ((closeCard: () => void) => React.ReactElement) | React.ReactElement;
 }
 
 /*
@@ -70,24 +70,27 @@ const StyledLink = styled(UILink)`
 `;
 
 const MenuItem: React.SFC<MenuItemProps> = props => {
-  const [isClosed, setIsClosed] = React.useState(false);
-  const tooltipProps = isClosed ? { visible: false } : {};
+  const [isClosed, setIsClosed] = React.useState(true);
+  const closeCard = React.useCallback(() => setIsClosed(true), []);
+  const triggerCard = React.useCallback(() => setIsClosed(!isClosed), [isClosed]);
 
   if (props.cardContent && !props.link) {
     return (
       <Tooltip
         overlay={
           typeof props.cardContent === 'function' ? (
-            <StyledPopuCardWrapper>{props.cardContent(() => setIsClosed(true))}</StyledPopuCardWrapper>
+            <StyledPopuCardWrapper>{props.cardContent(closeCard)}</StyledPopuCardWrapper>
+          ) : props.cardContent ? (
+            props.cardContent
           ) : (
             <span />
           )
         }
         placement="bottom"
         trigger="click"
-        {...tooltipProps}
+        visible={!isClosed}
       >
-        <StyledMenuItemWrapper onClick={() => setIsClosed(false)}>
+        <StyledMenuItemWrapper onClick={triggerCard}>
           <UIIcon
             name={props.iconName}
             size={20}

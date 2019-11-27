@@ -1,13 +1,14 @@
 import * as React from 'react';
-import styled from '~/styled';
-import { UIButton } from '~/components/ui';
+import styled, { colors, css } from '~/styled';
+import { UIButton, UILink } from '~/components/ui';
 import { useApplicationContext } from '~/app/context';
 import { logout } from '~/services/api';
+import { HeaderCardProps } from '../helpers';
 
 /*
   AccountCard Helpers
 */
-interface AccountCardProps {}
+interface AccountCardProps extends HeaderCardProps {}
 
 /*
   AccountCard Colors // TODO : move theme.json
@@ -27,6 +28,7 @@ const AccountCardColors = {
 const StyledLogoutButton = styled(UIButton)`
   border: 1px solid ${AccountCardColors.danger};
   background-color: ${AccountCardColors.white};
+  margin-top: 3px;
   color: ${AccountCardColors.danger};
   text-align: center;
   cursor: pointer;
@@ -55,26 +57,48 @@ const StyledAccountCardWrapper = styled.div`
 const StyledUsernameTitle = styled.h5`
   margin: 0 0 12px;
 `;
+const StyledLink = styled(UILink)`
+  color: ${colors.darkGray};
+  margin: 3px 0;
+  :hover {
+    color: ${colors.primary};
+    opacity: 0.8;
+  }
+`;
+
+const activeLinkStyle = css`
+  color: ${colors.primaryDark};
+`;
 
 const _AccountCard: React.SFC<AccountCardProps> = props => {
+  const { close: closeCurrentCard } = props;
   const { user } = useApplicationContext();
 
-  const __ = (
+  const links = React.useMemo(
+    () =>
+      // TODO: move to translation
+      [
+        { url: '/orders', text: 'Orders' },
+        { url: '/invoices', text: 'Invoices' },
+        { url: '/products', text: 'Products' },
+        { url: '/users', text: 'Users', hide: !user.isAdmin },
+        { url: '/cart', text: 'Cart', hide: !user.isCustomer },
+        { url: '/all-products', text: 'All Products', hide: !user.isAdmin },
+      ].filter(item => !item.hide),
+    [user.isAdmin, user.isCustomer],
+  );
+
+  return (
     <StyledAccountCardWrapper>
       <StyledUsernameTitle>{user.name}</StyledUsernameTitle>
+      {links.map(item => (
+        <StyledLink onClick={closeCurrentCard} to={item.url} key={item.url} activeClassName={activeLinkStyle}>
+          {item.text}
+        </StyledLink>
+      ))}
       <StyledLogoutButton onClick={logout}>Cikis Yap</StyledLogoutButton>
     </StyledAccountCardWrapper>
   );
-
-  /*
-  AccountCard Lifecycle
-  */
-
-  /*
-  AccountCard Functions
-  */
-
-  return __;
 };
 
 const AccountCard = _AccountCard;

@@ -8,6 +8,9 @@ export interface User {
   id: string;
   status?: boolean;
   taxNumber?: string;
+  isAdmin: boolean;
+  isMerchant: boolean;
+  isCustomer: boolean;
 }
 
 export type UserType = 'active' | 'passive' | 'all';
