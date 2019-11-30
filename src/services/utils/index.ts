@@ -17,8 +17,8 @@ const getRouteByEndpoint = (queries: any, query: any) => {
 // [hooks] replace to callback usememo and move services hooks
 function refetchFactory<T>(
   query: T,
-  variables: Omit<EndpointsVariablesType<T>, 'pageNumber'>,
-  chain?: boolean,
+  variables: Omit<EndpointsVariablesType<T>, 'pageNumber'> = null,
+  chain = false,
 ): RefetchQuery<T> {
   return {
     // eslint-disable-next-line @typescript-eslint/ban-ts-ignore

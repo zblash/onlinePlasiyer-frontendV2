@@ -12,7 +12,10 @@ import { CategoryFields, CategoryItem } from '../category';
 */
 
 export interface CategoryHorizontalListData {
-  categories: CategoryFields[];
+  parentCategories: CategoryFields[];
+  expandedSubCategories: CategoryFields[];
+  onExpandCategory: (id: string) => void;
+  expandedCategoryId: string;
 }
 
 export interface CategoryHorizontalListComponentProps {
@@ -178,8 +181,11 @@ const _CategoryHorizontalList: React.SFC<CategoryHorizontalListProps> = props =>
         )}
       </StyledListTop>
       <CategoryScrollableList onScroll={onScroll} ref={wrapperRef}>
-        {props.categories.map(categoryField => (
+        {props.parentCategories.map(categoryField => (
           <CategoryItem
+            onExpandedCategory={props.onExpandCategory}
+            subCategories={props.expandedSubCategories}
+            expandedCategoryId={props.expandedCategoryId}
             onSubItemClick={subItem => {
               if (props.shouldUseProductsPageLink) {
                 routerHistory.push(`/products/${subItem.id}`);

@@ -54,6 +54,8 @@
     "awesome-typescript-loader": "^5.2.1",
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
+    "babel-plugin-styled-components": "^1.10.6",
+    "concurrently": "^5.0.0",
     "cross-env": "^6.0.3",
     "css-loader": "^3.2.0",
     "eslint": "^6.6.0",
@@ -75,7 +77,7 @@
     "jest": "^24.9.0",
     "mini-css-extract-plugin": "^0.8.0",
     "node-sass": "^4.13.0",
-    "nodemon": "^1.19.4",
+    "nodemon": "^2.0.1",
     "prettier": "^1.18.2",
     "react-docgen-typescript-loader": "^3.3.0",
     "react-hot-loader": "^4.12.15",
@@ -89,7 +91,6 @@
     "webpack-cli": "^3.3.9",
     "webpack-dev-middleware": "^3.7.2",
     "webpack-dev-server": "^3.9.0",
-    "concurrently": "^5.0.0",
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {

@@ -5,6 +5,7 @@ import { UIIcon } from '~/components/ui';
 import { SubCategoryList } from './sub-category-list';
 import { usePopupContext } from '~/contexts/popup/context';
 import { useUserPermissions } from '~/app/context';
+import { useWindowEvent } from '~/utils/hooks';
 
 /*
   CategoryItem Helpers
@@ -15,11 +16,13 @@ export interface CategoryFields {
   name: string;
   photoUrl: string;
   parentId?: string;
-  subCategories?: Omit<CategoryFields, 'subCategories'>[];
 }
 
 interface CategoryItemProps {
   item: CategoryFields;
+  subCategories: CategoryFields[];
+  expandedCategoryId: string;
+  onExpandedCategory: (id: string) => void;
   isHighlighted?: boolean;
   onClick?: (item: CategoryFields) => void;
   onSubItemClick?: (category: CategoryFields) => void;
@@ -140,13 +143,17 @@ const editIconStyle = css`
 `;
 
 const CategoryItem: React.SFC<CategoryItemProps> = props => {
-  const [isClickSubitem, setIsClickSubitem] = React.useState(false);
+  const { onExpandedCategory } = props;
   const popups = usePopupContext();
   const userPermissions = useUserPermissions();
-  const tooltipProps = isClickSubitem ? { visible: false } : {};
   const onClick = React.useCallback(() => (props.onClick ? props.onClick(props.item) : null), [props]);
 
-  const __ = (
+  const windowClickCallback = React.useCallback(() => {
+    onExpandedCategory(null);
+  }, [onExpandedCategory]);
+  useWindowEvent('click', windowClickCallback);
+
+  return (
     <CategoryItemWrapper isHighlighted={props.isHighlighted} onClick={onClick}>
       <StyledModifyIconWrapper>
         {userPermissions.category.edit && (
@@ -181,55 +188,36 @@ const CategoryItem: React.SFC<CategoryItemProps> = props => {
       <StyledCategoryImg src={props.item.photoUrl} />
       <StyledCategoryName>{props.item.name}</StyledCategoryName>
       <StyledSelectedStatus isShown={props.isHighlighted} />
-      {props.item.subCategories.length > 0 && (
-        // TODO(0): move rc-tooltip  to custom tooltip component
-        <Tooltip
-          mouseEnterDelay={0.35}
-          {...tooltipProps}
-          overlay={
-            <SubCategoryList
-              categories={props.item.subCategories}
-              onItemClick={category => {
-                setIsClickSubitem(true);
-                if (props.onSubItemClick) {
-                  props.onSubItemClick(category);
-                }
-              }}
-            />
-          }
-          placement="bottom"
-        >
-          <IconWrapper>
-            <UIIcon
-              className={iconStyle}
-              name="downArrow"
-              size={14}
-              color={CategoryItemColors.downArrowIcon}
-              onClick={e => {
-                e.stopPropagation();
-              }}
-            />
-          </IconWrapper>
-        </Tooltip>
-      )}
+      <Tooltip
+        mouseEnterDelay={0.35}
+        visible={props.expandedCategoryId === props.item.id}
+        overlay={
+          <SubCategoryList
+            categories={props.subCategories}
+            onItemClick={category => {
+              if (props.onSubItemClick) {
+                props.onSubItemClick(category);
+              }
+            }}
+          />
+        }
+        placement="bottom"
+      >
+        <IconWrapper>
+          <UIIcon
+            className={iconStyle}
+            name="downArrow"
+            size={14}
+            color={CategoryItemColors.downArrowIcon}
+            onClick={e => {
+              e.stopPropagation();
+              props.onExpandedCategory(props.item.id);
+            }}
+          />
+        </IconWrapper>
+      </Tooltip>
     </CategoryItemWrapper>
   );
-
-  /*
-  CategoryItem Lifecycle 
-  */
-
-  React.useEffect(() => {
-    if (isClickSubitem) {
-      setIsClickSubitem(false);
-    }
-  }, [isClickSubitem]);
-
-  /*
-  CategoryItem Functions
-  */
-
-  return __;
 };
 
 export { CategoryItem };

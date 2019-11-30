@@ -2,6 +2,7 @@ import * as React from 'react';
 import deepEqual from 'deep-equal';
 import { QueryContextType, BaseQuery, UseQueryResult, UseQueryOptions } from './helpers';
 import { useObjectState, usePrevious } from '~/utils/hooks';
+import { getRouteId } from '../utils';
 
 const initialValue: QueryContextType = {
   queryHandler: () => Promise.resolve({ routeId: '', query: async () => {}, variables: {}, queryResult: {} }),
@@ -26,7 +27,13 @@ function useQuery<T extends BaseQuery>(query: T, userOptions?: UseQueryOptions<T
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const options = React.useMemo(() => ({ variables: {}, ...userOptions }), [JSON.stringify(userOptions)]);
   const { queryHandler, getDataByRouteId } = useQueryContext();
-  const [state, setState] = useObjectState({ routeId: null, error: null, loading: !options.skip, isCompleted: false });
+  const routeId = React.useMemo(() => getRouteId(query, options.variables), [query, options.variables]);
+  const [state, setState] = useObjectState({
+    fetchedRouteId: null,
+    error: null,
+    loading: !options.skip,
+    isCompleted: false,
+  });
   const prevOptions = usePrevious(options);
   const getQuery = React.useCallback(() => {
     if (options.skip) {
@@ -39,9 +46,9 @@ function useQuery<T extends BaseQuery>(query: T, userOptions?: UseQueryOptions<T
         query,
         variables: options.variables,
       })
-        .then(({ routeId }) => {
+        .then(({ routeId: fetchedRouteId }) => {
           setState({
-            routeId,
+            fetchedRouteId,
             loading: false,
             isCompleted: true,
           });
@@ -58,12 +65,12 @@ function useQuery<T extends BaseQuery>(query: T, userOptions?: UseQueryOptions<T
   }, [getQuery]);
 
   const data = React.useMemo(() => {
-    if (state.routeId) {
-      return getDataByRouteId(state.routeId);
+    if (state.fetchedRouteId === routeId) {
+      return getDataByRouteId(routeId);
     }
 
     return options.defaultValue || null;
-  }, [getDataByRouteId, options.defaultValue, state.routeId]);
+  }, [getDataByRouteId, options.defaultValue, routeId, state.fetchedRouteId]);
 
   return React.useMemo(
     () => ({

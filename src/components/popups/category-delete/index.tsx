@@ -27,10 +27,9 @@ function CategoryDeletePopup(props: React.PropsWithChildren<CategoryDeletePopupP
 
   const { mutation: deleteCategory, loading: deleteCategoryLoading } = useMutation(mutationEndPoints.removeCategory, {
     variables: { id: props.params.id },
-    refetchQueries: [
-      refetchFactory(queryEndpoints.getCategories, { type: 'all' }),
-      refetchFactory(queryEndpoints.getCategories, { type: props.params.isSub ? 'sub' : 'parent' }),
-    ],
+    refetchQueries: props.params.isSub
+      ? [refetchFactory(queryEndpoints.getSubCategoriesByParentId, { parentId: props.params.parentId })]
+      : [refetchFactory(queryEndpoints.getParentCategories)],
   });
 
   const __ = (

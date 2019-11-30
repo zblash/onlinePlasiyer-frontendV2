@@ -22,6 +22,15 @@ class QueryEndpoints {
       sub: type === 'sub',
     });
 
+  getParentCategories: () => Promise<ICategoryResponse[]> = () =>
+    ApiCall.get(`/categories`, {
+      filter: true,
+      sub: false,
+    });
+
+  getSubCategoriesByParentId: (s: { parentId: string }) => Promise<ICategoryResponse[]> = ({ parentId }) =>
+    ApiCall.get(`/categories/${parentId}/subCategories`);
+
   getCategoryByID: (s: { id: string }) => Promise<ICategoryResponse> = ({ id }) => ApiCall.get(`/categories/${id}`);
 
   getProductByBarcode: (s: { barcode: string }) => Promise<IProductResponse> = ({ barcode }) =>
