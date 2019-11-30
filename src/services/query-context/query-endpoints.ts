@@ -10,6 +10,8 @@ import {
   UserRoleResponse,
   IObligationTotals,
   IAnnouncement,
+  IOrder,
+  Invoice,
 } from '~/services/helpers/backend-models';
 import { UserType } from '../helpers/maps';
 
@@ -75,6 +77,10 @@ class QueryEndpoints {
   getObligationTotal: () => Promise<IObligationTotals> = () => ApiCall.get('/obligations/totals');
 
   getAnnouncements: () => Promise<Array<IAnnouncement>> = () => ApiCall.get('/announcements');
+
+  getOrder: (s: { id: string }) => Promise<IOrder> = ({ id }) => ApiCall.get(`/orders/${id}`);
+
+  getInvoice: (s: { id: string }) => Promise<Invoice> = ({ id }) => ApiCall.get(`/invoices/${id}`);
 }
 const queryEndpoints = new QueryEndpoints();
 

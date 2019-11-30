@@ -1,5 +1,12 @@
 import { ApiCall } from '~/services/api';
-import { ICardResponse, UnitTypeResponse, IProductResponse, IOrder } from '~/services/helpers/backend-models';
+import {
+  ICardResponse,
+  UnitTypeResponse,
+  IProductResponse,
+  IOrder,
+  IUserCommonResponse,
+  IAddressStateResponse,
+} from '~/services/helpers/backend-models';
 
 interface CreateCategoryVariables {
   parentId?: string | null;
@@ -108,9 +115,8 @@ class MutationEndpoints {
     unitType: UnitTypeResponse;
   }) => ApiCall.post('/products/specify/create', { ...params, stateList: params.stateIds, stateIds: undefined });
 
-  addActiveStatesForAuthUser = ({ stateIds }: { stateIds: string[] }) => {
-    return ApiCall.post('/users/addActiveState', stateIds);
-  };
+  addActiveStates: (s: { stateIds: string[] }) => Promise<IAddressStateResponse> = ({ stateIds }) =>
+    ApiCall.post('/users/addActiveState', stateIds);
 
   removeItemFromCard: (s: { id: string }) => Promise<any> = ({ id }) =>
     ApiCall.post(`/cart/removeItem/${id}`).then(item => ({ ...item, removed: true }));
@@ -120,7 +126,20 @@ class MutationEndpoints {
 
   clearCard: () => Promise<any> = () => ApiCall.post('/cart/clear/');
 
-  cardCheckout: () => Promise<IOrder> = () => ApiCall.post('/cart/checkout/');
+  cardCheckout: () => Promise<IOrder[]> = () => ApiCall.post('/cart/checkout/');
+
+  updateInfos: (params: {
+    address: {
+      cityId: string;
+      details: string;
+      stateId: string;
+    };
+    email: string;
+    name: string;
+  }) => Promise<IUserCommonResponse> = (...params) => ApiCall.post('/users/updateInfos', ...params);
+
+  updatePassword: (params: { password: string; passwordConfirmation: string }) => Promise<any> = (...params) =>
+    ApiCall.post('/users/changePassword', ...params);
 
   deneme = () => Promise.resolve({ id: '12341' });
 }

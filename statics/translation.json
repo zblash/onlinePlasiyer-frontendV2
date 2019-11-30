@@ -5,7 +5,38 @@
       "create": "Olustur",
       "update": "Guncelle",
       "next": "Ileri",
-      "add": "Ekle"
+      "add": "Ekle",
+      "merchant": "Satıcı",
+      "price": "Fiyat",
+      "barcode": "Barkod",
+      "total-price": "Toplam Fiyat",
+      "customer": "Alıcı",
+      "product-name": "Ürün Adı",
+      "unit-type": "Birim",
+      "unit-price": "Birim Fiyat"
+
+    },
+    "cart": {
+      "orders-completed": "Siparişleriniz Tamamlandı",
+      "show-order-detail": "Sipariş Detaylarını Gör",
+      "recommended-sales-price": "Tavsiye Edilen Satış Fiyatı"
+    },
+    "order": {
+      "code": "Sipariş Kodu",
+      "quantity": "Sipariş Adet",
+      "status-text": "Sipariş Durumu",
+      "order-date": "Sipariş Tarihi",
+      "status": {
+        "new" : "Yeni",
+        "finished": "Teslim Edildi",
+        "cancelled": "Iptal Edildi",
+        "paid": "Odeme Yapildi"
+      }
+    },
+    "invoice": {
+      "code": "Fatura Kodu",
+      "paid-price": "Odenen Fiyat",
+      "un-paid-price": "Odenmesi Gereken Fiyat"
     },
     "obligations": {
       "title": "Toplam Odemeler",

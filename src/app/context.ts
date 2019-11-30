@@ -17,6 +17,15 @@ export const applicationContextInitialValue: ApplicationContextValues = {
     isAdmin: false,
     isCustomer: false,
     isMerchant: false,
+    activeStates: [],
+    address: {
+      cityId: '',
+      cityName: '',
+      stateId: '',
+      stateName: '',
+      details: '',
+      id: '',
+    },
   },
   permissions: {
     category: initialPermission,
@@ -27,6 +36,7 @@ export const applicationContextInitialValue: ApplicationContextValues = {
     show: () => {},
     hide: () => {},
   },
+  setUserActiveState: () => {},
 };
 
 const ApplicationContext = React.createContext<ApplicationContextValues>(applicationContextInitialValue);

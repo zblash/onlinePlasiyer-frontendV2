@@ -16,6 +16,7 @@ interface UiTableProps<T> extends StylableProps {
   columns: UITableColumns<T>[];
   rowCount?: number;
   id: string;
+  hidePagination?: boolean;
   onChangePage?: (pageIndex: number, totalPageCount: number) => void;
 }
 
@@ -142,7 +143,7 @@ function UITable<T>(props: UiTableProps<T>) {
 
       return data;
     }
-    if (props.data.length === 0) {
+    if (props.data.length === 0 && hasRowCount) {
       const data = [];
       while (data.length % rowCount !== 0 || data.length === 0) {
         data.push(null as T);
@@ -203,7 +204,7 @@ function UITable<T>(props: UiTableProps<T>) {
           ))}
         </StyledTableBody>
       </StyledUiTable>
-      {hasRowCount && (
+      {hasRowCount && !props.hidePagination && (
         <PaginationButtonsWrapper>
           <UIIcon
             name="chevronLeft"
