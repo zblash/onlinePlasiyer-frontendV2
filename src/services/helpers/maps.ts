@@ -1,4 +1,4 @@
-import { UserRoleResponse, IAddressResponse } from './backend-models';
+import { UserRoleResponse, IAddressResponse, IAddressStateResponse } from './backend-models';
 
 export interface User {
   username: string;
@@ -12,6 +12,7 @@ export interface User {
   isMerchant: boolean;
   isCustomer: boolean;
   address: IAddressResponse;
+  activeStates: IAddressStateResponse[];
 }
 
 export type UserType = 'active' | 'passive' | 'all';

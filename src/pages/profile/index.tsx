@@ -16,6 +16,14 @@ interface ProfilePageProps {}
 
 /* ProfilePage Styles */
 const StyledProfilePageWrapper = styled.div``;
+const StyledActiveStatesWrapper = styled.div`
+width:60%;
+float:left;
+border:1px solid ${colors.lightGray}
+border-radius:8px;
+background-color:${colors.white}
+margin-bottom: 25px;
+`;
 const StyledInfosFormWrapper = styled.div`
   width:60%;
   float:left;
@@ -150,6 +158,7 @@ function ProfilePage(props: React.PropsWithChildren<ProfilePageProps>) {
     <Container>
       <CategoryHorizontalListFetcher shouldUseProductsPageLink />
       <StyledProfilePageWrapper>
+        {user.isMerchant && <StyledActiveStatesWrapper />}
         <StyledInfosFormWrapper>
           <StyledInfosFormHeader>
             <h3>Bilgileri Guncelle</h3>

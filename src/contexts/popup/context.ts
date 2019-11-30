@@ -34,6 +34,7 @@ const initialValue: PopupContextType = {
   deleteCategory: emptyPopup,
   deleteProduct: emptyPopup,
   updateProduct: emptyPopup,
+  addActiveState: emptyPopup,
 };
 const PopupContext = React.createContext<PopupContextType>(initialValue);
 

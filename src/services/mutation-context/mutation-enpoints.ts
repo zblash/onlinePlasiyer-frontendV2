@@ -5,6 +5,7 @@ import {
   IProductResponse,
   IOrder,
   IUserCommonResponse,
+  IAddressStateResponse,
 } from '~/services/helpers/backend-models';
 
 interface CreateCategoryVariables {
@@ -117,6 +118,9 @@ class MutationEndpoints {
   addActiveStatesForAuthUser = ({ stateIds }: { stateIds: string[] }) => {
     return ApiCall.post('/users/addActiveState', stateIds);
   };
+
+  addActiveStates: (stateIds) => Promise<IAddressStateResponse> = (stateIds: string[]) =>
+    ApiCall.post('/users/addActiveState', stateIds);
 
   removeItemFromCard: (s: { id: string }) => Promise<any> = ({ id }) =>
     ApiCall.post(`/cart/removeItem/${id}`).then(item => ({ ...item, removed: true }));

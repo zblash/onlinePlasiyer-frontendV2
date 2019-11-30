@@ -76,7 +76,7 @@ export interface IUserCommonResponse {
   id: string;
   status?: boolean;
   taxNumber?: string;
-  activeStates?: IAddressStateResponse[];
+  activeStates: IAddressStateResponse[];
   address: IAddressResponse;
 }
 
