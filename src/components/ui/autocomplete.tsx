@@ -28,6 +28,7 @@ function _UIAutoComplete<T>(props: UIAutoCompleteProps<T>) {
       getItemValue={props.getItemValue}
       renderItem={props.renderItem}
       value={props.value}
+      wrapperStyle={{ width: '100%' }}
       menuStyle={{
         zIndex: 2,
         background: 'white',

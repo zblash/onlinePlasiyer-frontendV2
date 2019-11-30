@@ -5,6 +5,15 @@ export interface IAddressStateResponse {
   title: string;
 }
 
+export interface IAddressResponse {
+  cityId: string;
+  cityName: string;
+  details: string;
+  id: string;
+  stateId: string;
+  stateName: string;
+}
+
 export interface IAddressCityResponse {
   code: number;
   id: string;
@@ -67,7 +76,8 @@ export interface IUserCommonResponse {
   id: string;
   status?: boolean;
   taxNumber?: string;
-  activeStates?: IAddressStateResponse[];
+  activeStates: IAddressStateResponse[];
+  address: IAddressResponse;
 }
 
 export interface ICategoryResponse {
@@ -81,7 +91,7 @@ export interface ICategoryResponse {
 export interface IOrderItems {
   price: number;
   id: string;
-  productBarcode: string;
+  productBarcodeList: string[];
   productName: string;
   productPhotoUrl: string;
   productPrice: number;
@@ -113,6 +123,7 @@ export interface Invoice {
   seller: string;
   totalPrice: number;
   unPaidPrice: number;
+  order: IOrder;
 }
 
 export interface IObligationTotals {

@@ -42,7 +42,7 @@ function ApiCallContextProvider(props: React.PropsWithChildren<ApiCallContextPro
     (query: BasicQuery, variables: any, staticData?: any) => {
       const routeId = getRouteId(query, variables);
       if (staticData) {
-        return dataWriter(staticData, routeId);
+        return Promise.resolve(dataWriter(staticData, routeId));
       }
 
       return getQueueOrCreate(routeId).push(async () =>

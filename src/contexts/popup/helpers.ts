@@ -17,4 +17,5 @@ export interface PopupContextType {
   createProduct: Popup<ProductPopupValues>;
   updateProduct: Popup<ProductPopupValues>;
   deleteProduct: Popup<ProductDeletePopupParams>;
+  addActiveState: Popup;
 }

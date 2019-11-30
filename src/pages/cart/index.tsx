@@ -121,7 +121,7 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
   });
 
   const { mutation: checkoutCart } = useMutation(mutationEndPoints.cardCheckout, {
-    refetchQueries: [refetchFactory(queryEndpoints.getCard, null, false)],
+    refetchQueries: [refetchFactory(queryEndpoints.getCard, null)],
   });
 
   const handleClearCart = React.useCallback(() => {
@@ -132,8 +132,8 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
   }, [applicationContext.loading, clearCart]);
 
   const handleCartCheckout = React.useCallback(() => {
-    checkoutCart().then((order: IOrder) => {
-      routerHistory.push(`/order/${order.id}`);
+    checkoutCart().then((orders: IOrder[]) => {
+      routerHistory.push(`/cart/checkout`, orders);
     });
   }, [routerHistory, checkoutCart]);
 
