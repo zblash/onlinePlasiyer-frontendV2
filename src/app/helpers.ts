@@ -47,7 +47,7 @@ export const applicationContextInitialValue: ApplicationContextValues = {
       stateName: '',
       details: '',
       id: '',
-    }
+    },
   },
   permissions: {
     category: initialPermission,

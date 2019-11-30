@@ -1,6 +1,5 @@
 import * as React from 'react';
-import styled, { colors, css } from '~/styled';
-import { useTranslation } from '~/i18n';
+import styled, { colors } from '~/styled';
 import { Container, UIAutoComplete, UIInput, UIButton } from '~/components/ui';
 import { CategoryHorizontalListFetcher } from '~/fetcher-components/common/category-horizontal-list';
 import { ObligationComponent } from '~/components/common/obligation';
@@ -41,12 +40,12 @@ const StyledInfosFormElementWrapper = styled.div`
   padding-right: 1%;
   margin-bottom: 15px;
 `;
-const StyledInput = styled(UIInput)<{ hasError: boolean }>`
+const StyledInput = styled(UIInput)`
   width: 100%;
   border: 2px solid ${colors.lightGray};
   border-radius: 5px;
   height: 35px;
-  border: 2px solid ${props => (props.hasError ? colors.danger : colors.lightGray)};
+  border: 2px solid ${colors.lightGray};
   border-radius: 5px;
   color: ${colors.lightGray} !important;
   padding-left: 4px;
@@ -91,8 +90,6 @@ function ProfilePage(props: React.PropsWithChildren<ProfilePageProps>) {
   const [selectedStateId, setSelectedStateId] = React.useState(user.address.stateId);
   const [password, setPassword] = React.useState('');
   const [passwordConfirmation, setPasswordConfirmation] = React.useState('');
-  const [hasError, setHasError] = React.useState(false);
-  const { t } = useTranslation();
   const { mutation: updateUserInfosMutation } = useMutation(mutationEndPoints.updateInfos, {
     variables: {
       email,
@@ -160,11 +157,11 @@ function ProfilePage(props: React.PropsWithChildren<ProfilePageProps>) {
           <StyledInfosForm>
             <StyledInfosFormElementWrapper>
               <label>Isim Soyisim : </label>
-              <StyledInput hasError={false} id="myinfos-name" type="text" value={name} onChange={setName} />
+              <StyledInput id="myinfos-name" type="text" value={name} onChange={setName} />
             </StyledInfosFormElementWrapper>
             <StyledInfosFormElementWrapper>
               <label>Email : </label>
-              <StyledInput hasError={false} id="myinfos-email" type="text" value={email} onChange={setEmail} />
+              <StyledInput id="myinfos-email" type="text" value={email} onChange={setEmail} />
             </StyledInfosFormElementWrapper>
             <StyledInfosFormElementWrapper>
               <label>Il : </label>
@@ -173,14 +170,7 @@ function ProfilePage(props: React.PropsWithChildren<ProfilePageProps>) {
                 value={cityName}
                 shouldItemRender={(item, value) => item.title.toLowerCase().indexOf(value.toLowerCase()) > -1}
                 getItemValue={item => item.title}
-                renderInput={
-                  <StyledInput
-                    hasError={hasError}
-                    id="myinfos-cities"
-                    value={cityName}
-                    onChange={e => handleCityChange(e)}
-                  />
-                }
+                renderInput={<StyledInput id="myinfos-cities" value={cityName} onChange={e => handleCityChange(e)} />}
                 renderItem={(item, highlighted) => (
                   // TODO: update this element
                   <div
@@ -205,7 +195,6 @@ function ProfilePage(props: React.PropsWithChildren<ProfilePageProps>) {
                 getItemValue={item => item.title}
                 renderInput={
                   <StyledInput
-                    hasError={hasError}
                     disabled={!selectedCityId}
                     id="myinfos-states"
                     value={stateName}
@@ -229,7 +218,7 @@ function ProfilePage(props: React.PropsWithChildren<ProfilePageProps>) {
             </StyledInfosFormElementWrapper>
             <StyledInfosFormElementWrapper>
               <label>Adres Detayi : </label>
-              <StyledInput hasError={false} id="myinfos-details" type="text" value={details} onChange={setDetails} />
+              <StyledInput id="myinfos-details" type="text" value={details} onChange={setDetails} />
             </StyledInfosFormElementWrapper>
             <StyledInfosFormElementWrapper>
               <StyledInfosFormButton type="submit" value="Kaydet" onClick={handleUpdateInfos}>
@@ -246,18 +235,11 @@ function ProfilePage(props: React.PropsWithChildren<ProfilePageProps>) {
           <StyledInfosForm>
             <StyledInfosFormElementWrapper>
               <label>Yeni Sifre : </label>
-              <StyledInput
-                hasError={false}
-                id="password-change-password"
-                type="password"
-                value={password}
-                onChange={setPassword}
-              />
+              <StyledInput id="password-change-password" type="password" value={password} onChange={setPassword} />
             </StyledInfosFormElementWrapper>
             <StyledInfosFormElementWrapper>
               <label>Yeni Sifre(Tekrar) : </label>
               <StyledInput
-                hasError={false}
                 id="password-change-password-again"
                 type="password"
                 value={passwordConfirmation}

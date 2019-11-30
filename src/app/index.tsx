@@ -33,7 +33,7 @@ function App(props: ApplicationProviderProps) {
             hide: () => {
               setLoading(false);
             },
-          }
+          },
         }}
       >
         <PopupContextProvider>

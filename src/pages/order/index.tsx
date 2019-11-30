@@ -26,13 +26,7 @@ const StyledOrderPageHeader = styled.div`
   margin-bottom: 25px;
   margin-top: 25px;
  `;
-const StyledOrderPageWrapper = styled.div`
-  width: 100%;
-  background-color: ${colors.white} 
-  border: 1px solid ${colors.lightGray}
-  border-radius: 8px;
-  margin-bottom: 25px;
-`;
+
 const StyledOrderWrapper = styled.div`
   width: 100%;
   background-color: ${colors.white} 

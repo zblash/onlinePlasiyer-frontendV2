@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { useTranslation } from 'react-i18next';
 import Slider from 'react-slick';
-import styled, { colors, css } from '~/styled';
+import styled, { colors } from '~/styled';
 import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
-import { Container, UIButton } from '~/components/ui';
+import { Container } from '~/components/ui';
 import { CategoryHorizontalListFetcher } from '~/fetcher-components/common/category-horizontal-list';
 import { ObligationComponent } from '~/components/common/obligation';
 
