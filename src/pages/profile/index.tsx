@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled, { colors } from '~/styled';
+import styled, { colors, css } from '~/styled';
 import { Container, UIAutoComplete, UIInput, UIButton } from '~/components/ui';
 import { CategoryHorizontalListFetcher } from '~/fetcher-components/common/category-horizontal-list';
 import { ObligationComponent } from '~/components/common/obligation';
@@ -8,6 +8,8 @@ import { IAddressCityResponse, IAddressStateResponse } from '~/services/helpers/
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
+import { usePopupContext } from '~/contexts/popup/context';
+import { useQuery } from '~/services/query-context/context';
 
 /* ProfilePage Helpers */
 interface ProfilePageProps {}
@@ -22,6 +24,7 @@ float:left;
 border:1px solid ${colors.lightGray}
 border-radius:8px;
 background-color:${colors.white}
+padding-bottom: 15px;
 margin-bottom: 25px;
 `;
 const StyledInfosFormWrapper = styled.div`
@@ -34,7 +37,18 @@ const StyledInfosFormWrapper = styled.div`
 const StyledInfosFormHeader = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
   border-bottom: 1px solid ${colors.lightGray};
+`;
+const StyledActiveStatesHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1% 0 1%;
+  border-bottom: 1px solid ${colors.lightGray};
+`;
+const StyledActiveStatesContentWrapper = styled.div`
+  padding: 15px 1%;
 `;
 const StyledInfosForm = styled.div`
   padding-left: 1%;
@@ -82,11 +96,31 @@ const StyledPasswordResetWrapper = styled.div`
   background-color: #ffffff;
   margin-top: 10px;
 `;
+const StyledActiveStatesContentCityWrapper = styled.div`
+  width: 50%;
+  float: left;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+  border-bottom: 1px solid ${colors.lightGray};
+`;
+const headerLink = css`
+  color: ${colors.primary};
+  cursor: pointer;
+`;
+const marginZero = css`
+  margin: 0;
+`;
 /* ProfilePage Component  */
 function ProfilePage(props: React.PropsWithChildren<ProfilePageProps>) {
   /* ProfilePage Variables */
-
   const { user } = useApplicationContext();
+  const { data: activeStates } = useQuery(queryEndpoints.getAuthUserActiveStates, {
+    defaultValue: [{ cityTitle: '', code: 0, id: '', title: '' }],
+    skip: !user.isMerchant,
+  });
+  const popups = usePopupContext();
   const [cities, setCities] = React.useState<IAddressCityResponse[]>([]);
   const [states, setStates] = React.useState<IAddressStateResponse[]>([]);
   const [name, setName] = React.useState(user.name);
@@ -113,6 +147,10 @@ function ProfilePage(props: React.PropsWithChildren<ProfilePageProps>) {
     variables: { password, passwordConfirmation },
   });
   /* ProfilePage Callbacks */
+
+  const handleNewActiveStateClick = React.useCallback(() => {
+    popups.addActiveState.show();
+  }, [popups.addActiveState]);
 
   const handleCityChange = React.useCallback(
     e => {
@@ -158,7 +196,37 @@ function ProfilePage(props: React.PropsWithChildren<ProfilePageProps>) {
     <Container>
       <CategoryHorizontalListFetcher shouldUseProductsPageLink />
       <StyledProfilePageWrapper>
-        {user.isMerchant && <StyledActiveStatesWrapper />}
+        {user.isMerchant && (
+          <StyledActiveStatesWrapper>
+            <StyledActiveStatesHeader>
+              <h3>Urun Ekleyebileceginiz Bolgeler</h3>
+              <p className={headerLink} onClick={handleNewActiveStateClick}>
+                Yeni Bolge Ekle
+              </p>
+            </StyledActiveStatesHeader>
+            <StyledActiveStatesContentWrapper>
+              <StyledActiveStatesContentCityWrapper>
+                <h3 className={marginZero}>Sehir</h3>
+              </StyledActiveStatesContentCityWrapper>
+              <StyledActiveStatesContentCityWrapper>
+                <h3 className={marginZero}>Ilce</h3>
+              </StyledActiveStatesContentCityWrapper>
+              {activeStates.map(x => (
+                <div key={x.id}>
+                  <StyledActiveStatesContentCityWrapper>
+                    <p className={marginZero}>
+                      <strong>{x.cityTitle}</strong>
+                    </p>
+                  </StyledActiveStatesContentCityWrapper>
+                  <StyledActiveStatesContentCityWrapper>
+                    <p className={marginZero}>{x.title}</p>
+                  </StyledActiveStatesContentCityWrapper>
+                </div>
+              ))}
+            </StyledActiveStatesContentWrapper>
+          </StyledActiveStatesWrapper>
+        )}
+        <ObligationComponent />
         <StyledInfosFormWrapper>
           <StyledInfosFormHeader>
             <h3>Bilgileri Guncelle</h3>
@@ -236,7 +304,7 @@ function ProfilePage(props: React.PropsWithChildren<ProfilePageProps>) {
             </StyledInfosFormElementWrapper>
           </StyledInfosForm>
         </StyledInfosFormWrapper>
-        <ObligationComponent />
+
         <StyledPasswordResetWrapper>
           <StyledInfosFormHeader>
             <h3>Sifre Degistir</h3>
