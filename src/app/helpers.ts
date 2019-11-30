@@ -40,6 +40,14 @@ export const applicationContextInitialValue: ApplicationContextValues = {
     isMerchant: false,
     status: false,
     taxNumber: 'TR123',
+    address: {
+      cityName: '',
+      cityId: '',
+      stateId: '',
+      stateName: '',
+      details: '',
+      id: '',
+    }
   },
   permissions: {
     category: initialPermission,

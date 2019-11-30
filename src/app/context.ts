@@ -17,6 +17,14 @@ export const applicationContextInitialValue: ApplicationContextValues = {
     isAdmin: false,
     isCustomer: false,
     isMerchant: false,
+    address: {
+      cityId: '',
+      cityName: '',
+      stateId: '',
+      stateName: '',
+      details: '',
+      id: '',
+    },
   },
   permissions: {
     category: initialPermission,

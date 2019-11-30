@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useLocation } from 'react-router';
+import { useLocation, useHistory } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import styled, { colors, css } from '~/styled';
 import { IOrder } from '~/services/helpers/backend-models';
@@ -89,6 +89,13 @@ function CartCheckoutPage(props: React.PropsWithChildren<CartCheckoutPageProps>)
   /* CartCheckoutPage Variables */
   const { t } = useTranslation();
   const location = useLocation<IOrder[]>();
+  const routerHistory = useHistory();
+  React.useEffect(() => {
+    if (!location.state) {
+      routerHistory.push('/');
+    }
+  }, [location, routerHistory]);
+
   /* CartCheckoutPage Callbacks */
   /* CartCheckoutPage Lifecycle  */
 
@@ -97,76 +104,76 @@ function CartCheckoutPage(props: React.PropsWithChildren<CartCheckoutPageProps>)
       <StyledCartCheckoutHeader>
         <h2>{t('cart.orders-completed')}</h2>
       </StyledCartCheckoutHeader>
-      {location.state.map(order => (
-        <StyledOrderWrapper key={order.id}>
-          <StyledOrderHeader>
-            <StyledOrderHeaderLeftBox>
-              <p>
-                <span>{t('common.merchant')} : </span>
-                <strong>{order.sellerName}</strong>
-              </p>
-              <p>
-                <span>{t('order.code')} : </span>
-                <strong>{order.id}</strong>
-              </p>
-            </StyledOrderHeaderLeftBox>
-            <StyledOrderHeaderRightBox>
-              <StyledOrderHeaderRightBoxPrice>
+      {location.state &&
+        location.state.map(order => (
+          <StyledOrderWrapper key={order.id}>
+            <StyledOrderHeader>
+              <StyledOrderHeaderLeftBox>
                 <p>
-                  <span>{t('common.total-price')} : </span>
-                  <strong>{order.totalPrice} TL</strong>
+                  <span>{t('common.merchant')} : </span>
+                  <strong>{order.sellerName}</strong>
                 </p>
-              </StyledOrderHeaderRightBoxPrice>
-              <StyledOrderHeaderRightBoxDetail>
                 <p>
-                  <StyledLink to="/orders">{t('cart.show-order-detail')}</StyledLink>
+                  <span>{t('order.code')} : </span>
+                  <strong>{order.id}</strong>
                 </p>
-              </StyledOrderHeaderRightBoxDetail>
-            </StyledOrderHeaderRightBox>
-          </StyledOrderHeader>
-          {order.orderItems.map(orderItem => (
-            <StyledOrderItemWrapper key={orderItem.id}>
-              <StyledOrderItemImgWrapper>
-                <img alt={orderItem.productName} className={orderItemImg} src={orderItem.productPhotoUrl} />
-              </StyledOrderItemImgWrapper>
-              <StyledOrderItemDescWrapper>
-                <StyledOrderItemDescLeftBox>
-                  <h3 className={orderItemTitle}>{orderItem.productName}</h3>
+              </StyledOrderHeaderLeftBox>
+              <StyledOrderHeaderRightBox>
+                <StyledOrderHeaderRightBoxPrice>
                   <p>
-                    <span>{t('common.price')} :</span>
-                    <strong>{orderItem.productPrice} TL</strong>
+                    <span>{t('common.total-price')} : </span>
+                    <strong>{order.totalPrice} TL</strong>
                   </p>
+                </StyledOrderHeaderRightBoxPrice>
+                <StyledOrderHeaderRightBoxDetail>
                   <p>
-                    <span>
-                      {orderItem.unitType} {t('common.price')} :{' '}
-                    </span>
-                    <strong>{orderItem.unitPrice} TL</strong>
+                    <StyledLink to={`/order/${order.id}`}>{t('cart.show-order-detail')}</StyledLink>
                   </p>
-                  <p>
-                    <span>{t('cart.recommended-sales-price')} : </span>
-                    <strong>{orderItem.recommendedRetailPrice} TL</strong>
-                  </p>
-                </StyledOrderItemDescLeftBox>
-                <StyledOrderItemDescLeftBox>
-                  <h3 className={orderItemTitle}>{orderItem.productName}</h3>
-                  <p>
-                    <span>{t('common.total-price')} :</span>
-                    <strong>{orderItem.totalPrice} TL</strong>
-                  </p>
-                  <p>
-                    <span>{t('order.quantity')} : </span>
-                    <strong>{orderItem.quantity}</strong>
-                  </p>
-                  <p>
-                    <span>{t('common.barcode')} : </span>
-                    <strong>{orderItem.productBarcode}</strong>
-                  </p>
-                </StyledOrderItemDescLeftBox>
-              </StyledOrderItemDescWrapper>
-            </StyledOrderItemWrapper>
-          ))}
-        </StyledOrderWrapper>
-      ))}
+                </StyledOrderHeaderRightBoxDetail>
+              </StyledOrderHeaderRightBox>
+            </StyledOrderHeader>
+            {order.orderItems.map(orderItem => (
+              <StyledOrderItemWrapper key={orderItem.id}>
+                <StyledOrderItemImgWrapper>
+                  <img alt={orderItem.productName} className={orderItemImg} src={orderItem.productPhotoUrl} />
+                </StyledOrderItemImgWrapper>
+                <StyledOrderItemDescWrapper>
+                  <StyledOrderItemDescLeftBox>
+                    <h3 className={orderItemTitle}>{orderItem.productName}</h3>
+                    <p>
+                      <span>{t('common.price')} :</span>
+                      <strong>{orderItem.productPrice} TL</strong>
+                    </p>
+                    <p>
+                      <span>
+                        {orderItem.unitType} {t('common.price')} :{' '}
+                      </span>
+                      <strong>{orderItem.unitPrice} TL</strong>
+                    </p>
+                    <p>
+                      <span>{t('cart.recommended-sales-price')} : </span>
+                      <strong>{orderItem.recommendedRetailPrice} TL</strong>
+                    </p>
+                  </StyledOrderItemDescLeftBox>
+                  <StyledOrderItemDescLeftBox>
+                    <p>
+                      <span>{t('common.total-price')} :</span>
+                      <strong>{orderItem.totalPrice} TL</strong>
+                    </p>
+                    <p>
+                      <span>{t('order.quantity')} : </span>
+                      <strong>{orderItem.quantity}</strong>
+                    </p>
+                    <p>
+                      <span>{t('common.barcode')} : </span>
+                      <strong>{orderItem.productBarcodeList.join(',')}</strong>
+                    </p>
+                  </StyledOrderItemDescLeftBox>
+                </StyledOrderItemDescWrapper>
+              </StyledOrderItemWrapper>
+            ))}
+          </StyledOrderWrapper>
+        ))}
     </Container>
   );
 }

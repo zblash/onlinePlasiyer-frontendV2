@@ -15,6 +15,8 @@ import { withRequiredRole } from '~/components/hoc/with-required-role';
 import { AllProductPage } from './all-products';
 import { OrderPage } from './order';
 import { CartCheckoutPage } from './cart-checkout';
+import { InvoicePage } from './invoice';
+import { ProfilePage } from './profile';
 
 interface IRoute {
   path: string;
@@ -54,6 +56,14 @@ const routes: IRoute[] = [
   {
     path: '/order/:orderId',
     component: OrderPage,
+  },
+  {
+    path: '/invoice/:invoiceId',
+    component: InvoicePage,
+  },
+  {
+    path: '/profile',
+    component: ProfilePage,
   },
   { path: '/invoices', component: InvoicesPage },
   { path: '/all-products', component: AllProductPage, authorize: ['ADMIN'] },
