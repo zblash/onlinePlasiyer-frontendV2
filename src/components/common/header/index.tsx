@@ -4,6 +4,9 @@ import { HeaderLogo } from './header-logo';
 import { MenuItemProps, MenuItem } from './menu-item';
 import { HeaderSearchBar } from './search-bar';
 import { AccountCard } from './cards/account-card';
+import { useQuery } from '~/services/query-context/context';
+import { queryEndpoints } from '~/services/query-context/query-endpoints';
+import { useUserPermissions } from '~/app/context';
 
 /*
   Header Helpers
@@ -11,7 +14,7 @@ import { AccountCard } from './cards/account-card';
 interface HeaderProps {}
 
 /*
-  Header Colors
+  Header Colors // TODO : move theme.json
 */
 const HeaderColors = {
   wrapperBackground: '#262626',
@@ -35,12 +38,18 @@ const HeaderStrings = {
 const StyledHeaderStickyWrapper = styled.div`
   background-color: ${HeaderColors.wrapperBackground};
   height: 56px;
-  position: sticky;
+  position: fixed;
   top: 0;
+  right: 0;
+  left: 0;
   padding: 0 48px 0 24px;
   display: flex;
   align-items: center;
   z-index: 2;
+`;
+const HeaderBack = styled.div`
+  height: 56px;
+  opacity: 0;
 `;
 
 const StyledMenuItemsWrapper = styled.div`
@@ -50,38 +59,46 @@ const StyledMenuItemsWrapper = styled.div`
 `;
 
 const _Header: React.SFC<HeaderProps> = props => {
-  const menuItems: MenuItemProps[] = [
-    {
-      iconName: 'account',
-      text: HeaderStrings.accont,
-      cardContent: () => <AccountCard />,
-    },
-    {
-      iconName: 'shopingBasket',
-      text: 'Sepet (3)',
-      cardContent: null,
-    },
-  ];
+  const { data: cart } = useQuery(queryEndpoints.getCard, {
+    defaultValue: { quantity: 0, items: [] },
+  });
 
-  const __ = (
-    <StyledHeaderStickyWrapper>
-      <HeaderLogo />
-      <HeaderSearchBar />
-      <StyledMenuItemsWrapper>
-        {menuItems.map(item => (
-          <MenuItem {...item} key={item.text} />
-        ))}
-      </StyledMenuItemsWrapper>
-    </StyledHeaderStickyWrapper>
+  const userPermissions = useUserPermissions();
+
+  const menuItems: MenuItemProps[] = React.useMemo(
+    () => [
+      {
+        id: 'account-card',
+        iconName: 'account',
+        text: HeaderStrings.accont,
+        cardContent: close => <AccountCard close={close} />,
+      },
+      {
+        id: 'shoping-basket',
+        iconName: 'shopingBasket',
+        text: `Sepet (${cart.quantity})`,
+        link: '/cart',
+      },
+    ],
+    [cart.quantity],
   );
 
-  /*
-  Header Lifecycle
-  */
-
-  /*
-  Header Functions
-  */
+  const __ = (
+    <>
+      <StyledHeaderStickyWrapper>
+        <HeaderLogo />
+        <HeaderSearchBar />
+        <StyledMenuItemsWrapper>
+          {menuItems
+            .filter(item => item.id !== 'shoping-basket' || userPermissions.showCart)
+            .map(item => (
+              <MenuItem {...item} key={item.id} />
+            ))}
+        </StyledMenuItemsWrapper>
+      </StyledHeaderStickyWrapper>
+      <HeaderBack />
+    </>
+  );
 
   return __;
 };

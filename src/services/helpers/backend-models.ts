@@ -5,6 +5,15 @@ export interface IAddressStateResponse {
   title: string;
 }
 
+export interface IAddressResponse {
+  cityId: string;
+  cityName: string;
+  details: string;
+  id: string;
+  stateId: string;
+  stateName: string;
+}
+
 export interface IAddressCityResponse {
   code: number;
   id: string;
@@ -13,8 +22,9 @@ export interface IAddressCityResponse {
 
 export interface IProductResponse {
   active: boolean;
-  barcode: string;
+  barcodeList: string[];
   categoryName: string;
+  categoryId: string;
   id: string;
   name: string;
   photoUrl: string;
@@ -31,13 +41,14 @@ export interface ISpecifyProductResponse {
   recommendedRetailPrice: number;
   productName: string;
   sellerName: string;
-  states: string[];
+  states: IAddressStateResponse[];
   productId: string;
 }
 
 export interface ICardItemResponse {
   id: string;
-  productBarcode: string;
+  productId: string;
+  productBarcodeList: string[];
   productName: string;
   productPhotoUrl: string;
   productPrice: number;
@@ -65,7 +76,8 @@ export interface IUserCommonResponse {
   id: string;
   status?: boolean;
   taxNumber?: string;
-  activeStates?: IAddressStateResponse[];
+  activeStates: IAddressStateResponse[];
+  address: IAddressResponse;
 }
 
 export interface ICategoryResponse {
@@ -79,7 +91,7 @@ export interface ICategoryResponse {
 export interface IOrderItems {
   price: number;
   id: string;
-  productBarcode: string;
+  productBarcodeList: string[];
   productName: string;
   productPhotoUrl: string;
   productPrice: number;
@@ -111,6 +123,21 @@ export interface Invoice {
   seller: string;
   totalPrice: number;
   unPaidPrice: number;
+  order: IOrder;
+}
+
+export interface IObligationTotals {
+  id: string;
+  totalDebts: number;
+  totalReceivables: number;
+}
+
+export interface IAnnouncement {
+  id: string;
+  fileUrl: string;
+  lastDate: string;
+  message: string;
+  title: string;
 }
 
 export type UserRoleResponse = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';

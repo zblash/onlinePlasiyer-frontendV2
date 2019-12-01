@@ -9,7 +9,7 @@ import { login } from '~/services/api';
 interface LoginPageProps {}
 
 /*
-  LoginPage Colors
+  LoginPage Colors // TODO : move theme.json
 */
 
 const LoginPageColors = {

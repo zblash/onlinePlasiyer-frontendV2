@@ -7,7 +7,7 @@ import styled from '~/styled';
 interface Page404Props {}
 
 /*
-  Page404 Colors
+  Page404 Colors // TODO : move theme.json
 */
 const Page404Colors = {
   wrapperBackground: '#fff',

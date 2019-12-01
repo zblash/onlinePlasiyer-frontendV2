@@ -1,8 +1,9 @@
 import * as React from 'react';
-import styled from '~/styled';
-import { Container, UITable } from '~/components/ui';
-import { usePaginationQuery } from '~/services/pagination-query-context/context';
-import { paginationQueryEndpoints } from '~/services/pagination-query-context/pagination-query-endpoints';
+import { useTranslation } from 'react-i18next';
+import styled, { colors } from '~/styled';
+import { Container, UITable, UILink } from '~/components/ui';
+import { usePaginationQuery } from '~/services/query-context/use-pagination-quey';
+import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
 
 /*
   InvoicesPage Helpers
@@ -27,42 +28,56 @@ const InvoicesPageStrings = {
 const StyledPageContainer = styled.div`
   margin-top: 48px;
 `;
+const StyledLink = styled(UILink)`
+  color: ${colors.primaryDark};
+`;
 
 const InvoicesPage: React.SFC<InvoicesPageProps> = props => {
-  const { data: invoices } = usePaginationQuery(paginationQueryEndpoints.getAllInvoices, { defaultValue: [] });
+  const { t } = useTranslation();
+
+  const {
+    data: { values: invoices, elementCountOfPage },
+  } = usePaginationQuery(paginationQueryEndpoints.getAllInvoices, { defaultValue: { values: [] }, pageNumber: 1 });
+  const columns = [
+    {
+      title: InvoicesPageStrings.seller,
+      itemRenderer: item => item.seller,
+    },
+    {
+      title: InvoicesPageStrings.buyer,
+      itemRenderer: item => item.buyer,
+    },
+    {
+      title: InvoicesPageStrings.discount,
+      itemRenderer: item => item.discount,
+    },
+    {
+      title: InvoicesPageStrings.paidPrice,
+      itemRenderer: item => item.paidPrice,
+    },
+    {
+      title: InvoicesPageStrings.unPaidPrice,
+      itemRenderer: item => item.unPaidPrice,
+    },
+    {
+      title: InvoicesPageStrings.totalPrice,
+      itemRenderer: item => item.totalPrice,
+    },
+    {
+      title: null,
+      itemRenderer: item => <StyledLink to={`/invoice/${item.id}`}>{t('cart.show-order-detail')}</StyledLink>,
+    },
+  ];
+
+  // TODO: fetch next page on change page
   const __ = (
     <Container>
       <StyledPageContainer>
         <UITable
           id="invoices-page-table"
           data={invoices}
-          rowCount={14}
-          columns={[
-            {
-              title: InvoicesPageStrings.seller,
-              itemRenderer: item => item.seller,
-            },
-            {
-              title: InvoicesPageStrings.buyer,
-              itemRenderer: item => item.buyer,
-            },
-            {
-              title: InvoicesPageStrings.discount,
-              itemRenderer: item => item.discount,
-            },
-            {
-              title: InvoicesPageStrings.paidPrice,
-              itemRenderer: item => item.paidPrice,
-            },
-            {
-              title: InvoicesPageStrings.unPaidPrice,
-              itemRenderer: item => item.unPaidPrice,
-            },
-            {
-              title: InvoicesPageStrings.totalPrice,
-              itemRenderer: item => item.totalPrice,
-            },
-          ]}
+          rowCount={elementCountOfPage > 0 ? elementCountOfPage : 15}
+          columns={columns}
         />
       </StyledPageContainer>
     </Container>

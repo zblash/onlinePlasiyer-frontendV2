@@ -3,9 +3,9 @@ import Tooltip from 'rc-tooltip';
 import styled, { css } from '~/styled';
 import { UIIcon } from '~/components/ui';
 import { SubCategoryList } from './sub-category-list';
-import { useMutation } from '~/services/mutation-context/context';
-import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { usePopupContext } from '~/contexts/popup/context';
+import { useUserPermissions } from '~/app/context';
+import { useWindowEvent } from '~/utils/hooks';
 
 /*
   CategoryItem Helpers
@@ -16,17 +16,20 @@ export interface CategoryFields {
   name: string;
   photoUrl: string;
   parentId?: string;
-  subCategories?: Omit<CategoryFields, 'subCategories'>[];
 }
 
-interface CategoryItemProps extends CategoryFields {
+interface CategoryItemProps {
+  item: CategoryFields;
+  subCategories: CategoryFields[];
+  expandedCategoryId: string;
+  onExpandedCategory: (id: string) => void;
   isHighlighted?: boolean;
-  onClick?: () => void;
+  onClick?: (item: CategoryFields) => void;
   onSubItemClick?: (category: CategoryFields) => void;
 }
 
 /*
-  CategoryItem Colors
+  CategoryItem Colors // TODO : move theme.json
 */
 const CategoryItemColors = {
   wrapperBackground: '#fff',
@@ -140,91 +143,82 @@ const editIconStyle = css`
 `;
 
 const CategoryItem: React.SFC<CategoryItemProps> = props => {
-  const [isClickSubitem, setIsClickSubitem] = React.useState(false);
+  const { onExpandedCategory } = props;
   const popups = usePopupContext();
-  const { mutation: deleteCategory, loading: deleteCategoryLoading } = useMutation(mutationEndPoints.removeCategory, {
-    variables: { id: props.id },
-  });
+  const userPermissions = useUserPermissions();
+  const onClick = React.useCallback(() => (props.onClick ? props.onClick(props.item) : null), [props]);
 
-  const tooltipProps = isClickSubitem ? { visible: false } : {};
+  const windowClickCallback = React.useCallback(() => {
+    onExpandedCategory(null);
+  }, [onExpandedCategory]);
+  useWindowEvent('click', windowClickCallback);
 
-  const __ = (
-    <CategoryItemWrapper isHighlighted={props.isHighlighted} onClick={props.onClick}>
+  return (
+    <CategoryItemWrapper isHighlighted={props.isHighlighted} onClick={onClick}>
       <StyledModifyIconWrapper>
-        <UIIcon
-          size={18}
-          name="edit"
-          color={CategoryItemColors.primary}
-          className={editIconStyle}
-          onClick={e => {
-            e.stopPropagation();
-            popups.updateCategory.show({ isSub: false, name: props.name, imgSrc: props.photoUrl, id: props.id });
-          }}
-        />
-        <UIIcon
-          size={18}
-          name={deleteCategoryLoading ? 'loading' : 'trash'}
-          color={CategoryItemColors.danger}
-          onClick={e => {
-            e.stopPropagation();
-            if (!deleteCategoryLoading) {
-              deleteCategory();
-            }
-          }}
-        />
+        {userPermissions.category.edit && (
+          <UIIcon
+            size={18}
+            name="edit"
+            color={CategoryItemColors.primary}
+            className={editIconStyle}
+            onClick={e => {
+              e.stopPropagation();
+              popups.updateCategory.show({
+                isSub: false,
+                name: props.item.name,
+                imgSrc: props.item.photoUrl,
+                id: props.item.id,
+              });
+            }}
+          />
+        )}
+        {userPermissions.category.delete && (
+          <UIIcon
+            size={18}
+            name="trash"
+            color={CategoryItemColors.danger}
+            onClick={e => {
+              e.stopPropagation();
+              popups.deleteCategory.show({ ...props.item, isSub: false });
+            }}
+          />
+        )}
       </StyledModifyIconWrapper>
-      <StyledCategoryImg src={props.photoUrl} />
-      <StyledCategoryName>{props.name}</StyledCategoryName>
+      <StyledCategoryImg src={props.item.photoUrl} />
+      <StyledCategoryName>{props.item.name}</StyledCategoryName>
       <StyledSelectedStatus isShown={props.isHighlighted} />
-      {props.subCategories.length > 0 && (
-        // TODO(0): move rc-tooltip  to custom tooltip component
-        <Tooltip
-          mouseEnterDelay={0.35}
-          {...tooltipProps}
-          overlay={
-            <SubCategoryList
-              categories={props.subCategories}
-              onItemClick={category => {
-                setIsClickSubitem(true);
-                if (props.onSubItemClick) {
-                  props.onSubItemClick(category);
-                }
-              }}
-            />
-          }
-          placement="bottom"
-        >
-          <IconWrapper>
-            <UIIcon
-              className={iconStyle}
-              name="downArrow"
-              size={14}
-              color={CategoryItemColors.downArrowIcon}
-              onClick={e => {
-                e.stopPropagation();
-              }}
-            />
-          </IconWrapper>
-        </Tooltip>
-      )}
+      <Tooltip
+        mouseEnterDelay={0.35}
+        visible={props.expandedCategoryId === props.item.id}
+        overlay={
+          <SubCategoryList
+            categories={props.subCategories}
+            onItemClick={category => {
+              props.onExpandedCategory(null);
+              if (props.onSubItemClick) {
+                props.onSubItemClick(category);
+              }
+            }}
+          />
+        }
+        placement="bottom"
+      >
+        <IconWrapper>
+          <UIIcon
+            className={iconStyle}
+            name="downArrow"
+            size={14}
+            color={CategoryItemColors.downArrowIcon}
+            onClick={e => {
+              e.stopPropagation();
+              props.onExpandedCategory(props.item.id);
+            }}
+          />
+        </IconWrapper>
+      </Tooltip>
     </CategoryItemWrapper>
   );
-
-  /*
-  CategoryItem Lifecycle 
-  */
-
-  React.useEffect(() => {
-    if (isClickSubitem) {
-      setIsClickSubitem(false);
-    }
-  }, [isClickSubitem]);
-
-  /*
-  CategoryItem Functions
-  */
-
-  return __;
 };
 
 export { CategoryItem };

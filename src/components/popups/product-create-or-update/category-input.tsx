@@ -1,14 +1,15 @@
 import * as React from 'react';
 import lodashGet from 'lodash.get';
 import { UIAutoComplete, UIIcon } from '~/components/ui';
-import { StyledInput, commonInputStyle, inputIconStyle } from '.';
-import { useKeepValue } from '~/utils/hooks';
 import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { colors } from '~/styled';
+import { StyledInput, commonInputStyle, inputIconStyle } from '.';
+import { useTranslation } from '~/i18n';
+import { UseQueryOptions } from '~/services/query-context/helpers';
 
 /*
-  ParentCategoryInput Helpers
+  CategoryInput Helpers
 */
 
 interface Category {
@@ -16,7 +17,7 @@ interface Category {
   name: string;
 }
 
-interface ParentCategoryInputProps {
+interface CategoryInputProps {
   disabled?: boolean;
   isHighlighted?: boolean;
   onSelect: (category: Category) => void;
@@ -24,23 +25,21 @@ interface ParentCategoryInputProps {
 }
 
 /*
-  ParentCategoryInput Strings
+  CategoryInput Styles
 */
-const ParentCategoryInputStrings = {
-  inputPlaceholder: 'Ust Kategoriyi Secin',
+
+const getAllCategoriesOptions: UseQueryOptions<typeof queryEndpoints['getCategories']> = {
+  variables: { type: 'all' },
+  defaultValue: [],
 };
 
-/*
-  ParentCategoryInput Styles
-*/
-
-const _ParentCategoryInput: React.SFC<ParentCategoryInputProps> = props => {
+const CategoryInput: React.SFC<CategoryInputProps> = props => {
+  const { t } = useTranslation();
   const [autocompleteValue, setAutoCompleteValue] = React.useState('');
-  const isActivate = !useKeepValue(props.disabled, false);
 
-  const { data: parentCategories, loading: getParentCategoriesLoading, error: getParentCategoriesError } = useQuery(
+  const { data: allCategories, loading: getParentCategoriesLoading, error: getParentCategoriesError } = useQuery(
     queryEndpoints.getCategories,
-    { variables: { type: 'parent' }, skip: !isActivate, defaultValue: [] },
+    getAllCategoriesOptions,
   );
 
   const inputIconElement = (
@@ -53,16 +52,17 @@ const _ParentCategoryInput: React.SFC<ParentCategoryInputProps> = props => {
   );
   const __ = (
     <UIAutoComplete
-      items={parentCategories}
+      items={allCategories}
       value={autocompleteValue}
       shouldItemRender={(item, value) => item.name.toLowerCase().indexOf(value.toLowerCase()) > -1}
       getItemValue={item => item.name}
+      overrides={{ menuMaxHeight: 400 }}
       renderInput={
         <StyledInput
           value={autocompleteValue}
           disabled={!!(props.disabled || getParentCategoriesLoading || getParentCategoriesError)}
           inputClassName={commonInputStyle}
-          placeholder={ParentCategoryInputStrings.inputPlaceholder}
+          placeholder={t('product-popup.category-input-placeholder')}
           onChange={e => setAutoCompleteValue(e)}
           id="category-parentid"
           leftIcon={inputIconElement}
@@ -85,29 +85,33 @@ const _ParentCategoryInput: React.SFC<ParentCategoryInputProps> = props => {
   );
 
   /*
-  ParentCategoryInput Lifecycle
+  CategoryInput Lifecycle
   */
   React.useEffect(() => {
     if (props.selectedCategoryId) {
       setAutoCompleteValue(
-        lodashGet(parentCategories.find(category => category.id === props.selectedCategoryId), 'name', ''),
+        lodashGet(allCategories.find(category => category.id === props.selectedCategoryId), 'name', ''),
       );
     }
-  }, [parentCategories.length]);
+  }, [allCategories, props.selectedCategoryId]);
 
   /*
-  ParentCategoryInput Functions
+  CategoryInput Functions
   */
 
   return __;
 };
 
-const ParentCategoryInput = React.memo(_ParentCategoryInput, (prevProps, newProps) => {
-  if (prevProps.disabled !== newProps.disabled || prevProps.isHighlighted !== newProps.isHighlighted) {
+const _CategoryInput = React.memo(CategoryInput, (prevProps, newProps) => {
+  if (
+    prevProps.disabled !== newProps.disabled ||
+    prevProps.isHighlighted !== newProps.isHighlighted ||
+    prevProps.selectedCategoryId !== newProps.selectedCategoryId
+  ) {
     return false;
   }
 
   return true;
 });
 
-export { ParentCategoryInput };
+export { _CategoryInput as CategoryInput };

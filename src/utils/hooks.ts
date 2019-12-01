@@ -1,11 +1,4 @@
 import React from 'react';
-import {
-  useTranslation as i18nUseTranslation,
-  UseTranslationResponse as i18nUseTranslationResponse,
-} from 'react-i18next';
-import { TranslationKeys } from '~/helpers/static-types';
-
-type UseTranslationResponse = Omit<i18nUseTranslationResponse, 't'> & { t: (str: TranslationKeys) => string };
 
 function useStateFromProp<T>(initialValue: T): [T, React.Dispatch<React.SetStateAction<T>>] {
   const [value, setValue] = React.useState(initialValue);
@@ -15,14 +8,22 @@ function useStateFromProp<T>(initialValue: T): [T, React.Dispatch<React.SetState
   return [value, setValue];
 }
 
-function usePrevious<T>(value: T): T {
-  const ref = React.useRef<T>();
+function usePrevious<T>(value: T, setInitial?: boolean): T {
+  const ref = React.useRef<T>(setInitial ? value : undefined);
 
   React.useEffect(() => {
     ref.current = value;
   }, [value]);
 
   return ref.current;
+}
+
+function useMemoWithPrevDeps<T, D>(factory: (prevDeps: ReadonlyArray<D>) => T, deps: ReadonlyArray<D>): T {
+  const depsMemo = React.useMemo(() => deps, deps); // eslint-disable-line
+  const prevDeps = usePrevious(depsMemo);
+  const factoryMemo = React.useCallback(() => factory(prevDeps || []), deps); // eslint-disable-line
+
+  return React.useMemo(() => factoryMemo(), [factoryMemo]);
 }
 
 function useKeepValue<T>(value: T | undefined, wantedValue: T): T {
@@ -47,13 +48,40 @@ function useStateWithCallback<T>(
   return [state, setState];
 }
 
-function useTranslation(): UseTranslationResponse {
-  const i18nTranlation = i18nUseTranslation();
+function useWindowEvent<T extends keyof WindowEventMap>(event: T, callback: (e: WindowEventMap[T]) => void) {
+  React.useEffect(() => {
+    window.addEventListener(event, callback);
 
-  return {
-    ...i18nTranlation,
-    t: str => i18nTranlation.t(str as string),
-  };
+    return () => window.removeEventListener(event, callback);
+  }, [event, callback]);
+}
+type UseObjectStateSetStateAction<T> = (newValue: Partial<T>, isCompletely?: boolean) => void;
+function useObjectState<T>(initialState: T): [T, UseObjectStateSetStateAction<T>] {
+  const [state, setState] = React.useState(initialState);
+  const setMergedState = React.useCallback((newState, isCompletely) => {
+    if (isCompletely) {
+      setState(prevState => newState);
+    } else {
+      setState(prevState => ({ ...prevState, ...newState }));
+    }
+  }, []);
+
+  return [state, setMergedState];
+}
+function useArrayState<T>(initialState: T[]): [T[], React.Dispatch<React.SetStateAction<Partial<T>>>] {
+  const [state, setState] = React.useState(initialState);
+  const setMergedState = React.useCallback(newState => setState(prevState => [...prevState, ...newState]), []);
+
+  return [state, setMergedState];
 }
 
-export { useStateFromProp, usePrevious, useKeepValue, useStateWithCallback, useTranslation };
+export {
+  useStateFromProp,
+  usePrevious,
+  useKeepValue,
+  useStateWithCallback,
+  useWindowEvent,
+  useObjectState,
+  useArrayState,
+  useMemoWithPrevDeps,
+};

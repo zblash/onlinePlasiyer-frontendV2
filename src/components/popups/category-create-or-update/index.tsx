@@ -9,7 +9,7 @@ import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints
 import { refetchFactory } from '~/services/utils';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { usePopupContext } from '~/contexts/popup/context';
-import { useTranslation } from '~/utils/hooks';
+import { useTranslation } from '~/i18n';
 
 /*
   CategoryPopup Helpers
@@ -24,11 +24,11 @@ export interface CategoryPopupUpdateCategoryValues {
 
 type CategoryPopupProps<T> = {
   type: T;
-  initialState?: CategoryPopupUpdateCategoryValues;
+  params?: CategoryPopupUpdateCategoryValues;
 };
 
 /*
-  CategoryPopup Colors
+  CategoryPopup Colors // TODO : move theme.json
 */
 export const CategoryPopupColors = {
   iconBackground: '#fafafa',
@@ -156,16 +156,16 @@ function _CategoryPopup<T extends 'update' | 'create'>(props: CategoryPopupProps
   const { t } = useTranslation();
   const popups = usePopupContext();
   const [state, dispatch] = useCategoryPopupReducer({
-    name: lodashGet(props.initialState, 'name', ''),
-    isSub: lodashGet(props.initialState, 'isSub', false),
-    parentId: lodashGet(props.initialState, 'parentCategoryId', null),
+    name: lodashGet(props.params, 'name', ''),
+    isSub: lodashGet(props.params, 'isSub', false),
+    parentId: lodashGet(props.params, 'parentCategoryId', null),
   });
-  const [imgSrc, setImgSrc] = React.useState(lodashGet(props.initialState, 'imgSrc'));
+  const [imgSrc, setImgSrc] = React.useState(lodashGet(props.params, 'imgSrc'));
   const { mutation: categoryAction, loading } = useMutation(
     props.type === 'update' ? mutationEndPoints.updateCategory : mutationEndPoints.createCategory,
     {
       variables: {
-        id: lodashGet(props.initialState, 'id'),
+        id: lodashGet(props.params, 'id'),
         ...state,
       },
       refetchQueries: props.type === 'create' ? [refetchFactory(queryEndpoints.getCategories, { type: 'all' })] : [],

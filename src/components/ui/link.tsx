@@ -7,10 +7,12 @@ import styled, { StylableProps } from '~/styled';
 */
 interface LinkProps extends StylableProps {
   to: string;
+  activeClassName?: string;
+  onClick?: () => void;
 }
 
 /*
-  Link Colors
+  Link Colors // TODO : move theme.json
 */
 export const LinkColors = {
   wrapperBackground: '#fff',
@@ -20,24 +22,23 @@ export const LinkColors = {
   Link Styles
 */
 
-const StyledLinkWrapper = styled(NavLink)``;
+const StyledLinkWrapper = styled(NavLink)`
+  color: white;
+  cursor: pointer;
+  text-decoration: none;
+`;
 
 const _Link: React.SFC<LinkProps> = props => {
-  const __ = (
-    <StyledLinkWrapper className={props.className} to={props.to}>
+  return (
+    <StyledLinkWrapper
+      className={props.className}
+      to={props.to}
+      activeClassName={props.activeClassName}
+      onClick={props.onClick}
+    >
       {props.children}
     </StyledLinkWrapper>
   );
-
-  /*
-  Link Lifecycle
-  */
-
-  /*
-  Link Functions
-  */
-
-  return __;
 };
 
 const Link = _Link;

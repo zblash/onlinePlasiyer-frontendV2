@@ -1,8 +1,11 @@
 import * as React from 'react';
-import styled from '~/styled';
-import { usePaginationQuery } from '~/services/pagination-query-context/context';
-import { paginationQueryEndpoints } from '~/services/pagination-query-context/pagination-query-endpoints';
-import { Container, UITable } from '~/components/ui';
+import { useTranslation } from 'react-i18next';
+import styled, { css, colors } from '~/styled';
+import { Container, UITable, UIIcon, UILink } from '~/components/ui';
+import { usePaginationQuery } from '~/services/query-context/use-pagination-quey';
+import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
+import { useApplicationContext } from '~/app/context';
+import { CategoryHorizontalListFetcher } from '~/fetcher-components/common/category-horizontal-list';
 import { TOrderStatus } from '~/services/helpers/backend-models';
 
 /*
@@ -11,73 +14,93 @@ import { TOrderStatus } from '~/services/helpers/backend-models';
 interface OrdersPageProps {}
 
 /*
-  OrdersPage Colors
+  OrdersPage Colors // TODO : move theme.json
 */
 /*
   OrdersPage Strings
 */
-const OrdersPageStrings = {
-  buyer: 'Alici',
-  seller: 'Satici',
-  orderDate: 'Siparis T.',
-  itemCount: 'Oge Sayisi',
-  totalPrice: 'Toplam F.',
-  status: 'Durumu',
-};
 const ORDER_STATUS_MAP: Record<TOrderStatus, string> = {
-  CANCELLED: 'Iptal edildi',
-  FINISHED: 'Bitti',
   NEW: 'Yeni',
-  PAID: 'Bekliyor',
+  FINISHED: 'Teslim Edildi',
+  CANCELLED: 'Iptal Edildi',
+  PAID: 'Ödemesi Yapıldı',
 };
-
 /*
   OrdersPage Styles
 */
 const StyledPageContainer = styled.div`
   margin-top: 48px;
 `;
-
+const StyledActionsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const StyledLink = styled(UILink)`
+  color: ${colors.primaryDark};
+`;
+const commonIconStyle = css`
+  cursor: pointer;
+  margin: 0 8px;
+`;
 const OrdersPage: React.SFC<OrdersPageProps> = props => {
-  const { data: orders, next } = usePaginationQuery(paginationQueryEndpoints.getAllOrders, {
-    defaultValue: [],
+  const [ordersQueryPageNumber, setOrdersQueryPageNumber] = React.useState(1);
+  const { t } = useTranslation();
+  const applicationContext = useApplicationContext();
+  const {
+    data: { values: orders, totalPage, elementCountOfPage },
+  } = usePaginationQuery(paginationQueryEndpoints.getAllOrders, {
+    defaultValue: { values: [] },
+    pageNumber: ordersQueryPageNumber,
   });
   const __ = (
     <Container>
+      <CategoryHorizontalListFetcher shouldUseProductsPageLink />
       <StyledPageContainer>
         <UITable
           id="orders-page-table"
           onChangePage={(pageIndex, pageCount) => {
-            if (pageIndex + 2 === pageCount) {
-              next();
+            if (pageIndex + 2 === pageCount && ordersQueryPageNumber < totalPage) {
+              setOrdersQueryPageNumber(ordersQueryPageNumber + 1);
             }
           }}
           data={orders}
-          rowCount={14}
+          rowCount={elementCountOfPage > 0 ? elementCountOfPage : 15}
           columns={[
             {
-              title: OrdersPageStrings.seller,
+              title: t('common.merchant'),
               itemRenderer: item => item.sellerName,
             },
             {
-              title: OrdersPageStrings.buyer,
+              title: t('common.customer'),
               itemRenderer: item => item.buyerName,
             },
             {
-              title: OrdersPageStrings.orderDate,
+              title: t('order.order-date'),
               itemRenderer: item => item.orderDate,
             },
             {
-              title: OrdersPageStrings.itemCount,
+              title: t('order.quantity'),
               itemRenderer: item => item.orderItems.length,
             },
             {
-              title: OrdersPageStrings.status,
+              title: t('order.status-text'),
               itemRenderer: item => ORDER_STATUS_MAP[item.status],
             },
             {
-              title: OrdersPageStrings.totalPrice,
-              itemRenderer: item => item.totalPrice,
+              title: t('common.total-price'),
+              itemRenderer: item => `${item.totalPrice} TL`,
+            },
+            {
+              title: null,
+              itemRenderer: item => (
+                <StyledActionsWrapper>
+                  {(applicationContext.user.isMerchant || applicationContext.user.isAdmin) && (
+                    <UIIcon name="edit" color={colors.primaryDark} className={commonIconStyle} size={16} />
+                  )}
+                  <StyledLink to={`/order/${item.id}`}>{t('cart.show-order-detail')}</StyledLink>
+                </StyledActionsWrapper>
+              ),
             },
           ]}
         />

@@ -1,0 +1,95 @@
+import * as React from 'react';
+import { ProductListComponentProps, ProductList } from '~/components/common/product-list';
+import { usePaginationQuery } from '~/services/query-context/use-pagination-quey';
+import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
+import { useMemoWithPrevDeps } from '~/utils/hooks';
+import { scrollToRef } from '~/utils/node';
+
+/* ProductListFetcher Helpers */
+interface ProductListFetcherProps extends ProductListComponentProps {}
+
+function ProductListFetcher(props: React.PropsWithChildren<ProductListFetcherProps>) {
+  const [expandProductId, setExpandProductId] = React.useState<string>(null);
+  const wrapperRef = React.useRef();
+  const [productPageNumber, setProductPageNumber] = React.useState(1);
+  const [sepicifyProductPageNumber, setSpecifyProductPageNumber] = React.useState(1);
+  const { totalPage: productPageTotalPage, values: productsValues } = usePaginationQuery(
+    paginationQueryEndpoints.getAllProductsByCategoryId,
+    {
+      variables: { categoryId: props.selectedCategoryId },
+      skip: !props.selectedCategoryId,
+      defaultValue: { values: [] },
+      pageNumber: productPageNumber,
+    },
+  ).getDataByPage(productPageNumber);
+  const {
+    data: { values: specifyProducts, totalPage: specifyProductsTotalPage },
+  } = usePaginationQuery(paginationQueryEndpoints.getAllSpecifyProductsByProductId, {
+    variables: { productId: expandProductId },
+    defaultValue: { values: [] },
+    skip: !expandProductId,
+    pageNumber: sepicifyProductPageNumber,
+  });
+
+  const mappedArray = useMemoWithPrevDeps(
+    ([prevProductValues]) => {
+      if (prevProductValues && productsValues.length === 0) {
+        return prevProductValues;
+      }
+
+      return productsValues;
+    },
+    [productsValues],
+  );
+
+  /* ProductListFetcher Functions  */
+
+  const onChangeExpandProductId = React.useCallback(
+    id => {
+      setExpandProductId(id);
+      setSpecifyProductPageNumber(1);
+      if (props.onChangeExpandProductId) {
+        props.onChangeExpandProductId(id);
+      }
+    },
+    [props],
+  );
+
+  const onChangeSpecifyProductPage = React.useCallback(
+    (pageIndex, pageCount) => {
+      if (pageIndex + 2 >= pageCount && sepicifyProductPageNumber < specifyProductsTotalPage) {
+        setSpecifyProductPageNumber(sepicifyProductPageNumber + 1);
+      }
+    },
+    [sepicifyProductPageNumber, specifyProductsTotalPage],
+  );
+  const onChangePage = React.useCallback(
+    pageNumber => {
+      if (pageNumber <= productPageTotalPage) {
+        setProductPageNumber(pageNumber);
+        setTimeout(() => {
+          scrollToRef(wrapperRef);
+        }, 150);
+      }
+    },
+    [productPageTotalPage],
+  );
+
+  return (
+    <div ref={wrapperRef}>
+      <ProductList
+        productsPageCount={productPageTotalPage}
+        productsLastPageIndex={0}
+        productsCurrentPage={productPageNumber}
+        products={mappedArray}
+        specifyProducts={specifyProducts}
+        {...props}
+        onChangeExpandProductId={onChangeExpandProductId}
+        onChangeSpecifyProductPage={onChangeSpecifyProductPage}
+        onChangePage={onChangePage}
+      />
+    </div>
+  );
+}
+
+export { ProductListFetcher };

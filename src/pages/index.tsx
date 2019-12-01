@@ -8,9 +8,17 @@ import { Page404 } from './404-component';
 
 import { Header } from '~/components/common/header';
 import { OrdersPage } from './orders';
+import { CartPage } from '../pages/cart';
 import { InvoicesPage } from './invoices';
 import { UserRoleResponse } from '~/services/helpers/backend-models';
 import { withRequiredRole } from '~/components/hoc/with-required-role';
+import { AllProductPage } from './all-products';
+import { OrderPage } from './order';
+import { CartCheckoutPage } from './cart-checkout';
+import { InvoicePage } from './invoice';
+import { ProfilePage } from './profile';
+import { CreateProductSpecifyPage } from './create-product-specify';
+import { ProductSpecifiesPage } from './product-specifies';
 
 interface IRoute {
   path: string;
@@ -30,6 +38,16 @@ const routes: IRoute[] = [
     authorize: ['ADMIN'],
   },
   {
+    path: '/cart',
+    component: CartPage,
+    authorize: ['CUSTOMER'],
+  },
+  {
+    path: '/cart/checkout',
+    component: CartCheckoutPage,
+    authorize: ['CUSTOMER'],
+  },
+  {
     path: '/products/:categoryId?',
     component: ProductsPage,
   },
@@ -37,7 +55,22 @@ const routes: IRoute[] = [
     path: '/orders',
     component: OrdersPage,
   },
+  {
+    path: '/order/:orderId',
+    component: OrderPage,
+  },
+  {
+    path: '/invoice/:invoiceId',
+    component: InvoicePage,
+  },
+  {
+    path: '/profile',
+    component: ProfilePage,
+  },
   { path: '/invoices', component: InvoicesPage },
+  { path: '/all-products', component: AllProductPage, authorize: ['ADMIN'] },
+  { path: '/add-product-specify', component: CreateProductSpecifyPage, authorize: ['MERCHANT', 'ADMIN'] },
+  { path: '/product-specifies', component: ProductSpecifiesPage, authorize: ['ADMIN', 'MERCHANT'] },
 ];
 
 const Routes = React.memo(() => {

@@ -6,14 +6,22 @@ import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints
 import { UIIcon, UIInput, UIButton, Loading } from '~/components/ui';
 import { CategoryInput } from './category-input';
 import { usePopupContext } from '~/contexts/popup/context';
-import { useTranslation } from '~/utils/hooks';
+import { useTranslation } from '~/i18n';
+import { refetchFactory } from '~/services/utils';
+import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
+import { IProductResponse } from '~/services/helpers/backend-models';
 
 /*  ProductPopup Helpers */
 export interface ProductPopupValues {
   categoryId?: string;
+  initialValue?: IProductResponse;
+  hasBarcode?: (barcode: string) => void;
+  onCreate?: (barcode: string) => void;
 }
+
 interface ProductPopupProps {
-  initialState: ProductPopupValues;
+  params: ProductPopupValues;
+  type: 'create' | 'update';
 }
 
 /* ProductPopup Style Constants */
@@ -29,7 +37,7 @@ const StyledProductPopupWrapper = styled.div`
 
 export const commonInputStyle = css`
   margin: 0 8px;
-  color: ${colors.lightGray};
+  color: ${colors.gray};
 `;
 
 export const inputIconStyle = css`
@@ -65,16 +73,22 @@ const StyledButton = styled(UIButton)<{ disabled: boolean }>`
   opacity: ${props => (props.disabled ? 0.6 : 1)};
   border: 1px solid ${colors.primary};
   color: ${colors.primary};
+  background-color: ${colors.white};
   text-align: center;
-  cursor: pointer;
+  cursor: ${props => (props.disabled ? 'not-allowed' : 'cursor')};
   text-decoration: none;
   border-radius: 4px;
   :hover {
-    color: #fff;
-    background-color: ${colors.primary};
+    color: ${props => (props.disabled ? colors.primary : colors.white)};
+    background-color: ${props => (props.disabled ? colors.white : colors.primary)};
+    ${props =>
+      props.disabled
+        ? ''
+        : `
     .${loadingStyle}:after {
       border-color: ${colors.white} transparent;
     }
+  `}
   }
   :active {
     background-color: ${colors.primaryDark};
@@ -120,16 +134,20 @@ const filePickerInputId = 'image-picker-create-category-popup';
 function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
   const { t } = useTranslation();
   const popups = usePopupContext();
+  const initialValue = props.params.initialValue || ({} as any);
   const [isBarcodeCorrect, setIsBarcodeCorrect] = React.useState(false);
   const [isBarcodeSaved, setIsBarcodeSaved] = React.useState(false);
   const [barcode, setBarcode] = React.useState('');
-  const [imgSrc, setImgSrc] = React.useState('');
+  const [imgSrc, setImgSrc] = React.useState(initialValue.photoUrl);
   const [img, setImg] = React.useState<File>(null);
-  const [categoryId, setCategoryId] = React.useState(lodashGet(props.initialState, 'categoryId', ''));
-  const [productName, setProductName] = React.useState('');
-  const [taxNumber, setTaxNumber] = React.useState('');
+  const [categoryId, setCategoryId] = React.useState(lodashGet(props.params, 'categoryId', ''));
+  const [productName, setProductName] = React.useState(initialValue.name);
+  const [taxNumber, setTaxNumber] = React.useState(initialValue.tax);
+
   const { mutation: createProduct } = useMutation(mutationEndPoints.createProduct, {
-    // TODO: refetch pagination query
+    refetchQueries: [
+      refetchFactory(paginationQueryEndpoints.getAllProductsByCategoryId, { categoryId: props.params.categoryId }),
+    ],
     variables: {
       barcode,
       categoryId,
@@ -138,7 +156,7 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
       tax: parseInt(taxNumber, 10),
     },
   });
-  const { mutation: checkProduct, loading: checkProductLoading } = useMutation(mutationEndPoints.checkProduct, {
+  const { mutation: checkProduct, loading: checkProductLoading } = useMutation(mutationEndPoints.hasProduct, {
     variables: { barcode },
   });
 
@@ -206,6 +224,9 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
         disabled={!barcode || !productName || !categoryId || !img || !taxNumber}
         onClick={() =>
           createProduct().then(() => {
+            if (props.params.onCreate) {
+              props.params.onCreate(barcode);
+            }
             popups.createProduct.hide();
           })
         }
@@ -213,7 +234,7 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
         {checkProductLoading ? (
           <Loading color={colors.primary} size={22} className={loadingStyle} />
         ) : (
-          <span>{t('common.create')}</span>
+          <span>{props.type === 'create' ? t('common.create') : t('common.update')}</span>
         )}
       </StyledButton>
     </StyledProductPopupWrapper>
@@ -241,15 +262,13 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
       <StyledButton
         disabled={!barcode}
         onClick={() =>
-          checkProduct()
-            .then(() => {
-              setIsBarcodeCorrect(false);
-              setIsBarcodeSaved(true);
-            })
-            .catch(() => {
-              setIsBarcodeCorrect(true);
-              setIsBarcodeSaved(false);
-            })
+          checkProduct().then(({ hasBarcode }) => {
+            setIsBarcodeCorrect(!hasBarcode);
+            setIsBarcodeSaved(hasBarcode);
+            if (hasBarcode && props.params.hasBarcode) {
+              props.params.hasBarcode(barcode);
+            }
+          })
         }
       >
         {checkProductLoading ? (
@@ -265,7 +284,7 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
 
   /* ProductPopup Functions  */
 
-  if (!isBarcodeCorrect) {
+  if (!isBarcodeCorrect && props.type === 'create') {
     return barcodeInput;
   }
 

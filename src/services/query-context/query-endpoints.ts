@@ -8,17 +8,30 @@ import {
   IAddressStateResponse,
   IAddressCityResponse,
   UserRoleResponse,
+  IObligationTotals,
+  IAnnouncement,
+  IOrder,
+  Invoice,
 } from '~/services/helpers/backend-models';
 import { UserType } from '../helpers/maps';
 
-type GetCategoriesType = 'sub' | 'parent' | 'all';
+export type GetCategoriesVariables = { type: 'sub' | 'parent' | 'all' };
 
 class QueryEndpoints {
-  getCategories: (s: { type: GetCategoriesType }) => Promise<ICategoryResponse[]> = ({ type }) =>
+  getCategories: (s: GetCategoriesVariables) => Promise<ICategoryResponse[]> = ({ type }) =>
     ApiCall.get(`/categories`, {
       filter: type !== 'all',
       sub: type === 'sub',
     });
+
+  getParentCategories: () => Promise<ICategoryResponse[]> = () =>
+    ApiCall.get(`/categories`, {
+      filter: true,
+      sub: false,
+    });
+
+  getSubCategoriesByParentId: (s: { parentId: string }) => Promise<ICategoryResponse[]> = ({ parentId }) =>
+    ApiCall.get(`/categories/${parentId}/subCategories`);
 
   getCategoryByID: (s: { id: string }) => Promise<ICategoryResponse> = ({ id }) => ApiCall.get(`/categories/${id}`);
 
@@ -27,7 +40,7 @@ class QueryEndpoints {
 
   getProductById: (s: { id: string }) => Promise<IProductResponse> = ({ id }) => ApiCall.get(`/products/${id}`);
 
-  getCard: () => Promise<ICardResponse> = () => ApiCall.get(`/cart/`);
+  getCard: () => Promise<ICardResponse> = () => ApiCall.get(`/cart`);
 
   getUsers: (s: { role: UserRoleResponse; type: UserType }) => Promise<IUserCommonResponse[]> = ({ type, role }) => {
     const userTypeRouteMap: Record<UserRoleResponse, Record<UserType, string>> = {
@@ -60,6 +73,14 @@ class QueryEndpoints {
     axios.get(URL.concat(`/definitions/cities/${cityId}/states`)).then(({ data }) => data);
 
   getStates: () => Promise<any> = () => axios.get(URL.concat('/definitions/states')).then(({ data }) => data);
+
+  getObligationTotal: () => Promise<IObligationTotals> = () => ApiCall.get('/obligations/totals');
+
+  getAnnouncements: () => Promise<Array<IAnnouncement>> = () => ApiCall.get('/announcements');
+
+  getOrder: (s: { id: string }) => Promise<IOrder> = ({ id }) => ApiCall.get(`/orders/${id}`);
+
+  getInvoice: (s: { id: string }) => Promise<Invoice> = ({ id }) => ApiCall.get(`/invoices/${id}`);
 }
 const queryEndpoints = new QueryEndpoints();
 

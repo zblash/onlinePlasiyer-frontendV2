@@ -14,7 +14,7 @@ import { UserRoleResponse } from '~/services/helpers/backend-models';
 interface UsersPageProps {}
 
 /*
-  UsersPage Colors
+  UsersPage Colors // TODO : move theme.json
 */
 const UsersPageColors = {
   white: '#fff',
@@ -83,10 +83,14 @@ const iconStyle = css`
 const UsersPage: React.SFC<UsersPageProps> = props => {
   const [userRole, setUserRole] = React.useState<UserRoleResponse>('CUSTOMER');
   const [type, setType] = React.useState<UserType>('all');
-  const { data: users } = useQuery(queryEndpoints.getUsers, {
-    variables: { role: userRole, type },
-    defaultValue: [],
-  });
+  const userOptions = React.useMemo(
+    () => ({
+      variables: { role: userRole, type },
+      defaultValue: [],
+    }),
+    [type, userRole],
+  );
+  const { data: users } = useQuery(queryEndpoints.getUsers, userOptions);
 
   const { mutation: changeUserStatus, loading } = useMutation(mutationEndPoints.changeUserStatus);
 

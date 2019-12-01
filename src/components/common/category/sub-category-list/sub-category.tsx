@@ -3,9 +3,13 @@ import styled, { css } from '~/styled';
 import { CategoryFields } from '..';
 import { UIIcon } from '~/components/ui';
 import { SubCategoryListColors } from '.';
-import { useMutation } from '~/services/mutation-context/context';
-import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { usePopupContext } from '~/contexts/popup/context';
+import { useUserPermissions } from '~/app/context';
+
+interface SubCategoryComponentProps {
+  onClick?: Function;
+}
+interface SubCategoryProps extends CategoryFields, SubCategoryComponentProps {}
 
 const StyledCategoryWrapper = styled.div`
   padding: 8px;
@@ -40,12 +44,9 @@ const StyledModifyIconWrapper = styled.div`
 const editIconStyle = css`
   margin-right: 8px;
 `;
-
-const SubCategory: React.SFC<CategoryFields & { onClick?: Function }> = props => {
+const SubCategory: React.SFC<SubCategoryProps> = props => {
   const popups = usePopupContext();
-  const { mutation: deleteCategory, loading: deleteCategoryLoading } = useMutation(mutationEndPoints.removeCategory, {
-    variables: { id: props.id },
-  });
+  const userPermissions = useUserPermissions();
 
   return (
     <StyledCategoryWrapper
@@ -62,34 +63,35 @@ const SubCategory: React.SFC<CategoryFields & { onClick?: Function }> = props =>
       </SubCategoryLeftWrapper>
 
       <StyledModifyIconWrapper>
-        <UIIcon
-          size={18}
-          name="edit"
-          color={SubCategoryListColors.primary}
-          className={editIconStyle}
-          onClick={e => {
-            e.stopPropagation();
-            popups.updateCategory.show({
-              id: props.id,
-              name: props.name,
-              imgSrc: props.photoUrl,
-              isSub: true,
-              parentCategoryId: props.parentId,
-            });
-          }}
-        />
-
-        <UIIcon
-          size={18}
-          name={deleteCategoryLoading ? 'loading' : 'trash'}
-          color={SubCategoryListColors.danger}
-          onClick={e => {
-            e.stopPropagation();
-            if (!deleteCategoryLoading) {
-              deleteCategory();
-            }
-          }}
-        />
+        {userPermissions.category.edit && (
+          <UIIcon
+            size={18}
+            name="edit"
+            color={SubCategoryListColors.primary}
+            className={editIconStyle}
+            onClick={e => {
+              e.stopPropagation();
+              popups.updateCategory.show({
+                id: props.id,
+                name: props.name,
+                imgSrc: props.photoUrl,
+                isSub: true,
+                parentCategoryId: props.parentId,
+              });
+            }}
+          />
+        )}
+        {userPermissions.category.delete && (
+          <UIIcon
+            size={18}
+            name="trash"
+            color={SubCategoryListColors.danger}
+            onClick={e => {
+              e.stopPropagation();
+              popups.deleteCategory.show({ ...props, isSub: true });
+            }}
+          />
+        )}
       </StyledModifyIconWrapper>
     </StyledCategoryWrapper>
   );

@@ -12,7 +12,7 @@ interface PopupProps {
 }
 
 /*
-  Popup Colors
+  Popup Colors // TODO : move theme.json
 */
 export const PopupColors = {
   wrapperBackground: 'transparent',
@@ -40,13 +40,13 @@ const StyledPopup = styled.div`
   background-color: ${PopupColors.wrapperBackground};
   z-index: 100;
   position: relative;
-  cursor: pointer;
 `;
 
 const iconStyle = css`
   position: absolute;
   right: 8px;
   top: 8px;
+  cursor: pointer;
 `;
 
 const PopupDefaultProps = {

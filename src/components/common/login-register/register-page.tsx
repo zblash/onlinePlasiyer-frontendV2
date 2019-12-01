@@ -13,7 +13,7 @@ interface RegisterPageProps {
 }
 
 /*
-  RegisterPage Colors
+  RegisterPage Colors // TODO : move theme.json
 */
 const RegisterPageColors = {
   white: '#fff',
@@ -291,7 +291,7 @@ const RegisterPage: React.SFC<RegisterPageProps> = props => {
     if (hasError) {
       setHasError(false);
     }
-  }, [email, username, name, taxNumber, selectedStateId, selectedCityId, details, password]);
+  }, [email, username, name, taxNumber, selectedStateId, selectedCityId, details, password, hasError]);
   /*
   RegisterPage Functions
   */
