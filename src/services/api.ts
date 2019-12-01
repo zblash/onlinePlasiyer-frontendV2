@@ -8,7 +8,7 @@ export const TOKEN = {
   remove: () => localStorage.removeItem(TOKEN_KEY),
 };
 
-export const URL = 'https://onlineplasiyer-backend.herokuapp.com/';
+export const URL = 'https://onlineplasiyer-backend.herokuapp.com';
 const API_URL = `${URL}/api`;
 
 const headers = () => ({
