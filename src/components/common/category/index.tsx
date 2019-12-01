@@ -195,6 +195,7 @@ const CategoryItem: React.SFC<CategoryItemProps> = props => {
           <SubCategoryList
             categories={props.subCategories}
             onItemClick={category => {
+              props.onExpandedCategory(null);
               if (props.onSubItemClick) {
                 props.onSubItemClick(category);
               }
