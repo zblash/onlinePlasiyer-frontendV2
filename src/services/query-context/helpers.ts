@@ -60,6 +60,7 @@ export interface PaginationResult<Q> {
   values: (EndpointsResultType<Q> & { pageIndex: number })[];
   totalElements: number;
   totalPage: number;
+  elementCountOfPage: number;
 }
 
 export type BasePaginationQuery = typeof paginationQueryEndpoints[keyof typeof paginationQueryEndpoints];

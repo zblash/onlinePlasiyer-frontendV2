@@ -6,6 +6,7 @@ import {
   IOrder,
   IUserCommonResponse,
   IAddressStateResponse,
+  ISpecifyProductResponse,
 } from '~/services/helpers/backend-models';
 
 interface CreateCategoryVariables {
@@ -140,6 +141,9 @@ class MutationEndpoints {
 
   updatePassword: (params: { password: string; passwordConfirmation: string }) => Promise<any> = (...params) =>
     ApiCall.post('/users/changePassword', ...params);
+
+  removeProductSpecify: (s: { id: string }) => Promise<ISpecifyProductResponse> = ({ id }) =>
+    ApiCall.delete(`/products/specify/delete/${id}`).then(item => ({ ...item, removed: true }));
 
   deneme = () => Promise.resolve({ id: '12341' });
 }

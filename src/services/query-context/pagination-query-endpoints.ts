@@ -28,6 +28,9 @@ class QueryEndpoints {
 
   getAllOrders: (s: { pageNumber: number }) => Promise<IOrder> = ({ pageNumber }) =>
     paginationQueryGet('/orders', { pageNumber });
+
+  getAllSpecifies: (s: { pageNumber: number }) => Promise<ISpecifyProductResponse> = ({ pageNumber }) =>
+    paginationQueryGet('/products/specify', { pageNumber });
 }
 
 const paginationQueryEndpoints = new QueryEndpoints();

@@ -15,6 +15,7 @@ function PopupContextProvider(props: React.PropsWithChildren<PopupContextProvide
     deleteProduct: usePopup(),
     updateProduct: usePopup(),
     addActiveState: usePopup(),
+    deleteProductSpecify: usePopup(),
   };
 
   return (
