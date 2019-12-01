@@ -4,7 +4,6 @@ import { useTranslation } from '~/i18n';
 import { UIButton } from '~/components/ui';
 import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
-import { useApplicationContext } from '~/app/context';
 
 /* ObligationComponent Helpers */
 interface ObligationComponentProps {}
