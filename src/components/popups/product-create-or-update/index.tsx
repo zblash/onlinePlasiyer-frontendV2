@@ -15,6 +15,8 @@ import { IProductResponse } from '~/services/helpers/backend-models';
 export interface ProductPopupValues {
   categoryId?: string;
   initialValue?: IProductResponse;
+  hasBarcode?: (barcode: string) => void;
+  onCreate?: (barcode: string) => void;
 }
 
 interface ProductPopupProps {
@@ -222,6 +224,9 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
         disabled={!barcode || !productName || !categoryId || !img || !taxNumber}
         onClick={() =>
           createProduct().then(() => {
+            if (props.params.onCreate) {
+              props.params.onCreate(barcode);
+            }
             popups.createProduct.hide();
           })
         }
@@ -260,6 +265,9 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
           checkProduct().then(({ hasBarcode }) => {
             setIsBarcodeCorrect(!hasBarcode);
             setIsBarcodeSaved(hasBarcode);
+            if (hasBarcode && props.params.hasBarcode) {
+              props.params.hasBarcode(barcode);
+            }
           })
         }
       >

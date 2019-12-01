@@ -17,6 +17,7 @@ import { OrderPage } from './order';
 import { CartCheckoutPage } from './cart-checkout';
 import { InvoicePage } from './invoice';
 import { ProfilePage } from './profile';
+import { CreateProductSpecifyPage } from './create-product-specify';
 
 interface IRoute {
   path: string;
@@ -67,6 +68,7 @@ const routes: IRoute[] = [
   },
   { path: '/invoices', component: InvoicesPage },
   { path: '/all-products', component: AllProductPage, authorize: ['ADMIN'] },
+  { path: '/add-product-specify', component: CreateProductSpecifyPage, authorize: ['MERCHANT', 'ADMIN'] },
 ];
 
 const Routes = React.memo(() => {
