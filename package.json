@@ -4,7 +4,7 @@
   "description": "",
   "license": "MIT",
   "scripts": {
-    "build": "yarn run clean-dist && cross-env NODE_ENV=production webpack -p --config=webpack/production.js",
+    "build": "yarn generate-type && yarn run clean-dist && cross-env NODE_ENV=production webpack -p --config=webpack/production.js",
     "clean-dist": "rimraf dist/*",
     "lint": "eslint './src/**/*.ts*' './tests/**/*.test.ts*' --cache",
     "prettier": "prettier  --ignore-path ./.prettierignore  **/*.ts*",
