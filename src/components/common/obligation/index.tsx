@@ -62,7 +62,6 @@ border-radius: 8px;
 function ObligationComponent(props: React.PropsWithChildren<ObligationComponentProps>) {
   /* ObligationComponent Variables */
   const { t } = useTranslation();
-  const applicationContext = useApplicationContext();
   const { data: totalObligation } = useQuery(queryEndpoints.getObligationTotal, {
     defaultValue: {
       totalDebts: 0,
