@@ -2,6 +2,7 @@ import { CategoryPopupUpdateCategoryValues } from '~/components/popups/category-
 import { ProductPopupValues } from '~/components/popups/product-create-or-update';
 import { CategoryDeletePopupParams } from '~/components/popups/category-delete';
 import { ProductDeletePopupParams } from '~/components/popups/product-delete';
+import { ProductSpecifyDeletePopupParams } from '~/components/popups/product-specify-delete';
 
 export interface Popup<O = undefined> {
   isShown: boolean;
@@ -18,4 +19,5 @@ export interface PopupContextType {
   updateProduct: Popup<ProductPopupValues>;
   deleteProduct: Popup<ProductDeletePopupParams>;
   addActiveState: Popup;
+  deleteProductSpecify: Popup<ProductSpecifyDeletePopupParams>;
 }
