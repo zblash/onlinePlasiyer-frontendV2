@@ -41,7 +41,7 @@ export interface ISpecifyProductResponse {
   recommendedRetailPrice: number;
   productName: string;
   sellerName: string;
-  states: string[];
+  states: IAddressStateResponse[];
   productId: string;
 }
 

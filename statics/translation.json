@@ -13,8 +13,12 @@
       "customer": "Alıcı",
       "product-name": "Ürün Adı",
       "unit-type": "Birim",
-      "unit-price": "Birim Fiyat"
-
+      "unit-price": "Birim Fiyat",
+      "quantity": "Adet",
+      "contents": "Icerik"
+    },
+    "product-specify": {
+      "active-states": "Satış Bölgeleri"
     },
     "cart": {
       "orders-completed": "Siparişleriniz Tamamlandı",
@@ -27,10 +31,10 @@
       "status-text": "Sipariş Durumu",
       "order-date": "Sipariş Tarihi",
       "status": {
-        "new" : "Yeni",
+        "new": "Yeni",
         "finished": "Teslim Edildi",
         "cancelled": "Iptal Edildi",
-        "paid": "Odeme Yapildi"
+        "paid": "Ödemesi Yapıldı"
       }
     },
     "invoice": {
@@ -73,6 +77,9 @@
       "remove-product": {
         "are-you-sure-question": "{{productName}} urunu tamamen silinecek. Eminmisin ?",
         "failed-message": "Silme Islemi Basarisiz"
+      },
+      "remove-product-specify": {
+        "are-you-sure-question": "Urun tamamen silinecek. Eminmisin ?"
       }
     }
   }

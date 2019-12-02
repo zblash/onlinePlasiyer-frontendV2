@@ -8,7 +8,7 @@ export const TOKEN = {
   remove: () => localStorage.removeItem(TOKEN_KEY),
 };
 
-export const URL = 'http://192.168.1.105:8080';
+export const URL = 'http://localhost:8080';
 const API_URL = `${URL}/api`;
 
 const headers = () => ({

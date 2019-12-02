@@ -84,7 +84,7 @@ const _AccountCard: React.SFC<AccountCardProps> = props => {
         { url: '/users', text: 'Kullanicilar', hide: !user.isAdmin },
         { url: '/product-specifies', text: 'Urun Icerikleri', hide: !user.isCustomer },
         { url: '/add-product-specify', text: 'Urun Icerigi Ekle', hide: !user.isMerchant },
-        { url: '/all-products', text: 'All Products', hide: !user.isAdmin },
+        { url: '/all-products', text: 'Tum Urunler', hide: !user.isAdmin },
       ].filter(item => !item.hide),
     [user.isAdmin, user.isCustomer, user.isMerchant],
   );
