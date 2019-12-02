@@ -137,10 +137,10 @@ class MutationEndpoints {
     };
     email: string;
     name: string;
-  }) => Promise<IUserCommonResponse> = (...params) => ApiCall.post('/users/updateInfos', ...params);
+  }) => Promise<IUserCommonResponse> = (...params) => ApiCall.post('/user/updateInfos', ...params);
 
   updatePassword: (params: { password: string; passwordConfirmation: string }) => Promise<any> = (...params) =>
-    ApiCall.post('/users/changePassword', ...params);
+    ApiCall.post('/user/changePassword', ...params);
 
   removeProductSpecify: (s: { id: string }) => Promise<ISpecifyProductResponse> = ({ id }) =>
     ApiCall.delete(`/products/specify/delete/${id}`).then(item => ({ ...item, removed: true }));

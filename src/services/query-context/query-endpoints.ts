@@ -64,7 +64,7 @@ class QueryEndpoints {
     return ApiCall.get(userTypeRouteMap[role][type]);
   };
 
-  getAuthUserActiveStates: () => Promise<IAddressStateResponse[]> = () => ApiCall.get('/users/activeStates');
+  getAuthUserActiveStates: () => Promise<IAddressStateResponse[]> = () => ApiCall.get('/user/activeStates');
 
   getCities: () => Promise<IAddressCityResponse[]> = () =>
     axios.get(URL.concat('/definitions/cities')).then(({ data }) => data);
