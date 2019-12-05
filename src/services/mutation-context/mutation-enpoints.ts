@@ -117,7 +117,7 @@ class MutationEndpoints {
   }) => ApiCall.post('/products/specify/create', { ...params, stateList: params.stateIds, stateIds: undefined });
 
   addActiveStates: (s: { stateIds: string[] }) => Promise<IAddressStateResponse> = ({ stateIds }) =>
-    ApiCall.post('/users/addActiveState', stateIds);
+    ApiCall.post('/user/addActiveState', stateIds);
 
   removeItemFromCard: (s: { id: string }) => Promise<any> = ({ id }) =>
     ApiCall.post(`/cart/removeItem/${id}`).then(item => ({ ...item, removed: true }));

@@ -99,12 +99,24 @@ const StyledCartCheckoutBtn = styled(UIButton)`
     color: ${colors.white};
   }
 `;
-
+const CartItemWrapper = styled.div`
+  width: 100%;
+`;
+const CartItemHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 0 3% 0 3%;
+  border-bottom: 1px solid ${colors.lightGray};
+`;
 const titleText = css`
   float: left;
   padding-left: 30px;
 `;
-
+const clearCartText = css`
+  float: left;
+  padding-left: 30px;
+  cursor: pointer;
+`;
 const titleP = css`
   text-align: center;
 `;
@@ -149,7 +161,7 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
             <StyledCartContentBoxTitle>
               <StyledCartContentBoxTitleDetail>
                 <p className={titleText}>Sepette {cart.quantity} urun var</p>
-                <p className={titleText} onClick={handleClearCart}>
+                <p className={clearCartText} onClick={handleClearCart}>
                   Sepeti Temizle
                 </p>
               </StyledCartContentBoxTitleDetail>
@@ -160,7 +172,23 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
                 <p className={titleP}>Fiyat</p>
               </StyledCartContentBoxTitlePrice>
             </StyledCartContentBoxTitle>
-            {cart.items && cart.items.map(cartItem => <CartItem key={cartItem.id} cartItem={cartItem} />)}
+            {cart.items &&
+              cart.items.map(cartItem => (
+                <CartItemWrapper key={cartItem.id}>
+                  <CartItemHeader>
+                    <p>
+                      <span>Satici : </span>
+                      <strong>{cartItem.seller}</strong>
+                    </p>
+                    <p>
+                      Toplam : {cartItem.totalPrice} TL ({cartItem.quantity} Adet)
+                    </p>
+                  </CartItemHeader>
+                  {cartItem.details.map(detail => (
+                    <CartItem key={detail.id} cartItem={detail} />
+                  ))}
+                </CartItemWrapper>
+              ))}
           </StyledCartContentBox>
         </StyledCartContent>
         <StyledCartRightBox>

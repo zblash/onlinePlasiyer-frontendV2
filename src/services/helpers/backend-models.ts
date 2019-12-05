@@ -63,9 +63,17 @@ export interface ICardItemResponse {
 
 export interface ICardResponse {
   id: string;
-  items: ICardItemResponse[];
+  items: ICartItemDetailResponse[];
   quantity: number;
   totalPrice: number;
+}
+
+export interface ICartItemDetailResponse {
+  id: string;
+  seller: string;
+  totalPrice: number;
+  quantity: number;
+  details: ICardItemResponse[];
 }
 
 export interface IUserCommonResponse {
