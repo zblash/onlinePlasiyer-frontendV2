@@ -163,7 +163,7 @@ const ProductList: React.SFC<ProductListProps> = props => {
         title: 'Sepete Ekle',
       });
     }
-  }, []);
+  }, []); // eslint-disable-line
 
   const onPageChange = React.useCallback(
     lodashDebounce(({ selected: pageIndex }: { selected: number }) => {
