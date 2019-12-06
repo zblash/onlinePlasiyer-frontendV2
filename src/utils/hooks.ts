@@ -1,4 +1,5 @@
 import React from 'react';
+import { useAlert as useReactAlert } from 'react-alert';
 
 function useStateFromProp<T>(initialValue: T): [T, React.Dispatch<React.SetStateAction<T>>] {
   const [value, setValue] = React.useState(initialValue);
@@ -74,6 +75,9 @@ function useArrayState<T>(initialState: T[]): [T[], React.Dispatch<React.SetStat
 
   return [state, setMergedState];
 }
+function useAlert() {
+  return useReactAlert();
+}
 
 export {
   useStateFromProp,
@@ -84,4 +88,5 @@ export {
   useObjectState,
   useArrayState,
   useMemoWithPrevDeps,
+  useAlert,
 };

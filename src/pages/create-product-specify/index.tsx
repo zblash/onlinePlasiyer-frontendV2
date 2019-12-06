@@ -7,6 +7,7 @@ import { UnitTypeResponse } from '~/services/helpers/backend-models';
 import { useApplicationContext } from '~/app/context';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
+import { useAlert } from '~/utils/hooks';
 
 /* CreateProductSpecifyPage Helpers */
 interface CreateProductSpecifyPageProps {}
@@ -58,6 +59,7 @@ const selectInput = css`
 /* CreateProductSpecifyPage Component  */
 function CreateProductSpecifyPage(props: React.PropsWithChildren<CreateProductSpecifyPageProps>) {
   /* CreateProductSpecifyPage Variables */
+  const alertContext = useAlert();
   const popup = usePopupContext();
   const applicationContext = useApplicationContext();
   const [barcode, setBarcode] = React.useState();
@@ -89,10 +91,17 @@ function CreateProductSpecifyPage(props: React.PropsWithChildren<CreateProductSp
 
   const handleSubmit = React.useCallback(() => {
     applicationContext.loading.show();
-    createProductSpecify().finally(() => {
-      applicationContext.loading.hide();
-    });
-  }, [createProductSpecify, applicationContext.loading]);
+    createProductSpecify()
+      .then(() => {
+        alertContext.show('Urun Basariyla Eklendi', { type: 'success' });
+      })
+      .catch(() => {
+        alertContext.show('Lutfen Tum Alanlari Doldurun', { type: 'error' });
+      })
+      .finally(() => {
+        applicationContext.loading.hide();
+      });
+  }, [createProductSpecify, applicationContext.loading, alertContext]);
 
   const handleStateChange = React.useCallback(
     e => {

@@ -4,7 +4,7 @@ import { UIInput, UIAutoComplete, UIButtonGroup, UIButton, Loading } from '~/com
 import { IAddressCityResponse, IAddressStateResponse, UserRoleResponse } from '~/services/helpers/backend-models';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { signup } from '~/services/api';
-
+import { useAlert } from '~/utils/hooks';
 /*
   RegisterPage Helpers
 */
@@ -104,6 +104,7 @@ const StyledRegisterButton = styled(UIButton)<{ hasError: boolean; disabled: boo
 `;
 
 const RegisterPage: React.SFC<RegisterPageProps> = props => {
+  const alertContext = useAlert();
   const [cities, setCities] = React.useState<IAddressCityResponse[]>([]);
   const [states, setStates] = React.useState<IAddressStateResponse[]>([]);
   const [stateAutocomplateValue, setStateAutoComplateValue] = React.useState('');
@@ -255,6 +256,9 @@ const RegisterPage: React.SFC<RegisterPageProps> = props => {
               username,
             })
               .then(() => {
+                alertContext.show('Uyelik Talebinizi Aldik, Yetkili Onayindan Sonra Hesabiniza Giris Yapabilirsiniz', {
+                  type: 'success',
+                });
                 props.onSignup();
               })
               .catch(() => {
@@ -290,8 +294,11 @@ const RegisterPage: React.SFC<RegisterPageProps> = props => {
   React.useEffect(() => {
     if (hasError) {
       setHasError(false);
+      alertContext.show('Tum Alanlari Doldurdugunuzdan Emin Olun', {
+        type: 'error',
+      });
     }
-  }, [email, username, name, taxNumber, selectedStateId, selectedCityId, details, password, hasError]);
+  }, [email, username, name, taxNumber, selectedStateId, selectedCityId, details, password, hasError, alertContext]);
   /*
   RegisterPage Functions
   */

@@ -111,6 +111,7 @@
     "query-string": "^6.8.3",
     "rc-tooltip": "^4.0.0-alpha.1",
     "react": "^16.11.0",
+    "react-alert": "^6.0.0",
     "react-autocomplete": "^1.8.1",
     "react-collapsible": "^2.6.0",
     "react-dom": "^16.11.0",
