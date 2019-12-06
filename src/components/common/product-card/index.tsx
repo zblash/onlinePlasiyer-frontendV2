@@ -3,6 +3,7 @@ import styled, { StylableProps, css, colors } from '~/styled';
 import { UIButton, UIIcon } from '~/components/ui';
 import { Trans } from '~/i18n';
 import { usePopupContext } from '~/contexts/popup/context';
+import { useUserPermissions } from '~/app/context';
 
 /*
   ProductCard Helpers
@@ -36,24 +37,13 @@ export const ProductCardColors = {
 export const ProductCardStrings = {
   taxRate: 'Vergi Orani',
   showPrice: 'Fiyatlari Goster',
-  barcode: 'Barkod',
+  barcode: 'Barkod Listesi',
 };
 
 /*
   ProductCard Styles
 */
 
-const StyledShadowElement = styled.div`
-  position: absolute;
-  top: 20px;
-  left: 0;
-  width: 100%;
-  opacity: 0;
-  height: 140px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 57%);
-  transition: opacity 0.4s ease;
-  z-index: 1;
-`;
 const StyledCardImg = styled.img`
   object-fit: cover;
   width: 100%;
@@ -62,8 +52,9 @@ const StyledCardImg = styled.img`
 `;
 const StyledCardImgWrapper = styled.div`
   width: 100%;
-  height: 160px;
+  max-height: 160px;
   overflow: hidden;
+  transition: max-height 0.5s linear;
 `;
 const deleteIconStyle = css`
   position: absolute;
@@ -82,12 +73,12 @@ const StyledContent = styled.div`
   flex-direction: column;
   justify-content: space-between;
   background-color: #fff;
+  transition: height 0.5s linear;
 `;
 
 const StyledCardWrapper = styled.div`
   position: relative;
   margin: 0 16px 16px;
-
   padding: 0;
   font-size: 12px;
   border-radius: 4px;
@@ -97,11 +88,12 @@ const StyledCardWrapper = styled.div`
 
   flex: 1;
   :hover {
-    ${StyledShadowElement} {
-      opacity: 1;
+    ${StyledCardImgWrapper} {
+      max-height: 0;
+
     }
-    ${StyledCardImg} {
-      transform: scale(1.5);
+    ${StyledContent} {
+      height: 280px;
     }
     .${deleteIconStyle}{
       opacity: 1;
@@ -151,39 +143,64 @@ const StyledContentCenter = styled.div`
   flex-direction: column;
 `;
 const StyledContentSpan = styled.span``;
-
+const StyledContentHeader = styled.h2`
+  margin: 0;
+`;
 const buttonIconStyle = css`
   margin-left: 8px;
 `;
 
 const ProductCard: React.SFC<ProductCardProps> = props => {
+  const userPermission = useUserPermissions();
   const popups = usePopupContext();
+  const [showDetails, setShowDetails] = React.useState(false);
+
+  const handleHover = React.useCallback(
+    (canShow: boolean) => {
+      setShowDetails(canShow);
+    },
+    [setShowDetails],
+  );
+
   const __ = (
-    <StyledCardWrapper className={props.className}>
-      <StyledShadowElement />
+    <StyledCardWrapper
+      className={props.className}
+      onMouseEnter={() => handleHover(true)}
+      onMouseLeave={() => handleHover(false)}
+    >
       <StyledCardImgWrapper>
         <StyledCardImg src={props.photoUrl} />
       </StyledCardImgWrapper>
       <StyledContent>
-        <UIIcon
-          size={18}
-          name="trash"
-          className={deleteIconStyle}
-          color={ProductCardColors.danger}
-          onClick={e => {
-            e.stopPropagation();
-            popups.deleteProduct.show(props);
-          }}
-        />
-
+        {userPermission.product.delete && (
+          <UIIcon
+            size={18}
+            name="trash"
+            className={deleteIconStyle}
+            color={ProductCardColors.danger}
+            onClick={e => {
+              e.stopPropagation();
+              popups.deleteProduct.show(props);
+            }}
+          />
+        )}
         <StyledTitle>{props.name}</StyledTitle>
         <StyledContentCenter>
           <StyledContentSpan>
             {ProductCardStrings.taxRate} %{props.tax}
           </StyledContentSpan>
-          <StyledContentSpan>
-            {ProductCardStrings.barcode} : {props.barcodeList[0]}
-          </StyledContentSpan>
+
+          {showDetails && (
+            <>
+              <StyledContentHeader>{ProductCardStrings.barcode}</StyledContentHeader>
+              {props.barcodeList.map(x => (
+                <StyledContentSpan key={x}>{x}</StyledContentSpan>
+              ))}
+              <StyledContentHeader>{ProductCardStrings.barcode}</StyledContentHeader>
+              <StyledContentSpan>asdasd</StyledContentSpan>
+              <StyledContentSpan>asdasd</StyledContentSpan>
+            </>
+          )}
         </StyledContentCenter>
         <StyledPreviewButton onClick={props.onButtonClick} isExpand={props.isExpand}>
           <Trans i18nKey={props.isExpand ? 'product-card.hide-price' : 'product-card.show-price'}>

@@ -14,7 +14,7 @@ const rootEl = document.getElementById('root');
 const GlobalStyle = globalStyleCreator();
 const options = {
   position: positions.BOTTOM_RIGHT,
-  timeout: 300,
+  timeout: 5000,
   offset: '10px',
   transition: transitions.SCALE,
   containerStyle: {

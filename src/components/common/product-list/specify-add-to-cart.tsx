@@ -71,7 +71,7 @@ function SpecifyAddtoCart(props: React.PropsWithChildren<SpecifyAddtoCartProps>)
     if (!addToCartError) {
       alertContext.show('Urun Sepete Eklendi', { type: 'success' });
     }
-  }, [addToCartError, alertContext, addToCart]);
+  }, [alertContext, addToCart, addToCartError]);
 
   /* SpecifyAddtoCart Lifecycle  */
 

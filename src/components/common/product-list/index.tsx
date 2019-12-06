@@ -7,6 +7,8 @@ import { ProductCardWrapper, ProductCard, ProductData } from '../product-card';
 import styled, { css, colors } from '~/styled';
 import { UICollapsible } from '~/components/ui';
 import { SpecifyAddtoCart } from './specify-add-to-cart';
+import { UnitTypeResponse } from '~/services/helpers/backend-models';
+import { useApplicationContext } from '~/app/context';
 /*
   ProductList Helpers
 */
@@ -15,6 +17,11 @@ export interface SpecifyProductData {
   id: string;
   sellerName: string;
   totalPrice: number;
+  quantity: number;
+  recommendedRetailPrice: number;
+  unitPrice: number;
+  unitType: UnitTypeResponse;
+  contents: number;
 }
 
 export interface ProductListComponentProps {
@@ -45,12 +52,28 @@ const TABLE_SHOWN_DATA: UITableColumns<SpecifyProductData>[] = [
     title: 'Satici',
   },
   {
-    itemRenderer: specifyProduct => specifyProduct.totalPrice,
-    title: 'Toplam fiyat',
+    itemRenderer: specifyProduct => specifyProduct.quantity,
+    title: 'Stok Durumu',
   },
   {
-    itemRenderer: specifyProduct => <SpecifyAddtoCart key={specifyProduct.id} specifyProductId={specifyProduct.id} />,
-    title: 'Sepete Ekle',
+    itemRenderer: specifyProduct => specifyProduct.unitType,
+    title: 'Birim',
+  },
+  {
+    itemRenderer: specifyProduct => specifyProduct.unitPrice,
+    title: 'Birim Fiyati',
+  },
+  {
+    itemRenderer: specifyProduct => specifyProduct.contents,
+    title: 'Birim Icerigi',
+  },
+  {
+    itemRenderer: specifyProduct => specifyProduct.recommendedRetailPrice,
+    title: 'T.E.S. Tutari',
+  },
+  {
+    itemRenderer: specifyProduct => specifyProduct.totalPrice,
+    title: 'Toplam fiyat',
   },
 ];
 
@@ -126,10 +149,22 @@ const containerStyle = css`
 const ProductList: React.SFC<ProductListProps> = props => {
   const [expandProductId, setExpandProductId] = React.useState<string>(null);
   const chunkedArray = React.useMemo(() => _chunk(props.products, CHUNK_SIZE), [props.products]);
-
+  const applicationContext = useApplicationContext();
   React.useEffect(() => {
     setExpandProductId(null);
   }, [props.selectedCategoryId]);
+
+  React.useEffect(() => {
+    if (applicationContext.user.isCustomer) {
+      TABLE_SHOWN_DATA.push({
+        itemRenderer: specifyProduct => (
+          <SpecifyAddtoCart key={specifyProduct.id} specifyProductId={specifyProduct.id} />
+        ),
+        title: 'Sepete Ekle',
+      });
+    }
+  }, []);
+
   const onPageChange = React.useCallback(
     lodashDebounce(({ selected: pageIndex }: { selected: number }) => {
       props.onChangePage(pageIndex + 1);
