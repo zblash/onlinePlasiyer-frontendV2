@@ -156,6 +156,15 @@ export interface IAnnouncement {
   title: string;
 }
 
+export interface IUserRegisterResponse {
+  email: string;
+  id: string;
+  name: string;
+  status: boolean;
+  taxNumber: string;
+  username: string;
+}
+
 export type UserRoleResponse = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';
 
 export type UnitTypeResponse = 'KG' | 'KL' | 'AD';

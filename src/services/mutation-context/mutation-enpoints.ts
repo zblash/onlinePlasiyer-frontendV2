@@ -7,6 +7,8 @@ import {
   IUserCommonResponse,
   IAddressStateResponse,
   ISpecifyProductResponse,
+  UserRoleResponse,
+  IUserRegisterResponse,
 } from '~/services/helpers/backend-models';
 
 interface CreateCategoryVariables {
@@ -144,6 +146,19 @@ class MutationEndpoints {
 
   removeProductSpecify: (s: { id: string }) => Promise<ISpecifyProductResponse> = ({ id }) =>
     ApiCall.delete(`/products/specify/delete/${id}`).then(item => ({ ...item, removed: true }));
+
+  createUser: (params: {
+    cityId: string;
+    stateId: string;
+    details: string;
+    name: string;
+    username: string;
+    email: string;
+    password: string;
+    roleType: UserRoleResponse;
+    status: boolean;
+    taxNumber: string;
+  }) => Promise<IUserRegisterResponse> = (...params) => ApiCall.post('/users/create', ...params);
 
   deneme = () => Promise.resolve({ id: '12341' });
 }
