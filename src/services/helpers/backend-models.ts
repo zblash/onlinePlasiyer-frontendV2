@@ -123,6 +123,14 @@ export interface IOrder {
   waybillDate: string | null;
 }
 
+export interface IOrderSummary {
+  id: string;
+  newCount: number;
+  finishedCount: number;
+  cancelledCount: number;
+  paidCount: number;
+}
+
 export interface Invoice {
   buyer: string;
   discount: number;

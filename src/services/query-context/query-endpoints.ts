@@ -12,6 +12,7 @@ import {
   IAnnouncement,
   IOrder,
   Invoice,
+  IOrderSummary,
 } from '~/services/helpers/backend-models';
 import { UserType } from '../helpers/maps';
 
@@ -81,6 +82,8 @@ class QueryEndpoints {
   getOrder: (s: { id: string }) => Promise<IOrder> = ({ id }) => ApiCall.get(`/orders/${id}`);
 
   getInvoice: (s: { id: string }) => Promise<Invoice> = ({ id }) => ApiCall.get(`/invoices/${id}`);
+
+  getOrderSummary: () => Promise<IOrderSummary> = () => ApiCall.get('/orders/summary');
 }
 const queryEndpoints = new QueryEndpoints();
 

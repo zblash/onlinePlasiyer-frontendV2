@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Select from 'react-select';
+import { useHistory } from 'react-router';
 import styled, { colors, css } from '~/styled';
 import { Container, UIInput, UIButton } from '~/components/ui';
 import { usePopupContext } from '~/contexts/popup/context';
@@ -60,6 +61,7 @@ const selectInput = css`
 function CreateProductSpecifyPage(props: React.PropsWithChildren<CreateProductSpecifyPageProps>) {
   /* CreateProductSpecifyPage Variables */
   const alertContext = useAlert();
+  const routerHistory = useHistory();
   const popup = usePopupContext();
   const applicationContext = useApplicationContext();
   const [barcode, setBarcode] = React.useState();
@@ -94,6 +96,7 @@ function CreateProductSpecifyPage(props: React.PropsWithChildren<CreateProductSp
     createProductSpecify()
       .then(() => {
         alertContext.show('Urun Basariyla Eklendi', { type: 'success' });
+        routerHistory.push('/product-specifies');
       })
       .catch(() => {
         alertContext.show('Lutfen Tum Alanlari Doldurun', { type: 'error' });
@@ -101,7 +104,7 @@ function CreateProductSpecifyPage(props: React.PropsWithChildren<CreateProductSp
       .finally(() => {
         applicationContext.loading.hide();
       });
-  }, [createProductSpecify, applicationContext.loading, alertContext]);
+  }, [createProductSpecify, applicationContext.loading, alertContext, routerHistory]);
 
   const handleStateChange = React.useCallback(
     e => {
