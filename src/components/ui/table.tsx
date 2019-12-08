@@ -145,7 +145,7 @@ function UITable<T>(props: UiTableProps<T>) {
     }
     if (props.data.length === 0 && hasRowCount) {
       const data = [];
-      while (data.length % rowCount !== 0 || data.length === 0) {
+      for (let i = 0; i < rowCount; i++) {
         data.push(null as T);
       }
 

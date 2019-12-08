@@ -77,7 +77,7 @@ class QueryEndpoints {
 
   getObligationTotal: (s: { id?: string }) => Promise<IObligationTotals> = ({ id }) => {
     if (id) {
-      return ApiCall.get(`/users/obligations/totals/${id}`);
+      return ApiCall.get(`/obligations/totals/byuser/${id}`);
     }
 
     return ApiCall.get('/obligations/totals');

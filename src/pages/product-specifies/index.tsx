@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useParams } from 'react-router';
 import styled, { colors, css } from '~/styled';
 import { useTranslation } from '~/i18n';
 import { CategoryHorizontalListFetcher } from '~/fetcher-components/common/category-horizontal-list';
@@ -12,6 +13,9 @@ import { Container, UIIcon } from '~/components/ui';
 
 /* ProductSpecifiesPage Helpers */
 interface ProductSpecifiesPageProps {}
+interface RouteParams {
+  userId?: string;
+}
 
 /* ProductSpecifiesPage Constants */
 
@@ -34,14 +38,24 @@ function ProductSpecifiesPage(props: React.PropsWithChildren<ProductSpecifiesPag
   /* ProductSpecifiesPage Variables */
   const { t } = useTranslation();
   const popupsContext = usePopupContext();
+  const { userId } = useParams<RouteParams>();
   const [allProductsPageNumber, setAllProductPageNumber] = React.useState(1);
   const {
     data: { values: productSpecifies, totalPage, elementCountOfPage },
   } = usePaginationQuery(paginationQueryEndpoints.getAllSpecifies, {
+    variables: {
+      userId,
+    },
     pageNumber: allProductsPageNumber,
     defaultValue: { values: [], totalPage: 0 },
   });
-  const refetchQuery = React.useMemo(() => refetchFactory(paginationQueryEndpoints.getAllSpecifies, null), []);
+  const refetchQuery = React.useMemo(
+    () =>
+      refetchFactory(paginationQueryEndpoints.getAllSpecifies, {
+        userId,
+      }),
+    [userId],
+  );
 
   /* ProductSpecifiesPage Callbacks */
   const onChangePage = React.useCallback(
@@ -128,7 +142,7 @@ function ProductSpecifiesPage(props: React.PropsWithChildren<ProductSpecifiesPag
         <UITable
           id="all-product-specifies-page-table"
           data={productSpecifies}
-          rowCount={elementCountOfPage}
+          rowCount={elementCountOfPage > 0 ? elementCountOfPage : 15}
           columns={TABLE_DATA_COLUMNS}
           onChangePage={onChangePage}
         />

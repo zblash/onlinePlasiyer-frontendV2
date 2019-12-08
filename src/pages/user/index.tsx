@@ -250,6 +250,11 @@ function UserPage(props: React.PropsWithChildren<UserPageProps>) {
         </StyledInfosFormWrapper>
         <StyledDetailMenu>
           <StyledDetailMenuHeader>Detaylar</StyledDetailMenuHeader>
+          {user.role === 'MERCHANT' && (
+            <StyledDetailMenuElementWrapper>
+              <StyledDetailMenuElement to={`/product-specifies/${user.id}`}>Urunlerini Gor</StyledDetailMenuElement>
+            </StyledDetailMenuElementWrapper>
+          )}
           <StyledDetailMenuElementWrapper>
             <StyledDetailMenuElement to="/users">Deneme</StyledDetailMenuElement>
           </StyledDetailMenuElementWrapper>
