@@ -75,7 +75,13 @@ class QueryEndpoints {
 
   getStates: () => Promise<any> = () => axios.get(URL.concat('/definitions/states')).then(({ data }) => data);
 
-  getObligationTotal: () => Promise<IObligationTotals> = () => ApiCall.get('/obligations/totals');
+  getObligationTotal: (s: { id?: string }) => Promise<IObligationTotals> = ({ id }) => {
+    if (id) {
+      return ApiCall.get(`/users/obligations/totals/${id}`);
+    }
+
+    return ApiCall.get('/obligations/totals');
+  };
 
   getAnnouncements: () => Promise<Array<IAnnouncement>> = () => ApiCall.get('/announcements');
 
@@ -84,6 +90,9 @@ class QueryEndpoints {
   getInvoice: (s: { id: string }) => Promise<Invoice> = ({ id }) => ApiCall.get(`/invoices/${id}`);
 
   getOrderSummary: () => Promise<IOrderSummary> = () => ApiCall.get('/orders/summary');
+
+  getUserInfosForAdmin: (s: { id: string }) => Promise<IUserCommonResponse> = ({ id }) =>
+    ApiCall.get(`/users/infos/${id}`);
 }
 const queryEndpoints = new QueryEndpoints();
 

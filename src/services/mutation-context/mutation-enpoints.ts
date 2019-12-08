@@ -132,6 +132,7 @@ class MutationEndpoints {
   cardCheckout: () => Promise<IOrder[]> = () => ApiCall.post('/cart/checkout/');
 
   updateInfos: (params: {
+    id?: string;
     address: {
       cityId: string;
       details: string;
@@ -139,7 +140,13 @@ class MutationEndpoints {
     };
     email: string;
     name: string;
-  }) => Promise<IUserCommonResponse> = (...params) => ApiCall.post('/user/updateInfos', ...params);
+  }) => Promise<IUserCommonResponse> = (...params) => {
+    if (params[0].id) {
+      return ApiCall.put(`/users/updateInfos/${params[0].id}`, ...params);
+    }
+
+    return ApiCall.put('/user/updateInfos', ...params);
+  };
 
   updatePassword: (params: { password: string; passwordConfirmation: string }) => Promise<any> = (...params) =>
     ApiCall.post('/user/changePassword', ...params);

@@ -13,7 +13,7 @@ class QueryEndpoints {
     productId: string;
     pageNumber: number;
   }) => Promise<ISpecifyProductResponse> = ({ productId, pageNumber }) =>
-    paginationQueryGet(`/products/specify/product/${productId}`, { pageNumber });
+    paginationQueryGet(`/products/${productId}/specifies`, { pageNumber });
 
   getAllProducts: (variables: { pageNumber: number }) => Promise<IProductResponse> = ({ pageNumber }) =>
     paginationQueryGet(`/products`, { pageNumber });
