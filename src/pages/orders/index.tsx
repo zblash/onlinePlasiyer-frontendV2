@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import styled, { css, colors } from '~/styled';
 import { Container, UITable, UIIcon, UILink } from '~/components/ui';
@@ -12,6 +13,9 @@ import { TOrderStatus } from '~/services/helpers/backend-models';
   OrdersPage Helpers
 */
 interface OrdersPageProps {}
+interface RouteParams {
+  userId?: string;
+}
 
 /*
   OrdersPage Colors // TODO : move theme.json
@@ -46,11 +50,15 @@ const commonIconStyle = css`
 const OrdersPage: React.SFC<OrdersPageProps> = props => {
   const [ordersQueryPageNumber, setOrdersQueryPageNumber] = React.useState(1);
   const { t } = useTranslation();
+  const { userId } = useParams<RouteParams>();
   const applicationContext = useApplicationContext();
   const {
     data: { values: orders, totalPage, elementCountOfPage },
   } = usePaginationQuery(paginationQueryEndpoints.getAllOrders, {
     defaultValue: { values: [] },
+    variables: {
+      userId,
+    },
     pageNumber: ordersQueryPageNumber,
   });
   const __ = (

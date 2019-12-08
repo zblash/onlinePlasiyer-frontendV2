@@ -23,11 +23,21 @@ class QueryEndpoints {
     pageNumber,
   }) => paginationQueryGet(`/products/category/${categoryId}`, { pageNumber });
 
-  getAllInvoices: (s: { pageNumber: number }) => Promise<Invoice> = ({ pageNumber }) =>
-    paginationQueryGet('/invoices', { pageNumber });
+  getAllInvoices: (s: { userId?: string; pageNumber: number }) => Promise<Invoice> = ({ userId, pageNumber }) => {
+    if (userId) {
+      return paginationQueryGet(`/invoices?userId=${userId}`, { pageNumber });
+    }
 
-  getAllOrders: (s: { pageNumber: number }) => Promise<IOrder> = ({ pageNumber }) =>
-    paginationQueryGet('/orders', { pageNumber });
+    return paginationQueryGet('/invoices', { pageNumber });
+  };
+
+  getAllOrders: (s: { userId?: string; pageNumber: number }) => Promise<IOrder> = ({ userId, pageNumber }) => {
+    if (userId) {
+      return paginationQueryGet(`/orders?userId=${userId}`, { pageNumber });
+    }
+
+    return paginationQueryGet('/orders', { pageNumber });
+  };
 
   getAllSpecifies: (s: { userId?: string; pageNumber: number }) => Promise<ISpecifyProductResponse> = ({
     userId,

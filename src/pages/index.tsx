@@ -55,7 +55,7 @@ const routes: IRoute[] = [
     component: ProductsPage,
   },
   {
-    path: '/orders',
+    path: '/orders/:userId?',
     component: OrdersPage,
   },
   {
@@ -70,7 +70,7 @@ const routes: IRoute[] = [
     path: '/profile',
     component: ProfilePage,
   },
-  { path: '/invoices', component: InvoicesPage },
+  { path: '/invoices/:userId?', component: InvoicesPage },
   { path: '/all-products', component: AllProductPage, authorize: ['ADMIN'] },
   { path: '/add-product-specify', component: CreateProductSpecifyPage, authorize: ['MERCHANT', 'ADMIN'] },
   { path: '/product-specifies/:userId?', component: ProductSpecifiesPage, authorize: ['ADMIN', 'MERCHANT'] },
