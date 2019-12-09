@@ -8,6 +8,7 @@ import { UITableColumns, UITable } from '~/components/ui/table';
 import { IProductResponse } from '~/services/helpers/backend-models';
 import { usePopupContext } from '~/contexts/popup/context';
 import { refetchFactory } from '~/services/utils';
+import { useApplicationContext } from '~/app/context';
 
 /* AllProductPage Helpers */
 interface AllProductPageProps {}
@@ -60,6 +61,7 @@ function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
   /* AllProductPage Variables */
   const { t } = useTranslation();
   const popupsContext = usePopupContext();
+  const applicationContext = useApplicationContext();
   const [allProductsPageNumber, setAllProductPageNumber] = React.useState(1);
   const {
     data: { values: products, totalPage },
@@ -68,8 +70,8 @@ function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
     defaultValue: { values: [], totalPage: 0 },
   });
   const refetchQuery = React.useMemo(() => refetchFactory(paginationQueryEndpoints.getAllProducts, null), []);
-  const TABLE_DATA_COLUMNS = React.useMemo<UITableColumns<IProductResponse>[]>(
-    () => [
+  const TABLE_DATA_COLUMNS = React.useMemo<UITableColumns<IProductResponse>[]>(() => {
+    const table = [
       {
         title: null,
         itemRenderer: item => <ProductImage src={item.photoUrl} />,
@@ -94,7 +96,9 @@ function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
         title: t('all-products-page.table.barcode'),
         itemRenderer: item => item.barcodeList[0],
       },
-      {
+    ];
+    if (applicationContext.user.isAdmin) {
+      table.push({
         title: null,
         itemRenderer: item => (
           <StyledActionsWrapper>
@@ -122,10 +126,11 @@ function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
             />
           </StyledActionsWrapper>
         ),
-      },
-    ],
-    [popupsContext.deleteProduct, popupsContext.updateProduct, refetchQuery, t],
-  );
+      });
+    }
+
+    return table;
+  }, [refetchQuery, applicationContext.user.isAdmin, popupsContext.deleteProduct, popupsContext.updateProduct, t]);
 
   /* AllProductPage Callbacks */
   const onChangePage = React.useCallback(

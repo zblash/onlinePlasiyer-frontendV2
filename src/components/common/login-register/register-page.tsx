@@ -294,7 +294,7 @@ const RegisterPage: React.SFC<RegisterPageProps> = props => {
   React.useEffect(() => {
     if (hasError) {
       setHasError(false);
-      alertContext.show('Tum Alanlari Doldurdugunuzdan Emin Olun', {
+      alertContext.show('Tum Alanlari Dogru Sekilde Doldurdugunuzdan Emin Olun', {
         type: 'error',
       });
     }

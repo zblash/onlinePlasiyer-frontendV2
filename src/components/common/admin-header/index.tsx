@@ -3,7 +3,9 @@ import styled, { colors, css } from '~/styled';
 import { UIIcon, UILink } from '~/components/ui';
 
 /* AdminHeader Helpers */
-interface AdminHeaderProps {}
+interface AdminHeaderProps {
+  isAdmin: boolean;
+}
 
 /* AdminHeader Constants */
 
@@ -75,7 +77,7 @@ function AdminHeader(props: React.PropsWithChildren<AdminHeaderProps>) {
 
   /* AdminHeader Lifecycle  */
 
-  return (
+  const adminHeader = (
     <StyledAdminHeaderWrapper>
       <StyledSubNavs>
         <StyledSubNavsLink to="/">Anasayfa </StyledSubNavsLink>
@@ -106,10 +108,39 @@ function AdminHeader(props: React.PropsWithChildren<AdminHeaderProps>) {
         <StyledSubNavsLink to="/product-specifies">Kullanici Urunleri</StyledSubNavsLink>
       </StyledSubNavs>
       <StyledSubNavs>
-        <StyledSubNavsLink to="/">Site Islemleri</StyledSubNavsLink>
+        <StyledSubNavsLink to="/all-categories">Kategori Islemleri</StyledSubNavsLink>
       </StyledSubNavs>
     </StyledAdminHeaderWrapper>
   );
+
+  const merchantHeader = (
+    <StyledAdminHeaderWrapper>
+      <StyledSubNavs>
+        <StyledSubNavsLink to="/merchant/home">Anasayfa </StyledSubNavsLink>
+      </StyledSubNavs>
+      <StyledSubNavs>
+        <StyledSubNavsLink to="/all-products">Tum Urunler</StyledSubNavsLink>
+      </StyledSubNavs>
+      <StyledSubNavs>
+        <StyledSubNavsButton>
+          Urun Islemleri
+          <UIIcon size={10} name="chevronDown" className={iconStyle} />
+        </StyledSubNavsButton>
+        <StyledSubNavContent>
+          <StyledSubNavContentItem to="/product-specifies">Tum Urunleri Gor</StyledSubNavContentItem>
+          <StyledSubNavContentItem to="/add-product-specify">Yeni Urun Ekle</StyledSubNavContentItem>
+        </StyledSubNavContent>
+      </StyledSubNavs>
+      <StyledSubNavs>
+        <StyledSubNavsLink to="/invoices">Faturalari Gor</StyledSubNavsLink>
+      </StyledSubNavs>
+      <StyledSubNavs>
+        <StyledSubNavsLink to="/orders">Siparisleri Gor</StyledSubNavsLink>
+      </StyledSubNavs>
+    </StyledAdminHeaderWrapper>
+  );
+
+  return props.isAdmin ? adminHeader : merchantHeader;
 }
 const PureAdminHeader = React.memo(AdminHeader);
 

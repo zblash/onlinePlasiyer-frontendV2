@@ -21,6 +21,7 @@ import { CreateProductSpecifyPage } from './create-product-specify';
 import { ProductSpecifiesPage } from './product-specifies';
 import { MerchantHome } from './merchant-home';
 import { CreateUserPage } from './create-user';
+import { AllCategoriesPage } from './all-categories';
 import { UserPage } from './user';
 import { useApplicationContext } from '~/app/context';
 import { AdminHeader } from '~/components/common/admin-header';
@@ -72,8 +73,9 @@ const routes: IRoute[] = [
     path: '/profile',
     component: ProfilePage,
   },
+  { path: '/all-categories', component: AllCategoriesPage, authorize: ['ADMIN'] },
   { path: '/invoices/:userId?', component: InvoicesPage },
-  { path: '/all-products', component: AllProductPage, authorize: ['ADMIN'] },
+  { path: '/all-products', component: AllProductPage, authorize: ['ADMIN', 'MERCHANT'] },
   { path: '/add-product-specify', component: CreateProductSpecifyPage, authorize: ['MERCHANT', 'ADMIN'] },
   { path: '/product-specifies/:userId?', component: ProductSpecifiesPage, authorize: ['ADMIN', 'MERCHANT'] },
   { path: '/merchant/home', component: MerchantHome, authorize: ['MERCHANT'] },
@@ -87,7 +89,9 @@ const Routes = React.memo(() => {
   return (
     <>
       <Header />
-      {applicationContext.user.isAdmin && <AdminHeader />}
+      {(applicationContext.user.isAdmin || applicationContext.user.isMerchant) && (
+        <AdminHeader isAdmin={applicationContext.user.isAdmin} />
+      )}
       <Switch>
         {routes.map(route => (
           <Route

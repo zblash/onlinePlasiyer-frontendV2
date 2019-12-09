@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useParams } from 'react-router';
 import styled, { colors, css } from '~/styled';
 import { useTranslation } from '~/i18n';
-import { CategoryHorizontalListFetcher } from '~/fetcher-components/common/category-horizontal-list';
 import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
 import { usePaginationQuery } from '~/services/query-context/use-pagination-quey';
 import { refetchFactory } from '~/services/utils';
@@ -137,7 +136,6 @@ function ProductSpecifiesPage(props: React.PropsWithChildren<ProductSpecifiesPag
 
   return (
     <Container>
-      <CategoryHorizontalListFetcher shouldUseProductsPageLink />
       <StyledPageContainer>
         <UITable
           id="all-product-specifies-page-table"
