@@ -4,6 +4,7 @@ import { UIButton, UILink } from '~/components/ui';
 import { useApplicationContext } from '~/app/context';
 import { logout } from '~/services/api';
 import { HeaderCardProps } from '../helpers';
+import { useWindowEvent } from '~/utils/hooks';
 
 /*
   AccountCard Helpers
@@ -84,10 +85,11 @@ const _AccountCard: React.SFC<AccountCardProps> = props => {
         { url: '/users', text: 'Kullanicilar', hide: !user.isAdmin },
         { url: '/product-specifies', text: 'Urun Icerikleri', hide: !user.isCustomer },
         { url: '/add-product-specify', text: 'Urun Icerigi Ekle', hide: !user.isMerchant },
-        { url: '/all-products', text: 'All Products', hide: !user.isAdmin },
+        { url: '/all-products', text: 'Tum Urunler', hide: !user.isAdmin },
       ].filter(item => !item.hide),
     [user.isAdmin, user.isCustomer, user.isMerchant],
   );
+  useWindowEvent('click', props.close);
 
   return (
     <StyledAccountCardWrapper>

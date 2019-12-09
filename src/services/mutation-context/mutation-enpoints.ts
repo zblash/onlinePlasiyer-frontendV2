@@ -7,6 +7,8 @@ import {
   IUserCommonResponse,
   IAddressStateResponse,
   ISpecifyProductResponse,
+  UserRoleResponse,
+  IUserRegisterResponse,
 } from '~/services/helpers/backend-models';
 
 interface CreateCategoryVariables {
@@ -117,7 +119,7 @@ class MutationEndpoints {
   }) => ApiCall.post('/products/specify/create', { ...params, stateList: params.stateIds, stateIds: undefined });
 
   addActiveStates: (s: { stateIds: string[] }) => Promise<IAddressStateResponse> = ({ stateIds }) =>
-    ApiCall.post('/users/addActiveState', stateIds);
+    ApiCall.post('/user/addActiveState', stateIds);
 
   removeItemFromCard: (s: { id: string }) => Promise<any> = ({ id }) =>
     ApiCall.post(`/cart/removeItem/${id}`).then(item => ({ ...item, removed: true }));
@@ -130,6 +132,7 @@ class MutationEndpoints {
   cardCheckout: () => Promise<IOrder[]> = () => ApiCall.post('/cart/checkout/');
 
   updateInfos: (params: {
+    id?: string;
     address: {
       cityId: string;
       details: string;
@@ -137,13 +140,32 @@ class MutationEndpoints {
     };
     email: string;
     name: string;
-  }) => Promise<IUserCommonResponse> = (...params) => ApiCall.post('/users/updateInfos', ...params);
+  }) => Promise<IUserCommonResponse> = (...params) => {
+    if (params[0].id) {
+      return ApiCall.put(`/users/updateInfos/${params[0].id}`, ...params);
+    }
+
+    return ApiCall.put('/user/updateInfos', ...params);
+  };
 
   updatePassword: (params: { password: string; passwordConfirmation: string }) => Promise<any> = (...params) =>
-    ApiCall.post('/users/changePassword', ...params);
+    ApiCall.post('/user/changePassword', ...params);
 
   removeProductSpecify: (s: { id: string }) => Promise<ISpecifyProductResponse> = ({ id }) =>
     ApiCall.delete(`/products/specify/delete/${id}`).then(item => ({ ...item, removed: true }));
+
+  createUser: (params: {
+    cityId: string;
+    stateId: string;
+    details: string;
+    name: string;
+    username: string;
+    email: string;
+    password: string;
+    roleType: UserRoleResponse;
+    status: boolean;
+    taxNumber: string;
+  }) => Promise<IUserRegisterResponse> = (...params) => ApiCall.post('/users/create', ...params);
 
   deneme = () => Promise.resolve({ id: '12341' });
 }

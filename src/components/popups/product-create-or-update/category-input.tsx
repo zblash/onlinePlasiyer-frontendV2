@@ -53,7 +53,6 @@ const CategoryInput: React.SFC<CategoryInputProps> = props => {
   const __ = (
     <UIAutoComplete
       items={allCategories}
-      value={autocompleteValue}
       shouldItemRender={(item, value) => item.name.toLowerCase().indexOf(value.toLowerCase()) > -1}
       getItemValue={item => item.name}
       overrides={{ menuMaxHeight: 400 }}
@@ -89,8 +88,9 @@ const CategoryInput: React.SFC<CategoryInputProps> = props => {
   */
   React.useEffect(() => {
     if (props.selectedCategoryId) {
+      const foundCategory = Array.from(allCategories);
       setAutoCompleteValue(
-        lodashGet(allCategories.find(category => category.id === props.selectedCategoryId), 'name', ''),
+        lodashGet(foundCategory.find(category => category.id === props.selectedCategoryId), 'name', ''),
       );
     }
   }, [allCategories, props.selectedCategoryId]);

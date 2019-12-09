@@ -13,7 +13,7 @@ class QueryEndpoints {
     productId: string;
     pageNumber: number;
   }) => Promise<ISpecifyProductResponse> = ({ productId, pageNumber }) =>
-    paginationQueryGet(`/products/specify/product/${productId}`, { pageNumber });
+    paginationQueryGet(`/products/${productId}/specifies`, { pageNumber });
 
   getAllProducts: (variables: { pageNumber: number }) => Promise<IProductResponse> = ({ pageNumber }) =>
     paginationQueryGet(`/products`, { pageNumber });
@@ -23,14 +23,32 @@ class QueryEndpoints {
     pageNumber,
   }) => paginationQueryGet(`/products/category/${categoryId}`, { pageNumber });
 
-  getAllInvoices: (s: { pageNumber: number }) => Promise<Invoice> = ({ pageNumber }) =>
-    paginationQueryGet('/invoices', { pageNumber });
+  getAllInvoices: (s: { userId?: string; pageNumber: number }) => Promise<Invoice> = ({ userId, pageNumber }) => {
+    if (userId) {
+      return paginationQueryGet(`/invoices/byUser/${userId}`, { pageNumber });
+    }
 
-  getAllOrders: (s: { pageNumber: number }) => Promise<IOrder> = ({ pageNumber }) =>
-    paginationQueryGet('/orders', { pageNumber });
+    return paginationQueryGet('/invoices', { pageNumber });
+  };
 
-  getAllSpecifies: (s: { pageNumber: number }) => Promise<ISpecifyProductResponse> = ({ pageNumber }) =>
-    paginationQueryGet('/products/specify', { pageNumber });
+  getAllOrders: (s: { userId?: string; pageNumber: number }) => Promise<IOrder> = ({ userId, pageNumber }) => {
+    if (userId) {
+      return paginationQueryGet(`/orders/byUser/${userId}`, { pageNumber });
+    }
+
+    return paginationQueryGet('/orders', { pageNumber });
+  };
+
+  getAllSpecifies: (s: { userId?: string; pageNumber: number }) => Promise<ISpecifyProductResponse> = ({
+    userId,
+    pageNumber,
+  }) => {
+    if (userId) {
+      return paginationQueryGet(`/products/specify/byUser/${userId}`, { pageNumber });
+    }
+
+    return paginationQueryGet('/products/specify', { pageNumber });
+  };
 }
 
 const paginationQueryEndpoints = new QueryEndpoints();

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import styled, { colors } from '~/styled';
 import { Container, UITable, UILink } from '~/components/ui';
@@ -9,7 +10,9 @@ import { paginationQueryEndpoints } from '~/services/query-context/pagination-qu
   InvoicesPage Helpers
 */
 interface InvoicesPageProps {}
-
+interface RouteParams {
+  userId?: string;
+}
 /*
   InvoicesPage Strings
 */
@@ -34,10 +37,14 @@ const StyledLink = styled(UILink)`
 
 const InvoicesPage: React.SFC<InvoicesPageProps> = props => {
   const { t } = useTranslation();
-
+  const { userId } = useParams<RouteParams>();
   const {
     data: { values: invoices, elementCountOfPage },
-  } = usePaginationQuery(paginationQueryEndpoints.getAllInvoices, { defaultValue: { values: [] }, pageNumber: 1 });
+  } = usePaginationQuery(paginationQueryEndpoints.getAllInvoices, {
+    defaultValue: { values: [] },
+    variables: { userId },
+    pageNumber: 1,
+  });
   const columns = [
     {
       title: InvoicesPageStrings.seller,

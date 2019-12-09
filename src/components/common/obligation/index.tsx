@@ -6,7 +6,9 @@ import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 
 /* ObligationComponent Helpers */
-interface ObligationComponentProps {}
+interface ObligationComponentProps {
+  userId?: string;
+}
 
 /* ObligationComponent Constants */
 
@@ -65,6 +67,9 @@ function ObligationComponent(props: React.PropsWithChildren<ObligationComponentP
     defaultValue: {
       totalDebts: 0,
       totalReceivables: 0,
+    },
+    variables: {
+      id: props.userId,
     },
   });
   /* ObligationComponent Callbacks */

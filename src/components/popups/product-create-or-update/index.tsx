@@ -3,7 +3,7 @@ import lodashGet from 'lodash.get';
 import styled, { colors, css } from '~/styled';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
-import { UIIcon, UIInput, UIButton, Loading } from '~/components/ui';
+import { UIIcon, UIInput, UIButton, Loading, UICheckbox } from '~/components/ui';
 import { CategoryInput } from './category-input';
 import { usePopupContext } from '~/contexts/popup/context';
 import { useTranslation } from '~/i18n';
@@ -33,6 +33,9 @@ const StyledProductPopupWrapper = styled.div`
   flex-direction: column;
   padding: 32px 16px 16px 16px;
   border-radius: 4px;
+`;
+const StyledCheckboxText = styled.span`
+  font-size: 14.5px;
 `;
 
 export const commonInputStyle = css`
@@ -128,7 +131,9 @@ const StyledCategoryImgWrapper = styled.label`
 const imageIconStyle = css`
   padding: 8px;
 `;
-
+const checkboxStyle = css`
+  margin-bottom: 16px;
+`;
 const filePickerInputId = 'image-picker-create-category-popup';
 
 function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
@@ -137,29 +142,41 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
   const initialValue = props.params.initialValue || ({} as any);
   const [isBarcodeCorrect, setIsBarcodeCorrect] = React.useState(false);
   const [isBarcodeSaved, setIsBarcodeSaved] = React.useState(false);
-  const [barcode, setBarcode] = React.useState('');
+  const [barcode, setBarcode] = React.useState(initialValue.barcodeList ? initialValue.barcodeList[0] : '');
   const [imgSrc, setImgSrc] = React.useState(initialValue.photoUrl);
   const [img, setImg] = React.useState<File>(null);
   const [categoryId, setCategoryId] = React.useState(lodashGet(props.params, 'categoryId', ''));
   const [productName, setProductName] = React.useState(initialValue.name);
   const [taxNumber, setTaxNumber] = React.useState(initialValue.tax);
-
+  const [isActive, setIsActive] = React.useState<boolean>(initialValue.active);
+  const refetchQuery = props.params.categoryId
+    ? paginationQueryEndpoints.getAllProductsByCategoryId
+    : paginationQueryEndpoints.getAllProducts;
   const { mutation: createProduct } = useMutation(mutationEndPoints.createProduct, {
-    refetchQueries: [
-      refetchFactory(paginationQueryEndpoints.getAllProductsByCategoryId, { categoryId: props.params.categoryId }),
-    ],
+    refetchQueries: [refetchFactory(refetchQuery, { categoryId: props.params.categoryId })],
     variables: {
       barcode,
       categoryId,
       name: productName,
       uploadfile: img,
       tax: parseInt(taxNumber, 10),
+      status: isActive,
     },
   });
+
   const { mutation: checkProduct, loading: checkProductLoading } = useMutation(mutationEndPoints.hasProduct, {
     variables: { barcode },
   });
-
+  const onSubmit = React.useCallback(() => {
+    if (props.type === 'create') {
+      createProduct().then(() => {
+        if (props.params.onCreate) {
+          props.params.onCreate(barcode);
+        }
+        popups.createProduct.hide();
+      });
+    }
+  }, [props.params, createProduct, barcode, props.type, popups.createProduct]);
   const __ = (
     <StyledProductPopupWrapper>
       <StyledHiddenFilePicker
@@ -211,26 +228,22 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
           <UIIcon className={inputIconStyle} name="tax" size={20} color={productName ? colors.primary : colors.gray} />
         }
       />
-
+      <UICheckbox
+        value={isActive}
+        id="is-active"
+        className={checkboxStyle}
+        label={<StyledCheckboxText>Aktif Mi?</StyledCheckboxText>}
+        onChange={isChecked => {
+          setIsActive(isChecked);
+        }}
+      />
       <CategoryInput
-        /* TODO: unHidden for update product */
-        disabled
         onSelect={category => {
           setCategoryId(category.id);
         }}
         selectedCategoryId={categoryId}
       />
-      <StyledButton
-        disabled={!barcode || !productName || !categoryId || !img || !taxNumber}
-        onClick={() =>
-          createProduct().then(() => {
-            if (props.params.onCreate) {
-              props.params.onCreate(barcode);
-            }
-            popups.createProduct.hide();
-          })
-        }
-      >
+      <StyledButton disabled={!barcode || !productName || !categoryId || !taxNumber || !imgSrc} onClick={onSubmit}>
         {checkProductLoading ? (
           <Loading color={colors.primary} size={22} className={loadingStyle} />
         ) : (

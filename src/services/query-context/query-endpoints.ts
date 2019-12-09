@@ -12,6 +12,7 @@ import {
   IAnnouncement,
   IOrder,
   Invoice,
+  IOrderSummary,
 } from '~/services/helpers/backend-models';
 import { UserType } from '../helpers/maps';
 
@@ -64,7 +65,7 @@ class QueryEndpoints {
     return ApiCall.get(userTypeRouteMap[role][type]);
   };
 
-  getAuthUserActiveStates: () => Promise<IAddressStateResponse[]> = () => ApiCall.get('/users/activeStates');
+  getAuthUserActiveStates: () => Promise<IAddressStateResponse[]> = () => ApiCall.get('/user/activeStates');
 
   getCities: () => Promise<IAddressCityResponse[]> = () =>
     axios.get(URL.concat('/definitions/cities')).then(({ data }) => data);
@@ -74,13 +75,24 @@ class QueryEndpoints {
 
   getStates: () => Promise<any> = () => axios.get(URL.concat('/definitions/states')).then(({ data }) => data);
 
-  getObligationTotal: () => Promise<IObligationTotals> = () => ApiCall.get('/obligations/totals');
+  getObligationTotal: (s: { id?: string }) => Promise<IObligationTotals> = ({ id }) => {
+    if (id) {
+      return ApiCall.get(`/obligations/totals/byuser/${id}`);
+    }
+
+    return ApiCall.get('/obligations/totals');
+  };
 
   getAnnouncements: () => Promise<Array<IAnnouncement>> = () => ApiCall.get('/announcements');
 
   getOrder: (s: { id: string }) => Promise<IOrder> = ({ id }) => ApiCall.get(`/orders/${id}`);
 
   getInvoice: (s: { id: string }) => Promise<Invoice> = ({ id }) => ApiCall.get(`/invoices/${id}`);
+
+  getOrderSummary: () => Promise<IOrderSummary> = () => ApiCall.get('/orders/summary');
+
+  getUserInfosForAdmin: (s: { id: string }) => Promise<IUserCommonResponse> = ({ id }) =>
+    ApiCall.get(`/users/infos/${id}`);
 }
 const queryEndpoints = new QueryEndpoints();
 

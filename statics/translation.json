@@ -44,7 +44,7 @@
     },
     "obligations": {
       "title": "Toplam Odemeler",
-      "totalDebts": "Toplam Borcunuz",
+      "totalDebts": "Toplam Borc",
       "totalReceivables": "Toplam Alacak",
       "details": "Detaylari Gor"
     },

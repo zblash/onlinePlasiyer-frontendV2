@@ -3,11 +3,12 @@ import styled, { colors, css } from '~/styled';
 import { useTranslation } from '~/i18n';
 import { usePaginationQuery } from '~/services/query-context/use-pagination-quey';
 import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
-import { Container, UIIcon } from '~/components/ui';
+import { Container, UIIcon, UIButton } from '~/components/ui';
 import { UITableColumns, UITable } from '~/components/ui/table';
 import { IProductResponse } from '~/services/helpers/backend-models';
 import { usePopupContext } from '~/contexts/popup/context';
 import { refetchFactory } from '~/services/utils';
+import { useApplicationContext } from '~/app/context';
 
 /* AllProductPage Helpers */
 interface AllProductPageProps {}
@@ -30,17 +31,37 @@ const StyledActionsWrapper = styled.div`
   align-items: center;
   justify-content: center;
 `;
+const StyledAddButton = styled(UIButton)`
+  float: right;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s;
+  background-color: ${colors.lightGray};
+  color: ${colors.white};
+  padding: 4px 8px;
+  border-radius: 8px;
+  :active {
+    background-color: ${colors.primaryDark} !important;
+  }
+  :hover {
+    background-color: ${colors.primary};
+  }
+`;
 const commonIconStyle = css`
   cursor: pointer;
   margin: 0 8px;
 `;
-
+const addIconStyle = css`
+  margin-left: 8px;
+`;
 /* AllProductPage Component  */
 
 function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
   /* AllProductPage Variables */
   const { t } = useTranslation();
   const popupsContext = usePopupContext();
+  const applicationContext = useApplicationContext();
   const [allProductsPageNumber, setAllProductPageNumber] = React.useState(1);
   const {
     data: { values: products, totalPage },
@@ -49,8 +70,8 @@ function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
     defaultValue: { values: [], totalPage: 0 },
   });
   const refetchQuery = React.useMemo(() => refetchFactory(paginationQueryEndpoints.getAllProducts, null), []);
-  const TABLE_DATA_COLUMNS = React.useMemo<UITableColumns<IProductResponse>[]>(
-    () => [
+  const TABLE_DATA_COLUMNS = React.useMemo<UITableColumns<IProductResponse>[]>(() => {
+    const table = [
       {
         title: null,
         itemRenderer: item => <ProductImage src={item.photoUrl} />,
@@ -75,7 +96,9 @@ function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
         title: t('all-products-page.table.barcode'),
         itemRenderer: item => item.barcodeList[0],
       },
-      {
+    ];
+    if (applicationContext.user.isAdmin) {
+      table.push({
         title: null,
         itemRenderer: item => (
           <StyledActionsWrapper>
@@ -103,10 +126,11 @@ function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
             />
           </StyledActionsWrapper>
         ),
-      },
-    ],
-    [popupsContext.deleteProduct, popupsContext.updateProduct, refetchQuery, t],
-  );
+      });
+    }
+
+    return table;
+  }, [refetchQuery, applicationContext.user.isAdmin, popupsContext.deleteProduct, popupsContext.updateProduct, t]);
 
   /* AllProductPage Callbacks */
   const onChangePage = React.useCallback(
@@ -123,6 +147,9 @@ function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
   return (
     <Container>
       <StyledPageContainer>
+        <StyledAddButton onClick={() => popupsContext.createProduct.show({})}>
+          {t('common.add')} <UIIcon name="add" color={colors.white} size={10} className={addIconStyle} />
+        </StyledAddButton>
         <UITable
           id="all-products-page-table"
           data={products}

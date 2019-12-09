@@ -63,9 +63,17 @@ export interface ICardItemResponse {
 
 export interface ICardResponse {
   id: string;
-  items: ICardItemResponse[];
+  items: ICartItemDetailResponse[];
   quantity: number;
   totalPrice: number;
+}
+
+export interface ICartItemDetailResponse {
+  id: string;
+  seller: string;
+  totalPrice: number;
+  quantity: number;
+  details: ICardItemResponse[];
 }
 
 export interface IUserCommonResponse {
@@ -115,6 +123,14 @@ export interface IOrder {
   waybillDate: string | null;
 }
 
+export interface IOrderSummary {
+  id: string;
+  newCount: number;
+  finishedCount: number;
+  cancelledCount: number;
+  paidCount: number;
+}
+
 export interface Invoice {
   buyer: string;
   discount: number;
@@ -138,6 +154,15 @@ export interface IAnnouncement {
   lastDate: string;
   message: string;
   title: string;
+}
+
+export interface IUserRegisterResponse {
+  email: string;
+  id: string;
+  name: string;
+  status: boolean;
+  taxNumber: string;
+  username: string;
 }
 
 export type UserRoleResponse = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';

@@ -5,6 +5,7 @@ import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { refetchFactory } from '~/services/utils';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
+import { useAlert } from '~/utils/hooks';
 
 /* SpecifyAddtoCart Helpers */
 interface SpecifyAddtoCartProps {
@@ -48,8 +49,9 @@ const tableColumnCartInputStyle = css`
 
 /* SpecifyAddtoCart Component  */
 function SpecifyAddtoCart(props: React.PropsWithChildren<SpecifyAddtoCartProps>) {
+  const alertContext = useAlert();
   const [quantity, setQuantity] = React.useState(1);
-  const { mutation: addToCart } = useMutation(mutationEndPoints.addToCard, {
+  const { mutation: addToCart, error: addToCartError } = useMutation(mutationEndPoints.addToCard, {
     variables: {
       specifyProductId: props.specifyProductId,
       quantity,
@@ -64,18 +66,23 @@ function SpecifyAddtoCart(props: React.PropsWithChildren<SpecifyAddtoCartProps>)
     },
     [setQuantity],
   );
-
-  const __ = (
-    <WrapperTableCartColumn key={props.specifyProductId}>
-      <label className={tableColumnCartInputStyle}>Adet: </label>
-      <StyledAddCartInput type="number" value={quantity} onChange={handleChange} />
-      <StyledAddCartButton onClick={() => addToCart()}>Sepete Ekle</StyledAddCartButton>
-    </WrapperTableCartColumn>
-  );
+  const handleAddToCart = React.useCallback(() => {
+    addToCart();
+    if (!addToCartError) {
+      alertContext.show('Urun Sepete Eklendi', { type: 'success' });
+    }
+  }, [alertContext, addToCart, addToCartError]);
 
   /* SpecifyAddtoCart Lifecycle  */
 
   /* SpecifyAddtoCart Functions  */
+  const __ = (
+    <WrapperTableCartColumn key={props.specifyProductId}>
+      <label className={tableColumnCartInputStyle}>Adet: </label>
+      <StyledAddCartInput type="number" value={quantity} onChange={handleChange} />
+      <StyledAddCartButton onClick={handleAddToCart}>Sepete Ekle</StyledAddCartButton>
+    </WrapperTableCartColumn>
+  );
 
   return __;
 }
