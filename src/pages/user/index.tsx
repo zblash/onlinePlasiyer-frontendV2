@@ -25,6 +25,12 @@ const StyledInfosFormWrapper = styled.div`
   border-radius:8px;
   background-color:${colors.white}
   `;
+const StyledPageHeader = styled.div`
+  width: 100%;
+  float: left;
+  display: flex;
+  justify-content: center;
+`;
 const StyledInfosFormHeader = styled.div`
   display: flex;
   justify-content: center;
@@ -170,6 +176,11 @@ function UserPage(props: React.PropsWithChildren<UserPageProps>) {
   return (
     <Container>
       <StyledProfilePageWrapper>
+        <StyledPageHeader>
+          <h2>
+            {user.name}({user.username}) Kullanicisinin Detay Sayfasi
+          </h2>
+        </StyledPageHeader>
         <ObligationComponent userId={user.id} />
         <StyledInfosFormWrapper>
           <StyledInfosFormHeader>

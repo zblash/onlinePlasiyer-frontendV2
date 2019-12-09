@@ -25,7 +25,7 @@ class QueryEndpoints {
 
   getAllInvoices: (s: { userId?: string; pageNumber: number }) => Promise<Invoice> = ({ userId, pageNumber }) => {
     if (userId) {
-      return paginationQueryGet(`/invoices?userId=${userId}`, { pageNumber });
+      return paginationQueryGet(`/invoices/byUser/${userId}`, { pageNumber });
     }
 
     return paginationQueryGet('/invoices', { pageNumber });
@@ -33,7 +33,7 @@ class QueryEndpoints {
 
   getAllOrders: (s: { userId?: string; pageNumber: number }) => Promise<IOrder> = ({ userId, pageNumber }) => {
     if (userId) {
-      return paginationQueryGet(`/orders?userId=${userId}`, { pageNumber });
+      return paginationQueryGet(`/orders/byUser/${userId}`, { pageNumber });
     }
 
     return paginationQueryGet('/orders', { pageNumber });

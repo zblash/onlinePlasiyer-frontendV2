@@ -22,6 +22,8 @@ import { ProductSpecifiesPage } from './product-specifies';
 import { MerchantHome } from './merchant-home';
 import { CreateUserPage } from './create-user';
 import { UserPage } from './user';
+import { useApplicationContext } from '~/app/context';
+import { AdminHeader } from '~/components/common/admin-header';
 
 interface IRoute {
   path: string;
@@ -80,9 +82,12 @@ const routes: IRoute[] = [
 ];
 
 const Routes = React.memo(() => {
+  const applicationContext = useApplicationContext();
+
   return (
     <>
       <Header />
+      {applicationContext.user.isAdmin && <AdminHeader />}
       <Switch>
         {routes.map(route => (
           <Route

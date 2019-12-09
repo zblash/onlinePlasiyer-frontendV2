@@ -116,6 +116,7 @@
     "react-autocomplete": "^1.8.1",
     "react-collapsible": "^2.6.0",
     "react-dom": "^16.11.0",
+    "react-hook-form": "^3.28.14",
     "react-i18next": "^11.2.1",
     "react-paginate": "^6.3.2",
     "react-router": "^5.1.2",

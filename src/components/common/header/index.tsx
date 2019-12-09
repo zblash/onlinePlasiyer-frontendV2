@@ -83,7 +83,7 @@ const _Header: React.SFC<HeaderProps> = props => {
     [cart.quantity],
   );
 
-  const __ = (
+  return (
     <>
       <StyledHeaderStickyWrapper>
         <HeaderLogo />
@@ -99,8 +99,6 @@ const _Header: React.SFC<HeaderProps> = props => {
       <HeaderBack />
     </>
   );
-
-  return __;
 };
 
 const Header = _Header;
