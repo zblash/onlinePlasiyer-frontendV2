@@ -25,6 +25,8 @@ import { AllCategoriesPage } from './all-categories';
 import { UserPage } from './user';
 import { useApplicationContext } from '~/app/context';
 import { AdminHeader } from '~/components/common/admin-header';
+import { UserInvoicesPage } from './user-invoices';
+import { UserOrdersPage } from './user-orders';
 
 interface IRoute {
   path: string;
@@ -62,8 +64,19 @@ const routes: IRoute[] = [
     component: OrdersPage,
   },
   {
+    path: '/user/orders/:userId',
+    component: UserOrdersPage,
+    authorize: ['ADMIN'],
+  },
+  {
     path: '/order/:orderId',
     component: OrderPage,
+  },
+  { path: '/invoices', component: InvoicesPage },
+  {
+    path: '/user/invoices/:userId',
+    component: UserInvoicesPage,
+    authorize: ['ADMIN'],
   },
   {
     path: '/invoice/:invoiceId',
@@ -74,7 +87,7 @@ const routes: IRoute[] = [
     component: ProfilePage,
   },
   { path: '/all-categories', component: AllCategoriesPage, authorize: ['ADMIN'] },
-  { path: '/invoices/:userId?', component: InvoicesPage },
+
   { path: '/all-products', component: AllProductPage, authorize: ['ADMIN', 'MERCHANT'] },
   { path: '/add-product-specify', component: CreateProductSpecifyPage, authorize: ['MERCHANT', 'ADMIN'] },
   { path: '/product-specifies/:userId?', component: ProductSpecifiesPage, authorize: ['ADMIN', 'MERCHANT'] },

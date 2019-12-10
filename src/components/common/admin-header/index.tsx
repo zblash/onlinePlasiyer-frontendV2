@@ -88,7 +88,7 @@ function AdminHeader(props: React.PropsWithChildren<AdminHeaderProps>) {
           <UIIcon size={10} name="chevronDown" className={iconStyle} />
         </StyledSubNavsButton>
         <StyledSubNavContent>
-          <StyledSubNavContentItem to="/create-user">Yeni Ekle</StyledSubNavContentItem>
+          <StyledSubNavContentItem to="/users/create">Yeni Ekle</StyledSubNavContentItem>
           <StyledSubNavContentItem to="/users">Kullanicilari Gor</StyledSubNavContentItem>
           <StyledSubNavContentItem to="/orders">Tum Siparisleri Gor</StyledSubNavContentItem>
           <StyledSubNavContentItem to="/invoices">Tum Faturalari Gor</StyledSubNavContentItem>
