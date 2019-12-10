@@ -53,6 +53,10 @@ const StyledButton = styled(UIButton)`
   :hover {
     background-color: ${colors.primaryDark};
   }
+  :disabled {
+    background-color: ${colors.lightGray};
+    color: ${colors.primary};
+  }
 `;
 const selectInput = css`
   margin-bottom: 10px;
@@ -70,8 +74,8 @@ function CreateProductSpecifyPage(props: React.PropsWithChildren<CreateProductSp
   const [recommendedRetailPrice, setRecomendedRetailPrice] = React.useState();
   const [totalPrice, setTotalPrice] = React.useState();
   const [unitPrice, setUnitPrice] = React.useState();
-  const [unitType, setUnitType] = React.useState<UnitTypeResponse>('AD');
-  const [stateIds, setStateIds] = React.useState(['']);
+  const [unitType, setUnitType] = React.useState<UnitTypeResponse>();
+  const [stateIds, setStateIds] = React.useState([]);
   const unitTypeOptions = [
     { value: 'AD', label: 'ADET' },
     { value: 'KG', label: 'KG' },
@@ -186,7 +190,20 @@ function CreateProductSpecifyPage(props: React.PropsWithChildren<CreateProductSp
             />
           </StyledCreateProductSpecifyContentElement>
           <StyledCreateProductSpecifyContentElement>
-            <StyledButton onClick={handleSubmit}>Ekle</StyledButton>
+            <StyledButton
+              disabled={
+                stateIds.length === 0 ||
+                !unitPrice ||
+                !unitType ||
+                !totalPrice ||
+                !recommendedRetailPrice ||
+                !quantity ||
+                !contents
+              }
+              onClick={handleSubmit}
+            >
+              Ekle
+            </StyledButton>
           </StyledCreateProductSpecifyContentElement>
         </StyledCreateProductSpecifyContent>
       </StyledCreateProductSpecifyPageWrapper>

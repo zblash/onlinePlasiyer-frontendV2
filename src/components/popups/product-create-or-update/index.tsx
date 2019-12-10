@@ -10,6 +10,7 @@ import { useTranslation } from '~/i18n';
 import { refetchFactory } from '~/services/utils';
 import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
 import { IProductResponse } from '~/services/helpers/backend-models';
+import { useApplicationContext } from '~/app/context';
 
 /*  ProductPopup Helpers */
 export interface ProductPopupValues {
@@ -139,7 +140,8 @@ const filePickerInputId = 'image-picker-create-category-popup';
 function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
   const { t } = useTranslation();
   const popups = usePopupContext();
-  const initialValue = props.params.initialValue || ({} as any);
+  const applicationContext = useApplicationContext();
+  const initialValue = props.params.initialValue || ({ active: false } as any);
   const [isBarcodeCorrect, setIsBarcodeCorrect] = React.useState(false);
   const [isBarcodeSaved, setIsBarcodeSaved] = React.useState(false);
   const [barcode, setBarcode] = React.useState(initialValue.barcodeList ? initialValue.barcodeList[0] : '');
@@ -228,15 +230,17 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
           <UIIcon className={inputIconStyle} name="tax" size={20} color={productName ? colors.primary : colors.gray} />
         }
       />
-      <UICheckbox
-        value={isActive}
-        id="is-active"
-        className={checkboxStyle}
-        label={<StyledCheckboxText>Aktif Mi?</StyledCheckboxText>}
-        onChange={isChecked => {
-          setIsActive(isChecked);
-        }}
-      />
+      {applicationContext.user.isAdmin && (
+        <UICheckbox
+          value={isActive}
+          id="is-active"
+          className={checkboxStyle}
+          label={<StyledCheckboxText>Aktif Mi?</StyledCheckboxText>}
+          onChange={isChecked => {
+            setIsActive(isChecked);
+          }}
+        />
+      )}
       <CategoryInput
         onSelect={category => {
           setCategoryId(category.id);

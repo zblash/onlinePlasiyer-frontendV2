@@ -11,7 +11,7 @@ function getPermissions(user: IUserCommonResponse): UserPermissions {
     product: {
       edit: user.role === 'ADMIN',
       delete: user.role === 'ADMIN',
-      create: user.role === 'ADMIN' || user.role === 'MERCHANT',
+      create: user.role === 'ADMIN',
     },
     showCart: user.role === 'CUSTOMER',
   };
