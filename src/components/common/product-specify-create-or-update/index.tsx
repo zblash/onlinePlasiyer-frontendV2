@@ -6,7 +6,7 @@ import { UIInput, UIButton } from '~/components/ui';
 import { useAlert } from '~/utils/hooks';
 import { usePopupContext } from '~/contexts/popup/context';
 import { useApplicationContext } from '~/app/context';
-import { UnitTypeResponse, ISpecifyProductResponse } from '~/services/helpers/backend-models';
+import { ISpecifyProductResponse } from '~/services/helpers/backend-models';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 
