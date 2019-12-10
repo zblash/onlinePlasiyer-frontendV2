@@ -68,12 +68,12 @@ function CreateProductSpecifyPage(props: React.PropsWithChildren<CreateProductSp
   const routerHistory = useHistory();
   const popup = usePopupContext();
   const applicationContext = useApplicationContext();
-  const [barcode, setBarcode] = React.useState();
-  const [contents, setContents] = React.useState();
-  const [quantity, setQuantity] = React.useState();
-  const [recommendedRetailPrice, setRecomendedRetailPrice] = React.useState();
-  const [totalPrice, setTotalPrice] = React.useState();
-  const [unitPrice, setUnitPrice] = React.useState();
+  const [barcode, setBarcode] = React.useState('5151251244444');
+  const [contents, setContents] = React.useState('');
+  const [quantity, setQuantity] = React.useState('');
+  const [recommendedRetailPrice, setRecomendedRetailPrice] = React.useState('');
+  const [totalPrice, setTotalPrice] = React.useState('');
+  const [unitPrice, setUnitPrice] = React.useState('');
   const [unitType, setUnitType] = React.useState<UnitTypeResponse>();
   const [stateIds, setStateIds] = React.useState([]);
   const unitTypeOptions = [
@@ -84,23 +84,25 @@ function CreateProductSpecifyPage(props: React.PropsWithChildren<CreateProductSp
   const { mutation: createProductSpecify } = useMutation(mutationEndPoints.createSpecifyProductForAuthUser, {
     variables: {
       barcode,
-      contents,
-      quantity,
-      recommendedRetailPrice,
+      contents: parseInt(contents, 10),
+      quantity: parseInt(quantity, 10),
+      recommendedRetailPrice: parseInt(recommendedRetailPrice, 10),
       stateIds,
-      totalPrice,
-      unitPrice,
+      totalPrice: parseInt(totalPrice, 10),
+      unitPrice: parseInt(unitPrice, 10),
       unitType,
     },
   });
   /* CreateProductSpecifyPage Callbacks */
-
   const handleSubmit = React.useCallback(() => {
     applicationContext.loading.show();
     createProductSpecify()
       .then(() => {
         alertContext.show('Urun Basariyla Eklendi', { type: 'success' });
-        routerHistory.push('/product-specifies');
+        if (popup.createProduct.isShown) {
+          popup.createProduct.hide();
+        }
+        // routerHistory.push('/product-specifies');
       })
       .catch(() => {
         alertContext.show('Lutfen Tum Alanlari Doldurun', { type: 'error' });
@@ -108,7 +110,7 @@ function CreateProductSpecifyPage(props: React.PropsWithChildren<CreateProductSp
       .finally(() => {
         applicationContext.loading.hide();
       });
-  }, [createProductSpecify, applicationContext.loading, alertContext, routerHistory]);
+  }, [applicationContext.loading, alertContext, popup, createProductSpecify]);
 
   const handleStateChange = React.useCallback(
     e => {
@@ -123,7 +125,6 @@ function CreateProductSpecifyPage(props: React.PropsWithChildren<CreateProductSp
     [setUnitType],
   );
   /* CreateProductSpecifyPage Lifecycle  */
-
   React.useEffect(() => {
     if (!barcode && !popup.createProduct.isShown) {
       popup.createProduct.show({
@@ -147,7 +148,7 @@ function CreateProductSpecifyPage(props: React.PropsWithChildren<CreateProductSp
         <StyledCreateProductSpecifyContent>
           <StyledCreateProductSpecifyContentElement>
             <label>Icerik</label>
-            <StyledInput id="content" type="text" value={contents} onChange={setContents} />
+            <StyledInput id="contents" type="text" value={contents} onChange={setContents} />
           </StyledCreateProductSpecifyContentElement>
           <StyledCreateProductSpecifyContentElement>
             <label>Adet</label>
