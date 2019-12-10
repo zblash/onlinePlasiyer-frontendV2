@@ -267,10 +267,10 @@ function UserPage(props: React.PropsWithChildren<UserPageProps>) {
             </StyledDetailMenuElementWrapper>
           )}
           <StyledDetailMenuElementWrapper>
-            <StyledDetailMenuElement to={`/orders/${user.id}`}>Siparislerini Gor</StyledDetailMenuElement>
+            <StyledDetailMenuElement to={`/user/orders/${user.id}`}>Siparislerini Gor</StyledDetailMenuElement>
           </StyledDetailMenuElementWrapper>
           <StyledDetailMenuElementWrapper>
-            <StyledDetailMenuElement to={`/invoices/${user.id}`}>Faturalarini Gor</StyledDetailMenuElement>
+            <StyledDetailMenuElement to={`/user/invoices/${user.id}`}>Faturalarini Gor</StyledDetailMenuElement>
           </StyledDetailMenuElementWrapper>
         </StyledDetailMenu>
       </StyledProfilePageWrapper>

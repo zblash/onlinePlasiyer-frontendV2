@@ -1,54 +1,46 @@
 import * as React from 'react';
+import { useParams } from 'react-router';
 import styled from '~/styled';
 import { usePaginationQuery } from '~/services/query-context/use-pagination-quey';
 import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
-import { InvoiceListComponent } from '~/components/common/invoice-list';
 import { Container } from '~/components/ui';
+import { InvoiceListComponent } from '~/components/common/invoice-list';
 
-/*
-  InvoicesPage Helpers
-*/
-interface InvoicesPageProps {}
+/* UserInvoicesPage Helpers */
+interface UserInvoicesPageProps {}
+interface RouteParams {
+  userId: string;
+}
+/* UserInvoicesPage Constants */
 
-/*
-  InvoicesPage Strings
-*/
-
-/*
-  InvoicesPage Styles
-*/
+/* UserInvoicesPage Styles */
 const StyledPageContainer = styled.div`
   margin-top: 48px;
 `;
 
-const InvoicesPage: React.SFC<InvoicesPageProps> = props => {
+/* UserInvoicesPage Component  */
+function UserInvoicesPage(props: React.PropsWithChildren<UserInvoicesPageProps>) {
+  /* UserInvoicesPage Variables */
+  const { userId } = useParams<RouteParams>();
   const {
     data: { values: invoices, elementCountOfPage },
   } = usePaginationQuery(paginationQueryEndpoints.getAllInvoices, {
     defaultValue: { values: [] },
+    variables: { userId },
     pageNumber: 1,
   });
+  /* UserInvoicesPage Callbacks */
 
-  // TODO: fetch next page on change page
-  const __ = (
+  /* UserInvoicesPage Lifecycle  */
+
+  return (
     <Container>
       <StyledPageContainer>
         <InvoiceListComponent invoices={invoices} elementCountOfPage={elementCountOfPage} />
       </StyledPageContainer>
     </Container>
   );
+}
+const PureUserInvoicesPage = React.memo(UserInvoicesPage);
 
-  /*
-  InvoicesPage Lifecycle
-  */
-
-  /*
-  InvoicesPage Functions
-  */
-
-  return __;
-};
-
-const _InvoicesPage = InvoicesPage;
-
-export { _InvoicesPage as InvoicesPage };
+export { PureUserInvoicesPage as UserInvoicesPage };
