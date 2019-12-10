@@ -263,7 +263,9 @@ function UserPage(props: React.PropsWithChildren<UserPageProps>) {
           <StyledDetailMenuHeader>Detaylar</StyledDetailMenuHeader>
           {user.role === 'MERCHANT' && (
             <StyledDetailMenuElementWrapper>
-              <StyledDetailMenuElement to={`/product-specifies/${user.id}`}>Urunlerini Gor</StyledDetailMenuElement>
+              <StyledDetailMenuElement to={`/user/product-specifies/${user.id}`}>
+                Urunlerini Gor
+              </StyledDetailMenuElement>
             </StyledDetailMenuElementWrapper>
           )}
           <StyledDetailMenuElementWrapper>
