@@ -13,6 +13,7 @@ import {
   IOrder,
   Invoice,
   IOrderSummary,
+  ISpecifyProductResponse,
 } from '~/services/helpers/backend-models';
 import { UserType } from '../helpers/maps';
 
@@ -40,6 +41,9 @@ class QueryEndpoints {
     ApiCall.get(`/products/barcode/${barcode}`);
 
   getProductById: (s: { id: string }) => Promise<IProductResponse> = ({ id }) => ApiCall.get(`/products/${id}`);
+
+  getProductSpecifyById: (s: { id: string }) => Promise<ISpecifyProductResponse> = ({ id }) =>
+    ApiCall.get(`/products/specify/${id}`);
 
   getCard: () => Promise<ICardResponse> = () => ApiCall.get(`/cart`);
 

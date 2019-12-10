@@ -155,6 +155,7 @@ function UITable<T>(props: UiTableProps<T>) {
 
     return [];
   }, [hasRowCount, props.data, rowCount]);
+
   const tableData = React.useMemo(() => {
     return dataWithEmptyRow.slice((pageIndex - 1) * rowCount, pageIndex * props.rowCount);
   }, [dataWithEmptyRow, pageIndex, rowCount, props.rowCount]);
@@ -166,6 +167,9 @@ function UITable<T>(props: UiTableProps<T>) {
     const nextPage = Math.max(1, Math.min(props.totalPageCount || 1, index));
     if (pageIndex !== nextPage) {
       setPageIndex(nextPage);
+      for (let i = 0; i < rowCount; i++) {
+        dataWithEmptyRow.push(null as T);
+      }
       if (props.onChangePage) {
         props.onChangePage(nextPage, props.totalPageCount);
       }

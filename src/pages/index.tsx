@@ -23,11 +23,12 @@ import { MerchantHome } from './merchant-home';
 import { CreateUserPage } from './create-user';
 import { AllCategoriesPage } from './all-categories';
 import { UserPage } from './user';
-import { useApplicationContext } from '~/app/context';
 import { AdminHeader } from '~/components/common/admin-header';
 import { UserInvoicesPage } from './user-invoices';
 import { UserOrdersPage } from './user-orders';
 import { UserProductSpecifiesPage } from './user-product-specifies';
+import { UpdateProductSpeciyPage } from './update-product-specify';
+import { Footer } from '~/components/common/footer';
 
 interface IRoute {
   path: string;
@@ -91,6 +92,7 @@ const routes: IRoute[] = [
 
   { path: '/all-products', component: AllProductPage, authorize: ['ADMIN', 'MERCHANT'] },
   { path: '/add-product-specify', component: CreateProductSpecifyPage, authorize: ['MERCHANT', 'ADMIN'] },
+  { path: '/edit-product-specify/:specifyId', component: UpdateProductSpeciyPage, authorize: ['MERCHANT', 'ADMIN'] },
   { path: '/product-specifies', component: ProductSpecifiesPage, authorize: ['ADMIN', 'MERCHANT'] },
   { path: '/user/product-specifies/:userId', component: UserProductSpecifiesPage, authorize: ['ADMIN'] },
   { path: '/merchant/home', component: MerchantHome, authorize: ['MERCHANT'] },
@@ -99,14 +101,10 @@ const routes: IRoute[] = [
 ];
 
 const Routes = React.memo(() => {
-  const applicationContext = useApplicationContext();
-
   return (
     <>
       <Header />
-      {(applicationContext.user.isAdmin || applicationContext.user.isMerchant) && (
-        <AdminHeader isAdmin={applicationContext.user.isAdmin} />
-      )}
+      <AdminHeader />
       <Switch>
         {routes.map(route => (
           <Route
@@ -120,6 +118,7 @@ const Routes = React.memo(() => {
         ))}
         <Route component={Page404} />
       </Switch>
+      <Footer />
     </>
   );
 });

@@ -43,6 +43,7 @@ export interface ISpecifyProductResponse {
   sellerName: string;
   states: IAddressStateResponse[];
   productId: string;
+  productBarcodeList: string[];
 }
 
 export interface ICardItemResponse {

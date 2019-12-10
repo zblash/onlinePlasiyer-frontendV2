@@ -1,11 +1,10 @@
 import * as React from 'react';
 import styled, { colors, css } from '~/styled';
 import { UIIcon, UILink } from '~/components/ui';
+import { useApplicationContext } from '~/app/context';
 
 /* AdminHeader Helpers */
-interface AdminHeaderProps {
-  isAdmin: boolean;
-}
+interface AdminHeaderProps {}
 
 /* AdminHeader Constants */
 
@@ -77,6 +76,8 @@ function AdminHeader(props: React.PropsWithChildren<AdminHeaderProps>) {
 
   /* AdminHeader Lifecycle  */
 
+  const applicationContext = useApplicationContext();
+
   const adminHeader = (
     <StyledAdminHeaderWrapper>
       <StyledSubNavs>
@@ -140,7 +141,7 @@ function AdminHeader(props: React.PropsWithChildren<AdminHeaderProps>) {
     </StyledAdminHeaderWrapper>
   );
 
-  return props.isAdmin ? adminHeader : merchantHeader;
+  return applicationContext.user.isAdmin ? adminHeader : merchantHeader;
 }
 const PureAdminHeader = React.memo(AdminHeader);
 
