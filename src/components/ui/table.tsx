@@ -14,6 +14,7 @@ export type UITableColumns<T> = {
 interface UiTableProps<T> extends StylableProps {
   data: T[];
   columns: UITableColumns<T>[];
+  totalPageCount?: number;
   rowCount?: number;
   id: string;
   hidePagination?: boolean;
@@ -157,17 +158,16 @@ function UITable<T>(props: UiTableProps<T>) {
   const tableData = React.useMemo(() => {
     return dataWithEmptyRow.slice((pageIndex - 1) * rowCount, pageIndex * props.rowCount);
   }, [dataWithEmptyRow, pageIndex, rowCount, props.rowCount]);
-  const pageCount = dataWithEmptyRow.length / rowCount;
 
   /*
   UiTable Lifecycle
   */
   function setPageIndexCallback(index: number) {
-    const nextPage = Math.max(1, Math.min(pageCount, index));
+    const nextPage = Math.max(1, Math.min(props.totalPageCount || 1, index));
     if (pageIndex !== nextPage) {
       setPageIndex(nextPage);
       if (props.onChangePage) {
-        props.onChangePage(nextPage, pageCount);
+        props.onChangePage(nextPage, props.totalPageCount);
       }
     }
   }
@@ -214,7 +214,7 @@ function UITable<T>(props: UiTableProps<T>) {
             onClick={() => setPageIndexCallback(pageIndex - 1)}
           />
           <StyledPageInfoSpan>
-            {pageIndex} / {pageCount || 1}
+            {pageIndex} / {props.totalPageCount || 1}
           </StyledPageInfoSpan>
           <UIIcon
             name="chevronRight"

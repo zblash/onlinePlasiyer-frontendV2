@@ -33,6 +33,8 @@ export interface ProductListComponentProps {
 interface ProductListData {
   products: ProductData[];
   specifyProducts: SpecifyProductData[];
+  specifyProductsTotalPage: number;
+  specifyProductsElementCountOfPage: number;
   productsLastPageIndex: number;
   productsCurrentPage: number;
   productsPageCount: number;
@@ -44,7 +46,6 @@ interface ProductListProps extends ProductListComponentProps, ProductListData {}
 */
 
 const CHUNK_SIZE = 4;
-const SPECIFY_PRODUCT_ROW_COUNT = 8;
 
 const TABLE_SHOWN_DATA: UITableColumns<SpecifyProductData>[] = [
   {
@@ -209,7 +210,8 @@ const ProductList: React.SFC<ProductListProps> = props => {
           <UITable
             id={expandProductId}
             data={props.specifyProducts}
-            rowCount={SPECIFY_PRODUCT_ROW_COUNT}
+            rowCount={props.specifyProductsElementCountOfPage > 0 ? props.specifyProductsElementCountOfPage : 15}
+            totalPageCount={props.specifyProductsTotalPage}
             columns={TABLE_SHOWN_DATA}
             onChangePage={props.onChangeSpecifyProductPage}
             className={tableStyle}

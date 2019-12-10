@@ -12,7 +12,7 @@ function ProductListFetcher(props: React.PropsWithChildren<ProductListFetcherPro
   const [expandProductId, setExpandProductId] = React.useState<string>(null);
   const wrapperRef = React.useRef();
   const [productPageNumber, setProductPageNumber] = React.useState(1);
-  const [sepicifyProductPageNumber, setSpecifyProductPageNumber] = React.useState(1);
+  const [specifyProductPageNumber, setSpecifyProductPageNumber] = React.useState(1);
   const { totalPage: productPageTotalPage, values: productsValues } = usePaginationQuery(
     paginationQueryEndpoints.getAllProductsByCategoryId,
     {
@@ -23,12 +23,16 @@ function ProductListFetcher(props: React.PropsWithChildren<ProductListFetcherPro
     },
   ).getDataByPage(productPageNumber);
   const {
-    data: { values: specifyProducts, totalPage: specifyProductsTotalPage },
+    data: {
+      values: specifyProducts,
+      totalPage: specifyProductsTotalPage,
+      elementCountOfPage: specifyProductsElementCountOfPage,
+    },
   } = usePaginationQuery(paginationQueryEndpoints.getAllSpecifyProductsByProductId, {
     variables: { productId: expandProductId },
     defaultValue: { values: [] },
     skip: !expandProductId,
-    pageNumber: sepicifyProductPageNumber,
+    pageNumber: specifyProductPageNumber,
   });
 
   const mappedArray = useMemoWithPrevDeps(
@@ -57,11 +61,11 @@ function ProductListFetcher(props: React.PropsWithChildren<ProductListFetcherPro
 
   const onChangeSpecifyProductPage = React.useCallback(
     (pageIndex, pageCount) => {
-      if (pageIndex + 2 >= pageCount && sepicifyProductPageNumber < specifyProductsTotalPage) {
-        setSpecifyProductPageNumber(sepicifyProductPageNumber + 1);
+      if (specifyProductPageNumber <= specifyProductsTotalPage && pageIndex <= pageCount) {
+        setSpecifyProductPageNumber(pageIndex);
       }
     },
-    [sepicifyProductPageNumber, specifyProductsTotalPage],
+    [specifyProductPageNumber, specifyProductsTotalPage],
   );
   const onChangePage = React.useCallback(
     pageNumber => {
@@ -83,6 +87,8 @@ function ProductListFetcher(props: React.PropsWithChildren<ProductListFetcherPro
         productsCurrentPage={productPageNumber}
         products={mappedArray}
         specifyProducts={specifyProducts}
+        specifyProductsElementCountOfPage={specifyProductsElementCountOfPage}
+        specifyProductsTotalPage={specifyProductsTotalPage}
         {...props}
         onChangeExpandProductId={onChangeExpandProductId}
         onChangeSpecifyProductPage={onChangeSpecifyProductPage}
