@@ -133,7 +133,7 @@ const iconStyle = css`
 
 function UITable<T>(props: UiTableProps<T>) {
   const hasRowCount = typeof props.rowCount === 'number';
-  const [elementCount, setElementCount] = React.useState(1);
+  const [elementCount] = React.useState(hasRowCount ? props.rowCount : props.data.length);
   const [pageIndex, setPageIndex] = React.useState(1);
 
   const dataWithEmptyRow = React.useMemo(() => {
@@ -182,9 +182,6 @@ function UITable<T>(props: UiTableProps<T>) {
     }
   }
 
-  React.useEffect(() => {
-    setElementCount(hasRowCount ? props.rowCount : props.data.length);
-  }, [hasRowCount, props.data.length, props.rowCount]);
   React.useEffect(() => {
     setPageIndex(1);
   }, [props.id]);
