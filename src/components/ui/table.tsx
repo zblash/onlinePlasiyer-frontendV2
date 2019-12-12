@@ -133,12 +133,13 @@ const iconStyle = css`
 
 function UITable<T>(props: UiTableProps<T>) {
   const hasRowCount = typeof props.rowCount === 'number';
-  const rowCount = hasRowCount ? props.rowCount : props.data.length;
+  const [elementCount, setElementCount] = React.useState(1);
   const [pageIndex, setPageIndex] = React.useState(1);
+
   const dataWithEmptyRow = React.useMemo(() => {
     if (hasRowCount && props.data.length) {
       const data = Array.from(props.data);
-      while (data.length % rowCount !== 0 || data.length === 0) {
+      while (data.length % elementCount !== 0 || data.length === 0) {
         data.push(null as T);
       }
 
@@ -146,7 +147,7 @@ function UITable<T>(props: UiTableProps<T>) {
     }
     if (props.data.length === 0 && hasRowCount) {
       const data = [];
-      for (let i = 0; i < rowCount; i++) {
+      for (let i = 0; i < elementCount; i++) {
         data.push(null as T);
       }
 
@@ -154,28 +155,36 @@ function UITable<T>(props: UiTableProps<T>) {
     }
 
     return [];
-  }, [hasRowCount, props.data, rowCount]);
+  }, [hasRowCount, props.data, elementCount]);
+  const needAdd = React.useMemo(() => {
+    return elementCount - (dataWithEmptyRow.length - elementCount * (props.totalPageCount - 1));
+  }, [elementCount, props.totalPageCount, dataWithEmptyRow]);
 
   const tableData = React.useMemo(() => {
-    return dataWithEmptyRow.slice((pageIndex - 1) * rowCount, pageIndex * props.rowCount);
-  }, [dataWithEmptyRow, pageIndex, rowCount, props.rowCount]);
+    for (let i = 0; i < needAdd; i++) {
+      dataWithEmptyRow.push(null as T);
+    }
+
+    return dataWithEmptyRow.slice((pageIndex - 1) * elementCount, pageIndex * elementCount);
+  }, [dataWithEmptyRow, pageIndex, elementCount, needAdd]);
 
   /*
   UiTable Lifecycle
   */
   function setPageIndexCallback(index: number) {
     const nextPage = Math.max(1, Math.min(props.totalPageCount || 1, index));
-    if (pageIndex !== nextPage) {
+    if (props.totalPageCount && nextPage <= props.totalPageCount) {
       setPageIndex(nextPage);
-      for (let i = 0; i < rowCount; i++) {
-        dataWithEmptyRow.push(null as T);
-      }
+
       if (props.onChangePage) {
         props.onChangePage(nextPage, props.totalPageCount);
       }
     }
   }
 
+  React.useEffect(() => {
+    setElementCount(hasRowCount ? props.rowCount : props.data.length);
+  }, [hasRowCount, props.data.length, props.rowCount]);
   React.useEffect(() => {
     setPageIndex(1);
   }, [props.id]);

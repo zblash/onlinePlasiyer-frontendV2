@@ -34,7 +34,8 @@ function ProductSpecifyListComponent(props: React.PropsWithChildren<ProductSpeci
   const { t } = useTranslation();
   const popupsContext = usePopupContext();
   const {
-    data: { values: productSpecifies, totalPage, elementCountOfPage },
+    data: { values: productSpecifiesValues, totalPage },
+    getDataByPage: productSpecifiesPage,
   } = usePaginationQuery(paginationQueryEndpoints.getAllSpecifies, {
     variables: {
       userId: props.userId,
@@ -42,6 +43,9 @@ function ProductSpecifyListComponent(props: React.PropsWithChildren<ProductSpeci
     pageNumber: allProductsPageNumber,
     defaultValue: { values: [], totalPage: 0 },
   });
+  const productSpecifies = React.useMemo(() => {
+    return productSpecifiesPage(allProductsPageNumber);
+  }, [allProductsPageNumber, productSpecifiesPage]);
   const refetchQuery = React.useMemo(
     () =>
       refetchFactory(paginationQueryEndpoints.getAllSpecifies, {
@@ -67,6 +71,7 @@ function ProductSpecifyListComponent(props: React.PropsWithChildren<ProductSpeci
     },
     [allProductsPageNumber, totalPage],
   );
+
   /* ProductSpecifyListComponent Lifecycle  */
   const TABLE_DATA_COLUMNS = React.useMemo<UITableColumns<ISpecifyProductResponse>[]>(
     () => [
@@ -130,8 +135,8 @@ function ProductSpecifyListComponent(props: React.PropsWithChildren<ProductSpeci
   return (
     <UITable
       id="all-product-specifies-page-table"
-      data={productSpecifies}
-      rowCount={elementCountOfPage > 0 ? elementCountOfPage : 15}
+      data={productSpecifiesValues}
+      rowCount={productSpecifies.elementCountOfPage > 0 ? productSpecifies.elementCountOfPage : 20}
       columns={TABLE_DATA_COLUMNS}
       totalPageCount={totalPage}
       onChangePage={onChangePage}

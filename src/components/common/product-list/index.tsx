@@ -210,7 +210,7 @@ const ProductList: React.SFC<ProductListProps> = props => {
           <UITable
             id={expandProductId}
             data={props.specifyProducts}
-            rowCount={props.specifyProductsElementCountOfPage > 0 ? props.specifyProductsElementCountOfPage : 15}
+            rowCount={props.specifyProductsElementCountOfPage > 0 ? props.specifyProductsElementCountOfPage : 20}
             totalPageCount={props.specifyProductsTotalPage}
             columns={TABLE_SHOWN_DATA}
             onChangePage={props.onChangeSpecifyProductPage}

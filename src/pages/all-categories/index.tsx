@@ -110,7 +110,6 @@ function AllCategoriesPage(props: React.PropsWithChildren<AllCategoriesPageProps
   /* AllCategoriesPage Callbacks */
 
   /* AllCategoriesPage Lifecycle  */
-
   return (
     <Container>
       <StyledPageContainer>
@@ -118,7 +117,13 @@ function AllCategoriesPage(props: React.PropsWithChildren<AllCategoriesPageProps
           {/* // TODO(0): move string object */}
           Ekle <UIIcon name="add" color={colors.white} size={10} className={addIconStyle} />
         </StyledAddButton>
-        <UITable id="all-categories-page-table" data={categories} rowCount={14} columns={TABLE_DATA_COLUMNS} />
+        <UITable
+          id="all-categories-page-table"
+          data={categories}
+          rowCount={14}
+          totalPageCount={Math.ceil(categories.length / 14)}
+          columns={TABLE_DATA_COLUMNS}
+        />
       </StyledPageContainer>
     </Container>
   );

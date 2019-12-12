@@ -23,18 +23,17 @@ function ProductListFetcher(props: React.PropsWithChildren<ProductListFetcherPro
     },
   ).getDataByPage(productPageNumber);
   const {
-    data: {
-      values: specifyProducts,
-      totalPage: specifyProductsTotalPage,
-      elementCountOfPage: specifyProductsElementCountOfPage,
-    },
+    data: { values: specifyProductsData, totalPage: specifyProductsTotalPage },
+    getDataByPage: specifyProductsPage,
   } = usePaginationQuery(paginationQueryEndpoints.getAllSpecifyProductsByProductId, {
     variables: { productId: expandProductId },
     defaultValue: { values: [] },
     skip: !expandProductId,
     pageNumber: specifyProductPageNumber,
   });
-
+  const specifyProducts = React.useMemo(() => {
+    return specifyProductsPage(specifyProductPageNumber);
+  }, [specifyProductPageNumber, specifyProductsPage]);
   const mappedArray = useMemoWithPrevDeps(
     ([prevProductValues]) => {
       if (prevProductValues && productsValues.length === 0) {
@@ -86,8 +85,8 @@ function ProductListFetcher(props: React.PropsWithChildren<ProductListFetcherPro
         productsLastPageIndex={0}
         productsCurrentPage={productPageNumber}
         products={mappedArray}
-        specifyProducts={specifyProducts}
-        specifyProductsElementCountOfPage={specifyProductsElementCountOfPage}
+        specifyProducts={specifyProductsData}
+        specifyProductsElementCountOfPage={specifyProducts.elementCountOfPage}
         specifyProductsTotalPage={specifyProductsTotalPage}
         {...props}
         onChangeExpandProductId={onChangeExpandProductId}

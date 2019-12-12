@@ -64,11 +64,15 @@ function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
   const applicationContext = useApplicationContext();
   const [allProductsPageNumber, setAllProductPageNumber] = React.useState(1);
   const {
-    data: { values: products, totalPage },
+    data: { values: productsValues, totalPage },
+    getDataByPage: productsByPage,
   } = usePaginationQuery(paginationQueryEndpoints.getAllProducts, {
     pageNumber: allProductsPageNumber,
     defaultValue: { values: [], totalPage: 0 },
   });
+  const products = React.useMemo(() => {
+    return productsByPage(allProductsPageNumber);
+  }, [productsByPage, allProductsPageNumber]);
   const refetchQuery = React.useMemo(() => refetchFactory(paginationQueryEndpoints.getAllProducts, null), []);
   const TABLE_DATA_COLUMNS = React.useMemo<UITableColumns<IProductResponse>[]>(() => {
     const table = [
@@ -124,19 +128,35 @@ function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
                 popupsContext.updateProduct.show({ categoryId: item.categoryId, initialValue: item });
               }}
             />
+            <UIIcon
+              name="add"
+              color={colors.primaryDark}
+              className={commonIconStyle}
+              size={16}
+              onClick={() => {
+                popupsContext.addBarcode.show({ productId: item.id });
+              }}
+            />
           </StyledActionsWrapper>
         ),
       });
     }
 
     return table;
-  }, [refetchQuery, applicationContext.user.isAdmin, popupsContext.deleteProduct, popupsContext.updateProduct, t]);
+  }, [
+    refetchQuery,
+    applicationContext.user.isAdmin,
+    popupsContext.deleteProduct,
+    popupsContext.updateProduct,
+    t,
+    popupsContext.addBarcode,
+  ]);
 
   /* AllProductPage Callbacks */
   const onChangePage = React.useCallback(
     (pageIndex: number, pageCount: number) => {
-      if (allProductsPageNumber < totalPage && pageIndex + 2 >= pageCount) {
-        setAllProductPageNumber(allProductsPageNumber + 1);
+      if (allProductsPageNumber <= totalPage && pageIndex <= pageCount) {
+        setAllProductPageNumber(pageIndex);
       }
     },
     [allProductsPageNumber, totalPage],
@@ -147,14 +167,17 @@ function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
   return (
     <Container>
       <StyledPageContainer>
-        <StyledAddButton onClick={() => popupsContext.createProduct.show({})}>
-          {t('common.add')} <UIIcon name="add" color={colors.white} size={10} className={addIconStyle} />
-        </StyledAddButton>
+        {applicationContext.user.isAdmin && (
+          <StyledAddButton onClick={() => popupsContext.createProduct.show({})}>
+            {t('common.add')} <UIIcon name="add" color={colors.white} size={10} className={addIconStyle} />
+          </StyledAddButton>
+        )}
         <UITable
           id="all-products-page-table"
-          data={products}
-          rowCount={14}
+          data={productsValues}
+          rowCount={products.elementCountOfPage > 0 ? products.elementCountOfPage : 20}
           columns={TABLE_DATA_COLUMNS}
+          totalPageCount={totalPage}
           onChangePage={onChangePage}
         />
       </StyledPageContainer>

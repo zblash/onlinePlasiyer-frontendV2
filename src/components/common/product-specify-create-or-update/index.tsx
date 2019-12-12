@@ -109,7 +109,7 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
   });
   const { mutation: updateProductSpecify } = useMutation(mutationEndPoints.updateSpecifyProduct, {
     variables: {
-      id: props.data.id,
+      id: props.data ? props.data.id : '',
       barcode,
       contents: parseInt(contents, 10),
       quantity: parseInt(quantity, 10),
@@ -157,12 +157,6 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
     routerHistory,
   ]);
 
-  const handleUnitTypeChange = React.useCallback(
-    e => {
-      setUnitType(e.value);
-    },
-    [setUnitType],
-  );
   /* CreateProductSpecifyPage Lifecycle  */
   React.useEffect(() => {
     if (!barcode && !popup.createProduct.isShown) {
@@ -211,7 +205,7 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
             placeholder="Secim Yapin"
             className={selectInput}
             value={unitType}
-            onChange={handleUnitTypeChange}
+            onChange={e => setUnitType(e)}
           />
         </StyledCreateProductSpecifyContentElement>
         <StyledCreateProductSpecifyContentElement>

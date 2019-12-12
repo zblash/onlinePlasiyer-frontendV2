@@ -23,6 +23,8 @@ const StyledAddActiveStateWrapper = styled.div`
 `;
 const StyledAddActiveStateHeader = styled.div`
   border-bottom: 1px solid ${colors.lightGray};
+  text-align: center;
+  margin-bottom: 15px;
 `;
 const StyledAddActiveStateFormWrapper = styled.div`
   margin-top: 10px;

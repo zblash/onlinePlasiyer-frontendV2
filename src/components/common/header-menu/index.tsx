@@ -69,7 +69,7 @@ const iconStyle = css`
   margin-left: 8px;
 `;
 /* AdminHeader Component  */
-function AdminHeader(props: React.PropsWithChildren<AdminHeaderProps>) {
+function HeaderMenu(props: React.PropsWithChildren<AdminHeaderProps>) {
   /* AdminHeader Variables */
 
   /* AdminHeader Callbacks */
@@ -141,8 +141,29 @@ function AdminHeader(props: React.PropsWithChildren<AdminHeaderProps>) {
     </StyledAdminHeaderWrapper>
   );
 
-  return applicationContext.user.isAdmin ? adminHeader : merchantHeader;
-}
-const PureAdminHeader = React.memo(AdminHeader);
+  const customerHeader = (
+    <StyledAdminHeaderWrapper>
+      <StyledSubNavs>
+        <StyledSubNavsLink to="/">Anasayfa </StyledSubNavsLink>
+      </StyledSubNavs>
+      <StyledSubNavs>
+        <StyledSubNavsLink to="/all-products">Tum Urunler</StyledSubNavsLink>
+      </StyledSubNavs>
+      <StyledSubNavs>
+        <StyledSubNavsLink to="/invoices">Faturalari Gor</StyledSubNavsLink>
+      </StyledSubNavs>
+      <StyledSubNavs>
+        <StyledSubNavsLink to="/orders">Siparisleri Gor</StyledSubNavsLink>
+      </StyledSubNavs>
+    </StyledAdminHeaderWrapper>
+  );
 
-export { PureAdminHeader as AdminHeader };
+  return applicationContext.user.isAdmin
+    ? adminHeader
+    : applicationContext.user.isMerchant
+    ? merchantHeader
+    : customerHeader;
+}
+const PureHeaderMenu = React.memo(HeaderMenu);
+
+export { PureHeaderMenu as HeaderMenu };

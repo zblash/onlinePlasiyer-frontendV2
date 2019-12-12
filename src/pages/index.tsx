@@ -23,7 +23,7 @@ import { MerchantHome } from './merchant-home';
 import { CreateUserPage } from './create-user';
 import { AllCategoriesPage } from './all-categories';
 import { UserPage } from './user';
-import { AdminHeader } from '~/components/common/admin-header';
+import { HeaderMenu } from '~/components/common/header-menu';
 import { UserInvoicesPage } from './user-invoices';
 import { UserOrdersPage } from './user-orders';
 import { UserProductSpecifiesPage } from './user-product-specifies';
@@ -104,7 +104,7 @@ const Routes = React.memo(() => {
   return (
     <>
       <Header />
-      <AdminHeader />
+      <HeaderMenu />
       <Switch>
         {routes.map(route => (
           <Route

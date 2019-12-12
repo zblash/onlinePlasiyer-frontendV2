@@ -9,6 +9,7 @@ import {
   ISpecifyProductResponse,
   UserRoleResponse,
   IUserRegisterResponse,
+  TOrderStatus,
 } from '~/services/helpers/backend-models';
 
 interface CreateCategoryVariables {
@@ -182,6 +183,21 @@ class MutationEndpoints {
     status: boolean;
     taxNumber: string;
   }) => Promise<IUserRegisterResponse> = (...params) => ApiCall.post('/users', ...params);
+
+  updateOrder: (params: {
+    id: string;
+    paidPrice?: number;
+    discount?: number;
+    status: TOrderStatus;
+    wayBillDate: Date;
+  }) => Promise<IOrder> = ({ ...params }) => {
+    const { id, ...others } = params;
+
+    return ApiCall.put(`/orders/${params.id}`, { ...others });
+  };
+
+  addBarcode: (params: { id: string; barcode: string }) => Promise<IProductResponse> = ({ id, barcode }) =>
+    ApiCall.post(`/products/addbarcode/${id}`, { barcode });
 
   deneme = () => Promise.resolve({ id: '12341' });
 }
