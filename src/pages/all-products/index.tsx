@@ -137,6 +137,15 @@ function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
                 popupsContext.addBarcode.show({ productId: item.id });
               }}
             />
+            <UIIcon
+              name="rightArrow"
+              color={colors.dangerDark}
+              className={commonIconStyle}
+              size={16}
+              onClick={() => {
+                popupsContext.removeBarcode.show({ productId: item.id, barcodeList: item.barcodeList });
+              }}
+            />
           </StyledActionsWrapper>
         ),
       });
@@ -150,6 +159,7 @@ function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
     popupsContext.updateProduct,
     t,
     popupsContext.addBarcode,
+    popupsContext.removeBarcode,
   ]);
 
   /* AllProductPage Callbacks */

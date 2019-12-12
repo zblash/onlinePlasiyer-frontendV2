@@ -5,6 +5,7 @@ import { ProductDeletePopupParams } from '~/components/popups/product-delete';
 import { ProductSpecifyDeletePopupParams } from '~/components/popups/product-specify-delete';
 import { UpdateOrderPopupParams } from '~/components/popups/update-order-popup';
 import { AddBarcodePopupParams } from '~/components/popups/add-barcode-popup';
+import { RemoveBarcodePopupParams } from '~/components/popups/remove-barcode-popup';
 
 export interface Popup<O = undefined> {
   isShown: boolean;
@@ -24,4 +25,5 @@ export interface PopupContextType {
   deleteProductSpecify: Popup<ProductSpecifyDeletePopupParams>;
   updateOrder: Popup<UpdateOrderPopupParams>;
   addBarcode: Popup<AddBarcodePopupParams>;
+  removeBarcode: Popup<RemoveBarcodePopupParams>;
 }

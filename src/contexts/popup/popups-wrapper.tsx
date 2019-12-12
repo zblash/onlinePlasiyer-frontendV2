@@ -9,6 +9,7 @@ import { AddActiveState } from '~/components/popups/add-active-state-popup';
 import { ProductSpecifyDeletePopup } from '~/components/popups/product-specify-delete';
 import { UpdateOrderPopup } from '~/components/popups/update-order-popup';
 import { AddBarcodePopup } from '~/components/popups/add-barcode-popup';
+import { RemoveBarcodePopup } from '~/components/popups/remove-barcode-popup';
 
 interface PopupsWrapperProps extends PopupContextType {}
 
@@ -27,6 +28,7 @@ function PopupsWrapper(props: PopupsWrapperProps) {
     { ...props.deleteProductSpecify, comp: <ProductSpecifyDeletePopup params={props.deleteProductSpecify.params} /> },
     { ...props.updateOrder, comp: <UpdateOrderPopup params={props.updateOrder.params} /> },
     { ...props.addBarcode, comp: <AddBarcodePopup params={props.addBarcode.params} /> },
+    { ...props.removeBarcode, comp: <RemoveBarcodePopup params={props.removeBarcode.params} /> },
   ];
 
   return (

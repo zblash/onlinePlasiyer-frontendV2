@@ -199,6 +199,9 @@ class MutationEndpoints {
   addBarcode: (params: { id: string; barcode: string }) => Promise<IProductResponse> = ({ id, barcode }) =>
     ApiCall.post(`/products/addbarcode/${id}`, { barcode });
 
+  removeBarcode: (params: { id: string; barcode: string }) => Promise<IProductResponse> = ({ id, barcode }) =>
+    ApiCall.post(`/products/removebarcode/${id}`, { barcode });
+
   deneme = () => Promise.resolve({ id: '12341' });
 }
 

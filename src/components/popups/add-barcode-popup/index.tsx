@@ -5,6 +5,7 @@ import { UIButton, UIInput, UIIcon, Loading } from '~/components/ui';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { usePopupContext } from '~/contexts/popup/context';
+import { useAlert } from '~/utils/hooks';
 
 /* AddBarcodePopup Helpers */
 export interface AddBarcodePopupParams {
@@ -95,6 +96,7 @@ function AddBarcodePopup(props: React.PropsWithChildren<AddBarcodePopupProps>) {
   /* AddBarcodePopup Variables */
   const { t } = useTranslation();
   const popups = usePopupContext();
+  const alert = useAlert();
   const [barcode, setBarcode] = React.useState();
   const [isBarcodeSaved, setIsBarcodeSaved] = React.useState(false);
   const { mutation: checkProduct, loading: checkProductLoading } = useMutation(mutationEndPoints.hasProduct, {
@@ -111,12 +113,19 @@ function AddBarcodePopup(props: React.PropsWithChildren<AddBarcodePopupProps>) {
     checkProduct().then(({ hasBarcode }) => {
       setIsBarcodeSaved(hasBarcode);
       if (!hasBarcode) {
-        addBarcode().then(data => {
-          popups.addBarcode.hide();
-        });
+        addBarcode()
+          .then(() => {
+            alert.show('Barkod Eklendi', { type: 'success' });
+          })
+          .catch(() => {
+            alert.show('Barkod Eklenemedi.', { type: 'error' });
+          })
+          .finally(() => {
+            popups.addBarcode.hide();
+          });
       }
     });
-  }, [checkProduct, popups.addBarcode, addBarcode]);
+  }, [checkProduct, popups.addBarcode, addBarcode, alert]);
   /* AddBarcodePopup Lifecycle  */
 
   return (
