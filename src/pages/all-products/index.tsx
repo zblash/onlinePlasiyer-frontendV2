@@ -55,6 +55,10 @@ const commonIconStyle = css`
 const addIconStyle = css`
   margin-left: 8px;
 `;
+const addBtnWrapper = css`
+  width: 100%;
+  display: inline-block;
+`;
 /* AllProductPage Component  */
 
 function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
@@ -62,12 +66,23 @@ function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
   const { t } = useTranslation();
   const popupsContext = usePopupContext();
   const applicationContext = useApplicationContext();
+  const sortList = [
+    { value: 'id', label: 'Eklenme Sirasina Gore' },
+    { value: 'name', label: 'Isme Gore' },
+    { value: 'status', label: 'Aktiflik Durumuna Gore' },
+  ];
+  const [sortBy, setSortBy] = React.useState();
+  const [sortType, setSortType] = React.useState();
   const [allProductsPageNumber, setAllProductPageNumber] = React.useState(1);
   const {
     data: { values: productsValues, totalPage },
     getDataByPage: productsByPage,
   } = usePaginationQuery(paginationQueryEndpoints.getAllProducts, {
     pageNumber: allProductsPageNumber,
+    variables: {
+      sortBy,
+      sortType,
+    },
     defaultValue: { values: [], totalPage: 0 },
   });
   const products = React.useMemo(() => {
@@ -178,14 +193,19 @@ function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
     <Container>
       <StyledPageContainer>
         {applicationContext.user.isAdmin && (
-          <StyledAddButton onClick={() => popupsContext.createProduct.show({})}>
-            {t('common.add')} <UIIcon name="add" color={colors.white} size={10} className={addIconStyle} />
-          </StyledAddButton>
+          <div className={addBtnWrapper}>
+            <StyledAddButton onClick={() => popupsContext.createProduct.show({})}>
+              {t('common.add')} <UIIcon name="add" color={colors.white} size={10} className={addIconStyle} />
+            </StyledAddButton>
+          </div>
         )}
         <UITable
+          onSortChange={e => setSortBy(e.value)}
+          onSortTypeChange={value => setSortType(value)}
+          sortList={sortList}
           id="all-products-page-table"
           data={productsValues}
-          rowCount={products.elementCountOfPage > 0 ? products.elementCountOfPage : 20}
+          rowCount={products.elementCountOfPage > 0 ? products.elementCountOfPage : 5}
           columns={TABLE_DATA_COLUMNS}
           totalPageCount={totalPage}
           onChangePage={onChangePage}

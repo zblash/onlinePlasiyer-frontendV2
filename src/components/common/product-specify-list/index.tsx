@@ -30,7 +30,10 @@ const commonIconStyle = css`
 /* ProductSpecifyListComponent Component  */
 function ProductSpecifyListComponent(props: React.PropsWithChildren<ProductSpecifyListComponentProps>) {
   /* ProductSpecifyListComponent Variables */
+  const sortList = [{ value: 'totalPrice', label: 'Fiyata Gore' }, { value: 'unitPrice', label: 'Birim Fiyata Gore' }];
   const [allProductsPageNumber, setAllProductPageNumber] = React.useState(1);
+  const [sortBy, setSortBy] = React.useState();
+  const [sortType, setSortType] = React.useState();
   const { t } = useTranslation();
   const popupsContext = usePopupContext();
   const {
@@ -39,6 +42,8 @@ function ProductSpecifyListComponent(props: React.PropsWithChildren<ProductSpeci
   } = usePaginationQuery(paginationQueryEndpoints.getAllSpecifies, {
     variables: {
       userId: props.userId,
+      sortBy,
+      sortType,
     },
     pageNumber: allProductsPageNumber,
     defaultValue: { values: [], totalPage: 0 },
@@ -134,6 +139,9 @@ function ProductSpecifyListComponent(props: React.PropsWithChildren<ProductSpeci
 
   return (
     <UITable
+      onSortChange={e => setSortBy(e.value)}
+      onSortTypeChange={value => setSortType(value)}
+      sortList={sortList}
       id="all-product-specifies-page-table"
       data={productSpecifiesValues}
       rowCount={productSpecifies.elementCountOfPage > 0 ? productSpecifies.elementCountOfPage : 20}

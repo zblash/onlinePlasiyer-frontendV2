@@ -12,6 +12,8 @@ interface AdminHeaderProps {}
 const StyledAdminHeaderWrapper = styled.div`
   overflow: hidden;
   background-color: ${colors.darkGray};
+  display: flex;
+  justify-content: flex-start;
 `;
 
 const StyledSubNavsButton = styled.button`
@@ -110,6 +112,16 @@ function HeaderMenu(props: React.PropsWithChildren<AdminHeaderProps>) {
       </StyledSubNavs>
       <StyledSubNavs>
         <StyledSubNavsLink to="/all-categories">Kategori Islemleri</StyledSubNavsLink>
+      </StyledSubNavs>
+      <StyledSubNavs>
+        <StyledSubNavsButton>
+          Site Islemleri
+          <UIIcon size={10} name="chevronDown" className={iconStyle} />
+        </StyledSubNavsButton>
+        <StyledSubNavContent>
+          <StyledSubNavContentItem to="/create-announcement">Duyuru Ekle</StyledSubNavContentItem>
+          <StyledSubNavContentItem to="/announcements">Duyurular</StyledSubNavContentItem>
+        </StyledSubNavContent>
       </StyledSubNavs>
     </StyledAdminHeaderWrapper>
   );

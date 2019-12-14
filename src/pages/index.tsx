@@ -29,6 +29,8 @@ import { UserOrdersPage } from './user-orders';
 import { UserProductSpecifiesPage } from './user-product-specifies';
 import { UpdateProductSpeciyPage } from './update-product-specify';
 import { Footer } from '~/components/common/footer';
+import { CreateAnnouncementPage } from './create-announcement';
+import { AnnouncementsPage } from './announcements';
 
 interface IRoute {
   path: string;
@@ -98,6 +100,8 @@ const routes: IRoute[] = [
   { path: '/merchant/home', component: MerchantHome, authorize: ['MERCHANT'] },
   { path: '/users/create', component: CreateUserPage, authorize: ['ADMIN'] },
   { path: '/user/:userId', component: UserPage, authorize: ['ADMIN'] },
+  { path: '/create-announcement', component: CreateAnnouncementPage, authorize: ['ADMIN'] },
+  { path: '/announcements', component: AnnouncementsPage, authorize: ['ADMIN'] },
 ];
 
 const Routes = React.memo(() => {
@@ -105,19 +109,21 @@ const Routes = React.memo(() => {
     <>
       <Header />
       <HeaderMenu />
-      <Switch>
-        {routes.map(route => (
-          <Route
-            key={route.path}
-            path={route.path}
-            component={withRequiredRole(route.component, {
-              authorize: route.authorize,
-            })}
-            exact
-          />
-        ))}
-        <Route component={Page404} />
-      </Switch>
+      <div style={{ marginBottom: '60px' }}>
+        <Switch>
+          {routes.map(route => (
+            <Route
+              key={route.path}
+              path={route.path}
+              component={withRequiredRole(route.component, {
+                authorize: route.authorize,
+              })}
+              exact
+            />
+          ))}
+          <Route component={Page404} />
+        </Switch>
+      </div>
       <Footer />
     </>
   );

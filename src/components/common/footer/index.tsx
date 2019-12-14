@@ -12,8 +12,10 @@ const StyledFooterWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  margin-top: 25px;
+  position: fixed;
   height: 40px;
+  bottom: 0;
+  z-index: 100;
 `;
 const StyledContent = styled.div`
   min-height: 20px;

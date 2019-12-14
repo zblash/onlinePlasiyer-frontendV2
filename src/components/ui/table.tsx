@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled, { css, StylableProps } from '~/styled';
 import { UIIcon } from '~/components/ui';
+import { TableSort } from './table-sort';
 
 /*
   UiTable Helpers
@@ -19,6 +20,9 @@ interface UiTableProps<T> extends StylableProps {
   id: string;
   hidePagination?: boolean;
   onChangePage?: (pageIndex: number, totalPageCount: number) => void;
+  onSortChange?: (e) => void;
+  onSortTypeChange?: (value) => void;
+  sortList?: any[];
 }
 
 /*
@@ -133,9 +137,9 @@ const iconStyle = css`
 
 function UITable<T>(props: UiTableProps<T>) {
   const hasRowCount = typeof props.rowCount === 'number';
-  const [elementCount] = React.useState(hasRowCount ? props.rowCount : props.data.length);
-  const [pageIndex, setPageIndex] = React.useState(1);
+  const elementCount = hasRowCount ? props.rowCount : props.data.length;
 
+  const [pageIndex, setPageIndex] = React.useState(1);
   const dataWithEmptyRow = React.useMemo(() => {
     if (hasRowCount && props.data.length) {
       const data = Array.from(props.data);
@@ -156,6 +160,7 @@ function UITable<T>(props: UiTableProps<T>) {
 
     return [];
   }, [hasRowCount, props.data, elementCount]);
+
   const needAdd = React.useMemo(() => {
     return elementCount - (dataWithEmptyRow.length - elementCount * (props.totalPageCount - 1));
   }, [elementCount, props.totalPageCount, dataWithEmptyRow]);
@@ -188,6 +193,13 @@ function UITable<T>(props: UiTableProps<T>) {
 
   return (
     <UiTableWrapper className={props.className}>
+      {props.sortList && props.onSortChange && props.onSortTypeChange && (
+        <TableSort
+          onSortChange={props.onSortChange}
+          sortList={props.sortList}
+          onSortTypeChange={props.onSortTypeChange}
+        />
+      )}
       <StyledUiTable>
         <StyledTHead>
           <StyledHeadTr>

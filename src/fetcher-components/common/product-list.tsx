@@ -78,6 +78,10 @@ function ProductListFetcher(props: React.PropsWithChildren<ProductListFetcherPro
     [productPageTotalPage],
   );
 
+  React.useEffect(() => {
+    setProductPageNumber(1);
+  }, [props.selectedCategoryId]);
+
   return (
     <div ref={wrapperRef}>
       <ProductList

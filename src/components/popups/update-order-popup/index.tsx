@@ -90,7 +90,8 @@ function UpdateOrderPopup(props: React.PropsWithChildren<UpdateOrderPopupProps>)
       discount: parseInt(discount, 10),
       paidPrice: parseInt(paidPrice, 10),
       status: status ? status.value : 'FINISHED',
-      wayBillDate: date,
+      // eslint-disable-next-line
+      wayBillDate: date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear(),
     },
   });
   const handleSubmit = React.useCallback(() => {

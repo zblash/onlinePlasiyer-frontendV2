@@ -189,7 +189,7 @@ class MutationEndpoints {
     paidPrice?: number;
     discount?: number;
     status: TOrderStatus;
-    wayBillDate: Date;
+    wayBillDate: string;
   }) => Promise<IOrder> = ({ ...params }) => {
     const { id, ...others } = params;
 
@@ -201,6 +201,15 @@ class MutationEndpoints {
 
   removeBarcode: (params: { id: string; barcode: string }) => Promise<IProductResponse> = ({ id, barcode }) =>
     ApiCall.post(`/products/removebarcode/${id}`, { barcode });
+
+  createAnnouncement = (params: { title: string; message: string; lastDate: string; uploadfile: File }) => {
+    const formData = new FormData();
+    Object.keys(params).forEach(key => {
+      formData.append(key, params[key]);
+    });
+
+    return ApiCall.post('/announcements', formData);
+  };
 
   deneme = () => Promise.resolve({ id: '12341' });
 }
