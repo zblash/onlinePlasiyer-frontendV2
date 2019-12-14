@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { render } from 'react-dom';
 import { transitions, positions, Provider as AlertProvider } from 'react-alert';
+import { registerLocale } from 'react-datepicker';
+import tr from 'date-fns/locale/tr';
 import { globalStyleCreator } from '~/styled';
 import { CheckHealth } from '~/controls/check-health';
 import { CheckUser } from '~/controls/check-user';
@@ -9,7 +11,9 @@ import App from '~/app';
 import { main as i18nMain } from '~/i18n';
 import '~/assets/style';
 import AlertTemplate from '~/contexts/alert-template';
+import 'react-datepicker/dist/react-datepicker.css';
 
+registerLocale('tr', tr);
 const rootEl = document.getElementById('root');
 const GlobalStyle = globalStyleCreator();
 const options = {

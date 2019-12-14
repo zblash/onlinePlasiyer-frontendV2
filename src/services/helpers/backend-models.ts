@@ -43,6 +43,7 @@ export interface ISpecifyProductResponse {
   sellerName: string;
   states: IAddressStateResponse[];
   productId: string;
+  productBarcodeList: string[];
 }
 
 export interface ICardItemResponse {
@@ -121,6 +122,7 @@ export interface IOrder {
   status: TOrderStatus;
   totalPrice: number;
   waybillDate: string | null;
+  buyerAddress: IAddressResponse;
 }
 
 export interface IOrderSummary {

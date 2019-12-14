@@ -4,7 +4,7 @@ import { useTranslation } from '~/i18n';
 import { usePopupContext } from '~/contexts/popup/context';
 import { ISpecifyProductResponse } from '~/services/helpers/backend-models';
 import { UITableColumns } from '~/components/ui/table';
-import { UIIcon, UITable } from '~/components/ui';
+import { UIIcon, UITable, UILink } from '~/components/ui';
 import { usePaginationQuery } from '~/services/query-context/use-pagination-quey';
 import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
 import { refetchFactory } from '~/services/utils';
@@ -22,26 +22,35 @@ const StyledActionsWrapper = styled.div`
   align-items: center;
   justify-content: center;
 `;
+const StyledLink = styled(UILink)``;
 const commonIconStyle = css`
   cursor: pointer;
   margin: 0 8px;
 `;
-
 /* ProductSpecifyListComponent Component  */
 function ProductSpecifyListComponent(props: React.PropsWithChildren<ProductSpecifyListComponentProps>) {
   /* ProductSpecifyListComponent Variables */
+  const sortList = [{ value: 'totalPrice', label: 'Fiyata Gore' }, { value: 'unitPrice', label: 'Birim Fiyata Gore' }];
   const [allProductsPageNumber, setAllProductPageNumber] = React.useState(1);
+  const [sortBy, setSortBy] = React.useState();
+  const [sortType, setSortType] = React.useState();
   const { t } = useTranslation();
   const popupsContext = usePopupContext();
   const {
-    data: { values: productSpecifies, totalPage, elementCountOfPage },
+    data: { values: productSpecifiesValues, totalPage },
+    getDataByPage: productSpecifiesPage,
   } = usePaginationQuery(paginationQueryEndpoints.getAllSpecifies, {
     variables: {
       userId: props.userId,
+      sortBy,
+      sortType,
     },
     pageNumber: allProductsPageNumber,
     defaultValue: { values: [], totalPage: 0 },
   });
+  const productSpecifies = React.useMemo(() => {
+    return productSpecifiesPage(allProductsPageNumber);
+  }, [allProductsPageNumber, productSpecifiesPage]);
   const refetchQuery = React.useMemo(
     () =>
       refetchFactory(paginationQueryEndpoints.getAllSpecifies, {
@@ -67,6 +76,7 @@ function ProductSpecifyListComponent(props: React.PropsWithChildren<ProductSpeci
     },
     [allProductsPageNumber, totalPage],
   );
+
   /* ProductSpecifyListComponent Lifecycle  */
   const TABLE_DATA_COLUMNS = React.useMemo<UITableColumns<ISpecifyProductResponse>[]>(
     () => [
@@ -117,7 +127,9 @@ function ProductSpecifyListComponent(props: React.PropsWithChildren<ProductSpeci
               size={16}
               onClick={x => onDeleteClick(item.id)}
             />
-            <UIIcon name="edit" color={colors.primaryDark} className={commonIconStyle} size={16} />
+            <StyledLink to={`/edit-product-specify/${item.id}`}>
+              <UIIcon name="edit" color={colors.primaryDark} className={commonIconStyle} size={16} />
+            </StyledLink>
           </StyledActionsWrapper>
         ),
       },
@@ -127,9 +139,12 @@ function ProductSpecifyListComponent(props: React.PropsWithChildren<ProductSpeci
 
   return (
     <UITable
+      onSortChange={e => setSortBy(e.value)}
+      onSortTypeChange={value => setSortType(value)}
+      sortList={sortList}
       id="all-product-specifies-page-table"
-      data={productSpecifies}
-      rowCount={elementCountOfPage > 0 ? elementCountOfPage : 15}
+      data={productSpecifiesValues}
+      rowCount={productSpecifies.elementCountOfPage > 0 ? productSpecifies.elementCountOfPage : 20}
       columns={TABLE_DATA_COLUMNS}
       totalPageCount={totalPage}
       onChangePage={onChangePage}

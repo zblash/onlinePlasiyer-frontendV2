@@ -1,11 +1,10 @@
 import * as React from 'react';
 import styled, { colors, css } from '~/styled';
 import { UIIcon, UILink } from '~/components/ui';
+import { useApplicationContext } from '~/app/context';
 
 /* AdminHeader Helpers */
-interface AdminHeaderProps {
-  isAdmin: boolean;
-}
+interface AdminHeaderProps {}
 
 /* AdminHeader Constants */
 
@@ -13,6 +12,8 @@ interface AdminHeaderProps {
 const StyledAdminHeaderWrapper = styled.div`
   overflow: hidden;
   background-color: ${colors.darkGray};
+  display: flex;
+  justify-content: flex-start;
 `;
 
 const StyledSubNavsButton = styled.button`
@@ -70,12 +71,14 @@ const iconStyle = css`
   margin-left: 8px;
 `;
 /* AdminHeader Component  */
-function AdminHeader(props: React.PropsWithChildren<AdminHeaderProps>) {
+function HeaderMenu(props: React.PropsWithChildren<AdminHeaderProps>) {
   /* AdminHeader Variables */
 
   /* AdminHeader Callbacks */
 
   /* AdminHeader Lifecycle  */
+
+  const applicationContext = useApplicationContext();
 
   const adminHeader = (
     <StyledAdminHeaderWrapper>
@@ -110,6 +113,16 @@ function AdminHeader(props: React.PropsWithChildren<AdminHeaderProps>) {
       <StyledSubNavs>
         <StyledSubNavsLink to="/all-categories">Kategori Islemleri</StyledSubNavsLink>
       </StyledSubNavs>
+      <StyledSubNavs>
+        <StyledSubNavsButton>
+          Site Islemleri
+          <UIIcon size={10} name="chevronDown" className={iconStyle} />
+        </StyledSubNavsButton>
+        <StyledSubNavContent>
+          <StyledSubNavContentItem to="/create-announcement">Duyuru Ekle</StyledSubNavContentItem>
+          <StyledSubNavContentItem to="/announcements">Duyurular</StyledSubNavContentItem>
+        </StyledSubNavContent>
+      </StyledSubNavs>
     </StyledAdminHeaderWrapper>
   );
 
@@ -140,8 +153,29 @@ function AdminHeader(props: React.PropsWithChildren<AdminHeaderProps>) {
     </StyledAdminHeaderWrapper>
   );
 
-  return props.isAdmin ? adminHeader : merchantHeader;
-}
-const PureAdminHeader = React.memo(AdminHeader);
+  const customerHeader = (
+    <StyledAdminHeaderWrapper>
+      <StyledSubNavs>
+        <StyledSubNavsLink to="/">Anasayfa </StyledSubNavsLink>
+      </StyledSubNavs>
+      <StyledSubNavs>
+        <StyledSubNavsLink to="/all-products">Tum Urunler</StyledSubNavsLink>
+      </StyledSubNavs>
+      <StyledSubNavs>
+        <StyledSubNavsLink to="/invoices">Faturalari Gor</StyledSubNavsLink>
+      </StyledSubNavs>
+      <StyledSubNavs>
+        <StyledSubNavsLink to="/orders">Siparisleri Gor</StyledSubNavsLink>
+      </StyledSubNavs>
+    </StyledAdminHeaderWrapper>
+  );
 
-export { PureAdminHeader as AdminHeader };
+  return applicationContext.user.isAdmin
+    ? adminHeader
+    : applicationContext.user.isMerchant
+    ? merchantHeader
+    : customerHeader;
+}
+const PureHeaderMenu = React.memo(HeaderMenu);
+
+export { PureHeaderMenu as HeaderMenu };

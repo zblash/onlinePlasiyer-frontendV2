@@ -4,6 +4,7 @@ import { useTranslation } from '~/i18n';
 import { IOrder, TOrderStatus } from '~/services/helpers/backend-models';
 import { UITable, UIIcon, UILink } from '~/components/ui';
 import { useApplicationContext } from '~/app/context';
+import { usePopupContext } from '~/contexts/popup/context';
 
 /* OrderListComponent Helpers */
 interface OrderListComponentProps {
@@ -35,9 +36,15 @@ const commonIconStyle = css`
 function OrderListComponent(props: React.PropsWithChildren<OrderListComponentProps>) {
   /* OrderListComponent Variables */
   const { t } = useTranslation();
+  const popups = usePopupContext();
   const applicationContext = useApplicationContext();
   /* OrderListComponent Callbacks */
-
+  const handleEditClick = React.useCallback(
+    item => {
+      popups.updateOrder.show({ order: item });
+    },
+    [popups.updateOrder],
+  );
   /* OrderListComponent Lifecycle  */
 
   return (
@@ -74,9 +81,16 @@ function OrderListComponent(props: React.PropsWithChildren<OrderListComponentPro
           title: null,
           itemRenderer: item => (
             <StyledActionsWrapper>
-              {(applicationContext.user.isMerchant || applicationContext.user.isAdmin) && (
-                <UIIcon name="edit" color={colors.primaryDark} className={commonIconStyle} size={16} />
-              )}
+              {item.status === 'CANCELLED' &&
+                (applicationContext.user.isMerchant || applicationContext.user.isAdmin) && (
+                  <UIIcon
+                    name="edit"
+                    color={colors.primaryDark}
+                    className={commonIconStyle}
+                    size={16}
+                    onClick={x => handleEditClick(item)}
+                  />
+                )}
               <StyledLink to={`/order/${item.id}`}>{t('cart.show-order-detail')}</StyledLink>
             </StyledActionsWrapper>
           ),

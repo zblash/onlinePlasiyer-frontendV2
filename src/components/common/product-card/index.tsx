@@ -38,12 +38,24 @@ export const ProductCardStrings = {
   taxRate: 'Vergi Orani',
   showPrice: 'Fiyatlari Goster',
   barcode: 'Barkod Listesi',
+  cheapestPrices: 'En Dusuk Fiyatlar',
 };
 
 /*
   ProductCard Styles
 */
 
+const StyledShadowElement = styled.div`
+  position: absolute;
+  top: 20px;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+  height: 140px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 57%);
+  transition: opacity 0.4s ease;
+  z-index: 1;
+`;
 const StyledCardImg = styled.img`
   object-fit: cover;
   width: 100%;
@@ -52,9 +64,8 @@ const StyledCardImg = styled.img`
 `;
 const StyledCardImgWrapper = styled.div`
   width: 100%;
-  max-height: 160px;
+  height: 160px;
   overflow: hidden;
-  transition: max-height 0.5s linear;
 `;
 const deleteIconStyle = css`
   position: absolute;
@@ -73,7 +84,6 @@ const StyledContent = styled.div`
   flex-direction: column;
   justify-content: space-between;
   background-color: #fff;
-  transition: height 0.5s linear;
 `;
 
 const StyledCardWrapper = styled.div`
@@ -85,15 +95,13 @@ const StyledCardWrapper = styled.div`
   box-shadow: #cccccc 0 0 6px;
     0px 1px 5px 0px rgba(0, 0, 0, 0.12);
   overflow: hidden;
-
   flex: 1;
   :hover {
-    ${StyledCardImgWrapper} {
-      max-height: 0;
-
+    ${StyledShadowElement} {
+      opacity: 1;
     }
-    ${StyledContent} {
-      height: 280px;
+    ${StyledCardImg} {
+      transform: scale(1.5);
     }
     .${deleteIconStyle}{
       opacity: 1;
@@ -143,9 +151,7 @@ const StyledContentCenter = styled.div`
   flex-direction: column;
 `;
 const StyledContentSpan = styled.span``;
-const StyledContentHeader = styled.h2`
-  margin: 0;
-`;
+
 const buttonIconStyle = css`
   margin-left: 8px;
 `;
@@ -153,21 +159,9 @@ const buttonIconStyle = css`
 const ProductCard: React.SFC<ProductCardProps> = props => {
   const userPermission = useUserPermissions();
   const popups = usePopupContext();
-  const [showDetails, setShowDetails] = React.useState(false);
-
-  const handleHover = React.useCallback(
-    (canShow: boolean) => {
-      setShowDetails(canShow);
-    },
-    [setShowDetails],
-  );
 
   const __ = (
-    <StyledCardWrapper
-      className={props.className}
-      onMouseEnter={() => handleHover(true)}
-      onMouseLeave={() => handleHover(false)}
-    >
+    <StyledCardWrapper className={props.className}>
       <StyledCardImgWrapper>
         <StyledCardImg src={props.photoUrl} />
       </StyledCardImgWrapper>
@@ -187,20 +181,8 @@ const ProductCard: React.SFC<ProductCardProps> = props => {
         <StyledTitle>{props.name}</StyledTitle>
         <StyledContentCenter>
           <StyledContentSpan>
-            {ProductCardStrings.taxRate} %{props.tax}
+            <strong>{ProductCardStrings.cheapestPrices}: </strong>Eklenecek
           </StyledContentSpan>
-
-          {showDetails && (
-            <>
-              <StyledContentHeader>{ProductCardStrings.barcode}</StyledContentHeader>
-              {props.barcodeList.map(x => (
-                <StyledContentSpan key={x}>{x}</StyledContentSpan>
-              ))}
-              <StyledContentHeader>{ProductCardStrings.barcode}</StyledContentHeader>
-              <StyledContentSpan>asdasd</StyledContentSpan>
-              <StyledContentSpan>asdasd</StyledContentSpan>
-            </>
-          )}
         </StyledContentCenter>
         <StyledPreviewButton onClick={props.onButtonClick} isExpand={props.isExpand}>
           <Trans i18nKey={props.isExpand ? 'product-card.hide-price' : 'product-card.show-price'}>
