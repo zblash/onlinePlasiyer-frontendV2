@@ -119,6 +119,8 @@ function HeaderMenu(props: React.PropsWithChildren<AdminHeaderProps>) {
           <UIIcon size={10} name="chevronDown" className={iconStyle} />
         </StyledSubNavsButton>
         <StyledSubNavContent>
+          <StyledSubNavContentItem to="/create-notification">Bildirim Ekle</StyledSubNavContentItem>
+          <StyledSubNavContentItem to="/all-notifications">Bildirimler</StyledSubNavContentItem>
           <StyledSubNavContentItem to="/create-announcement">Duyuru Ekle</StyledSubNavContentItem>
           <StyledSubNavContentItem to="/announcements">Duyurular</StyledSubNavContentItem>
         </StyledSubNavContent>

@@ -32,6 +32,7 @@ const icons = {
   clipboard: require('~/assets/icons/clipboard.svg'),
   qrCode: require('~/assets/icons/qr-code.svg'),
   tax: require('~/assets/icons/tax.svg'),
+  alarm: require('~/assets/icons/alarm.svg'),
 };
 
 export interface IconProps {

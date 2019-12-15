@@ -51,7 +51,7 @@ function login(username: string, password: string) {
   return axios.post(`${URL}/signin`, { username, password }).then(({ data }) => {
     TOKEN.set(`Bearer ${data.token}`);
     // eslint-disable-next-line
-    location.reload();
+    location.replace('/');
 
     return data;
   });
@@ -80,7 +80,7 @@ function signup(data: {
 function logout() {
   TOKEN.remove();
   // eslint-disable-next-line
-  location.reload();
+  location.replace('/');
 }
 const hasToken = !!TOKEN.get();
 

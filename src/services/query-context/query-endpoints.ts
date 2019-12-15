@@ -14,6 +14,7 @@ import {
   Invoice,
   IOrderSummary,
   ISpecifyProductResponse,
+  INotificationResponse,
 } from '~/services/helpers/backend-models';
 import { UserType } from '../helpers/maps';
 
@@ -50,18 +51,18 @@ class QueryEndpoints {
   getUsers: (s: { role: UserRoleResponse; type: UserType }) => Promise<IUserCommonResponse[]> = ({ type, role }) => {
     const userTypeRouteMap: Record<UserRoleResponse, Record<UserType, string>> = {
       CUSTOMER: {
-        active: '/users/customers/active',
-        all: '/users/customers/',
-        passive: '/users/customers/passive',
+        active: '/users/customer?status=true',
+        all: '/users/customer',
+        passive: '/users/customer?status=false',
       },
       MERCHANT: {
-        active: '/users/merchant/active',
-        passive: '/users/merchant/passive',
-        all: '/users/merchant/',
+        active: '/users/merchant?status=true',
+        passive: '/users/merchant?status=false',
+        all: '/users/merchant',
       },
       ADMIN: {
-        active: '/users/admin',
-        passive: '/users/admin',
+        active: '/users/admin?status=true',
+        passive: '/users/admin?status=false',
         all: '/users/admin',
       },
     };
@@ -97,6 +98,12 @@ class QueryEndpoints {
 
   getUserInfosForAdmin: (s: { id: string }) => Promise<IUserCommonResponse> = ({ id }) =>
     ApiCall.get(`/users/infos/${id}`);
+
+  getAllNotifications: () => Promise<Array<INotificationResponse>> = () => ApiCall.get('/notifications');
+
+  getAllUsersNotifications: () => Promise<Array<INotificationResponse>> = () => ApiCall.get('/notifications/my');
+
+  getAllUsers: () => Promise<Array<IUserCommonResponse>> = () => ApiCall.get('/users');
 }
 const queryEndpoints = new QueryEndpoints();
 

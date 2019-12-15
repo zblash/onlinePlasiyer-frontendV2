@@ -9,6 +9,8 @@ import { useApplicationContext } from '~/app/context';
 import { ISpecifyProductResponse } from '~/services/helpers/backend-models';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
+import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
+import { refetchFactory } from '~/services/utils';
 
 /* ProductSpecifyCreateUpdateComponent Helpers */
 interface ProductSpecifyCreateUpdateComponentProps {
@@ -106,6 +108,7 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
       unitPrice: parseInt(unitPrice, 10),
       unitType: unitType.value,
     },
+    refetchQueries: [refetchFactory(paginationQueryEndpoints.getAllSpecifies)],
   });
   const { mutation: updateProductSpecify } = useMutation(mutationEndPoints.updateSpecifyProduct, {
     variables: {
@@ -119,6 +122,7 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
       unitPrice: parseInt(unitPrice, 10),
       unitType: unitType.value,
     },
+    refetchQueries: [refetchFactory(paginationQueryEndpoints.getAllSpecifies)],
   });
   /* CreateProductSpecifyPage Callbacks */
   const handleSubmit = React.useCallback(() => {

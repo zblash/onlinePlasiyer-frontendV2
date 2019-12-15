@@ -128,26 +128,38 @@ const RegisterPage: React.SFC<RegisterPageProps> = props => {
         hasError={hasError}
         id="register-name-surname"
         placeholder={RegisterPageStrings.nameSurname}
+        required
         onChange={setName}
       />
       <StyledInput
         hasError={hasError}
         id="register-username"
         placeholder={RegisterPageStrings.username}
+        required
         onChange={setUsername}
       />
       <StyledInput
         hasError={hasError}
         id="register-password"
         type="password"
+        required
         placeholder={RegisterPageStrings.password}
         onChange={setPassword}
       />
-      <StyledInput hasError={hasError} id="register-mail" placeholder={RegisterPageStrings.email} onChange={setEmail} />
+      <StyledInput
+        hasError={hasError}
+        id="register-mail"
+        required
+        type="email"
+        placeholder={RegisterPageStrings.email}
+        onChange={setEmail}
+      />
+
       <StyledInput
         hasError={hasError}
         id="register-taxNumber"
         placeholder={RegisterPageStrings.taxNumber}
+        required
         onChange={setTaxNumber}
       />
       <StyledCityWrapper>

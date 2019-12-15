@@ -10,6 +10,8 @@ import {
   UserRoleResponse,
   IUserRegisterResponse,
   TOrderStatus,
+  IAnnouncement,
+  INotificationResponse,
 } from '~/services/helpers/backend-models';
 
 interface CreateCategoryVariables {
@@ -210,6 +212,16 @@ class MutationEndpoints {
 
     return ApiCall.post('/announcements', formData);
   };
+
+  removeAnnouncement: (params: { id: string }) => Promise<IAnnouncement> = ({ id }) =>
+    ApiCall.delete(`/announcements/${id}`).then(item => ({ ...item, removed: true }));
+
+  removeNotification: (params: { id: string }) => Promise<INotificationResponse> = ({ id }) =>
+    ApiCall.delete(`/notifications/${id}`).then(item => ({ ...item, removed: true }));
+
+  createNotification: (params: { userId: string; message: string; title: string }) => Promise<INotificationResponse> = (
+    ...params
+  ) => ApiCall.post('/notifications', ...params);
 
   deneme = () => Promise.resolve({ id: '12341' });
 }

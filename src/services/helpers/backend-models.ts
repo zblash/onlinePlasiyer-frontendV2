@@ -167,6 +167,14 @@ export interface IUserRegisterResponse {
   username: string;
 }
 
+export interface INotificationResponse {
+  id: string;
+  title: string;
+  message: string;
+  userId: string;
+  userName: string;
+}
+
 export type UserRoleResponse = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';
 
 export type UnitTypeResponse = 'KG' | 'KL' | 'AD';

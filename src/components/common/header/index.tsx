@@ -29,6 +29,7 @@ const HeaderStrings = {
   login: 'Oturum Ac',
   register: 'Kayit Ol',
   shopingBasket: 'Sepet',
+  notifications: 'Bildirimler',
 };
 
 /*
@@ -67,6 +68,12 @@ const _Header: React.SFC<HeaderProps> = props => {
 
   const menuItems: MenuItemProps[] = React.useMemo(
     () => [
+      {
+        id: 'notifications',
+        iconName: 'alarm',
+        text: HeaderStrings.notifications,
+        cardContent: close => <AccountCard close={close} />,
+      },
       {
         id: 'account-card',
         iconName: 'account',

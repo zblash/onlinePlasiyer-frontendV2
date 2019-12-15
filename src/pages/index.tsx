@@ -31,6 +31,8 @@ import { UpdateProductSpeciyPage } from './update-product-specify';
 import { Footer } from '~/components/common/footer';
 import { CreateAnnouncementPage } from './create-announcement';
 import { AnnouncementsPage } from './announcements';
+import { AllNotificationsPage } from './all-notifications';
+import { CreateNotificationPage } from './create-notification';
 
 interface IRoute {
   path: string;
@@ -102,6 +104,8 @@ const routes: IRoute[] = [
   { path: '/user/:userId', component: UserPage, authorize: ['ADMIN'] },
   { path: '/create-announcement', component: CreateAnnouncementPage, authorize: ['ADMIN'] },
   { path: '/announcements', component: AnnouncementsPage, authorize: ['ADMIN'] },
+  { path: '/all-notifications', component: AllNotificationsPage, authorize: ['ADMIN'] },
+  { path: '/create-notification', component: CreateNotificationPage, authorize: ['ADMIN'] },
 ];
 
 const Routes = React.memo(() => {

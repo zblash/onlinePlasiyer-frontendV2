@@ -10,6 +10,8 @@ import { ProductSpecifyDeletePopup } from '~/components/popups/product-specify-d
 import { UpdateOrderPopup } from '~/components/popups/update-order-popup';
 import { AddBarcodePopup } from '~/components/popups/add-barcode-popup';
 import { RemoveBarcodePopup } from '~/components/popups/remove-barcode-popup';
+import { RemoveAnnouncementPopup } from '~/components/popups/remove-announcement-popup';
+import { RemoveNotificationPopup } from '~/components/popups/remove-notification-popup';
 
 interface PopupsWrapperProps extends PopupContextType {}
 
@@ -29,6 +31,8 @@ function PopupsWrapper(props: PopupsWrapperProps) {
     { ...props.updateOrder, comp: <UpdateOrderPopup params={props.updateOrder.params} /> },
     { ...props.addBarcode, comp: <AddBarcodePopup params={props.addBarcode.params} /> },
     { ...props.removeBarcode, comp: <RemoveBarcodePopup params={props.removeBarcode.params} /> },
+    { ...props.removeAnnouncement, comp: <RemoveAnnouncementPopup params={props.removeAnnouncement.params} /> },
+    { ...props.removeNotification, comp: <RemoveNotificationPopup params={props.removeNotification.params} /> },
   ];
 
   return (

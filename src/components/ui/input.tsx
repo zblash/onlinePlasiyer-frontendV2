@@ -6,7 +6,7 @@ import styled, { StylableProps } from '~/styled';
 */
 interface UIInputProps extends StylableProps {
   id: string;
-  type?: 'text' | 'password';
+  type?: 'text' | 'password' | 'email';
   leftIcon?: React.ReactElement;
   rightIcon?: React.ReactElement;
   inputClassName?: string;
@@ -16,6 +16,7 @@ interface UIInputProps extends StylableProps {
   disabled?: boolean;
   form?: string;
   setRef?: React.RefObject<HTMLInputElement>;
+  required?: boolean;
 }
 
 /*
@@ -53,6 +54,7 @@ const _UIInput: React.SFC<UIInputProps> = props => {
         type={props.type}
         disabled={props.disabled}
         id={props.id}
+        required={props.required}
         className={props.inputClassName}
         placeholder={props.placeholder}
         onChange={e => props.onChange && props.onChange(e.target.value)}
