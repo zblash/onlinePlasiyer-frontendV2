@@ -84,10 +84,6 @@
       "remove-announcement": {
         "are-you-sure-question": "Duyuru silinecek. Eminmisin ?",
         "failed-message": "Silme Islemi Basarisiz"
-      },
-      "remove-notification": {
-        "are-you-sure-question": "Bildirim silinecek. Eminmisin ?",
-        "failed-message": "Silme Islemi Basarisiz"
       }
     }
   }

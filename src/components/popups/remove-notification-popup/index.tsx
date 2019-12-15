@@ -45,9 +45,9 @@ function RemoveNotificationPopup(props: React.PropsWithChildren<RemoveNotificati
 
   return (
     <CommonDeletePopup
-      title={t('popups.remove-notification.are-you-sure-question')}
+      title={t('popups.remove-announcement.are-you-sure-question')}
       isLoading={loading}
-      errorText={error ? t('popups.remove-notification.failed-message') : ''}
+      errorText={error ? t('popups.remove-announcement.failed-message') : ''}
       onCancelClick={handleCancel}
       onDeleteClick={handleDelete}
     />
