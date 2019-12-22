@@ -15,15 +15,17 @@
       "unit-type": "Birim",
       "unit-price": "Birim Fiyat",
       "quantity": "Adet",
-      "contents": "Icerik"
-    },
-    "product-specify": {
+      "contents": "Icerik",
+      "details": "Detaylari Gor",
       "active-states": "Satış Bölgeleri"
     },
     "cart": {
       "orders-completed": "Siparişleriniz Tamamlandı",
       "show-order-detail": "Sipariş Detaylarını Gör",
-      "recommended-sales-price": "Tavsiye Edilen Satış Fiyatı"
+      "recommended-sales-price": "Tavsiye Edilen Satış Fiyatı",
+      "CREDITCART": "Kredi Kartiyla Ode",
+      "COD": "Teslimatta Ode",
+      "CREDIT": "Krediden Ode"
     },
     "order": {
       "code": "Sipariş Kodu",
@@ -46,7 +48,7 @@
       "title": "Toplam Odemeler",
       "totalDebts": "Toplam Borc",
       "totalReceivables": "Toplam Alacak",
-      "details": "Detaylari Gor"
+      "limit": "Kredi"
     },
     "product-card": {
       "show-price": "<0>Fiyatlari Goster</0> <1/>",

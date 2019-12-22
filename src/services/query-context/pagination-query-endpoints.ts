@@ -5,6 +5,7 @@ import {
   Invoice,
   IOrder,
   IAnnouncement,
+  ICreditResponse,
 } from '~/services/helpers/backend-models';
 
 function paginationQueryGet(route: string, variables: any) {
@@ -41,12 +42,17 @@ class QueryEndpoints {
     return paginationQueryGet('/invoices', { pageNumber });
   };
 
-  getAllOrders: (s: { userId?: string; pageNumber: number }) => Promise<IOrder> = ({ userId, pageNumber }) => {
+  getAllOrders: (s: { userId?: string; pageNumber: number; sortBy?: string; sortType?: string }) => Promise<IOrder> = ({
+    userId,
+    pageNumber,
+    sortBy,
+    sortType,
+  }) => {
     if (userId) {
-      return paginationQueryGet(`/orders/byUser/${userId}`, { pageNumber });
+      return paginationQueryGet(`/orders/byUser/${userId}`, { pageNumber, sortBy, sortType });
     }
 
-    return paginationQueryGet('/orders', { pageNumber });
+    return paginationQueryGet('/orders', { pageNumber, sortBy, sortType });
   };
 
   getAllSpecifies: (s: {
@@ -64,6 +70,12 @@ class QueryEndpoints {
 
   getAllAnnouncements: (s: { pageNumber: number }) => Promise<IAnnouncement> = ({ pageNumber }) =>
     paginationQueryGet(`/announcements/all`, { pageNumber });
+
+  getAllCredits: (s: { pageNumber: number; sortBy?: string; sortType?: string }) => Promise<ICreditResponse> = ({
+    pageNumber,
+    sortBy,
+    sortType,
+  }) => paginationQueryGet('/credits', { pageNumber, sortBy, sortType });
 }
 
 const paginationQueryEndpoints = new QueryEndpoints();

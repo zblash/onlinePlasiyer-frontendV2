@@ -74,7 +74,6 @@ function CreateNotificationPage(props: React.PropsWithChildren<CreateNotificatio
   const [usersOptions, setUsersOptions] = React.useState([{ value: '', label: '' }]);
   const { mutation: createNotification } = useMutation(mutationEndPoints.createNotification, {
     variables: {
-      // eslint-disable-next-line
       message,
       title,
       userId: selectedUser.value,

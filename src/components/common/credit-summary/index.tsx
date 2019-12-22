@@ -5,14 +5,12 @@ import { UIButton } from '~/components/ui';
 import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 
-/* ObligationComponent Helpers */
-interface ObligationComponentProps {
-  userId?: string;
-}
+/* CreditSummaryComponent Helpers */
+interface CreditSummaryComponentProps {}
 
-/* ObligationComponent Constants */
+/* CreditSummaryComponent Constants */
 
-/* ObligationComponent Styles */
+/* CreditSummaryComponent Styles */
 const StyledTotalObligationWrapper = styled.div`
   width: 33.33%;
   float: right;
@@ -58,23 +56,19 @@ border-radius: 8px;
   background-color: ${colors.lightGray};
 }
 `;
-
-/* ObligationComponent Component  */
-function ObligationComponent(props: React.PropsWithChildren<ObligationComponentProps>) {
-  /* ObligationComponent Variables */
+/* CreditSummaryComponent Component  */
+function CreditSummaryComponent(props: React.PropsWithChildren<CreditSummaryComponentProps>) {
+  /* CreditSummaryComponent Variables */
   const { t } = useTranslation();
-  const { data: totalObligation } = useQuery(queryEndpoints.getObligationTotal, {
+  const { data: creditSummary } = useQuery(queryEndpoints.getMyCredit, {
     defaultValue: {
-      totalDebts: 0,
-      totalReceivables: 0,
-    },
-    variables: {
-      id: props.userId,
+      creditLimit: 0,
+      totalDebt: 0,
     },
   });
-  /* ObligationComponent Callbacks */
+  /* CreditSummaryComponent Callbacks */
 
-  /* ObligationComponent Lifecycle  */
+  /* CreditSummaryComponent Lifecycle  */
 
   return (
     <StyledTotalObligationWrapper>
@@ -82,17 +76,17 @@ function ObligationComponent(props: React.PropsWithChildren<ObligationComponentP
       <StyledTotalObligationElement>
         <StyledTotalObligationElementText>{t('obligations.totalDebts')}</StyledTotalObligationElementText>
         {/* TODO TL Icon move to translation */}
-        <StyledTotalObligationElementText>{totalObligation.totalDebts} &#8378;</StyledTotalObligationElementText>
+        <StyledTotalObligationElementText>{creditSummary.totalDebt} &#8378;</StyledTotalObligationElementText>
       </StyledTotalObligationElement>
       <StyledTotalObligationElement className={styleTotalObligationElementLast}>
-        <StyledTotalObligationElementText>{t('obligations.totalReceivables')}</StyledTotalObligationElementText>
+        <StyledTotalObligationElementText>{t('obligations.limit')}</StyledTotalObligationElementText>
         {/* TODO TL Icon move to translation */}
-        <StyledTotalObligationElementText>{totalObligation.totalReceivables} &#8378;</StyledTotalObligationElementText>
+        <StyledTotalObligationElementText>{creditSummary.creditLimit} &#8378;</StyledTotalObligationElementText>
       </StyledTotalObligationElement>
       <StyledTotalObligationButton>{t('common.details')}</StyledTotalObligationButton>
     </StyledTotalObligationWrapper>
   );
 }
-const PureObligationComponent = React.memo(ObligationComponent);
+const PureCreditSummaryComponent = React.memo(CreditSummaryComponent);
 
-export { PureObligationComponent as ObligationComponent };
+export { PureCreditSummaryComponent as CreditSummaryComponent };

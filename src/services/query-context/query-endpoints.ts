@@ -15,6 +15,8 @@ import {
   IOrderSummary,
   ISpecifyProductResponse,
   INotificationResponse,
+  IPaymentMethodsResponse,
+  ICreditResponse,
 } from '~/services/helpers/backend-models';
 import { UserType } from '../helpers/maps';
 
@@ -104,6 +106,13 @@ class QueryEndpoints {
   getAllUsersNotifications: () => Promise<Array<INotificationResponse>> = () => ApiCall.get('/notifications/my');
 
   getAllUsers: () => Promise<Array<IUserCommonResponse>> = () => ApiCall.get('/users');
+
+  getPaymentMethods: () => Promise<IPaymentMethodsResponse> = () => ApiCall.get('/payment/methods');
+
+  getMyCredit: () => Promise<ICreditResponse> = () => ApiCall.get('/credits/my');
+
+  getProductsByFilter: (s: { name: string }) => Promise<Array<IProductResponse>> = ({ name }) =>
+    ApiCall.get(`/products/filter?name=${name}`);
 }
 const queryEndpoints = new QueryEndpoints();
 

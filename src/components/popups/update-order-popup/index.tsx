@@ -75,8 +75,8 @@ function UpdateOrderPopup(props: React.PropsWithChildren<UpdateOrderPopupProps>)
   /* UpdateOrderPopup Variables */
   const popups = usePopupContext();
   const [date, setDate] = React.useState(new Date());
-  const [paidPrice, setPaidPrice] = React.useState('');
-  const [discount, setDiscount] = React.useState('');
+  const [paidPrice, setPaidPrice] = React.useState<number>();
+  const [discount, setDiscount] = React.useState<number>();
   const [status, setStatus] = React.useState();
   const statusOptions = [
     { value: 'FINISHED', label: 'Teslim Edildi' },
@@ -87,8 +87,8 @@ function UpdateOrderPopup(props: React.PropsWithChildren<UpdateOrderPopupProps>)
   const { mutation: updateOrder } = useMutation(mutationEndPoints.updateOrder, {
     variables: {
       id: props.params.order.id,
-      discount: parseInt(discount, 10),
-      paidPrice: parseInt(paidPrice, 10),
+      discount,
+      paidPrice,
       status: status ? status.value : 'FINISHED',
       // eslint-disable-next-line
       wayBillDate: date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear(),
@@ -108,14 +108,15 @@ function UpdateOrderPopup(props: React.PropsWithChildren<UpdateOrderPopupProps>)
       <StyledFormWrapper>
         <StyledInput
           id="order-paid-price"
+          type="number"
           value={paidPrice}
-          onChange={e => setPaidPrice(e)}
+          onChange={e => setPaidPrice(parseInt(e, 10))}
           placeholder="Odenen Tutar"
         />
         <StyledInput
           id="order-discount"
           value={discount}
-          onChange={e => setDiscount(e)}
+          onChange={e => setDiscount(parseInt(e, 10))}
           placeholder="Yapilan Indirim"
         />
         <label>Siparis Durumu</label>

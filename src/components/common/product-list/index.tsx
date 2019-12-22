@@ -158,9 +158,7 @@ const ProductList: React.SFC<ProductListProps> = props => {
   React.useEffect(() => {
     if (applicationContext.user.isCustomer) {
       TABLE_SHOWN_DATA.push({
-        itemRenderer: specifyProduct => (
-          <SpecifyAddtoCart key={specifyProduct.id} specifyProductId={specifyProduct.id} />
-        ),
+        itemRenderer: specifyProduct => <SpecifyAddtoCart key={specifyProduct.id} specifyProduct={specifyProduct} />,
         title: 'Sepete Ekle',
       });
     }
@@ -210,7 +208,7 @@ const ProductList: React.SFC<ProductListProps> = props => {
           <UITable
             id={expandProductId}
             data={props.specifyProducts}
-            rowCount={props.specifyProductsElementCountOfPage > 0 ? props.specifyProductsElementCountOfPage : 5}
+            rowCount={props.specifyProductsElementCountOfPage > 0 ? props.specifyProductsElementCountOfPage : 20}
             totalPageCount={props.specifyProductsTotalPage}
             columns={TABLE_SHOWN_DATA}
             onChangePage={props.onChangeSpecifyProductPage}

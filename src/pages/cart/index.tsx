@@ -11,6 +11,7 @@ import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints
 import { refetchFactory } from '~/services/utils';
 import { useApplicationContext } from '~/app/context';
 import { IOrder } from '~/services/helpers/backend-models';
+import { useTranslation } from '~/i18n';
 
 /* CartPage Helpers */
 interface CartPageProps {}
@@ -19,8 +20,10 @@ interface CartPageProps {}
 
 /* CartPage Styles */
 const StyledCartPageWrapper = styled.div`
-  background-color: ${colors.primary};
   width: 100%;
+  margin-bottom: 25px;
+  height: auto;
+  overflow: hidden;
 `;
 
 const StyledCartContent = styled.div`
@@ -34,11 +37,16 @@ const StyledCartContent = styled.div`
 const StyledCartRightBox = styled.div`
   width: 25%;
   float: right;
+`;
+
+const StyledCartCheckoutBox = styled.div`
+  width: 99%;
   border: 1px solid ${colors.lightGray};
   border-radius: 6px;
   background-color: ${colors.white};
   text-align: center;
   padding: 20px 0;
+  margin-bottom: 10px;
 `;
 
 const StyledCartContentHeader = styled.div`
@@ -98,6 +106,10 @@ const StyledCartCheckoutBtn = styled(UIButton)`
     background-color: ${colors.primaryDark};
     color: ${colors.white};
   }
+  :disabled {
+    background-color: ${colors.lightGray};
+    color: ${colors.primaryDark};
+  }
 `;
 const CartItemWrapper = styled.div`
   width: 100%;
@@ -107,6 +119,24 @@ const CartItemHeader = styled.div`
   justify-content: space-between;
   padding: 0 3% 0 3%;
   border-bottom: 1px solid ${colors.lightGray};
+`;
+const PaymentLabel = styled.label`
+  display: inline-block;
+  background-color: ${colors.lightGray};
+  border: 2px solid ${colors.gray};
+  border-radius: 4px;
+  width: 75%;
+  padding: 7px 0 7px 0;
+  margin: 2px auto 2px auto;
+`;
+const PaymentInput = styled.input`
+  opacity: 0;
+  position: fixed;
+  width: 0;
+  &:checked + ${PaymentLabel} {
+    border-color: ${colors.primary};
+    color: ${colors.primary};
+  }
 `;
 const titleText = css`
   float: left;
@@ -124,7 +154,9 @@ const titleP = css`
 /* CartPage Component  */
 function CartPage(props: React.PropsWithChildren<CartPageProps>) {
   const applicationContext = useApplicationContext();
+  const { t } = useTranslation();
   const routerHistory = useHistory();
+  const [paymentMethod, setPaymentMethod] = React.useState();
   const { data: cart } = useQuery(queryEndpoints.getCard, {
     defaultValue: {},
   });
@@ -134,6 +166,16 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
 
   const { mutation: checkoutCart } = useMutation(mutationEndPoints.cardCheckout, {
     refetchQueries: [refetchFactory(queryEndpoints.getCard, null)],
+  });
+
+  const { data: paymentMethods, loading: methodsLoading } = useQuery(queryEndpoints.getPaymentMethods, {
+    defaultValue: {},
+  });
+
+  const { mutation: setPayment } = useMutation(mutationEndPoints.cartSetPayment, {
+    variables: {
+      paymentOption: paymentMethod,
+    },
   });
 
   const handleClearCart = React.useCallback(() => {
@@ -148,6 +190,10 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
       routerHistory.push(`/cart/checkout`, orders);
     });
   }, [routerHistory, checkoutCart]);
+
+  const handlePaymentMethod = React.useCallback(e => {
+    setPaymentMethod(e.target.value);
+  }, []);
 
   const __ = (
     <Container>
@@ -192,15 +238,40 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
           </StyledCartContentBox>
         </StyledCartContent>
         <StyledCartRightBox>
-          <h3>Genel Toplam ({cart.quantity})</h3>
-          <h2>{cart.totalPrice} TL</h2>
-          <StyledCartCheckoutBtn onClick={handleCartCheckout}>Siparisi Tamamla</StyledCartCheckoutBtn>
+          <StyledCartCheckoutBox>
+            <h3>Odeme Yontemini Sec</h3>
+            {!methodsLoading &&
+              paymentMethods.paymentOptions.map(paymentOpt => (
+                <div key={paymentOpt}>
+                  <PaymentInput
+                    type="radio"
+                    value={paymentOpt}
+                    id={paymentOpt}
+                    checked={paymentMethod === paymentOpt}
+                    onChange={handlePaymentMethod}
+                  />
+                  <PaymentLabel htmlFor={paymentOpt}>{t(`cart.${paymentOpt}`)}</PaymentLabel>
+                </div>
+              ))}
+          </StyledCartCheckoutBox>
+          <StyledCartCheckoutBox>
+            <h3>Genel Toplam ({cart.quantity})</h3>
+            <h2>{cart.totalPrice} TL</h2>
+            <StyledCartCheckoutBtn disabled={!paymentMethod} onClick={handleCartCheckout}>
+              Siparisi Tamamla
+            </StyledCartCheckoutBtn>
+          </StyledCartCheckoutBox>
         </StyledCartRightBox>
       </StyledCartPageWrapper>
     </Container>
   );
 
   /* CartPage Lifecycle  */
+  React.useEffect(() => {
+    if (paymentMethod) {
+      setPayment();
+    }
+  }, [paymentMethod]); // eslint-disable-line
 
   /* CartPage Functions  */
 

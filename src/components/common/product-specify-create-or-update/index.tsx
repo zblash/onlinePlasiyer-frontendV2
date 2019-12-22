@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useHistory } from 'react-router';
 import Select from 'react-select';
 import styled, { colors, css } from '~/styled';
-import { UIInput, UIButton } from '~/components/ui';
+import { UIButton, UIInput } from '~/components/ui';
 import { useAlert } from '~/utils/hooks';
 import { usePopupContext } from '~/contexts/popup/context';
 import { useApplicationContext } from '~/app/context';
@@ -71,11 +71,11 @@ const selectInput = css`
 function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<ProductSpecifyCreateUpdateComponentProps>) {
   const initialValues = {
     barcode: props.data ? props.data.productBarcodeList[0] : '',
-    contents: props.data ? props.data.contents.toString() : '',
-    quantity: props.data ? props.data.quantity.toString() : '',
-    recommendedRetailPrice: props.data ? props.data.recommendedRetailPrice.toString() : '',
-    totalPrice: props.data ? props.data.totalPrice.toString() : '',
-    unitPrice: props.data ? props.data.unitPrice.toString() : '',
+    contents: props.data ? props.data.contents : 0,
+    quantity: props.data ? props.data.quantity : 0,
+    recommendedRetailPrice: props.data ? props.data.recommendedRetailPrice : 0,
+    totalPrice: props.data ? props.data.totalPrice : 0,
+    unitPrice: props.data ? props.data.unitPrice : 0,
     unitType: props.data ? props.data.unitType : null,
     stateIds: props.data ? props.data.states : [],
   };
@@ -100,12 +100,12 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
   const { mutation: createProductSpecify } = useMutation(mutationEndPoints.createSpecifyProductForAuthUser, {
     variables: {
       barcode,
-      contents: parseInt(contents, 10),
-      quantity: parseInt(quantity, 10),
-      recommendedRetailPrice: parseInt(recommendedRetailPrice, 10),
+      contents,
+      quantity,
+      recommendedRetailPrice,
       stateIds: selectedStateIds.map(s => s.value),
-      totalPrice: parseInt(totalPrice, 10),
-      unitPrice: parseInt(unitPrice, 10),
+      totalPrice,
+      unitPrice,
       unitType: unitType.value,
     },
     refetchQueries: [refetchFactory(paginationQueryEndpoints.getAllSpecifies)],
@@ -114,12 +114,12 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
     variables: {
       id: props.data ? props.data.id : '',
       barcode,
-      contents: parseInt(contents, 10),
-      quantity: parseInt(quantity, 10),
-      recommendedRetailPrice: parseInt(recommendedRetailPrice, 10),
+      contents,
+      quantity,
+      recommendedRetailPrice,
       stateList: selectedStateIds.map(s => s.value),
-      totalPrice: parseInt(totalPrice, 10),
-      unitPrice: parseInt(unitPrice, 10),
+      totalPrice,
+      unitPrice,
       unitType: unitType.value,
     },
     refetchQueries: [refetchFactory(paginationQueryEndpoints.getAllSpecifies)],
@@ -184,23 +184,33 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
       <StyledCreateProductSpecifyContent>
         <StyledCreateProductSpecifyContentElement>
           <label>Icerik</label>
-          <StyledInput id="contents" type="text" value={contents} onChange={setContents} />
+          <StyledInput id="contents" type="number" value={contents} onChange={e => setContents(parseInt(e, 10))} />
         </StyledCreateProductSpecifyContentElement>
         <StyledCreateProductSpecifyContentElement>
           <label>Adet</label>
-          <StyledInput id="quantity" type="text" value={quantity} onChange={setQuantity} />
+          <StyledInput id="quantity" type="number" value={quantity} onChange={e => setQuantity(parseInt(e, 10))} />
         </StyledCreateProductSpecifyContentElement>
         <StyledCreateProductSpecifyContentElement>
           <label>Tavsiye Ettiginiz Satis Fiyati</label>
-          <StyledInput id="rcmdprc" type="text" value={recommendedRetailPrice} onChange={setRecomendedRetailPrice} />
+          <StyledInput
+            id="rcmdprc"
+            type="number"
+            value={recommendedRetailPrice}
+            onChange={e => setRecomendedRetailPrice(parseInt(e, 10))}
+          />
         </StyledCreateProductSpecifyContentElement>
         <StyledCreateProductSpecifyContentElement>
           <label>Fiyat</label>
-          <StyledInput id="totalPrice" type="text" value={totalPrice} onChange={setTotalPrice} />
+          <StyledInput
+            id="totalPrice"
+            type="number"
+            value={totalPrice}
+            onChange={e => setTotalPrice(parseInt(e, 10))}
+          />
         </StyledCreateProductSpecifyContentElement>
         <StyledCreateProductSpecifyContentElement>
           <label>Adet Fiyati</label>
-          <StyledInput id="unitPrice" type="text" value={unitPrice} onChange={setUnitPrice} />
+          <StyledInput id="unitPrice" type="number" value={unitPrice} onChange={e => setUnitPrice(parseInt(e, 10))} />
         </StyledCreateProductSpecifyContentElement>
         <StyledCreateProductSpecifyContentElement>
           <label>Icerik Turu</label>

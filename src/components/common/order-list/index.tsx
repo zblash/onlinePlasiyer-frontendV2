@@ -10,6 +10,8 @@ import { usePopupContext } from '~/contexts/popup/context';
 interface OrderListComponentProps {
   orders: IOrder[];
   elementCountOfPage: number;
+  setSortBy: (e: any) => void;
+  setSortType: (e: any) => void;
 }
 
 /* OrderListComponent Constants */
@@ -38,6 +40,11 @@ function OrderListComponent(props: React.PropsWithChildren<OrderListComponentPro
   const { t } = useTranslation();
   const popups = usePopupContext();
   const applicationContext = useApplicationContext();
+  const sortList = [
+    { value: 'id', label: 'Eklenme Sirasina Gore' },
+    { value: 'totalPrice', label: 'Fiyata Gore' },
+    { value: 'status', label: 'Durumuna Gore' },
+  ];
   /* OrderListComponent Callbacks */
   const handleEditClick = React.useCallback(
     item => {
@@ -51,6 +58,9 @@ function OrderListComponent(props: React.PropsWithChildren<OrderListComponentPro
     <UITable
       id="orders-page-table"
       data={props.orders}
+      onSortChange={e => props.setSortBy(e.value)}
+      onSortTypeChange={value => props.setSortType(value)}
+      sortList={sortList}
       rowCount={props.elementCountOfPage > 0 ? props.elementCountOfPage : 15}
       columns={[
         {

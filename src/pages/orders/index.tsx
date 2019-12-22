@@ -5,6 +5,7 @@ import { CategoryHorizontalListFetcher } from '~/fetcher-components/common/categ
 import { OrderListComponent } from '~/components/common/order-list';
 import { Container } from '~/components/ui';
 import styled from '~/styled';
+import { useApplicationContext } from '~/app/context';
 
 /*
   OrdersPage Helpers
@@ -26,17 +27,29 @@ const StyledPageContainer = styled.div`
 `;
 
 const OrdersPage: React.SFC<OrdersPageProps> = props => {
+  const applicationContext = useApplicationContext();
+  const [sortBy, setSortBy] = React.useState();
+  const [sortType, setSortType] = React.useState();
   const {
     data: { values: orders, elementCountOfPage },
   } = usePaginationQuery(paginationQueryEndpoints.getAllOrders, {
     defaultValue: { values: [] },
+    variables: {
+      sortBy,
+      sortType,
+    },
     pageNumber: 1,
   });
   const __ = (
     <Container>
-      <CategoryHorizontalListFetcher shouldUseProductsPageLink />
+      {applicationContext.user.isCustomer && <CategoryHorizontalListFetcher shouldUseProductsPageLink />}
       <StyledPageContainer>
-        <OrderListComponent orders={orders} elementCountOfPage={elementCountOfPage} />
+        <OrderListComponent
+          setSortBy={setSortBy}
+          setSortType={setSortType}
+          orders={orders}
+          elementCountOfPage={elementCountOfPage}
+        />
       </StyledPageContainer>
     </Container>
   );

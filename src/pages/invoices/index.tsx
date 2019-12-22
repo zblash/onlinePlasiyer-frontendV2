@@ -4,6 +4,8 @@ import { usePaginationQuery } from '~/services/query-context/use-pagination-quey
 import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
 import { InvoiceListComponent } from '~/components/common/invoice-list';
 import { Container } from '~/components/ui';
+import { useApplicationContext } from '~/app/context';
+import { CategoryHorizontalListFetcher } from '~/fetcher-components/common/category-horizontal-list';
 
 /*
   InvoicesPage Helpers
@@ -22,6 +24,7 @@ const StyledPageContainer = styled.div`
 `;
 
 const InvoicesPage: React.SFC<InvoicesPageProps> = props => {
+  const applicationContext = useApplicationContext();
   const {
     data: { values: invoices, elementCountOfPage },
   } = usePaginationQuery(paginationQueryEndpoints.getAllInvoices, {
@@ -32,6 +35,7 @@ const InvoicesPage: React.SFC<InvoicesPageProps> = props => {
   // TODO: fetch next page on change page
   const __ = (
     <Container>
+      {applicationContext.user.isCustomer && <CategoryHorizontalListFetcher shouldUseProductsPageLink />}
       <StyledPageContainer>
         <InvoiceListComponent invoices={invoices} elementCountOfPage={elementCountOfPage} />
       </StyledPageContainer>

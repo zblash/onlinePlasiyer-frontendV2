@@ -22,12 +22,16 @@ const StyledPageContainer = styled.div`
 function UserOrdersPage(props: React.PropsWithChildren<UserOrdersPageProps>) {
   /* UserOrdersPage Variables */
   const { userId } = useParams<RouteParams>();
+  const [sortBy, setSortBy] = React.useState();
+  const [sortType, setSortType] = React.useState();
   const {
     data: { values: orders, elementCountOfPage },
   } = usePaginationQuery(paginationQueryEndpoints.getAllOrders, {
     defaultValue: { values: [] },
     variables: {
       userId,
+      sortBy,
+      sortType,
     },
     pageNumber: 1,
   });
@@ -38,7 +42,12 @@ function UserOrdersPage(props: React.PropsWithChildren<UserOrdersPageProps>) {
   return (
     <Container>
       <StyledPageContainer>
-        <OrderListComponent orders={orders} elementCountOfPage={elementCountOfPage} />
+        <OrderListComponent
+          setSortBy={setSortBy}
+          setSortType={setSortType}
+          orders={orders}
+          elementCountOfPage={elementCountOfPage}
+        />
       </StyledPageContainer>
     </Container>
   );

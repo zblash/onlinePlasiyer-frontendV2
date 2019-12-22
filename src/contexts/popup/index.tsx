@@ -21,6 +21,7 @@ function PopupContextProvider(props: React.PropsWithChildren<PopupContextProvide
     removeBarcode: usePopup(),
     removeAnnouncement: usePopup(),
     removeNotification: usePopup(),
+    editCredit: usePopup(),
   };
 
   return (

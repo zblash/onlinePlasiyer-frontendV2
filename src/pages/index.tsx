@@ -33,6 +33,8 @@ import { CreateAnnouncementPage } from './create-announcement';
 import { AnnouncementsPage } from './announcements';
 import { AllNotificationsPage } from './all-notifications';
 import { CreateNotificationPage } from './create-notification';
+import { AllCreditsPage } from './all-credits';
+import { SearchProductsPage } from './search-products';
 
 interface IRoute {
   path: string;
@@ -106,6 +108,8 @@ const routes: IRoute[] = [
   { path: '/announcements', component: AnnouncementsPage, authorize: ['ADMIN'] },
   { path: '/all-notifications', component: AllNotificationsPage, authorize: ['ADMIN'] },
   { path: '/create-notification', component: CreateNotificationPage, authorize: ['ADMIN'] },
+  { path: '/all-credits', component: AllCreditsPage, authorize: ['ADMIN'] },
+  { path: '/search/:productId', component: SearchProductsPage },
 ];
 
 const Routes = React.memo(() => {

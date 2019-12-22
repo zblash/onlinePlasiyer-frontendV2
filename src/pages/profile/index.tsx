@@ -10,6 +10,7 @@ import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { usePopupContext } from '~/contexts/popup/context';
 import { useQuery } from '~/services/query-context/context';
+import { CreditSummaryComponent } from '~/components/common/credit-summary';
 
 /* ProfilePage Helpers */
 interface ProfilePageProps {}
@@ -226,7 +227,9 @@ function ProfilePage(props: React.PropsWithChildren<ProfilePageProps>) {
             </StyledActiveStatesContentWrapper>
           </StyledActiveStatesWrapper>
         )}
-        <ObligationComponent />
+        {user.isCustomer && <CreditSummaryComponent />}
+        {!user.isCustomer && <ObligationComponent />}
+
         <StyledInfosFormWrapper>
           <StyledInfosFormHeader>
             <h3>Bilgileri Guncelle</h3>

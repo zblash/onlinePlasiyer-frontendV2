@@ -41,6 +41,7 @@ const initialValue: PopupContextType = {
   removeBarcode: emptyPopup,
   removeAnnouncement: emptyPopup,
   removeNotification: emptyPopup,
+  editCredit: emptyPopup,
 };
 const PopupContext = React.createContext<PopupContextType>(initialValue);
 

@@ -31,6 +31,14 @@ export interface IProductResponse {
   tax: number;
 }
 
+export interface ICreditResponse {
+  id: string;
+  totalDebt: number;
+  creditLimit: number;
+  userId: string;
+  userName: string;
+}
+
 export interface ISpecifyProductResponse {
   id: string;
   totalPrice: number;
@@ -173,6 +181,11 @@ export interface INotificationResponse {
   message: string;
   userId: string;
   userName: string;
+}
+
+export interface IPaymentMethodsResponse {
+  id: string;
+  paymentOptions: string[];
 }
 
 export type UserRoleResponse = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';
