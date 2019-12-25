@@ -156,7 +156,7 @@ const ProductList: React.SFC<ProductListProps> = props => {
   }, [props.selectedCategoryId]);
 
   React.useEffect(() => {
-    if (applicationContext.user.isCustomer) {
+    if (applicationContext.user.isCustomer && !TABLE_SHOWN_DATA.find(e => e.title === 'Sepete Ekle')) {
       TABLE_SHOWN_DATA.push({
         itemRenderer: specifyProduct => <SpecifyAddtoCart key={specifyProduct.id} specifyProduct={specifyProduct} />,
         title: 'Sepete Ekle',

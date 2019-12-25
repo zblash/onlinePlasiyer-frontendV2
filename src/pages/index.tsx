@@ -35,6 +35,9 @@ import { AllNotificationsPage } from './all-notifications';
 import { CreateNotificationPage } from './create-notification';
 import { AllCreditsPage } from './all-credits';
 import { SearchProductsPage } from './search-products';
+import { CreateTicketPage } from './create-ticket';
+import { UserTicketsPage } from './user-tickets';
+import { TicketRepliesPage } from './ticket-replies';
 
 interface IRoute {
   path: string;
@@ -110,6 +113,9 @@ const routes: IRoute[] = [
   { path: '/create-notification', component: CreateNotificationPage, authorize: ['ADMIN'] },
   { path: '/all-credits', component: AllCreditsPage, authorize: ['ADMIN'] },
   { path: '/search/:productId', component: SearchProductsPage },
+  { path: '/create-ticket', component: CreateTicketPage },
+  { path: '/my-tickets', component: UserTicketsPage },
+  { path: '/ticket-replies/:ticketId', component: TicketRepliesPage },
 ];
 
 const Routes = React.memo(() => {

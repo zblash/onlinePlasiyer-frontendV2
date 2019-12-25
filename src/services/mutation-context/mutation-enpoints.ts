@@ -13,6 +13,8 @@ import {
   IAnnouncement,
   INotificationResponse,
   ICreditResponse,
+  ITicketResponse,
+  ITicketReplyResponse,
 } from '~/services/helpers/backend-models';
 
 interface CreateCategoryVariables {
@@ -234,6 +236,13 @@ class MutationEndpoints {
 
     return ApiCall.put(`/credits/${creditId}`, { ...others });
   };
+
+  createTicket: (params: { title: string; message: string; importanceLevel: string }) => Promise<ITicketResponse> = ({
+    ...params
+  }) => ApiCall.post('/tickets', { ...params });
+
+  createTicketReply: (params: { id: string; message: string }) => Promise<ITicketReplyResponse> = ({ id, message }) =>
+    ApiCall.post(`/tickets/${id}/createreply`, { message });
 
   deneme = () => Promise.resolve({ id: '12341' });
 }

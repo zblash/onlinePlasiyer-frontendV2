@@ -12,6 +12,7 @@ import { refetchFactory } from '~/services/utils';
 import { useApplicationContext } from '~/app/context';
 import { IOrder } from '~/services/helpers/backend-models';
 import { useTranslation } from '~/i18n';
+import { UseTranslationAllKeys } from '~/helpers/static-types';
 
 /* CartPage Helpers */
 interface CartPageProps {}
@@ -250,7 +251,7 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
                     checked={paymentMethod === paymentOpt}
                     onChange={handlePaymentMethod}
                   />
-                  <PaymentLabel htmlFor={paymentOpt}>{t(`cart.${paymentOpt}`)}</PaymentLabel>
+                  <PaymentLabel htmlFor={paymentOpt}>{t(`cart.${paymentOpt}` as UseTranslationAllKeys)}</PaymentLabel>
                 </div>
               ))}
           </StyledCartCheckoutBox>

@@ -17,6 +17,8 @@ import {
   INotificationResponse,
   IPaymentMethodsResponse,
   ICreditResponse,
+  ITicketResponse,
+  ITicketReplyResponse,
 } from '~/services/helpers/backend-models';
 import { UserType } from '../helpers/maps';
 
@@ -113,6 +115,11 @@ class QueryEndpoints {
 
   getProductsByFilter: (s: { name: string }) => Promise<Array<IProductResponse>> = ({ name }) =>
     ApiCall.get(`/products/filter?name=${name}`);
+
+  getTicketById: (s: { id: string }) => Promise<ITicketResponse> = ({ id }) => ApiCall.get(`/tickets/${id}`);
+
+  getTicketRepliesByTicketId: (s: { id: string }) => Promise<Array<ITicketReplyResponse>> = ({ id }) =>
+    ApiCall.get(`/tickets/${id}/replies`);
 }
 const queryEndpoints = new QueryEndpoints();
 

@@ -124,6 +124,7 @@ function HeaderMenu(props: React.PropsWithChildren<AdminHeaderProps>) {
           <StyledSubNavContentItem to="/create-announcement">Duyuru Ekle</StyledSubNavContentItem>
           <StyledSubNavContentItem to="/announcements">Duyurular</StyledSubNavContentItem>
           <StyledSubNavContentItem to="/all-credits">Krediler</StyledSubNavContentItem>
+          <StyledSubNavContentItem to="/my-tickets">Destek Talepleri</StyledSubNavContentItem>
         </StyledSubNavContent>
       </StyledSubNavs>
     </StyledAdminHeaderWrapper>
@@ -153,6 +154,16 @@ function HeaderMenu(props: React.PropsWithChildren<AdminHeaderProps>) {
       <StyledSubNavs>
         <StyledSubNavsLink to="/orders">Siparisleri Gor</StyledSubNavsLink>
       </StyledSubNavs>
+      <StyledSubNavs>
+        <StyledSubNavsButton>
+          Destek Islemleri
+          <UIIcon size={10} name="chevronDown" className={iconStyle} />
+        </StyledSubNavsButton>
+        <StyledSubNavContent>
+          <StyledSubNavContentItem to="/create-ticket">Destek Talebi Olustur</StyledSubNavContentItem>
+          <StyledSubNavContentItem to="/my-tickets">Destek Taleplerim</StyledSubNavContentItem>
+        </StyledSubNavContent>
+      </StyledSubNavs>
     </StyledAdminHeaderWrapper>
   );
 
@@ -166,6 +177,16 @@ function HeaderMenu(props: React.PropsWithChildren<AdminHeaderProps>) {
       </StyledSubNavs>
       <StyledSubNavs>
         <StyledSubNavsLink to="/orders">Siparisleri Gor</StyledSubNavsLink>
+      </StyledSubNavs>
+      <StyledSubNavs>
+        <StyledSubNavsButton>
+          Destek Islemleri
+          <UIIcon size={10} name="chevronDown" className={iconStyle} />
+        </StyledSubNavsButton>
+        <StyledSubNavContent>
+          <StyledSubNavContentItem to="/create-ticket">Destek Talebi Olustur</StyledSubNavContentItem>
+          <StyledSubNavContentItem to="/my-tickets">Destek Taleplerim</StyledSubNavContentItem>
+        </StyledSubNavContent>
       </StyledSubNavs>
     </StyledAdminHeaderWrapper>
   );

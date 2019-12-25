@@ -31,13 +31,7 @@
       "code": "Sipariş Kodu",
       "quantity": "Sipariş Adet",
       "status-text": "Sipariş Durumu",
-      "order-date": "Sipariş Tarihi",
-      "status": {
-        "new": "Yeni",
-        "finished": "Teslim Edildi",
-        "cancelled": "Iptal Edildi",
-        "paid": "Ödemesi Yapıldı"
-      }
+      "order-date": "Sipariş Tarihi"
     },
     "invoice": {
       "code": "Fatura Kodu",

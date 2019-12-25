@@ -6,6 +6,7 @@ import {
   IOrder,
   IAnnouncement,
   ICreditResponse,
+  ITicketResponse,
 } from '~/services/helpers/backend-models';
 
 function paginationQueryGet(route: string, variables: any) {
@@ -76,6 +77,10 @@ class QueryEndpoints {
     sortBy,
     sortType,
   }) => paginationQueryGet('/credits', { pageNumber, sortBy, sortType });
+
+  getAllTickets: (s: { pageNumber: number; sortBy?: string; sortType?: string }) => Promise<ITicketResponse> = ({
+    ...params
+  }) => paginationQueryGet('/tickets', params);
 }
 
 const paginationQueryEndpoints = new QueryEndpoints();

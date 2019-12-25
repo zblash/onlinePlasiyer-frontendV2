@@ -188,6 +188,21 @@ export interface IPaymentMethodsResponse {
   paymentOptions: string[];
 }
 
+export interface ITicketResponse {
+  id: string;
+  title: string;
+  status: string;
+  openerName: string;
+  addedTime: Date;
+}
+
+export interface ITicketReplyResponse {
+  id: string;
+  message: string;
+  username: string;
+  addedTime: Date;
+}
+
 export type UserRoleResponse = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';
 
 export type UnitTypeResponse = 'KG' | 'KL' | 'AD';
