@@ -5,6 +5,8 @@ import { paginationQueryEndpoints } from '~/services/query-context/pagination-qu
 import { UIIcon, UITable, Container } from '~/components/ui';
 import { UITableColumns } from '~/components/ui/table';
 import { IAnnouncement } from '~/services/helpers/backend-models';
+import { usePopupContext } from '~/contexts/popup/context';
+import { refetchFactory } from '~/services/utils';
 
 /* AnnouncementsPage Helpers */
 interface AnnouncementsPageProps {}
@@ -33,6 +35,7 @@ const commonIconStyle = css`
 /* AnnouncementsPage Component  */
 function AnnouncementsPage(props: React.PropsWithChildren<AnnouncementsPageProps>) {
   /* AnnouncementsPage Variables */
+  const popupContext = usePopupContext();
   const [allAnnouncementsPageNumber, setAllAnnouncementsPageNumber] = React.useState(1);
   const {
     data: { values: announcementsValues, totalPage },
@@ -41,6 +44,9 @@ function AnnouncementsPage(props: React.PropsWithChildren<AnnouncementsPageProps
     pageNumber: allAnnouncementsPageNumber,
     defaultValue: { values: [], totalPage: 0 },
   });
+
+  const refetchQuery = refetchFactory(paginationQueryEndpoints.getAllAnnouncements);
+
   const announcements = React.useMemo(() => {
     return announcementsPage(allAnnouncementsPageNumber);
   }, [allAnnouncementsPageNumber, announcementsPage]);
@@ -66,12 +72,18 @@ function AnnouncementsPage(props: React.PropsWithChildren<AnnouncementsPageProps
         title: null,
         itemRenderer: item => (
           <StyledActionsWrapper>
-            <UIIcon name="trash" color={colors.dangerDark} className={commonIconStyle} size={16} />
+            <UIIcon
+              onClick={() => popupContext.removeAnnouncement.show({ id: item.id, refetchQuery })}
+              name="trash"
+              color={colors.dangerDark}
+              className={commonIconStyle}
+              size={16}
+            />
           </StyledActionsWrapper>
         ),
       },
     ],
-    [],
+    [popupContext.removeAnnouncement, refetchQuery],
   );
   /* AnnouncementsPage Callbacks */
   const onChangePage = React.useCallback(

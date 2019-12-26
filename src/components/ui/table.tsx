@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled, { css, StylableProps } from '~/styled';
+import styled, { css, StylableProps, colors } from '~/styled';
 import { UIIcon } from '~/components/ui';
 import { TableSort } from './table-sort';
 
@@ -50,8 +50,8 @@ const StyledUiTable = styled.table`
 `;
 const StyledHeadTr = styled.tr`
   height: 50px;
-  background: ${UiTableColors.primary};
-  color: ${UiTableColors.white};
+  background: ${colors.primary};
+  color: ${colors.white};
 `;
 
 const StyledHeadTh = styled.th`
@@ -79,7 +79,7 @@ const StyledBodyTd = styled.td`
 `;
 
 const StyledBodyTr = styled(StyledHeadTr)`
-  background: ${UiTableColors.white};
+  background: ${colors.white};
   color: ${UiTableColors.text};
   height: 50px;
 `;
@@ -128,7 +128,7 @@ const StyledPageInfoSpan = styled.span`
 `;
 
 const iconStyle = css`
-  background-color: ${UiTableColors.primary};
+  background-color: ${colors.primary};
   border-radius: 50%;
   cursor: pointer;
   padding: 2px;

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Tooltip from 'rc-tooltip';
-import styled, { css } from '~/styled';
+import styled, { css, colors } from '~/styled';
 import { UIIcon } from '~/components/ui';
 import { SubCategoryList } from './sub-category-list';
 import { usePopupContext } from '~/contexts/popup/context';
@@ -133,7 +133,7 @@ const StyledSelectedStatus = styled.span<{ isShown?: boolean }>`
   height: 8px;
   width: 8px;
   border-radius: 50%;
-  background-color: ${CategoryItemColors.isSelected};
+  background-color: ${colors.primary};
   box-shadow: inset -25px -15px 40px rgba(0, 0, 0, 0.3);
   background-image: linear-gradient(-45deg, rgba(255, 255, 220, 0.3) 0%, transparent 100%);
 `;

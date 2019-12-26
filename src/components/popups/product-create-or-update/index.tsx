@@ -149,7 +149,7 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
   const [img, setImg] = React.useState<File>(null);
   const [categoryId, setCategoryId] = React.useState(lodashGet(props.params, 'categoryId', ''));
   const [productName, setProductName] = React.useState(initialValue.name);
-  const [taxNumber, setTaxNumber] = React.useState(initialValue.tax);
+  const [taxNumber, setTaxNumber] = React.useState<number>(initialValue.tax);
   const [isActive, setIsActive] = React.useState<boolean>(initialValue.active);
   const refetchQuery = props.params.categoryId
     ? paginationQueryEndpoints.getAllProductsByCategoryId
@@ -161,7 +161,7 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
       categoryId,
       name: productName,
       uploadfile: img,
-      tax: parseInt(taxNumber, 10),
+      tax: taxNumber,
       status: isActive,
     },
   });
@@ -224,7 +224,8 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
         // TODO:move to translation
         placeholder="Urun Tax Number Girin"
         value={taxNumber}
-        onChange={e => setTaxNumber(e)}
+        type="number"
+        onChange={e => setTaxNumber(parseInt(e, 10))}
         id="tax-number"
         leftIcon={
           <UIIcon className={inputIconStyle} name="tax" size={20} color={productName ? colors.primary : colors.gray} />

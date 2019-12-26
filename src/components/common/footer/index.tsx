@@ -12,7 +12,6 @@ const StyledFooterWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  position: fixed;
   height: 40px;
   bottom: 0;
   z-index: 100;

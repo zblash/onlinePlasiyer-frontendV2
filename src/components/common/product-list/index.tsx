@@ -113,7 +113,7 @@ const StyledPaginateWrapper = styled.div`
       :hover {
         :not(.${activeStyle}) {
           z-index: 3;
-          color: ${colors.paginate.darkBlue};
+          color: ${colors.primaryDark};
           background-color: ${colors.lightGray};
         }
       }
@@ -129,11 +129,11 @@ const StyledPaginateWrapper = styled.div`
       z-index: 2;
       color: ${colors.white};
       cursor: default;
-      background-color: ${colors.paginate.blue};
-      border-color: ${colors.paginate.blue};
+      background-color: ${colors.primaryDark};
+      border-color: ${colors.primaryDark};
       :not(.${activeStyle}) {
         cursor: pointer;
-        color: ${colors.paginate.blue};
+        color: ${colors.primaryDark};
         background-color: ${colors.white};
       }
     }
@@ -156,11 +156,9 @@ const ProductList: React.SFC<ProductListProps> = props => {
   }, [props.selectedCategoryId]);
 
   React.useEffect(() => {
-    if (applicationContext.user.isCustomer) {
+    if (applicationContext.user.isCustomer && !TABLE_SHOWN_DATA.find(e => e.title === 'Sepete Ekle')) {
       TABLE_SHOWN_DATA.push({
-        itemRenderer: specifyProduct => (
-          <SpecifyAddtoCart key={specifyProduct.id} specifyProductId={specifyProduct.id} />
-        ),
+        itemRenderer: specifyProduct => <SpecifyAddtoCart key={specifyProduct.id} specifyProduct={specifyProduct} />,
         title: 'Sepete Ekle',
       });
     }
@@ -210,7 +208,7 @@ const ProductList: React.SFC<ProductListProps> = props => {
           <UITable
             id={expandProductId}
             data={props.specifyProducts}
-            rowCount={props.specifyProductsElementCountOfPage > 0 ? props.specifyProductsElementCountOfPage : 5}
+            rowCount={props.specifyProductsElementCountOfPage > 0 ? props.specifyProductsElementCountOfPage : 20}
             totalPageCount={props.specifyProductsTotalPage}
             columns={TABLE_SHOWN_DATA}
             onChangePage={props.onChangeSpecifyProductPage}

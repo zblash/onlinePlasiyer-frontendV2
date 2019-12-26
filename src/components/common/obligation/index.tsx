@@ -89,7 +89,7 @@ function ObligationComponent(props: React.PropsWithChildren<ObligationComponentP
         {/* TODO TL Icon move to translation */}
         <StyledTotalObligationElementText>{totalObligation.totalReceivables} &#8378;</StyledTotalObligationElementText>
       </StyledTotalObligationElement>
-      <StyledTotalObligationButton>{t('obligations.details')}</StyledTotalObligationButton>
+      <StyledTotalObligationButton>{t('common.details')}</StyledTotalObligationButton>
     </StyledTotalObligationWrapper>
   );
 }

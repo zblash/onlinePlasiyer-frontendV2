@@ -75,20 +75,7 @@ const _AccountCard: React.SFC<AccountCardProps> = props => {
   const { close: closeCurrentCard } = props;
   const { user } = useApplicationContext();
 
-  const links = React.useMemo(
-    () =>
-      // TODO: move to translation
-      [
-        { url: '/orders', text: 'Siparisler' },
-        { url: '/invoices', text: 'Faturalar' },
-        { url: '/products', text: 'Tum Urunler' },
-        { url: '/users', text: 'Kullanicilar', hide: !user.isAdmin },
-        { url: '/product-specifies', text: 'Urun Icerikleri', hide: !user.isCustomer },
-        { url: '/add-product-specify', text: 'Urun Icerigi Ekle', hide: !user.isMerchant },
-        { url: '/all-products', text: 'Tum Urunler', hide: !user.isAdmin },
-      ].filter(item => !item.hide),
-    [user.isAdmin, user.isCustomer, user.isMerchant],
-  );
+  const links = [{ url: '/profile', text: 'Profil' }];
   useWindowEvent('click', props.close);
 
   return (

@@ -6,10 +6,11 @@ import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints
 import { refetchFactory } from '~/services/utils';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { useAlert } from '~/utils/hooks';
+import { SpecifyProductData } from '.';
 
 /* SpecifyAddtoCart Helpers */
 interface SpecifyAddtoCartProps {
-  specifyProductId: string;
+  specifyProduct: SpecifyProductData;
 }
 
 /* SpecifyAddtoCart Constants */
@@ -53,7 +54,7 @@ function SpecifyAddtoCart(props: React.PropsWithChildren<SpecifyAddtoCartProps>)
   const [quantity, setQuantity] = React.useState(1);
   const { mutation: addToCart, error: addToCartError } = useMutation(mutationEndPoints.addToCard, {
     variables: {
-      specifyProductId: props.specifyProductId,
+      specifyProductId: props.specifyProduct.id,
       quantity,
     },
     refetchQueries: [refetchFactory(queryEndpoints.getCard, null, true)],
@@ -62,9 +63,14 @@ function SpecifyAddtoCart(props: React.PropsWithChildren<SpecifyAddtoCartProps>)
   const handleChange = React.useCallback(
     (e: any) => {
       e.preventDefault();
-      setQuantity(parseInt(e.target.value, 10) > 0 ? e.target.value : 1);
+      const basketQuantity = parseInt(e.target.value, 10) > 0 ? e.target.value : 1;
+      if (basketQuantity <= props.specifyProduct.quantity) {
+        setQuantity(basketQuantity);
+      } else {
+        alertContext.show('Stok miktarindan fazlasini sepete ekleyemezsiniz', { type: 'error' });
+      }
     },
-    [setQuantity],
+    [setQuantity, alertContext, props.specifyProduct],
   );
   const handleAddToCart = React.useCallback(() => {
     addToCart();
@@ -77,7 +83,7 @@ function SpecifyAddtoCart(props: React.PropsWithChildren<SpecifyAddtoCartProps>)
 
   /* SpecifyAddtoCart Functions  */
   const __ = (
-    <WrapperTableCartColumn key={props.specifyProductId}>
+    <WrapperTableCartColumn>
       <label className={tableColumnCartInputStyle}>Adet: </label>
       <StyledAddCartInput type="number" value={quantity} onChange={handleChange} />
       <StyledAddCartButton onClick={handleAddToCart}>Sepete Ekle</StyledAddCartButton>

@@ -13,6 +13,7 @@ export interface MenuItemProps {
   text: string | React.ReactElement;
   link?: string;
   cardContent?: ((closeCard: () => void) => React.ReactElement) | React.ReactElement;
+  callback?: () => void;
 }
 
 /*
@@ -38,15 +39,15 @@ const StyledMenuItemText = styled.span`
   font-size: 14px;
 `;
 
-const cssIconStyle = css`
-  margin-right: 12px;
-`;
+const cssIconStyle = css``;
 
 const StyledMenuItemWrapper = styled(UIButton)`
   display: flex;
   padding: 0 24px;
   align-items: center;
   border-radius: 8px;
+  justify-content: center;
+  flex-direction: column;
   background-color: transparent;
   :active {
     background-color: ${MenuItemColors.wrapperActiveBackground} !important;
@@ -74,7 +75,7 @@ const MenuItem: React.SFC<MenuItemProps> = props => {
   const closeCard = React.useCallback(() => setIsClosed(true), []);
   const triggerCard = React.useCallback(() => setIsClosed(!isClosed), [isClosed]);
 
-  if (props.cardContent && !props.link) {
+  if (props.cardContent && !props.link && !props.callback) {
     return (
       <Tooltip
         overlay={
@@ -103,18 +104,32 @@ const MenuItem: React.SFC<MenuItemProps> = props => {
     );
   }
 
+  if (props.link && !props.callback && !props.cardContent) {
+    return (
+      <StyledLink to={props.link}>
+        <StyledMenuItemWrapper>
+          <UIIcon
+            name={props.iconName}
+            size={20}
+            className={css.cx(cssIconStyle, cssCommonOpacity)}
+            color={MenuItemColors.text}
+          />
+          <StyledMenuItemText className={cssCommonOpacity}>{props.text}</StyledMenuItemText>
+        </StyledMenuItemWrapper>
+      </StyledLink>
+    );
+  }
+
   return (
-    <StyledLink to={props.link}>
-      <StyledMenuItemWrapper>
-        <UIIcon
-          name={props.iconName}
-          size={20}
-          className={css.cx(cssIconStyle, cssCommonOpacity)}
-          color={MenuItemColors.text}
-        />
-        <StyledMenuItemText className={cssCommonOpacity}>{props.text}</StyledMenuItemText>
-      </StyledMenuItemWrapper>
-    </StyledLink>
+    <StyledMenuItemWrapper onClick={e => props.callback()}>
+      <UIIcon
+        name={props.iconName}
+        size={20}
+        className={css.cx(cssIconStyle, cssCommonOpacity)}
+        color={MenuItemColors.text}
+      />
+      <StyledMenuItemText className={cssCommonOpacity}>{props.text}</StyledMenuItemText>
+    </StyledMenuItemWrapper>
   );
 };
 

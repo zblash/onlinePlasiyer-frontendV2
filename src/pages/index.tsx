@@ -31,6 +31,13 @@ import { UpdateProductSpeciyPage } from './update-product-specify';
 import { Footer } from '~/components/common/footer';
 import { CreateAnnouncementPage } from './create-announcement';
 import { AnnouncementsPage } from './announcements';
+import { AllNotificationsPage } from './all-notifications';
+import { CreateNotificationPage } from './create-notification';
+import { AllCreditsPage } from './all-credits';
+import { SearchProductsPage } from './search-products';
+import { CreateTicketPage } from './create-ticket';
+import { UserTicketsPage } from './user-tickets';
+import { TicketRepliesPage } from './ticket-replies';
 
 interface IRoute {
   path: string;
@@ -102,6 +109,13 @@ const routes: IRoute[] = [
   { path: '/user/:userId', component: UserPage, authorize: ['ADMIN'] },
   { path: '/create-announcement', component: CreateAnnouncementPage, authorize: ['ADMIN'] },
   { path: '/announcements', component: AnnouncementsPage, authorize: ['ADMIN'] },
+  { path: '/all-notifications', component: AllNotificationsPage, authorize: ['ADMIN'] },
+  { path: '/create-notification', component: CreateNotificationPage, authorize: ['ADMIN'] },
+  { path: '/all-credits', component: AllCreditsPage, authorize: ['ADMIN'] },
+  { path: '/search/:productId', component: SearchProductsPage },
+  { path: '/create-ticket', component: CreateTicketPage },
+  { path: '/my-tickets', component: UserTicketsPage },
+  { path: '/ticket-replies/:ticketId', component: TicketRepliesPage },
 ];
 
 const Routes = React.memo(() => {
@@ -109,7 +123,7 @@ const Routes = React.memo(() => {
     <>
       <Header />
       <HeaderMenu />
-      <div style={{ marginBottom: '60px' }}>
+      <div style={{ minHeight: '100%' }}>
         <Switch>
           {routes.map(route => (
             <Route

@@ -7,6 +7,8 @@ import { useAlert } from '~/utils/hooks';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { useApplicationContext } from '~/app/context';
+import { refetchFactory } from '~/services/utils';
+import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
 
 /* CreateAnnouncementPage Helpers */
 interface CreateAnnouncementPageProps {}
@@ -120,6 +122,7 @@ function CreateAnnouncementPage(props: React.PropsWithChildren<CreateAnnouncemen
       title,
       uploadfile: img,
     },
+    refetchQueries: [refetchFactory(paginationQueryEndpoints.getAllAnnouncements)],
   });
   /* CreateAnnouncementPage Callbacks */
   const handleSubmit = React.useCallback(() => {

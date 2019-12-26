@@ -113,7 +113,7 @@ function ProductSpecifyListComponent(props: React.PropsWithChildren<ProductSpeci
         itemRenderer: item => item.unitType,
       },
       {
-        title: t('product-specify.active-states'),
+        title: t('common.active-states'),
         itemRenderer: item => item.states.map(x => `${x.cityTitle} - ${x.title}`).join(','),
       },
       {

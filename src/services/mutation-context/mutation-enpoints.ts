@@ -10,6 +10,11 @@ import {
   UserRoleResponse,
   IUserRegisterResponse,
   TOrderStatus,
+  IAnnouncement,
+  INotificationResponse,
+  ICreditResponse,
+  ITicketResponse,
+  ITicketReplyResponse,
 } from '~/services/helpers/backend-models';
 
 interface CreateCategoryVariables {
@@ -106,7 +111,7 @@ class MutationEndpoints {
   addToCard: (s: { specifyProductId: string; quantity: number }) => Promise<ICardResponse> = ({
     specifyProductId,
     quantity,
-  }) => ApiCall.post('/cart/addItem', { productId: specifyProductId, quantity });
+  }) => ApiCall.post('/cart', { productId: specifyProductId, quantity });
 
   createSpecifyProductForAuthUser = (params: {
     barcode: string;
@@ -139,14 +144,17 @@ class MutationEndpoints {
     ApiCall.post('/user/activestates', stateIds);
 
   removeItemFromCard: (s: { id: string }) => Promise<any> = ({ id }) =>
-    ApiCall.post(`/cart/removeItem/${id}`).then(item => ({ ...item, removed: true }));
+    ApiCall.delete(`/cart/${id}`).then(item => ({ ...item, removed: true }));
 
   removeProduct: (s: { id: string }) => Promise<IProductResponse> = ({ id }) =>
     ApiCall.delete(`/products/${id}`).then(item => ({ ...item, removed: true }));
 
-  clearCard: () => Promise<any> = () => ApiCall.post('/cart/clear/');
+  clearCard: () => Promise<any> = () => ApiCall.delete('/cart');
 
   cardCheckout: () => Promise<IOrder[]> = () => ApiCall.post('/cart/checkout/');
+
+  cartSetPayment: (s: { paymentOption: string }) => Promise<ICardResponse> = ({ paymentOption }) =>
+    ApiCall.post('/cart/setPayment', { paymentOption });
 
   updateInfos: (params: {
     id?: string;
@@ -210,6 +218,31 @@ class MutationEndpoints {
 
     return ApiCall.post('/announcements', formData);
   };
+
+  removeAnnouncement: (params: { id: string }) => Promise<IAnnouncement> = ({ id }) =>
+    ApiCall.delete(`/announcements/${id}`).then(item => ({ ...item, removed: true }));
+
+  removeNotification: (params: { id: string }) => Promise<INotificationResponse> = ({ id }) =>
+    ApiCall.delete(`/notifications/${id}`).then(item => ({ ...item, removed: true }));
+
+  createNotification: (params: { userId: string; message: string; title: string }) => Promise<INotificationResponse> = (
+    ...params
+  ) => ApiCall.post('/notifications', ...params);
+
+  editCredit: (params: { creditId: string; totalDebt: number; creditLimit: number }) => Promise<ICreditResponse> = ({
+    ...params
+  }) => {
+    const { creditId, ...others } = params;
+
+    return ApiCall.put(`/credits/${creditId}`, { ...others });
+  };
+
+  createTicket: (params: { title: string; message: string; importanceLevel: string }) => Promise<ITicketResponse> = ({
+    ...params
+  }) => ApiCall.post('/tickets', { ...params });
+
+  createTicketReply: (params: { id: string; message: string }) => Promise<ITicketReplyResponse> = ({ id, message }) =>
+    ApiCall.post(`/tickets/${id}/createreply`, { message });
 
   deneme = () => Promise.resolve({ id: '12341' });
 }

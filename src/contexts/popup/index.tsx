@@ -19,6 +19,9 @@ function PopupContextProvider(props: React.PropsWithChildren<PopupContextProvide
     updateOrder: usePopup(),
     addBarcode: usePopup(),
     removeBarcode: usePopup(),
+    removeAnnouncement: usePopup(),
+    removeNotification: usePopup(),
+    editCredit: usePopup(),
   };
 
   return (

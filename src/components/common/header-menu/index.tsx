@@ -11,9 +11,9 @@ interface AdminHeaderProps {}
 /* AdminHeader Styles */
 const StyledAdminHeaderWrapper = styled.div`
   overflow: hidden;
-  background-color: ${colors.darkGray};
+  background-color: #404448;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
 `;
 
 const StyledSubNavsButton = styled.button`
@@ -29,7 +29,7 @@ const StyledSubNavsButton = styled.button`
 `;
 const StyledSubNavsLink = styled(UILink)`
   float: left;
-  color: ${colors.white};
+  color: ${colors.whiteSolid};
   text-decoration: none;
   font-size: 16px;
   text-align: center;
@@ -119,8 +119,12 @@ function HeaderMenu(props: React.PropsWithChildren<AdminHeaderProps>) {
           <UIIcon size={10} name="chevronDown" className={iconStyle} />
         </StyledSubNavsButton>
         <StyledSubNavContent>
+          <StyledSubNavContentItem to="/create-notification">Bildirim Ekle</StyledSubNavContentItem>
+          <StyledSubNavContentItem to="/all-notifications">Bildirimler</StyledSubNavContentItem>
           <StyledSubNavContentItem to="/create-announcement">Duyuru Ekle</StyledSubNavContentItem>
           <StyledSubNavContentItem to="/announcements">Duyurular</StyledSubNavContentItem>
+          <StyledSubNavContentItem to="/all-credits">Krediler</StyledSubNavContentItem>
+          <StyledSubNavContentItem to="/my-tickets">Destek Talepleri</StyledSubNavContentItem>
         </StyledSubNavContent>
       </StyledSubNavs>
     </StyledAdminHeaderWrapper>
@@ -150,6 +154,16 @@ function HeaderMenu(props: React.PropsWithChildren<AdminHeaderProps>) {
       <StyledSubNavs>
         <StyledSubNavsLink to="/orders">Siparisleri Gor</StyledSubNavsLink>
       </StyledSubNavs>
+      <StyledSubNavs>
+        <StyledSubNavsButton>
+          Destek Islemleri
+          <UIIcon size={10} name="chevronDown" className={iconStyle} />
+        </StyledSubNavsButton>
+        <StyledSubNavContent>
+          <StyledSubNavContentItem to="/create-ticket">Destek Talebi Olustur</StyledSubNavContentItem>
+          <StyledSubNavContentItem to="/my-tickets">Destek Taleplerim</StyledSubNavContentItem>
+        </StyledSubNavContent>
+      </StyledSubNavs>
     </StyledAdminHeaderWrapper>
   );
 
@@ -159,13 +173,20 @@ function HeaderMenu(props: React.PropsWithChildren<AdminHeaderProps>) {
         <StyledSubNavsLink to="/">Anasayfa </StyledSubNavsLink>
       </StyledSubNavs>
       <StyledSubNavs>
-        <StyledSubNavsLink to="/all-products">Tum Urunler</StyledSubNavsLink>
-      </StyledSubNavs>
-      <StyledSubNavs>
         <StyledSubNavsLink to="/invoices">Faturalari Gor</StyledSubNavsLink>
       </StyledSubNavs>
       <StyledSubNavs>
         <StyledSubNavsLink to="/orders">Siparisleri Gor</StyledSubNavsLink>
+      </StyledSubNavs>
+      <StyledSubNavs>
+        <StyledSubNavsButton>
+          Destek Islemleri
+          <UIIcon size={10} name="chevronDown" className={iconStyle} />
+        </StyledSubNavsButton>
+        <StyledSubNavContent>
+          <StyledSubNavContentItem to="/create-ticket">Destek Talebi Olustur</StyledSubNavContentItem>
+          <StyledSubNavContentItem to="/my-tickets">Destek Taleplerim</StyledSubNavContentItem>
+        </StyledSubNavContent>
       </StyledSubNavs>
     </StyledAdminHeaderWrapper>
   );
