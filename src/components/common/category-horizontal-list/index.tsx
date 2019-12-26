@@ -1,7 +1,7 @@
 import * as React from 'react';
 import _debounce from 'lodash.debounce';
 import { useHistory } from 'react-router';
-import styled, { css } from '~/styled';
+import styled, { css, colors } from '~/styled';
 import { UIIcon, UIButton } from '~/components/ui';
 import { usePopupContext } from '~/contexts/popup/context';
 import { useUserPermissions } from '~/app/context';
@@ -28,18 +28,6 @@ export interface CategoryHorizontalListComponentProps {
 interface CategoryHorizontalListProps extends CategoryHorizontalListData, CategoryHorizontalListComponentProps {}
 
 /*
-  CategoryList Colors // TODO : move theme.json
-*/
-const CategoryHorizontalListColors = {
-  white: '#fff',
-  primary: '#0075ff',
-  primaryDark: '#0062d4',
-  scrollbarTrack: '#e1e1e1',
-  addButtonInactive: '#ddd',
-  scrollbarThumb: '#878787',
-};
-
-/*
   CategoryList Styles
 */
 
@@ -47,15 +35,15 @@ const StyledAddButton = styled(UIButton)`
   display: flex;
   align-items: center;
   transition: background-color 0.3s;
-  background-color: ${CategoryHorizontalListColors.addButtonInactive};
-  color: ${CategoryHorizontalListColors.white};
+  background-color: ${colors.lightGray};
+  color: ${colors.white};
   padding: 4px 8px;
   border-radius: 8px;
   :active {
-    background-color: ${CategoryHorizontalListColors.primaryDark} !important;
+    background-color: ${colors.primaryDark} !important;
   }
   :hover {
-    background-color: ${CategoryHorizontalListColors.primary};
+    background-color: ${colors.primary};
   }
 `;
 
@@ -77,13 +65,13 @@ const CategoryScrollableList = styled.div`
   }
 
   ::-webkit-scrollbar-track {
-    background: ${CategoryHorizontalListColors.scrollbarTrack};
+    background: ${colors.lightGray};
     border-radius: 8px;
   }
 
   ::-webkit-scrollbar-thumb {
     cursor: pointer;
-    background: ${CategoryHorizontalListColors.scrollbarThumb};
+    background: ${colors.gray};
     border-radius: 8px;
   }
 `;
@@ -169,14 +157,14 @@ const _CategoryHorizontalList: React.SFC<CategoryHorizontalListProps> = props =>
   return (
     <CategoryListContainer>
       <IconWrapper position="left" data-position="left" isShown={!positionStatus.isStart} onClick={scrollManually}>
-        <UIIcon name="chevronLeft" color={CategoryHorizontalListColors.white} size={20} />
+        <UIIcon name="chevronLeft" color={colors.white} size={20} />
       </IconWrapper>
 
       <StyledListTop>
         {userPermissions.category.create && (
           <StyledAddButton onClick={() => popups.createCategory.show()}>
             {/* // TODO(0): move string object */}
-            Ekle <UIIcon name="add" color={CategoryHorizontalListColors.white} size={10} className={addIconStyle} />
+            Ekle <UIIcon name="add" color={colors.white} size={10} className={addIconStyle} />
           </StyledAddButton>
         )}
       </StyledListTop>
@@ -203,7 +191,7 @@ const _CategoryHorizontalList: React.SFC<CategoryHorizontalListProps> = props =>
       </CategoryScrollableList>
 
       <IconWrapper position="right" data-position="right" isShown={!positionStatus.isEnd} onClick={scrollManually}>
-        <UIIcon name="chevronRight" color={CategoryHorizontalListColors.white} size={20} />
+        <UIIcon name="chevronRight" color={colors.white} size={20} />
       </IconWrapper>
     </CategoryListContainer>
   );

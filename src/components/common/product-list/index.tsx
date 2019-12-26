@@ -113,7 +113,7 @@ const StyledPaginateWrapper = styled.div`
       :hover {
         :not(.${activeStyle}) {
           z-index: 3;
-          color: ${colors.paginate.darkBlue};
+          color: ${colors.primaryDark};
           background-color: ${colors.lightGray};
         }
       }
@@ -129,11 +129,11 @@ const StyledPaginateWrapper = styled.div`
       z-index: 2;
       color: ${colors.white};
       cursor: default;
-      background-color: ${colors.paginate.blue};
-      border-color: ${colors.paginate.blue};
+      background-color: ${colors.primaryDark};
+      border-color: ${colors.primaryDark};
       :not(.${activeStyle}) {
         cursor: pointer;
-        color: ${colors.paginate.blue};
+        color: ${colors.primaryDark};
         background-color: ${colors.white};
       }
     }

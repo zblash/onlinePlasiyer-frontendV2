@@ -60,7 +60,12 @@ const StyledButton = styled(UIButton)`
 const selectInput = css`
   margin-bottom: 10px;
 `;
-
+const textareaStyle = css`
+  width: 99.5%;
+  height: 95px;
+  border: 2px solid ${colors.lightGray};
+  border-radius: 8px;
+`;
 /* CreateTicketPage Component  */
 function CreateTicketPage(props: React.PropsWithChildren<CreateTicketPageProps>) {
   /* CreateTicketPage Variables */
@@ -108,11 +113,11 @@ function CreateTicketPage(props: React.PropsWithChildren<CreateTicketPageProps>)
       <StyledContent>
         <StyledContentElement>
           <label>Konu</label>
-          <StyledInput id="contents" type="text" value={title} onChange={setTitle} />
+          <StyledInput id="title" type="text" onChange={setTitle} />
         </StyledContentElement>
         <StyledContentElement>
           <label>Mesaj</label>
-          <StyledInput id="quantity" type="text" value={message} onChange={setMessage} />
+          <textarea className={textareaStyle} onChange={e => setMessage(e.target.value)} />
         </StyledContentElement>
         <StyledContentElement>
           <label>Onem Derecesi</label>

@@ -91,7 +91,7 @@ function OrderListComponent(props: React.PropsWithChildren<OrderListComponentPro
           title: null,
           itemRenderer: item => (
             <StyledActionsWrapper>
-              {item.status === 'CANCELLED' &&
+              {(item.status === 'NEW' || item.status === 'PAID') &&
                 (applicationContext.user.isMerchant || applicationContext.user.isAdmin) && (
                   <UIIcon
                     name="edit"

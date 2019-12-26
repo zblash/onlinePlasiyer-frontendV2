@@ -123,7 +123,7 @@ const Routes = React.memo(() => {
     <>
       <Header />
       <HeaderMenu />
-      <div style={{ marginBottom: '60px' }}>
+      <div style={{ minHeight: '100%' }}>
         <Switch>
           {routes.map(route => (
             <Route
