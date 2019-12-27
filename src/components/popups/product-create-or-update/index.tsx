@@ -11,6 +11,7 @@ import { refetchFactory } from '~/services/utils';
 import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
 import { IProductResponse } from '~/services/helpers/backend-models';
 import { useApplicationContext } from '~/app/context';
+import { useAlert } from '~/utils/hooks';
 
 /*  ProductPopup Helpers */
 export interface ProductPopupValues {
@@ -139,16 +140,18 @@ const filePickerInputId = 'image-picker-create-category-popup';
 
 function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
   const { t } = useTranslation();
+  const alert = useAlert();
   const popups = usePopupContext();
   const applicationContext = useApplicationContext();
-  const initialValue = props.params.initialValue || ({ active: false } as any);
+  const [createLoading, setCreateLoading] = React.useState(false);
+  const initialValue = props.params.initialValue || ({ active: false, name: '', tax: 0 } as any);
   const [isBarcodeCorrect, setIsBarcodeCorrect] = React.useState(false);
   const [isBarcodeSaved, setIsBarcodeSaved] = React.useState(false);
   const [barcode, setBarcode] = React.useState(initialValue.barcodeList ? initialValue.barcodeList[0] : '');
   const [imgSrc, setImgSrc] = React.useState(initialValue.photoUrl);
   const [img, setImg] = React.useState<File>(null);
   const [categoryId, setCategoryId] = React.useState(lodashGet(props.params, 'categoryId', ''));
-  const [productName, setProductName] = React.useState(initialValue.name);
+  const [productName, setProductName] = React.useState(initialValue.name || '');
   const [taxNumber, setTaxNumber] = React.useState<number>(initialValue.tax);
   const [isActive, setIsActive] = React.useState<boolean>(initialValue.active);
   const refetchQuery = props.params.categoryId
@@ -165,20 +168,56 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
       status: isActive,
     },
   });
-
+  const { mutation: updateProduct } = useMutation(mutationEndPoints.updateProduct, {
+    refetchQueries: [refetchFactory(refetchQuery, { categoryId: props.params.categoryId })],
+    variables: {
+      id: props.params.initialValue ? props.params.initialValue.id : '',
+      barcode,
+      categoryId,
+      name: productName,
+      uploadfile: img,
+      tax: taxNumber,
+      status: isActive,
+    },
+  });
   const { mutation: checkProduct, loading: checkProductLoading } = useMutation(mutationEndPoints.hasProduct, {
     variables: { barcode },
   });
   const onSubmit = React.useCallback(() => {
+    setCreateLoading(true);
     if (props.type === 'create') {
-      createProduct().then(() => {
-        if (props.params.onCreate) {
-          props.params.onCreate(barcode);
-        }
-        popups.createProduct.hide();
-      });
+      createProduct()
+        .then(() => {
+          if (props.params.onCreate) {
+            props.params.onCreate(barcode);
+            alert.show('Urun basariyla Eklendi', { type: 'success' });
+          }
+          popups.createProduct.hide();
+        })
+        .catch(() => {
+          alert.show('Urun Eklenirken Hata Olustu', { type: 'error' });
+        });
+    } else {
+      updateProduct()
+        .then(() => {
+          alert.show('Urun basariyla Guncellendi', { type: 'success' });
+
+          popups.updateProduct.hide();
+        })
+        .catch(() => {
+          alert.show('Urun Guncellenirken Hata Olustu', { type: 'error' });
+        });
     }
-  }, [props.params, createProduct, barcode, props.type, popups.createProduct]);
+  }, [
+    props.params,
+    createProduct,
+    barcode,
+    props.type,
+    popups.createProduct,
+    popups.updateProduct,
+    alert,
+    updateProduct,
+  ]);
   const __ = (
     <StyledProductPopupWrapper>
       <StyledHiddenFilePicker
@@ -223,7 +262,6 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
         inputClassName={commonInputStyle}
         // TODO:move to translation
         placeholder="Urun Tax Number Girin"
-        value={taxNumber}
         type="number"
         onChange={e => setTaxNumber(parseInt(e, 10))}
         id="tax-number"
@@ -248,8 +286,8 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
         }}
         selectedCategoryId={categoryId}
       />
-      <StyledButton disabled={!barcode || !productName || !categoryId || !taxNumber || !imgSrc} onClick={onSubmit}>
-        {checkProductLoading ? (
+      <StyledButton disabled={!barcode || !productName || !categoryId || taxNumber < 1 || !imgSrc} onClick={onSubmit}>
+        {createLoading ? (
           <Loading color={colors.primary} size={22} className={loadingStyle} />
         ) : (
           <span>{props.type === 'create' ? t('common.create') : t('common.update')}</span>

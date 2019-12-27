@@ -126,6 +126,7 @@ const StyledCategoryButton = styled(UIButton)<{ disabled: boolean }>`
   opacity: ${props => (props.disabled ? 0.6 : 1)};
   border: 1px solid ${colors.primary};
   color: ${colors.primary};
+  background-color: ${colors.white};
   text-align: center;
   cursor: pointer;
   text-decoration: none;

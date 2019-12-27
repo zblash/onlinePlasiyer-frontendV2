@@ -52,7 +52,7 @@ class MutationEndpoints {
       formData.append(key, data[key]);
     });
 
-    return ApiCall.put(`/categories/update/${id}`, formData);
+    return ApiCall.put(`/categories/${id}`, formData);
   };
 
   createCategory = (params: CreateCategoryVariables) => {
@@ -95,6 +95,24 @@ class MutationEndpoints {
     });
 
     return ApiCall.post('/products', formData);
+  };
+
+  updateProduct = (params: {
+    id: string;
+    barcode: string;
+    categoryId: string;
+    name: string;
+    status?: boolean;
+    tax: number;
+    uploadfile?: File;
+  }) => {
+    const formData = new FormData();
+    const { id, ...data } = params;
+    Object.keys(data).forEach(key => {
+      formData.append(key, params[key]);
+    });
+
+    return ApiCall.put(`/products/${id}`, formData);
   };
 
   checkProduct = (params: { barcode: string }) => {
