@@ -1,11 +1,10 @@
 import * as React from 'react';
 import styled, { colors, css } from '~/styled';
-import { Container } from '~/components/ui';
+import { Container, Loading } from '~/components/ui';
 import { ProductSpecifyListComponent } from '~/components/common/product-specify-list';
 import { useApplicationContext } from '~/app/context';
 import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
-import { FullScreenLoading } from '~/components/common/full-screen-loading';
 
 /* ProductSpecifiesPage Helpers */
 interface ProductSpecifiesPageProps {}
@@ -38,10 +37,6 @@ function ProductSpecifiesPage(props: React.PropsWithChildren<ProductSpecifiesPag
 
   /* ProductSpecifiesPage Lifecycle  */
 
-  if (productLoading) {
-    return <FullScreenLoading />;
-  }
-
   return (
     <Container>
       <StyledPageContainer>
@@ -49,14 +44,18 @@ function ProductSpecifiesPage(props: React.PropsWithChildren<ProductSpecifiesPag
           <h3>{applicationContext.user.isAdmin ? 'Kullanici Urunleri' : 'Urunlerim'}</h3>
         </StyledPageHeader>
         <label>Urune Gore Listele : </label>
-        <select className={selectBox} onChange={e => setSelectedProducId(e.target.value)}>
-          {products &&
-            products.map(x => (
-              <option value={x.id} key={x.id}>
-                {x.name}
-              </option>
-            ))}
-        </select>
+        {productLoading ? (
+          <Loading color="currentColor" size={24} />
+        ) : (
+          <select className={selectBox} onChange={e => setSelectedProducId(e.target.value)}>
+            {products &&
+              products.map(x => (
+                <option value={x.id} key={x.id}>
+                  {x.name}
+                </option>
+              ))}
+          </select>
+        )}
         <ProductSpecifyListComponent productId={selectedProductId} />
       </StyledPageContainer>
     </Container>
