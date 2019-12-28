@@ -4,7 +4,6 @@ import { Container } from '~/components/ui';
 import { ProductSpecifyCreateUpdateComponent } from '~/components/common/product-specify-create-or-update';
 import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
-import styled from '~/styled';
 
 /* UpdateProductSpeciyPage Helpers */
 interface UpdateProductSpeciyPageProps {}
