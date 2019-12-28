@@ -45,9 +45,7 @@ const UsersPageStrings = {
   UsersPage Styles
 */
 
-const StyledUsersPageWrapper = styled.div`
-  margin-top: 48px;
-`;
+const StyledUsersPageWrapper = styled.div``;
 
 const StyledTopFilterWrapper = styled.div`
   display: flex;
@@ -85,6 +83,9 @@ const StyledUserLink = styled.a`
 const iconStyle = css`
   cursor: pointer;
 `;
+const StyledPageHeader = styled.div`
+  display: flex;
+`;
 const UsersPage: React.SFC<UsersPageProps> = props => {
   const routerHistory = useHistory();
   const [userRole, setUserRole] = React.useState<UserRoleResponse>('CUSTOMER');
@@ -103,6 +104,9 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
   const __ = (
     <Container>
       <StyledUsersPageWrapper>
+        <StyledPageHeader>
+          <h3>Kayitli Kullanicilar</h3>
+        </StyledPageHeader>
         <StyledTopFilterWrapper>
           <StyledUserRoleFilterWrapper>
             <StyledFilterQuestion>{UsersPageStrings.wichUserQuestion}</StyledFilterQuestion>

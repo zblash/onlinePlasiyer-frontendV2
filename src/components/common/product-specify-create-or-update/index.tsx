@@ -179,7 +179,7 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
   return (
     <StyledCreateProductSpecifyPageWrapper>
       <StyledCreateProductSpecifyHeader>
-        <h3>Urun Ekle</h3>
+        <h3>{props.isCreate ? 'Urun Ekle' : 'Urun Duzenle'}</h3>
       </StyledCreateProductSpecifyHeader>
       <StyledCreateProductSpecifyContent>
         <StyledCreateProductSpecifyContentElement>

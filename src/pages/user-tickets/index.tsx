@@ -12,8 +12,9 @@ interface UserTicketsPageProps {}
 /* UserTicketsPage Constants */
 
 /* UserTicketsPage Styles */
-const StyledPageContainer = styled.div`
-  margin-top: 48px;
+const StyledPageContainer = styled.div``;
+const StyledPageHeader = styled.div`
+  display: flex;
 `;
 const StyledLink = styled(UILink)`
   color: ${colors.primaryDark};
@@ -54,6 +55,9 @@ function UserTicketsPage(props: React.PropsWithChildren<UserTicketsPageProps>) {
   return (
     <Container>
       {applicationContext.user.isCustomer && <CategoryHorizontalListFetcher shouldUseProductsPageLink />}
+      <StyledPageHeader>
+        <h3>{applicationContext.user.isAdmin ? 'Kullanici Destek Talepleri' : 'Destek Taleplerim'}</h3>
+      </StyledPageHeader>
       <StyledPageContainer>
         <UITable
           id="invoices-page-table"

@@ -22,10 +22,10 @@ interface OrdersPageProps {}
 /*
   OrdersPage Styles
 */
-const StyledPageContainer = styled.div`
-  margin-top: 48px;
+const StyledPageContainer = styled.div``;
+const StyledPageHeader = styled.div`
+  display: flex;
 `;
-
 const OrdersPage: React.SFC<OrdersPageProps> = props => {
   const applicationContext = useApplicationContext();
   const [sortBy, setSortBy] = React.useState();
@@ -44,6 +44,9 @@ const OrdersPage: React.SFC<OrdersPageProps> = props => {
     <Container>
       {applicationContext.user.isCustomer && <CategoryHorizontalListFetcher shouldUseProductsPageLink />}
       <StyledPageContainer>
+        <StyledPageHeader>
+          <h3>{applicationContext.user.isAdmin ? 'Siparisler' : 'Siparislerim'}</h3>
+        </StyledPageHeader>
         <OrderListComponent
           setSortBy={setSortBy}
           setSortType={setSortType}

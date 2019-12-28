@@ -14,10 +14,10 @@ interface RouteParams {
 /* UserOrdersPage Constants */
 
 /* UserOrdersPage Styles */
-const StyledPageContainer = styled.div`
-  margin-top: 48px;
+const StyledPageContainer = styled.div``;
+const StyledPageHeader = styled.div`
+  display: flex;
 `;
-
 /* UserOrdersPage Component  */
 function UserOrdersPage(props: React.PropsWithChildren<UserOrdersPageProps>) {
   /* UserOrdersPage Variables */
@@ -42,6 +42,9 @@ function UserOrdersPage(props: React.PropsWithChildren<UserOrdersPageProps>) {
   return (
     <Container>
       <StyledPageContainer>
+        <StyledPageHeader>
+          <h3>Kullanici Siparisleri</h3>
+        </StyledPageHeader>
         <OrderListComponent
           setSortBy={setSortBy}
           setSortType={setSortType}

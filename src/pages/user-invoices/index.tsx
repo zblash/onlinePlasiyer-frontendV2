@@ -14,10 +14,10 @@ interface RouteParams {
 /* UserInvoicesPage Constants */
 
 /* UserInvoicesPage Styles */
-const StyledPageContainer = styled.div`
-  margin-top: 48px;
+const StyledPageContainer = styled.div``;
+const StyledPageHeader = styled.div`
+  display: flex;
 `;
-
 /* UserInvoicesPage Component  */
 function UserInvoicesPage(props: React.PropsWithChildren<UserInvoicesPageProps>) {
   /* UserInvoicesPage Variables */
@@ -36,6 +36,9 @@ function UserInvoicesPage(props: React.PropsWithChildren<UserInvoicesPageProps>)
   return (
     <Container>
       <StyledPageContainer>
+        <StyledPageHeader>
+          <h3>Kullanici Faturalari</h3>
+        </StyledPageHeader>
         <InvoiceListComponent invoices={invoices} elementCountOfPage={elementCountOfPage} />
       </StyledPageContainer>
     </Container>
