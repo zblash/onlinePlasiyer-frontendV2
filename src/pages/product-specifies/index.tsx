@@ -5,7 +5,6 @@ import { ProductSpecifyListComponent } from '~/components/common/product-specify
 import { useApplicationContext } from '~/app/context';
 import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
-import { FullScreenLoading } from '~/components/common/full-screen-loading';
 
 /* ProductSpecifiesPage Helpers */
 interface ProductSpecifiesPageProps {}
