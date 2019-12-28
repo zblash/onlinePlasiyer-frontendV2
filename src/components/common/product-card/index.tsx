@@ -1,8 +1,9 @@
 import * as React from 'react';
-import styled, { StylableProps, css } from '~/styled';
+import styled, { StylableProps, css, colors } from '~/styled';
 import { UIButton, UIIcon } from '~/components/ui';
-import { useMutation } from '~/services/mutation-context/context';
-import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
+import { Trans } from '~/i18n';
+import { usePopupContext } from '~/contexts/popup/context';
+import { useUserPermissions } from '~/app/context';
 
 /*
   ProductCard Helpers
@@ -10,13 +11,14 @@ import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints
 export interface ProductData {
   id: string;
   name: string;
-  img: string;
-  taxRate: number;
-  barcode: string;
+  photoUrl: string;
+  tax: number;
+  barcodeList: string[];
 }
 
 interface ProductCardProps extends StylableProps, ProductData {
   onButtonClick?: () => void;
+  isExpand?: boolean;
 }
 
 /*
@@ -35,7 +37,8 @@ export const ProductCardColors = {
 export const ProductCardStrings = {
   taxRate: 'Vergi Orani',
   showPrice: 'Fiyatlari Goster',
-  barcode: 'Barkod',
+  barcode: 'Barkod Listesi',
+  cheapestPrices: 'En Dusuk Fiyatlar',
 };
 
 /*
@@ -86,14 +89,12 @@ const StyledContent = styled.div`
 const StyledCardWrapper = styled.div`
   position: relative;
   margin: 0 16px 16px;
-
   padding: 0;
   font-size: 12px;
   border-radius: 4px;
   box-shadow: #cccccc 0 0 6px;
     0px 1px 5px 0px rgba(0, 0, 0, 0.12);
   overflow: hidden;
-
   flex: 1;
   :hover {
     ${StyledShadowElement} {
@@ -112,12 +113,16 @@ const StyledTitle = styled.h2`
   margin: 0;
 `;
 
-const StyledPreviewButton = styled(UIButton)`
-  display: inline-block;
-  border: 1px solid ${ProductCardColors.primary};
-  background-color: #fff;
-  -webkit-font-smoothing: antialiased;
-  color: #0075ff;
+const StyledButtonTextWrapper = styled.span`
+  transform: translate(20px, 0px);
+  transition: transform 1s;
+`;
+
+const StyledPreviewButton = styled(UIButton)<{ isExpand: boolean }>`
+  display: flex;
+  border: 1px solid ${props => (props.isExpand ? colors.danger : colors.primary)};
+  background-color: ${colors.white};
+  color: ${props => (props.isExpand ? colors.danger : colors.primary)};
   text-align: center;
   cursor: pointer;
   margin: 1px 4px 0;
@@ -125,14 +130,18 @@ const StyledPreviewButton = styled(UIButton)`
   padding: 7px 12px;
   font-size: 12px;
   font-weight: 700;
-  text-decoration: none;
   border-radius: 2px;
+  justify-content: center;
   :hover {
-    color: #fff;
-    background-color: ${ProductCardColors.primary};
+    color: ${colors.white};
+    background-color: ${props => (props.isExpand ? colors.danger : colors.primary)};
+    ${StyledButtonTextWrapper} {
+      transform: translate(0px, 0px);
+      transition: transform 0.5s;
+    }
   }
   :active {
-    background-color: ${ProductCardColors.primaryDark};
+    background-color: ${props => (props.isExpand ? colors.dangerDark : colors.primaryDark)};
   }
   transition: background-color 0.3s, color 0.3s;
 `;
@@ -141,42 +150,50 @@ const StyledContentCenter = styled.div`
   display: flex;
   flex-direction: column;
 `;
-
 const StyledContentSpan = styled.span``;
+
+const buttonIconStyle = css`
+  margin-left: 8px;
+`;
+
 const ProductCard: React.SFC<ProductCardProps> = props => {
-  const { mutation: removeProduct, loading } = useMutation(mutationEndPoints.removeProduct, {
-    variables: { id: props.id },
-  });
+  const userPermission = useUserPermissions();
+  const popups = usePopupContext();
+
   const __ = (
     <StyledCardWrapper className={props.className}>
-      <StyledShadowElement />
       <StyledCardImgWrapper>
-        <StyledCardImg src={props.img} />
+        <StyledCardImg src={props.photoUrl} />
       </StyledCardImgWrapper>
       <StyledContent>
-        <UIIcon
-          size={18}
-          name={loading ? 'loading' : 'trash'}
-          className={deleteIconStyle}
-          color={ProductCardColors.danger}
-          onClick={e => {
-            e.stopPropagation();
-            if (!loading) {
-              removeProduct();
-            }
-          }}
-        />
-
+        {userPermission.product.delete && (
+          <UIIcon
+            size={18}
+            name="trash"
+            className={deleteIconStyle}
+            color={ProductCardColors.danger}
+            onClick={e => {
+              e.stopPropagation();
+              popups.deleteProduct.show(props);
+            }}
+          />
+        )}
         <StyledTitle>{props.name}</StyledTitle>
         <StyledContentCenter>
           <StyledContentSpan>
-            {ProductCardStrings.taxRate} %{props.taxRate}
-          </StyledContentSpan>
-          <StyledContentSpan>
-            {ProductCardStrings.barcode} : {props.barcode}
+            <strong>{ProductCardStrings.cheapestPrices}: </strong>Eklenecek
           </StyledContentSpan>
         </StyledContentCenter>
-        <StyledPreviewButton onClick={props.onButtonClick}>{ProductCardStrings.showPrice}</StyledPreviewButton>
+        <StyledPreviewButton onClick={props.onButtonClick} isExpand={props.isExpand}>
+          <Trans i18nKey={props.isExpand ? 'product-card.hide-price' : 'product-card.show-price'}>
+            <StyledButtonTextWrapper />
+            <UIIcon
+              color={colors.white}
+              name={props.isExpand ? 'chevronUp' : 'chevronDown'}
+              className={buttonIconStyle}
+            />
+          </Trans>
+        </StyledPreviewButton>
       </StyledContent>
     </StyledCardWrapper>
   );

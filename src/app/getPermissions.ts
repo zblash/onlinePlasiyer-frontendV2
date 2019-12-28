@@ -13,6 +13,7 @@ function getPermissions(user: IUserCommonResponse): UserPermissions {
       delete: user.role === 'ADMIN',
       create: user.role === 'ADMIN',
     },
+    showCart: user.role === 'CUSTOMER',
   };
 }
 

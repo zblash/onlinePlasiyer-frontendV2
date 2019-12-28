@@ -8,9 +8,37 @@ import { Page404 } from './404-component';
 
 import { Header } from '~/components/common/header';
 import { OrdersPage } from './orders';
+import { CartPage } from '../pages/cart';
 import { InvoicesPage } from './invoices';
 import { UserRoleResponse } from '~/services/helpers/backend-models';
 import { withRequiredRole } from '~/components/hoc/with-required-role';
+import { AllProductPage } from './all-products';
+import { OrderPage } from './order';
+import { CartCheckoutPage } from './cart-checkout';
+import { InvoicePage } from './invoice';
+import { ProfilePage } from './profile';
+import { CreateProductSpecifyPage } from './create-product-specify';
+import { ProductSpecifiesPage } from './product-specifies';
+import { MerchantHome } from './merchant-home';
+import { CreateUserPage } from './create-user';
+import { AllCategoriesPage } from './all-categories';
+import { UserPage } from './user';
+import { HeaderMenu } from '~/components/common/header-menu';
+import { UserInvoicesPage } from './user-invoices';
+import { UserOrdersPage } from './user-orders';
+import { UserProductSpecifiesPage } from './user-product-specifies';
+import { UpdateProductSpeciyPage } from './update-product-specify';
+import { Footer } from '~/components/common/footer';
+import { CreateAnnouncementPage } from './create-announcement';
+import { AnnouncementsPage } from './announcements';
+import { AllNotificationsPage } from './all-notifications';
+import { CreateNotificationPage } from './create-notification';
+import { AllCreditsPage } from './all-credits';
+import { SearchProductsPage } from './search-products';
+import { CreateTicketPage } from './create-ticket';
+import { UserTicketsPage } from './user-tickets';
+import { TicketRepliesPage } from './ticket-replies';
+import { LoginPage } from '~/components/common/login-register/login-page';
 
 interface IRoute {
   path: string;
@@ -21,6 +49,10 @@ interface IRoute {
 
 const routes: IRoute[] = [
   {
+    path: '/login',
+    component: LoginPage,
+  },
+  {
     path: '/',
     component: Home,
   },
@@ -30,33 +62,88 @@ const routes: IRoute[] = [
     authorize: ['ADMIN'],
   },
   {
+    path: '/cart',
+    component: CartPage,
+    authorize: ['CUSTOMER'],
+  },
+  {
+    path: '/cart/checkout',
+    component: CartCheckoutPage,
+    authorize: ['CUSTOMER'],
+  },
+  {
     path: '/products/:categoryId?',
     component: ProductsPage,
   },
   {
-    path: '/orders',
+    path: '/orders/:userId?',
     component: OrdersPage,
   },
+  {
+    path: '/user/orders/:userId',
+    component: UserOrdersPage,
+    authorize: ['ADMIN'],
+  },
+  {
+    path: '/order/:orderId',
+    component: OrderPage,
+  },
   { path: '/invoices', component: InvoicesPage },
+  {
+    path: '/user/invoices/:userId',
+    component: UserInvoicesPage,
+    authorize: ['ADMIN'],
+  },
+  {
+    path: '/invoice/:invoiceId',
+    component: InvoicePage,
+  },
+  {
+    path: '/profile',
+    component: ProfilePage,
+  },
+  { path: '/all-categories', component: AllCategoriesPage, authorize: ['ADMIN'] },
+
+  { path: '/all-products', component: AllProductPage, authorize: ['ADMIN', 'MERCHANT'] },
+  { path: '/add-product-specify', component: CreateProductSpecifyPage, authorize: ['MERCHANT', 'ADMIN'] },
+  { path: '/edit-product-specify/:specifyId', component: UpdateProductSpeciyPage, authorize: ['MERCHANT', 'ADMIN'] },
+  { path: '/product-specifies', component: ProductSpecifiesPage, authorize: ['ADMIN', 'MERCHANT'] },
+  { path: '/user/product-specifies/:userId', component: UserProductSpecifiesPage, authorize: ['ADMIN'] },
+  { path: '/merchant/home', component: MerchantHome, authorize: ['MERCHANT'] },
+  { path: '/users/create', component: CreateUserPage, authorize: ['ADMIN'] },
+  { path: '/user/:userId', component: UserPage, authorize: ['ADMIN'] },
+  { path: '/create-announcement', component: CreateAnnouncementPage, authorize: ['ADMIN'] },
+  { path: '/announcements', component: AnnouncementsPage, authorize: ['ADMIN'] },
+  { path: '/all-notifications', component: AllNotificationsPage, authorize: ['ADMIN'] },
+  { path: '/create-notification', component: CreateNotificationPage, authorize: ['ADMIN'] },
+  { path: '/all-credits', component: AllCreditsPage, authorize: ['ADMIN'] },
+  { path: '/search/:productId', component: SearchProductsPage },
+  { path: '/create-ticket', component: CreateTicketPage },
+  { path: '/my-tickets', component: UserTicketsPage },
+  { path: '/ticket-replies/:ticketId', component: TicketRepliesPage },
 ];
 
 const Routes = React.memo(() => {
   return (
     <>
       <Header />
-      <Switch>
-        {routes.map(route => (
-          <Route
-            key={route.path}
-            path={route.path}
-            component={withRequiredRole(route.component, {
-              authorize: route.authorize,
-            })}
-            exact
-          />
-        ))}
-        <Route component={Page404} />
-      </Switch>
+      <HeaderMenu />
+      <div style={{ minHeight: '100%' }}>
+        <Switch>
+          {routes.map(route => (
+            <Route
+              key={route.path}
+              path={route.path}
+              component={withRequiredRole(route.component, {
+                authorize: route.authorize,
+              })}
+              exact
+            />
+          ))}
+          <Route component={Page404} />
+        </Switch>
+      </div>
+      <Footer />
     </>
   );
 });

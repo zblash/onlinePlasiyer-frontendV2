@@ -1,16 +1,19 @@
 import * as React from 'react';
 import Tooltip from 'rc-tooltip';
 import { IconName } from '~/components/ui/icon';
-import { UIIcon, UIButton } from '~/components/ui';
+import { UIIcon, UIButton, UILink } from '~/components/ui';
 import styled, { css } from '~/styled';
 
 /*
   MenuItem Helpers
 */
 export interface MenuItemProps {
+  id: string;
   iconName: IconName;
-  text: string;
-  cardContent?: (closeCard: () => void) => React.ReactElement;
+  text: string | React.ReactElement;
+  link?: string;
+  cardContent?: ((closeCard: () => void) => React.ReactElement) | React.ReactElement;
+  callback?: () => void;
 }
 
 /*
@@ -36,15 +39,16 @@ const StyledMenuItemText = styled.span`
   font-size: 14px;
 `;
 
-const cssIconStyle = css`
-  margin-right: 12px;
-`;
+const cssIconStyle = css``;
 
 const StyledMenuItemWrapper = styled(UIButton)`
   display: flex;
   padding: 0 24px;
   align-items: center;
   border-radius: 8px;
+  justify-content: center;
+  flex-direction: column;
+  background-color: transparent;
   :active {
     background-color: ${MenuItemColors.wrapperActiveBackground} !important;
   }
@@ -62,25 +66,32 @@ const StyledPopuCardWrapper = styled.div`
   box-shadow: ${MenuItemColors.popupCardWrapperShadow} 0 4px 16px;
 `;
 
-const MenuItem: React.SFC<MenuItemProps> = props => {
-  const [isClosed, setIsClosed] = React.useState(false);
-  const tooltipProps = isClosed ? { visible: false } : {};
+const StyledLink = styled(UILink)`
+  display: flex;
+`;
 
-  if (props.cardContent) {
+const MenuItem: React.SFC<MenuItemProps> = props => {
+  const [isClosed, setIsClosed] = React.useState(true);
+  const closeCard = React.useCallback(() => setIsClosed(true), []);
+  const triggerCard = React.useCallback(() => setIsClosed(!isClosed), [isClosed]);
+
+  if (props.cardContent && !props.link && !props.callback) {
     return (
       <Tooltip
         overlay={
           typeof props.cardContent === 'function' ? (
-            <StyledPopuCardWrapper>{props.cardContent(() => setIsClosed(true))}</StyledPopuCardWrapper>
+            <StyledPopuCardWrapper>{props.cardContent(closeCard)}</StyledPopuCardWrapper>
+          ) : props.cardContent ? (
+            props.cardContent
           ) : (
             <span />
           )
         }
         placement="bottom"
         trigger="click"
-        {...tooltipProps}
+        visible={!isClosed}
       >
-        <StyledMenuItemWrapper onClick={() => setIsClosed(false)}>
+        <StyledMenuItemWrapper onClick={triggerCard}>
           <UIIcon
             name={props.iconName}
             size={20}
@@ -93,8 +104,24 @@ const MenuItem: React.SFC<MenuItemProps> = props => {
     );
   }
 
+  if (props.link && !props.callback && !props.cardContent) {
+    return (
+      <StyledLink to={props.link}>
+        <StyledMenuItemWrapper>
+          <UIIcon
+            name={props.iconName}
+            size={20}
+            className={css.cx(cssIconStyle, cssCommonOpacity)}
+            color={MenuItemColors.text}
+          />
+          <StyledMenuItemText className={cssCommonOpacity}>{props.text}</StyledMenuItemText>
+        </StyledMenuItemWrapper>
+      </StyledLink>
+    );
+  }
+
   return (
-    <StyledMenuItemWrapper>
+    <StyledMenuItemWrapper onClick={e => props.callback()}>
       <UIIcon
         name={props.iconName}
         size={20}

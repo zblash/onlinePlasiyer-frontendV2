@@ -4,7 +4,6 @@ const closedRules = {
   'react/destructuring-assignment': 0,
   'react/jsx-wrap-multilines': 0,
   '@typescript-eslint/explicit-member-accessibility': 0,
-  'react-hooks/exhaustive-deps': 0,
   'no-plusplus': 0,
   '@typescript-eslint/explicit-function-return-type': 0,
   '@typescript-eslint/interface-name-prefix': 0,
@@ -32,6 +31,7 @@ const closedRules = {
 const errorRules = {
   eqeqeq: 2,
   semi: 2,
+  'react-hooks/exhaustive-deps': 2,
   'no-console': 2,
   '@typescript-eslint/no-unused-vars': 2,
   'linebreak-style': [2, 'unix'],

@@ -5,13 +5,11 @@ module.exports = [
   ...svgLoader(),
   ...styleLoader(),
   {
-    test: /\.js$/,
-    use: ['babel-loader', 'source-map-loader'],
-    exclude: /node_modules/,
-  },
-  {
     test: /\.tsx?$/,
-    use: ['babel-loader', 'awesome-typescript-loader'],
+    loader: 'awesome-typescript-loader',
+    options: {
+      userBabel: true,
+    },
   },
   {
     test: /\.(jpe?g|png|gif|svg)$/i,

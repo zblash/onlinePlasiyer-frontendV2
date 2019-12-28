@@ -5,6 +5,15 @@ export interface IAddressStateResponse {
   title: string;
 }
 
+export interface IAddressResponse {
+  cityId: string;
+  cityName: string;
+  details: string;
+  id: string;
+  stateId: string;
+  stateName: string;
+}
+
 export interface IAddressCityResponse {
   code: number;
   id: string;
@@ -13,12 +22,21 @@ export interface IAddressCityResponse {
 
 export interface IProductResponse {
   active: boolean;
-  barcode: string;
+  barcodeList: string[];
   categoryName: string;
+  categoryId: string;
   id: string;
   name: string;
   photoUrl: string;
   tax: number;
+}
+
+export interface ICreditResponse {
+  id: string;
+  totalDebt: number;
+  creditLimit: number;
+  userId: string;
+  userName: string;
 }
 
 export interface ISpecifyProductResponse {
@@ -31,13 +49,15 @@ export interface ISpecifyProductResponse {
   recommendedRetailPrice: number;
   productName: string;
   sellerName: string;
-  states: string[];
+  states: IAddressStateResponse[];
   productId: string;
+  productBarcodeList: string[];
 }
 
 export interface ICardItemResponse {
   id: string;
-  productBarcode: string;
+  productId: string;
+  productBarcodeList: string[];
   productName: string;
   productPhotoUrl: string;
   productPrice: number;
@@ -52,9 +72,17 @@ export interface ICardItemResponse {
 
 export interface ICardResponse {
   id: string;
-  items: ICardItemResponse[];
+  items: ICartItemDetailResponse[];
   quantity: number;
   totalPrice: number;
+}
+
+export interface ICartItemDetailResponse {
+  id: string;
+  seller: string;
+  totalPrice: number;
+  quantity: number;
+  details: ICardItemResponse[];
 }
 
 export interface IUserCommonResponse {
@@ -65,7 +93,8 @@ export interface IUserCommonResponse {
   id: string;
   status?: boolean;
   taxNumber?: string;
-  activeStates?: IAddressStateResponse[];
+  activeStates: IAddressStateResponse[];
+  address: IAddressResponse;
 }
 
 export interface ICategoryResponse {
@@ -79,7 +108,7 @@ export interface ICategoryResponse {
 export interface IOrderItems {
   price: number;
   id: string;
-  productBarcode: string;
+  productBarcodeList: string[];
   productName: string;
   productPhotoUrl: string;
   productPrice: number;
@@ -101,6 +130,15 @@ export interface IOrder {
   status: TOrderStatus;
   totalPrice: number;
   waybillDate: string | null;
+  buyerAddress: IAddressResponse;
+}
+
+export interface IOrderSummary {
+  id: string;
+  newCount: number;
+  finishedCount: number;
+  cancelledCount: number;
+  paidCount: number;
 }
 
 export interface Invoice {
@@ -111,6 +149,58 @@ export interface Invoice {
   seller: string;
   totalPrice: number;
   unPaidPrice: number;
+  order: IOrder;
+}
+
+export interface IObligationTotals {
+  id: string;
+  totalDebts: number;
+  totalReceivables: number;
+}
+
+export interface IAnnouncement {
+  id: string;
+  fileUrl: string;
+  lastDate: string;
+  message: string;
+  title: string;
+}
+
+export interface IUserRegisterResponse {
+  email: string;
+  id: string;
+  name: string;
+  status: boolean;
+  taxNumber: string;
+  username: string;
+}
+
+export interface INotificationResponse {
+  id: string;
+  title: string;
+  message: string;
+  userId: string;
+  userName: string;
+}
+
+export interface IPaymentMethodsResponse {
+  id: string;
+  paymentOptions: string[];
+}
+
+export interface ITicketResponse {
+  id: string;
+  title: string;
+  status: string;
+  openerName: string;
+  addedTime: Date;
+}
+
+export interface ITicketReplyResponse {
+  id: string;
+  message: string;
+  username: string;
+  addedTime: Date;
 }
 
 export type UserRoleResponse = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';

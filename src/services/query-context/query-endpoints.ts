@@ -8,17 +8,37 @@ import {
   IAddressStateResponse,
   IAddressCityResponse,
   UserRoleResponse,
+  IObligationTotals,
+  IAnnouncement,
+  IOrder,
+  Invoice,
+  IOrderSummary,
+  ISpecifyProductResponse,
+  INotificationResponse,
+  IPaymentMethodsResponse,
+  ICreditResponse,
+  ITicketResponse,
+  ITicketReplyResponse,
 } from '~/services/helpers/backend-models';
 import { UserType } from '../helpers/maps';
 
-type GetCategoriesType = 'sub' | 'parent' | 'all';
+export type GetCategoriesVariables = { type: 'sub' | 'parent' | 'all' };
 
 class QueryEndpoints {
-  getCategories: (s: { type: GetCategoriesType }) => Promise<ICategoryResponse[]> = ({ type }) =>
+  getCategories: (s: GetCategoriesVariables) => Promise<ICategoryResponse[]> = ({ type }) =>
     ApiCall.get(`/categories`, {
       filter: type !== 'all',
       sub: type === 'sub',
     });
+
+  getParentCategories: () => Promise<ICategoryResponse[]> = () =>
+    ApiCall.get(`/categories`, {
+      filter: true,
+      sub: false,
+    });
+
+  getSubCategoriesByParentId: (s: { parentId: string }) => Promise<ICategoryResponse[]> = ({ parentId }) =>
+    ApiCall.get(`/categories/${parentId}/subCategories`);
 
   getCategoryByID: (s: { id: string }) => Promise<ICategoryResponse> = ({ id }) => ApiCall.get(`/categories/${id}`);
 
@@ -27,23 +47,26 @@ class QueryEndpoints {
 
   getProductById: (s: { id: string }) => Promise<IProductResponse> = ({ id }) => ApiCall.get(`/products/${id}`);
 
-  getCard: () => Promise<ICardResponse> = () => ApiCall.get(`/cart/`);
+  getProductSpecifyById: (s: { id: string }) => Promise<ISpecifyProductResponse> = ({ id }) =>
+    ApiCall.get(`/products/specify/${id}`);
+
+  getCard: () => Promise<ICardResponse> = () => ApiCall.get(`/cart`);
 
   getUsers: (s: { role: UserRoleResponse; type: UserType }) => Promise<IUserCommonResponse[]> = ({ type, role }) => {
     const userTypeRouteMap: Record<UserRoleResponse, Record<UserType, string>> = {
       CUSTOMER: {
-        active: '/users/customers/active',
-        all: '/users/customers/',
-        passive: '/users/customers/passive',
+        active: '/users/customer?status=true',
+        all: '/users/customer',
+        passive: '/users/customer?status=false',
       },
       MERCHANT: {
-        active: '/users/merchant/active',
-        passive: '/users/merchant/passive',
-        all: '/users/merchant/',
+        active: '/users/merchant?status=true',
+        passive: '/users/merchant?status=false',
+        all: '/users/merchant',
       },
       ADMIN: {
-        active: '/users/admin',
-        passive: '/users/admin',
+        active: '/users/admin?status=true',
+        passive: '/users/admin?status=false',
         all: '/users/admin',
       },
     };
@@ -51,7 +74,7 @@ class QueryEndpoints {
     return ApiCall.get(userTypeRouteMap[role][type]);
   };
 
-  getAuthUserActiveStates: () => Promise<IAddressStateResponse[]> = () => ApiCall.get('/users/activeStates');
+  getAuthUserActiveStates: () => Promise<IAddressStateResponse[]> = () => ApiCall.get('/user/activeStates');
 
   getCities: () => Promise<IAddressCityResponse[]> = () =>
     axios.get(URL.concat('/definitions/cities')).then(({ data }) => data);
@@ -60,6 +83,43 @@ class QueryEndpoints {
     axios.get(URL.concat(`/definitions/cities/${cityId}/states`)).then(({ data }) => data);
 
   getStates: () => Promise<any> = () => axios.get(URL.concat('/definitions/states')).then(({ data }) => data);
+
+  getObligationTotal: (s: { id?: string }) => Promise<IObligationTotals> = ({ id }) => {
+    if (id) {
+      return ApiCall.get(`/obligations/totals/byuser/${id}`);
+    }
+
+    return ApiCall.get('/obligations/totals');
+  };
+
+  getAnnouncements: () => Promise<Array<IAnnouncement>> = () => ApiCall.get('/announcements');
+
+  getOrder: (s: { id: string }) => Promise<IOrder> = ({ id }) => ApiCall.get(`/orders/${id}`);
+
+  getInvoice: (s: { id: string }) => Promise<Invoice> = ({ id }) => ApiCall.get(`/invoices/${id}`);
+
+  getOrderSummary: () => Promise<IOrderSummary> = () => ApiCall.get('/orders/summary');
+
+  getUserInfosForAdmin: (s: { id: string }) => Promise<IUserCommonResponse> = ({ id }) =>
+    ApiCall.get(`/users/infos/${id}`);
+
+  getAllNotifications: () => Promise<Array<INotificationResponse>> = () => ApiCall.get('/notifications');
+
+  getAllUsersNotifications: () => Promise<Array<INotificationResponse>> = () => ApiCall.get('/notifications/my');
+
+  getAllUsers: () => Promise<Array<IUserCommonResponse>> = () => ApiCall.get('/users');
+
+  getPaymentMethods: () => Promise<IPaymentMethodsResponse> = () => ApiCall.get('/payment/methods');
+
+  getMyCredit: () => Promise<ICreditResponse> = () => ApiCall.get('/credits/my');
+
+  getProductsByFilter: (s: { name: string }) => Promise<Array<IProductResponse>> = ({ name }) =>
+    ApiCall.get(`/products/filter?name=${name}`);
+
+  getTicketById: (s: { id: string }) => Promise<ITicketResponse> = ({ id }) => ApiCall.get(`/tickets/${id}`);
+
+  getTicketRepliesByTicketId: (s: { id: string }) => Promise<Array<ITicketReplyResponse>> = ({ id }) =>
+    ApiCall.get(`/tickets/${id}/replies`);
 }
 const queryEndpoints = new QueryEndpoints();
 

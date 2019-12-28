@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled from '~/styled';
+import styled, { colors } from '~/styled';
 import { UIInput, UIButton, Loading } from '~/components/ui';
 import { login } from '~/services/api';
 
@@ -39,7 +39,7 @@ const StyledInput = styled(UIInput)<{ hasError: boolean }>`
   justify-content: space-between;
   margin-bottom: 12px;
   padding: 4px;
-  border: 1px solid ${props => (props.hasError ? LoginPageColors.danger : LoginPageColors.primary)};
+  border: 1px solid ${props => (props.hasError ? colors.danger : colors.primary)};
   border-radius: 4px;
   color: ${LoginPageColors.unFocused};
 `;
@@ -48,9 +48,9 @@ const StyledLoginButton = styled(UIButton)<{ hasError: boolean }>`
   width: 100px;
   align-items: center;
   justify-content: center;
-  border: 1px solid ${props => (props.hasError ? LoginPageColors.danger : LoginPageColors.primary)};
+  border: 1px solid ${props => (props.hasError ? colors.danger : colors.primary)};
   background-color: ${LoginPageColors.white};
-  color: ${props => (props.hasError ? LoginPageColors.danger : LoginPageColors.primary)};
+  color: ${props => (props.hasError ? colors.danger : colors.primary)};
   text-align: center;
   cursor: pointer;
   padding: 4px;
@@ -59,11 +59,11 @@ const StyledLoginButton = styled(UIButton)<{ hasError: boolean }>`
   font-weight: 700;
   border-radius: 4px;
   :hover {
-    color: ${LoginPageColors.white};
-    background-color: ${props => (props.hasError ? LoginPageColors.danger : LoginPageColors.primary)};
+    color: ${colors.white};
+    background-color: ${props => (props.hasError ? colors.danger : colors.primary)};
   }
   :active {
-    background-color: ${props => (props.hasError ? LoginPageColors.dangerDark : LoginPageColors.primaryDark)};
+    background-color: ${props => (props.hasError ? colors.dangerDark : colors.primaryDark)};
   }
   transition: background-color 0.3s, color 0.3s;
 `;

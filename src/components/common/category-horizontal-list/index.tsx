@@ -1,18 +1,21 @@
 import * as React from 'react';
 import _debounce from 'lodash.debounce';
 import { useHistory } from 'react-router';
-import styled, { css } from '~/styled';
+import styled, { css, colors } from '~/styled';
 import { UIIcon, UIButton } from '~/components/ui';
-import { CategoryFields, CategoryItem } from '../category';
 import { usePopupContext } from '~/contexts/popup/context';
 import { useUserPermissions } from '~/app/context';
+import { CategoryFields, CategoryItem } from '../category';
 
 /*
   CategoryList Helpers
 */
 
 export interface CategoryHorizontalListData {
-  categories: CategoryFields[];
+  parentCategories: CategoryFields[];
+  expandedSubCategories: CategoryFields[];
+  onExpandCategory: (id: string) => void;
+  expandedCategoryId: string;
 }
 
 export interface CategoryHorizontalListComponentProps {
@@ -25,18 +28,6 @@ export interface CategoryHorizontalListComponentProps {
 interface CategoryHorizontalListProps extends CategoryHorizontalListData, CategoryHorizontalListComponentProps {}
 
 /*
-  CategoryList Colors // TODO : move theme.json
-*/
-const CategoryHorizontalListColors = {
-  white: '#fff',
-  primary: '#0075ff',
-  primaryDark: '#0062d4',
-  scrollbarTrack: '#e1e1e1',
-  addButtonInactive: '#ddd',
-  scrollbarThumb: '#878787',
-};
-
-/*
   CategoryList Styles
 */
 
@@ -44,15 +35,15 @@ const StyledAddButton = styled(UIButton)`
   display: flex;
   align-items: center;
   transition: background-color 0.3s;
-  background-color: ${CategoryHorizontalListColors.addButtonInactive};
-  color: ${CategoryHorizontalListColors.white};
+  background-color: ${colors.lightGray};
+  color: ${colors.white};
   padding: 4px 8px;
   border-radius: 8px;
   :active {
-    background-color: ${CategoryHorizontalListColors.primaryDark} !important;
+    background-color: ${colors.primaryDark} !important;
   }
   :hover {
-    background-color: ${CategoryHorizontalListColors.primary};
+    background-color: ${colors.primary};
   }
 `;
 
@@ -74,13 +65,13 @@ const CategoryScrollableList = styled.div`
   }
 
   ::-webkit-scrollbar-track {
-    background: ${CategoryHorizontalListColors.scrollbarTrack};
+    background: ${colors.lightGray};
     border-radius: 8px;
   }
 
   ::-webkit-scrollbar-thumb {
     cursor: pointer;
-    background: ${CategoryHorizontalListColors.scrollbarThumb};
+    background: ${colors.gray};
     border-radius: 8px;
   }
 `;
@@ -125,27 +116,64 @@ const _CategoryHorizontalList: React.SFC<CategoryHorizontalListProps> = props =>
   const routerHistory = useHistory();
   const [positionStatus, setPositionStatus] = React.useState({ isStart: true, isEnd: false });
   const wrapperRef = React.useRef<HTMLDivElement>();
-  const onScrollWithDebounce = React.useCallback(_debounce(onScroll, 500), [positionStatus]);
 
-  const onItemClick = props.onItemClick || (() => {});
+  const onScroll = React.useCallback(
+    _debounce(() => {
+      const currentTarget = wrapperRef.current;
+      if (currentTarget) {
+        const isStart = currentTarget.scrollLeft === 0;
+        const isEnd = currentTarget.scrollLeft + currentTarget.offsetWidth === currentTarget.scrollWidth;
+        if (positionStatus.isStart !== isStart || positionStatus.isEnd !== isEnd) {
+          setPositionStatus({ isStart, isEnd });
+        }
+      }
+    }, 500),
+    [positionStatus.isEnd, positionStatus.isStart],
+  );
 
-  const __ = (
+  const scrollManually = React.useCallback(e => {
+    if (wrapperRef.current) {
+      const currentScrollPosition = wrapperRef.current.scrollLeft;
+      const willAddPosition = e.currentTarget.getAttribute('data-position') === 'left' ? -400 : 400;
+      // TODO(0): implement animation
+      wrapperRef.current.scrollTo({
+        left: currentScrollPosition + willAddPosition,
+        behavior: 'smooth',
+      });
+    }
+  }, []);
+
+  const categoryItemOnClick = React.useCallback(
+    categoryField => {
+      if (props.shouldUseProductsPageLink) {
+        routerHistory.push(`/products/${categoryField.id}`);
+      } else if (props.onItemClick) {
+        props.onItemClick(categoryField);
+      }
+    },
+    [props, routerHistory],
+  );
+
+  return (
     <CategoryListContainer>
-      <IconWrapper position="left" isShown={!positionStatus.isStart} onClick={() => scrollManually('left')}>
-        <UIIcon name="chevronLeft" color={CategoryHorizontalListColors.white} size={20} />
+      <IconWrapper position="left" data-position="left" isShown={!positionStatus.isStart} onClick={scrollManually}>
+        <UIIcon name="chevronLeft" color={colors.white} size={20} />
       </IconWrapper>
 
       <StyledListTop>
         {userPermissions.category.create && (
           <StyledAddButton onClick={() => popups.createCategory.show()}>
             {/* // TODO(0): move string object */}
-            Ekle <UIIcon name="add" color={CategoryHorizontalListColors.white} size={10} className={addIconStyle} />
+            Ekle <UIIcon name="add" color={colors.white} size={10} className={addIconStyle} />
           </StyledAddButton>
         )}
       </StyledListTop>
-      <CategoryScrollableList onScroll={onScrollWithDebounce} ref={wrapperRef}>
-        {props.categories.map(categoryField => (
+      <CategoryScrollableList onScroll={onScroll} ref={wrapperRef}>
+        {props.parentCategories.map(categoryField => (
           <CategoryItem
+            onExpandedCategory={props.onExpandCategory}
+            subCategories={props.expandedSubCategories}
+            expandedCategoryId={props.expandedCategoryId}
             onSubItemClick={subItem => {
               if (props.shouldUseProductsPageLink) {
                 routerHistory.push(`/products/${subItem.id}`);
@@ -155,50 +183,20 @@ const _CategoryHorizontalList: React.SFC<CategoryHorizontalListProps> = props =>
               }
             }}
             key={categoryField.id}
-            {...categoryField}
+            item={categoryField}
             isHighlighted={categoryField.id === props.selectedCateogryId}
-            onClick={() => {
-              if (props.shouldUseProductsPageLink) {
-                routerHistory.push(`/products/${categoryField.id}`);
-              }
-              onItemClick(categoryField);
-            }}
+            onClick={categoryItemOnClick}
           />
         ))}
       </CategoryScrollableList>
 
-      <IconWrapper position="right" isShown={!positionStatus.isEnd} onClick={() => scrollManually('right')}>
-        <UIIcon name="chevronRight" color={CategoryHorizontalListColors.white} size={20} />
+      <IconWrapper position="right" data-position="right" isShown={!positionStatus.isEnd} onClick={scrollManually}>
+        <UIIcon name="chevronRight" color={colors.white} size={20} />
       </IconWrapper>
     </CategoryListContainer>
   );
-
-  /*
-  CategoryList Functions
-  */
-  function onScroll() {
-    const currentTarget = wrapperRef.current;
-    if (currentTarget) {
-      const isStart = currentTarget.scrollLeft === 0;
-      const isEnd = currentTarget.scrollLeft + currentTarget.offsetWidth === currentTarget.scrollWidth;
-      if (positionStatus.isStart !== isStart || positionStatus.isEnd !== isEnd) {
-        setPositionStatus({ isStart, isEnd });
-      }
-    }
-  }
-
-  function scrollManually(position: 'left' | 'right') {
-    if (wrapperRef.current) {
-      const currentScrollPosition = wrapperRef.current.scrollLeft;
-      const willAddPosition = position === 'left' ? -200 : 200;
-      // TODO(0): implement animation
-      wrapperRef.current.scrollTo(currentScrollPosition + willAddPosition, 0);
-    }
-  }
-
-  return __;
 };
 
-const CategoryHorizontalList = _CategoryHorizontalList;
+const CategoryHorizontalList = React.memo(_CategoryHorizontalList);
 
 export { CategoryHorizontalList };

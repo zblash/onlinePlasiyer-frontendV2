@@ -10,20 +10,28 @@ import { useQuery } from '~/services/query-context/context';
 interface CategoryHorizontalListFetcherProps extends CategoryHorizontalListComponentProps {}
 
 function CategoryHorizontalListFetcher(props: React.PropsWithChildren<CategoryHorizontalListFetcherProps>) {
-  const { data: allCategories } = useQuery(queryEndpoints.getCategories, {
-    variables: { type: 'all' },
+  const [expandedCategoryId, setExpandedCategoryId] = React.useState(null);
+  const { data: parentCategories } = useQuery(queryEndpoints.getParentCategories, {
     defaultValue: [],
   });
-  const categoriesMap = allCategories
-    .filter(category => !category.subCategory)
-    .map(category => ({
-      ...category,
-      subCategories: allCategories.filter(subCategory => subCategory.parentId === category.id),
-    }));
+  const { data: subCategories } = useQuery(queryEndpoints.getSubCategoriesByParentId, {
+    variables: { parentId: expandedCategoryId },
+    defaultValue: [],
+    skip: !expandedCategoryId,
+  });
+  const onExpandCategory = React.useCallback((id: string) => {
+    setExpandedCategoryId(id);
+  }, []);
 
-  return <CategoryHorizontalList {...props} categories={categoriesMap} />;
+  return (
+    <CategoryHorizontalList
+      {...props}
+      expandedSubCategories={subCategories}
+      parentCategories={parentCategories}
+      expandedCategoryId={expandedCategoryId}
+      onExpandCategory={onExpandCategory}
+    />
+  );
 }
 
-const _CategoryHorizontalListFetcher = CategoryHorizontalListFetcher;
-
-export { _CategoryHorizontalListFetcher as CategoryHorizontalListFetcher };
+export { CategoryHorizontalListFetcher };

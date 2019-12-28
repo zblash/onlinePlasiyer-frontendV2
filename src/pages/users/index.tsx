@@ -1,5 +1,6 @@
 import * as React from 'react';
-import styled, { css } from '~/styled';
+import { useHistory } from 'react-router';
+import styled, { css, colors } from '~/styled';
 import { Container, UITable, UIIcon, UIButtonGroup } from '~/components/ui';
 import { useQuery } from '~/services/query-context/context';
 import { useMutation } from '~/services/mutation-context/context';
@@ -77,22 +78,31 @@ const EditingOperationsWrapper = styled.div`
   align-items: center;
   justify-content: center;
 `;
+const StyledUserLink = styled.a`
+  color: ${colors.primary};
+  cursor: pointer;
+`;
 const iconStyle = css`
   cursor: pointer;
 `;
 const UsersPage: React.SFC<UsersPageProps> = props => {
+  const routerHistory = useHistory();
   const [userRole, setUserRole] = React.useState<UserRoleResponse>('CUSTOMER');
   const [type, setType] = React.useState<UserType>('all');
-  const { data: users } = useQuery(queryEndpoints.getUsers, {
-    variables: { role: userRole, type },
-    defaultValue: [],
-  });
+  const userOptions = React.useMemo(
+    () => ({
+      variables: { role: userRole, type },
+      defaultValue: [],
+    }),
+    [type, userRole],
+  );
+  const { data: users } = useQuery(queryEndpoints.getUsers, userOptions);
 
   const { mutation: changeUserStatus, loading } = useMutation(mutationEndPoints.changeUserStatus);
 
   const __ = (
-    <StyledUsersPageWrapper>
-      <Container>
+    <Container>
+      <StyledUsersPageWrapper>
         <StyledTopFilterWrapper>
           <StyledUserRoleFilterWrapper>
             <StyledFilterQuestion>{UsersPageStrings.wichUserQuestion}</StyledFilterQuestion>
@@ -150,7 +160,9 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
           rowCount={12}
           columns={[
             {
-              itemRenderer: item => item.username,
+              itemRenderer: item => (
+                <StyledUserLink onClick={() => handleUser(item.id)}>{item.username}</StyledUserLink>
+              ),
               title: UsersPageStrings.username,
             },
             {
@@ -192,8 +204,8 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
                 ],
           )}
         />
-      </Container>
-    </StyledUsersPageWrapper>
+      </StyledUsersPageWrapper>
+    </Container>
   );
 
   /*
@@ -203,6 +215,13 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
   /*
   UsersPage Functions
   */
+
+  const handleUser = React.useCallback(
+    (id: string) => {
+      routerHistory.push(`/user/${id}`);
+    },
+    [routerHistory],
+  );
 
   return __;
 };

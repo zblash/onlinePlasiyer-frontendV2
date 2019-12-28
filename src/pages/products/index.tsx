@@ -1,15 +1,14 @@
 import * as React from 'react';
 import { useParams } from 'react-router';
-import lodashGet from 'lodash.get';
 
 import styled, { css } from '~/styled';
 import { Container, UIButton, UIIcon } from '~/components/ui';
-import { ProductList } from '~/components/common/product-list';
-import { CategoryHorizontalList } from '~/components/common/category-horizontal-list';
-import { useQuery } from '~/services/query-context/context';
-import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { usePopupContext } from '~/contexts/popup/context';
-import { useTranslation } from '~/utils/hooks';
+import { useTranslation } from '~/i18n';
+import { CategoryHorizontalListFetcher } from '~/fetcher-components/common/category-horizontal-list';
+import { CategoryNameTitle } from './category-name-title';
+import { ProductListFetcher } from '~/fetcher-components/common/product-list';
+import { useUserPermissions } from '~/app/context';
 
 /*
   ProductsPage Helpers
@@ -42,10 +41,7 @@ const StyledProductListTopWrapper = styled.div`
   display: flex;
   justify-content: space-between;
 `;
-const StyledSelectedCategoryName = styled.h2`
-  font-size: 20px;
-  color: ${ProductsPageColors.titleText};
-`;
+
 const StyledAddButton = styled(UIButton)`
   display: flex;
   align-items: center;
@@ -67,45 +63,28 @@ const addIconStyle = css`
 
 const _ProductsPage: React.SFC<ProductsPageProps> = props => {
   const { t } = useTranslation();
+  const userPermissions = useUserPermissions();
   const { categoryId: selectedCategoryId } = useParams<RouteParams>();
   const popups = usePopupContext();
-  const [selectedCategoryName, setSelectedCategoryName] = React.useState('');
-  const { data: allCategories } = useQuery(queryEndpoints.getCategories, {
-    variables: { type: 'all' },
-    defaultValue: [],
-  });
-  const categoriesMap = allCategories
-    .filter(category => !category.subCategory)
-    .map(category => ({
-      ...category,
-      subCategories: allCategories.filter(subCategory => subCategory.parentId === category.id),
-    }));
 
   const __ = (
     <Container>
-      <CategoryHorizontalList
-        categories={categoriesMap}
-        selectedCateogryId={selectedCategoryId}
-        shouldUseProductsPageLink
-      />
+      <CategoryHorizontalListFetcher selectedCateogryId={selectedCategoryId} shouldUseProductsPageLink />
       <StyledProductListTopWrapper>
-        <StyledSelectedCategoryName>{selectedCategoryName}</StyledSelectedCategoryName>
-
-        <StyledAddButton onClick={() => popups.createProduct.show({ categoryId: selectedCategoryId })}>
-          {t('common.add')} <UIIcon name="add" color={ProductsPageColors.white} size={10} className={addIconStyle} />
-        </StyledAddButton>
+        <CategoryNameTitle selectedCategoryId={selectedCategoryId} />
+        {userPermissions.product.create && (
+          <StyledAddButton onClick={() => popups.createProduct.show({ categoryId: selectedCategoryId })}>
+            {t('common.add')} <UIIcon name="add" color={ProductsPageColors.white} size={10} className={addIconStyle} />
+          </StyledAddButton>
+        )}
       </StyledProductListTopWrapper>
-      <ProductList selectedCategoryId={selectedCategoryId} />
+      <ProductListFetcher selectedCategoryId={selectedCategoryId} />
     </Container>
   );
 
   /*
   ProductsPage Lifecycle
   */
-  React.useEffect(() => {
-    setSelectedCategoryName(lodashGet(allCategories.find(category => category.id === selectedCategoryId), 'name'));
-  }, [selectedCategoryId, JSON.stringify(allCategories)]);
-
   /*
   ProductsPage Functions
   */

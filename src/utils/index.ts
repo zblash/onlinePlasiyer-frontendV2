@@ -22,8 +22,13 @@ function objectKeys<K extends string>(obj: Record<K, any>): K[] {
 function objectForeach<K extends string, V>(obj: Record<K, V>, callback: (key: K, value: V) => void) {
   Object.keys(obj).forEach(key => callback(key as K, obj[key]));
 }
-function isBarcodeCorrectSize(barcode: string) {
-  return barcode.length > 12 && barcode.length < 100;
+function objectMap<K extends string, V, G>(obj: Record<K, V>, callback: (key: K, value: V) => G): Record<K, G> {
+  const newObject: Record<K, G> = {} as any;
+  Object.keys(obj).forEach(key => {
+    newObject[key] = callback(key as K, obj[key]);
+  });
+
+  return newObject;
 }
 
 function objectValues<K>(obj: Record<string, K>): K[] {
@@ -34,8 +39,11 @@ function getDisplayName(WrappedComponent: any): string {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
 
-function narrowObject(obj: Record<string, any>): Record<string, string | number | boolean | null | undefined> {
-  const newobject = {};
+function narrowObject<T extends boolean>(
+  obj: Record<string, any>,
+  isString?: T,
+): T extends true ? string : Record<string, string | number | boolean | null | undefined> {
+  const newobject: any = {};
   Object.keys(obj).forEach(key => {
     const value = obj[key];
     if (isObject(value) || isArray(value)) {
@@ -48,6 +56,10 @@ function narrowObject(obj: Record<string, any>): Record<string, string | number 
     }
   });
 
+  if (isString) {
+    return JSON.stringify(newobject) as any;
+  }
+
   return newobject;
 }
 
@@ -55,6 +67,21 @@ const stringLitArray = <L extends string>(arr: L[]) => arr;
 
 function getKeyByValue(obj, value): string {
   return Object.keys(obj).find(key => obj[key] === value);
+}
+
+async function asyncMap(array: (() => Promise<any>)[]): Promise<any> {
+  if (array.length === 0) {
+    return Promise.resolve();
+  }
+  if (array.length === 1) {
+    return array[0]();
+  }
+  for (let index = 0; index < array.length; index++) {
+    // eslint-disable-next-line no-await-in-loop
+    await array[index]();
+  }
+
+  return Promise.resolve();
 }
 
 export {
@@ -67,5 +94,6 @@ export {
   objectKeys,
   objectValues,
   objectForeach,
-  isBarcodeCorrectSize,
+  asyncMap,
+  objectMap,
 };

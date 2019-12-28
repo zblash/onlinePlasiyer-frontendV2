@@ -1,64 +1,40 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { isObject, isArray, narrowObject, objectKeys, getKeyByValue } from '~/utils';
+import { narrowObject, getKeyByValue, objectKeys } from '~/utils';
 import { EndpointsVariablesType } from '../helpers';
+import { RefetchQuery } from '../mutation-context/helpers';
+import { queryEndpoints } from '../query-context/query-endpoints';
+import { paginationQueryEndpoints } from '../query-context/pagination-query-endpoints';
+import { QueryHandlerParams } from '../query-context/helpers';
+import { SeperatedData } from './route-schema';
 
-const getRouteId = (route: string, variables?: Record<string, any>) => route + JSON.stringify(narrowObject(variables));
+const getRouteId = (query: QueryHandlerParams['query'], variables?: Record<string, any>) =>
+  getRouteByEndpoint({ ...queryEndpoints, ...paginationQueryEndpoints }, query) +
+  JSON.stringify(narrowObject(variables));
 const getRouteByEndpoint = (queries: any, query: any) => {
-  const route = getKeyByValue(queries, query);
-
-  if (!route) {
-    throw new Error(`Endpoint Bulunamadi`);
-  }
-
-  return route;
+  return getKeyByValue(queries, query);
 };
 
-const CURRENT_ID_KEY = 'id';
-
-export function deepMergeIdObjects(cache: any, newData: any) {
+// [hooks] replace to callback usememo and move services hooks
+function refetchFactory<T>(
+  query: T,
+  variables: Omit<EndpointsVariablesType<T>, 'pageNumber'> = null,
+  chain = false,
+): RefetchQuery<T> {
+  return {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
+    query,
+    variables: { ...variables },
+    type: chain ? 'chain' : getRouteByEndpoint(queryEndpoints, query) ? 'normal' : 'pagination',
+  };
+}
+function deepMergeIdObjects(cache: SeperatedData, newData: SeperatedData): SeperatedData {
   const modifiedData = {};
   objectKeys(newData).forEach(id => {
     modifiedData[id] = { ...cache[id], ...newData[id] };
   });
 
-  return modifiedData;
+  return { ...cache, ...modifiedData };
 }
 
-export const separatingObjectsContainingId = (unmodifiedData: any) => {
-  let modifiedData: Record<string, any> = {};
-
-  if (isArray(unmodifiedData)) {
-    (unmodifiedData as any[]).forEach(nestedUnmodifiedData => {
-      modifiedData = { ...modifiedData, ...separatingObjectsContainingId(nestedUnmodifiedData) };
-    });
-  } else if (isObject(unmodifiedData) && unmodifiedData[CURRENT_ID_KEY]) {
-    const unmodifiedDataId = unmodifiedData[CURRENT_ID_KEY];
-    modifiedData[unmodifiedDataId] = modifiedData[unmodifiedDataId] || {};
-    Object.keys(unmodifiedData).forEach(key => {
-      const dataField = unmodifiedData[key];
-      if (isObject(dataField) || isArray(dataField)) {
-        const nestedModifiedData = separatingObjectsContainingId(dataField);
-        if (nestedModifiedData) {
-          modifiedData = { ...modifiedData, ...nestedModifiedData };
-        } else {
-          modifiedData[unmodifiedDataId][key] = dataField;
-        }
-      } else {
-        modifiedData[unmodifiedDataId][key] = dataField;
-      }
-    });
-  } else {
-    return null;
-  }
-
-  return modifiedData;
-};
-
-function refetchFactory<T>(query: T, variables: EndpointsVariablesType<T>) {
-  return {
-    query,
-    variables,
-  };
-}
-
-export { getRouteId, getRouteByEndpoint, refetchFactory };
+export { getRouteId, getRouteByEndpoint, refetchFactory, deepMergeIdObjects };

@@ -1,5 +1,21 @@
 import { ApiCall } from '~/services/api';
-import { ICardResponse, UnitTypeResponse, IProductResponse } from '~/services/helpers/backend-models';
+import {
+  ICardResponse,
+  UnitTypeResponse,
+  IProductResponse,
+  IOrder,
+  IUserCommonResponse,
+  IAddressStateResponse,
+  ISpecifyProductResponse,
+  UserRoleResponse,
+  IUserRegisterResponse,
+  TOrderStatus,
+  IAnnouncement,
+  INotificationResponse,
+  ICreditResponse,
+  ITicketResponse,
+  ITicketReplyResponse,
+} from '~/services/helpers/backend-models';
 
 interface CreateCategoryVariables {
   parentId?: string | null;
@@ -17,8 +33,7 @@ interface UpdateCategoryVariables {
 }
 
 class MutationEndpoints {
-  removeCategory: (s: { id: string }) => Promise<any> = ({ id }) =>
-    ApiCall.delete(`/categories/delete/${id}`).then(data => ({ ...data, removed: true }));
+  removeCategory: (s: { id: string }) => Promise<any> = ({ id }) => ApiCall.delete(`/categories/${id}`);
 
   updateCategory = (params: UpdateCategoryVariables) => {
     const formData = new FormData();
@@ -37,7 +52,7 @@ class MutationEndpoints {
       formData.append(key, data[key]);
     });
 
-    return ApiCall.put(`/categories/update/${id}`, formData);
+    return ApiCall.put(`/categories/${id}`, formData);
   };
 
   createCategory = (params: CreateCategoryVariables) => {
@@ -55,7 +70,7 @@ class MutationEndpoints {
       formData.append(key, _data[key]);
     });
 
-    return ApiCall.post('/categories/create', formData);
+    return ApiCall.post('/categories', formData);
   };
 
   changeUserStatus = ({ id, status }: { id: string; status: boolean }) => {
@@ -79,17 +94,42 @@ class MutationEndpoints {
       formData.append(key, params[key]);
     });
 
-    return ApiCall.post('/products/create', formData);
+    return ApiCall.post('/products', formData);
+  };
+
+  updateProduct = (params: {
+    id: string;
+    barcode: string;
+    categoryId: string;
+    name: string;
+    status?: boolean;
+    tax: number;
+    uploadfile?: File;
+  }) => {
+    const formData = new FormData();
+    const { id, ...data } = params;
+    Object.keys(data).forEach(key => {
+      formData.append(key, params[key]);
+    });
+
+    return ApiCall.put(`/products/${id}`, formData);
   };
 
   checkProduct = (params: { barcode: string }) => {
     return ApiCall.post(`/products/checkProduct/${params.barcode}`);
   };
 
+  hasProduct = (params: { barcode: string }) => {
+    return ApiCall.post(`/products/hasProduct/${params.barcode}`).then(data => ({
+      id: `has-product-${params.barcode}`,
+      hasBarcode: data,
+    }));
+  };
+
   addToCard: (s: { specifyProductId: string; quantity: number }) => Promise<ICardResponse> = ({
     specifyProductId,
     quantity,
-  }) => ApiCall.post('/cart/addItem', { productId: specifyProductId, quantity });
+  }) => ApiCall.post('/cart', { productId: specifyProductId, quantity });
 
   createSpecifyProductForAuthUser = (params: {
     barcode: string;
@@ -100,21 +140,129 @@ class MutationEndpoints {
     totalPrice: number;
     unitPrice: number;
     unitType: UnitTypeResponse;
-  }) => ApiCall.post('/products/specify/create', { ...params, stateList: params.stateIds, stateIds: undefined });
+  }) => ApiCall.post('/products/specify', { ...params, stateList: params.stateIds, stateIds: undefined });
 
-  addActiveStatesForAuthUser = ({ stateIds }: { stateIds: string[] }) => {
-    return ApiCall.post('/users/addActiveState', stateIds);
+  updateSpecifyProduct: (params: {
+    id: string;
+    barcode: string;
+    contents: number;
+    quantity: number;
+    recommendedRetailPrice: number;
+    stateList: string[];
+    totalPrice: number;
+    unitPrice: number;
+    unitType: UnitTypeResponse;
+  }) => Promise<ISpecifyProductResponse> = ({ ...params }) => {
+    const { id, ...others } = params;
+
+    return ApiCall.put(`/products/specify/${params.id}`, { ...others });
   };
 
+  addActiveStates: (s: { stateIds: string[] }) => Promise<IAddressStateResponse> = ({ stateIds }) =>
+    ApiCall.post('/user/activestates', stateIds);
+
   removeItemFromCard: (s: { id: string }) => Promise<any> = ({ id }) =>
-    ApiCall.post(`/cart/removeItem/${id}`).then(item => ({ ...item, removed: true }));
+    ApiCall.delete(`/cart/${id}`).then(item => ({ ...item, removed: true }));
 
   removeProduct: (s: { id: string }) => Promise<IProductResponse> = ({ id }) =>
-    ApiCall.delete(`/products/delete/${id}`).then(item => ({ ...item, removed: true }));
+    ApiCall.delete(`/products/${id}`).then(item => ({ ...item, removed: true }));
 
-  clearCard: () => Promise<any> = () => ApiCall.post('/cart/clear/');
+  clearCard: () => Promise<any> = () => ApiCall.delete('/cart');
 
-  cardCheckout: () => Promise<any> = () => ApiCall.post('/cart/checkout/');
+  cardCheckout: () => Promise<IOrder[]> = () => ApiCall.post('/cart/checkout/');
+
+  cartSetPayment: (s: { paymentOption: string }) => Promise<ICardResponse> = ({ paymentOption }) =>
+    ApiCall.post('/cart/setPayment', { paymentOption });
+
+  updateInfos: (params: {
+    id?: string;
+    address: {
+      cityId: string;
+      details: string;
+      stateId: string;
+    };
+    email: string;
+    name: string;
+  }) => Promise<IUserCommonResponse> = (...params) => {
+    if (params[0].id) {
+      return ApiCall.put(`/users/infos/${params[0].id}`, ...params);
+    }
+
+    return ApiCall.put('/user/infos', ...params);
+  };
+
+  updatePassword: (params: { password: string; passwordConfirmation: string }) => Promise<any> = (...params) =>
+    ApiCall.post('/user/changePassword', ...params);
+
+  removeProductSpecify: (s: { id: string }) => Promise<ISpecifyProductResponse> = ({ id }) =>
+    ApiCall.delete(`/products/specify/${id}`).then(item => ({ ...item, removed: true }));
+
+  createUser: (params: {
+    cityId: string;
+    stateId: string;
+    details: string;
+    name: string;
+    username: string;
+    email: string;
+    password: string;
+    roleType: UserRoleResponse;
+    status: boolean;
+    taxNumber: string;
+  }) => Promise<IUserRegisterResponse> = (...params) => ApiCall.post('/users', ...params);
+
+  updateOrder: (params: {
+    id: string;
+    paidPrice?: number;
+    discount?: number;
+    status: TOrderStatus;
+    wayBillDate: string;
+  }) => Promise<IOrder> = ({ ...params }) => {
+    const { id, ...others } = params;
+
+    return ApiCall.put(`/orders/${params.id}`, { ...others });
+  };
+
+  addBarcode: (params: { id: string; barcode: string }) => Promise<IProductResponse> = ({ id, barcode }) =>
+    ApiCall.post(`/products/addbarcode/${id}`, { barcode });
+
+  removeBarcode: (params: { id: string; barcode: string }) => Promise<IProductResponse> = ({ id, barcode }) =>
+    ApiCall.post(`/products/removebarcode/${id}`, { barcode });
+
+  createAnnouncement = (params: { title: string; message: string; lastDate: string; uploadfile: File }) => {
+    const formData = new FormData();
+    Object.keys(params).forEach(key => {
+      formData.append(key, params[key]);
+    });
+
+    return ApiCall.post('/announcements', formData);
+  };
+
+  removeAnnouncement: (params: { id: string }) => Promise<IAnnouncement> = ({ id }) =>
+    ApiCall.delete(`/announcements/${id}`).then(item => ({ ...item, removed: true }));
+
+  removeNotification: (params: { id: string }) => Promise<INotificationResponse> = ({ id }) =>
+    ApiCall.delete(`/notifications/${id}`).then(item => ({ ...item, removed: true }));
+
+  createNotification: (params: { userId: string; message: string; title: string }) => Promise<INotificationResponse> = (
+    ...params
+  ) => ApiCall.post('/notifications', ...params);
+
+  editCredit: (params: { creditId: string; totalDebt: number; creditLimit: number }) => Promise<ICreditResponse> = ({
+    ...params
+  }) => {
+    const { creditId, ...others } = params;
+
+    return ApiCall.put(`/credits/${creditId}`, { ...others });
+  };
+
+  createTicket: (params: { title: string; message: string; importanceLevel: string }) => Promise<ITicketResponse> = ({
+    ...params
+  }) => ApiCall.post('/tickets', { ...params });
+
+  createTicketReply: (params: { id: string; message: string }) => Promise<ITicketReplyResponse> = ({ id, message }) =>
+    ApiCall.post(`/tickets/${id}/createreply`, { message });
+
+  deneme = () => Promise.resolve({ id: '12341' });
 }
 
 const mutationEndPoints = new MutationEndpoints();

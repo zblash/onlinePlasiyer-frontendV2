@@ -1,8 +1,11 @@
 import * as React from 'react';
 import styled from '~/styled';
-import { Container, UITable } from '~/components/ui';
-import { usePaginationQuery } from '~/services/pagination-query-context/context';
-import { paginationQueryEndpoints } from '~/services/pagination-query-context/pagination-query-endpoints';
+import { usePaginationQuery } from '~/services/query-context/use-pagination-quey';
+import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
+import { InvoiceListComponent } from '~/components/common/invoice-list';
+import { Container } from '~/components/ui';
+import { useApplicationContext } from '~/app/context';
+import { CategoryHorizontalListFetcher } from '~/fetcher-components/common/category-horizontal-list';
 
 /*
   InvoicesPage Helpers
@@ -12,14 +15,6 @@ interface InvoicesPageProps {}
 /*
   InvoicesPage Strings
 */
-const InvoicesPageStrings = {
-  buyer: 'Alici',
-  seller: 'Satici',
-  discount: 'Indirim',
-  paidPrice: 'Odenen F.',
-  totalPrice: 'Toplam F.',
-  unPaidPrice: 'Odenmemis F.',
-};
 
 /*
   InvoicesPage Styles
@@ -29,41 +24,20 @@ const StyledPageContainer = styled.div`
 `;
 
 const InvoicesPage: React.SFC<InvoicesPageProps> = props => {
-  const { data: invoices } = usePaginationQuery(paginationQueryEndpoints.getAllInvoices, { defaultValue: [] });
+  const applicationContext = useApplicationContext();
+  const {
+    data: { values: invoices, elementCountOfPage },
+  } = usePaginationQuery(paginationQueryEndpoints.getAllInvoices, {
+    defaultValue: { values: [] },
+    pageNumber: 1,
+  });
+
+  // TODO: fetch next page on change page
   const __ = (
     <Container>
+      {applicationContext.user.isCustomer && <CategoryHorizontalListFetcher shouldUseProductsPageLink />}
       <StyledPageContainer>
-        <UITable
-          id="invoices-page-table"
-          data={invoices}
-          rowCount={14}
-          columns={[
-            {
-              title: InvoicesPageStrings.seller,
-              itemRenderer: item => item.seller,
-            },
-            {
-              title: InvoicesPageStrings.buyer,
-              itemRenderer: item => item.buyer,
-            },
-            {
-              title: InvoicesPageStrings.discount,
-              itemRenderer: item => item.discount,
-            },
-            {
-              title: InvoicesPageStrings.paidPrice,
-              itemRenderer: item => item.paidPrice,
-            },
-            {
-              title: InvoicesPageStrings.unPaidPrice,
-              itemRenderer: item => item.unPaidPrice,
-            },
-            {
-              title: InvoicesPageStrings.totalPrice,
-              itemRenderer: item => item.totalPrice,
-            },
-          ]}
-        />
+        <InvoiceListComponent invoices={invoices} elementCountOfPage={elementCountOfPage} />
       </StyledPageContainer>
     </Container>
   );

@@ -1,18 +1,8 @@
 import * as React from 'react';
-import styled, { mixins } from '~/styled';
+import styled, { mixins, colors } from '~/styled';
 import { LoginPage } from './login-page';
 import { RegisterPage } from './register-page';
-import logoPath from '~/assets/images/logo/primary.png';
-
-const LoginPageColors = {
-  primary: '#0075ff',
-  wrapperBackground: '#fff',
-  unFocused: '#797979',
-  danger: '#e2574c',
-  dangerDark: '#e2574c',
-  primaryDark: '#0062d4',
-  white: '#fff',
-};
+import logoPath from '~/assets/images/logo/flogo.png';
 
 /*
   LoginPage Strings
@@ -29,7 +19,7 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${LoginPageColors.primary};
+  background-color: ${colors.primary};
 `;
 
 const CenteredCard = styled.div`
@@ -49,12 +39,12 @@ const CenteredCard = styled.div`
 `;
 const StyledLogo = styled.div`
   background-image: url(${logoPath});
-  background-size: 200px;
+  background-size: 256px;
   background-repeat: no-repeat;
   user-select: none;
-  margin-bottom: 16px;
+  margin: 0 auto 16px auto;
   width: 256px;
-  height: 56px;
+  height: 65px;
 `;
 
 const StyledDontHaveAccountQuestion = styled.div`
@@ -62,9 +52,9 @@ const StyledDontHaveAccountQuestion = styled.div`
 `;
 const StyledHiglightedText = styled.span`
   cursor: pointer;
-  color: ${LoginPageColors.primary};
+  color: ${colors.primary};
   :hover {
-    color: ${LoginPageColors.primaryDark};
+    color: ${colors.primaryDark};
   }
 `;
 

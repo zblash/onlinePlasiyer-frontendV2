@@ -1,9 +1,11 @@
 import * as React from 'react';
+import { usePaginationQuery } from '~/services/query-context/use-pagination-quey';
+import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
+import { CategoryHorizontalListFetcher } from '~/fetcher-components/common/category-horizontal-list';
+import { OrderListComponent } from '~/components/common/order-list';
+import { Container } from '~/components/ui';
 import styled from '~/styled';
-import { usePaginationQuery } from '~/services/pagination-query-context/context';
-import { paginationQueryEndpoints } from '~/services/pagination-query-context/pagination-query-endpoints';
-import { Container, UITable } from '~/components/ui';
-import { TOrderStatus } from '~/services/helpers/backend-models';
+import { useApplicationContext } from '~/app/context';
 
 /*
   OrdersPage Helpers
@@ -16,20 +18,6 @@ interface OrdersPageProps {}
 /*
   OrdersPage Strings
 */
-const OrdersPageStrings = {
-  buyer: 'Alici',
-  seller: 'Satici',
-  orderDate: 'Siparis T.',
-  itemCount: 'Oge Sayisi',
-  totalPrice: 'Toplam F.',
-  status: 'Durumu',
-};
-const ORDER_STATUS_MAP: Record<TOrderStatus, string> = {
-  CANCELLED: 'Iptal edildi',
-  FINISHED: 'Bitti',
-  NEW: 'Yeni',
-  PAID: 'Bekliyor',
-};
 
 /*
   OrdersPage Styles
@@ -39,47 +27,28 @@ const StyledPageContainer = styled.div`
 `;
 
 const OrdersPage: React.SFC<OrdersPageProps> = props => {
-  const { data: orders, next } = usePaginationQuery(paginationQueryEndpoints.getAllOrders, {
-    defaultValue: [],
+  const applicationContext = useApplicationContext();
+  const [sortBy, setSortBy] = React.useState();
+  const [sortType, setSortType] = React.useState();
+  const {
+    data: { values: orders, elementCountOfPage },
+  } = usePaginationQuery(paginationQueryEndpoints.getAllOrders, {
+    defaultValue: { values: [] },
+    variables: {
+      sortBy,
+      sortType,
+    },
+    pageNumber: 1,
   });
   const __ = (
     <Container>
+      {applicationContext.user.isCustomer && <CategoryHorizontalListFetcher shouldUseProductsPageLink />}
       <StyledPageContainer>
-        <UITable
-          id="orders-page-table"
-          onChangePage={(pageIndex, pageCount) => {
-            if (pageIndex + 2 === pageCount) {
-              next();
-            }
-          }}
-          data={orders}
-          rowCount={14}
-          columns={[
-            {
-              title: OrdersPageStrings.seller,
-              itemRenderer: item => item.sellerName,
-            },
-            {
-              title: OrdersPageStrings.buyer,
-              itemRenderer: item => item.buyerName,
-            },
-            {
-              title: OrdersPageStrings.orderDate,
-              itemRenderer: item => item.orderDate,
-            },
-            {
-              title: OrdersPageStrings.itemCount,
-              itemRenderer: item => item.orderItems.length,
-            },
-            {
-              title: OrdersPageStrings.status,
-              itemRenderer: item => ORDER_STATUS_MAP[item.status],
-            },
-            {
-              title: OrdersPageStrings.totalPrice,
-              itemRenderer: item => item.totalPrice,
-            },
-          ]}
+        <OrderListComponent
+          setSortBy={setSortBy}
+          setSortType={setSortType}
+          orders={orders}
+          elementCountOfPage={elementCountOfPage}
         />
       </StyledPageContainer>
     </Container>

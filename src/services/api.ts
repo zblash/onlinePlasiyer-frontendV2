@@ -2,13 +2,13 @@ import axios from 'axios';
 import { TOKEN_KEY } from '~/utils/constants';
 import { UserRoleResponse } from './helpers/backend-models';
 
-const TOKEN = {
+export const TOKEN = {
   get: () => localStorage.getItem(TOKEN_KEY),
   set: (token: string) => localStorage.setItem(TOKEN_KEY, token),
   remove: () => localStorage.removeItem(TOKEN_KEY),
 };
 
-export const URL = 'https://onlineplasiyer-backend.herokuapp.com';
+export const URL = 'http://localhost:8080';
 const API_URL = `${URL}/api`;
 
 const headers = () => ({
@@ -51,7 +51,7 @@ function login(username: string, password: string) {
   return axios.post(`${URL}/signin`, { username, password }).then(({ data }) => {
     TOKEN.set(`Bearer ${data.token}`);
     // eslint-disable-next-line
-    location.reload();
+    location.replace('/');
 
     return data;
   });
@@ -80,7 +80,7 @@ function signup(data: {
 function logout() {
   TOKEN.remove();
   // eslint-disable-next-line
-  location.reload();
+  location.replace('/');
 }
 const hasToken = !!TOKEN.get();
 

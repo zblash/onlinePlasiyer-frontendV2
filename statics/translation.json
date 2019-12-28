@@ -5,10 +5,82 @@
       "create": "Olustur",
       "update": "Guncelle",
       "next": "Ileri",
-      "add": "Ekle"
+      "add": "Ekle",
+      "merchant": "Satıcı",
+      "price": "Fiyat",
+      "barcode": "Barkod",
+      "total-price": "Toplam Fiyat",
+      "customer": "Alıcı",
+      "product-name": "Ürün Adı",
+      "unit-type": "Birim",
+      "unit-price": "Birim Fiyat",
+      "quantity": "Adet",
+      "contents": "Icerik",
+      "details": "Detaylari Gor",
+      "active-states": "Satış Bölgeleri"
+    },
+    "cart": {
+      "orders-completed": "Siparişleriniz Tamamlandı",
+      "show-order-detail": "Sipariş Detaylarını Gör",
+      "recommended-sales-price": "Tavsiye Edilen Satış Fiyatı",
+      "CREDITCART": "Kredi Kartiyla Ode",
+      "COD": "Teslimatta Ode",
+      "CREDIT": "Krediden Ode"
+    },
+    "order": {
+      "code": "Sipariş Kodu",
+      "quantity": "Sipariş Adet",
+      "status-text": "Sipariş Durumu",
+      "order-date": "Sipariş Tarihi"
+    },
+    "invoice": {
+      "code": "Fatura Kodu",
+      "paid-price": "Odenen Fiyat",
+      "un-paid-price": "Odenmesi Gereken Fiyat"
+    },
+    "obligations": {
+      "title": "Toplam Odemeler",
+      "totalDebts": "Toplam Borc",
+      "totalReceivables": "Toplam Alacak",
+      "limit": "Kredi"
+    },
+    "product-card": {
+      "show-price": "<0>Fiyatlari Goster</0> <1/>",
+      "hide-price": "<0>Fiyatlari Gizle</0> <1/>"
     },
     "product-popup": {
       "category-input-placeholder": "Lutfen Bir Kategori Secin"
+    },
+    "not-connect-page": {
+      "message": "Baglanti gerceklestiremedik!!! Gelistiricilerimiz bunu cozmeye calisiyorlar"
+    },
+    "all-products-page": {
+      "table": {
+        "name": "Isim",
+        "category-name": "Kategori Ismi",
+        "barcode": "Barcode",
+        "active-status": "Aktiflik Durumu",
+        "active": "Aktif",
+        "passive": "Pasif"
+      }
+    },
+    "popups": {
+      "delete-category": {
+        "are-you-sure-question": "{{categoryName}} tamamen silinecek. Eminmisin ?",
+        "cancel": "Vazgec",
+        "delete": "Sil"
+      },
+      "remove-product": {
+        "are-you-sure-question": "{{productName}} urunu tamamen silinecek. Eminmisin ?",
+        "failed-message": "Silme Islemi Basarisiz"
+      },
+      "remove-product-specify": {
+        "are-you-sure-question": "Urun tamamen silinecek. Eminmisin ?"
+      },
+      "remove-announcement": {
+        "are-you-sure-question": "Duyuru silinecek. Eminmisin ?",
+        "failed-message": "Silme Islemi Basarisiz"
+      }
     }
   }
 }

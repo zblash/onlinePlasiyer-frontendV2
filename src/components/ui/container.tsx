@@ -6,7 +6,7 @@ interface ContainerProps {}
 const ContainerWrapper = styled.div`
   max-width: 1280px;
   width: 100%;
-  margin: auto;
+  margin: auto auto 30px auto;
 `;
 
 const StyledFullPage = styled.div`

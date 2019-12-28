@@ -1,6 +1,7 @@
 import * as React from 'react';
-import styled, { css } from '~/styled';
+import styled, { css, StylableProps, colors } from '~/styled';
 import { UIIcon } from '~/components/ui';
+import { TableSort } from './table-sort';
 
 /*
   UiTable Helpers
@@ -11,12 +12,17 @@ export type UITableColumns<T> = {
   itemRenderer: string | number | ((item: T) => React.ReactElement | string | number);
 };
 
-interface UiTableProps<T> {
+interface UiTableProps<T> extends StylableProps {
   data: T[];
   columns: UITableColumns<T>[];
+  totalPageCount?: number;
   rowCount?: number;
   id: string;
+  hidePagination?: boolean;
   onChangePage?: (pageIndex: number, totalPageCount: number) => void;
+  onSortChange?: (e) => void;
+  onSortTypeChange?: (value) => void;
+  sortList?: any[];
 }
 
 /*
@@ -44,8 +50,8 @@ const StyledUiTable = styled.table`
 `;
 const StyledHeadTr = styled.tr`
   height: 50px;
-  background: ${UiTableColors.primary};
-  color: ${UiTableColors.white};
+  background: ${colors.primary};
+  color: ${colors.white};
 `;
 
 const StyledHeadTh = styled.th`
@@ -73,7 +79,7 @@ const StyledBodyTd = styled.td`
 `;
 
 const StyledBodyTr = styled(StyledHeadTr)`
-  background: ${UiTableColors.white};
+  background: ${colors.white};
   color: ${UiTableColors.text};
   height: 50px;
 `;
@@ -122,34 +128,78 @@ const StyledPageInfoSpan = styled.span`
 `;
 
 const iconStyle = css`
-  background-color: ${UiTableColors.primary};
+  background-color: ${colors.primary};
   border-radius: 50%;
   cursor: pointer;
   padding: 2px;
   margin: 0 8px;
 `;
 
-function _UITable<T>(props: UiTableProps<T>) {
+function UITable<T>(props: UiTableProps<T>) {
   const hasRowCount = typeof props.rowCount === 'number';
-  const rowCount = hasRowCount ? props.rowCount : props.data.length;
-  const [pageIndex, setPageIndex] = React.useState(0);
-  const tableData = React.useMemo(() => {
-    const data = Array.from(props.data);
-    if (hasRowCount) {
-      while (data.length % rowCount !== 0 || data.length === 0) {
+  const elementCount = hasRowCount ? props.rowCount : props.data.length;
+
+  const [pageIndex, setPageIndex] = React.useState(1);
+  const dataWithEmptyRow = React.useMemo(() => {
+    if (hasRowCount && props.data.length) {
+      const data = Array.from(props.data);
+      while (data.length % elementCount !== 0 || data.length === 0) {
         data.push(null as T);
       }
 
-      return data.slice(pageIndex * rowCount, (pageIndex + 1) * props.rowCount);
+      return data;
+    }
+    if (props.data.length === 0 && hasRowCount) {
+      const data = [];
+      for (let i = 0; i < elementCount; i++) {
+        data.push(null as T);
+      }
+
+      return data;
     }
 
-    return data;
-  }, [props.data, props.rowCount, hasRowCount, rowCount, pageIndex, props.id]);
+    return [];
+  }, [hasRowCount, props.data, elementCount]);
 
-  const pageCount = Math.floor(props.data.length / rowCount);
+  const needAdd = React.useMemo(() => {
+    return elementCount - (dataWithEmptyRow.length - elementCount * (props.totalPageCount - 1));
+  }, [elementCount, props.totalPageCount, dataWithEmptyRow]);
 
-  const __ = (
-    <UiTableWrapper>
+  const tableData = React.useMemo(() => {
+    for (let i = 0; i < needAdd; i++) {
+      dataWithEmptyRow.push(null as T);
+    }
+
+    return dataWithEmptyRow.slice((pageIndex - 1) * elementCount, pageIndex * elementCount);
+  }, [dataWithEmptyRow, pageIndex, elementCount, needAdd]);
+
+  /*
+  UiTable Lifecycle
+  */
+  function setPageIndexCallback(index: number) {
+    const nextPage = Math.max(1, Math.min(props.totalPageCount || 1, index));
+    if (props.totalPageCount && nextPage <= props.totalPageCount) {
+      setPageIndex(nextPage);
+
+      if (props.onChangePage) {
+        props.onChangePage(nextPage, props.totalPageCount);
+      }
+    }
+  }
+
+  React.useEffect(() => {
+    setPageIndex(1);
+  }, [props.id]);
+
+  return (
+    <UiTableWrapper className={props.className}>
+      {props.sortList && props.onSortChange && props.onSortTypeChange && (
+        <TableSort
+          onSortChange={props.onSortChange}
+          sortList={props.sortList}
+          onSortTypeChange={props.onSortTypeChange}
+        />
+      )}
       <StyledUiTable>
         <StyledTHead>
           <StyledHeadTr>
@@ -176,7 +226,7 @@ function _UITable<T>(props: UiTableProps<T>) {
           ))}
         </StyledTableBody>
       </StyledUiTable>
-      {hasRowCount && (
+      {hasRowCount && !props.hidePagination && (
         <PaginationButtonsWrapper>
           <UIIcon
             name="chevronLeft"
@@ -186,7 +236,7 @@ function _UITable<T>(props: UiTableProps<T>) {
             onClick={() => setPageIndexCallback(pageIndex - 1)}
           />
           <StyledPageInfoSpan>
-            {pageIndex + 1} / {pageCount + 1}
+            {pageIndex} / {props.totalPageCount || 1}
           </StyledPageInfoSpan>
           <UIIcon
             name="chevronRight"
@@ -199,31 +249,7 @@ function _UITable<T>(props: UiTableProps<T>) {
       )}
     </UiTableWrapper>
   );
-
-  /*
-  UiTable Lifecycle
-  */
-  React.useEffect(() => {
-    setPageIndex(0);
-  }, [props.id]);
-
-  /*
-  UiTable Functions
-  */
-
-  function setPageIndexCallback(index: number) {
-    const nextPage = Math.max(0, Math.min(pageCount, index));
-    if (pageIndex !== nextPage) {
-      setPageIndex(nextPage);
-      if (props.onChangePage) {
-        props.onChangePage(nextPage, pageCount);
-      }
-    }
-  }
-
-  return __;
 }
 
-const UITable = _UITable;
-
+// TODO: add memo
 export { UITable };
