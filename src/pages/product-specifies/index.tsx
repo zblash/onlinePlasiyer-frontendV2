@@ -38,10 +38,6 @@ function ProductSpecifiesPage(props: React.PropsWithChildren<ProductSpecifiesPag
 
   /* ProductSpecifiesPage Lifecycle  */
 
-  if (productLoading) {
-    return <FullScreenLoading />;
-  }
-
   return (
     <Container>
       <StyledPageContainer>
@@ -50,7 +46,7 @@ function ProductSpecifiesPage(props: React.PropsWithChildren<ProductSpecifiesPag
         </StyledPageHeader>
         <label>Urune Gore Listele : </label>
         <select className={selectBox} onChange={e => setSelectedProducId(e.target.value)}>
-          {products &&
+          {!productLoading &&
             products.map(x => (
               <option value={x.id} key={x.id}>
                 {x.name}
