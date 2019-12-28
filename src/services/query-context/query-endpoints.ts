@@ -120,6 +120,13 @@ class QueryEndpoints {
 
   getTicketRepliesByTicketId: (s: { id: string }) => Promise<Array<ITicketReplyResponse>> = ({ id }) =>
     ApiCall.get(`/tickets/${id}/replies`);
+
+  getAllProducts: (s: { sortBy?: string; sortType?: string }) => Promise<Array<IProductResponse>> = ({
+    sortBy,
+    sortType,
+  }) => {
+    return ApiCall.get('/products', { sortBy, sortType, pagination: false });
+  };
 }
 const queryEndpoints = new QueryEndpoints();
 

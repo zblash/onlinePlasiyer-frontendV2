@@ -22,6 +22,9 @@ const StyledActionsWrapper = styled.div`
   align-items: center;
   justify-content: center;
 `;
+const StyledPageHeader = styled.div`
+  display: flex;
+`;
 const commonIconStyle = css`
   cursor: pointer;
   margin: 0 8px;
@@ -73,6 +76,9 @@ function AllNotificationsPage(props: React.PropsWithChildren<AllNotificationsPag
   return (
     <Container>
       <StyledPageContainer>
+        <StyledPageHeader>
+          <h3>Bildirimler</h3>
+        </StyledPageHeader>
         <UITable
           id="all-notifications-page-table"
           data={notifications}

@@ -48,6 +48,9 @@ const StyledAddButton = styled(UIButton)`
     background-color: ${colors.primary};
   }
 `;
+const StyledPageHeader = styled.div`
+  display: flex;
+`;
 const commonIconStyle = css`
   cursor: pointer;
   margin: 0 8px;
@@ -199,6 +202,9 @@ function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
             </StyledAddButton>
           </div>
         )}
+        <StyledPageHeader>
+          <h3>Tum Urunler</h3>
+        </StyledPageHeader>
         <UITable
           onSortChange={e => setSortBy(e.value)}
           onSortTypeChange={value => setSortType(value)}

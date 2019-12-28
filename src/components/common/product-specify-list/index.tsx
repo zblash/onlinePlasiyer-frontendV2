@@ -12,6 +12,7 @@ import { refetchFactory } from '~/services/utils';
 /* ProductSpecifyListComponent Helpers */
 interface ProductSpecifyListComponentProps {
   userId?: string;
+  productId?: string;
 }
 
 /* ProductSpecifyListComponent Constants */
@@ -40,18 +41,25 @@ function ProductSpecifyListComponent(props: React.PropsWithChildren<ProductSpeci
   const [sortType, setSortType] = React.useState();
   const { t } = useTranslation();
   const popupsContext = usePopupContext();
+
   const {
     data: { values: productSpecifiesValues, totalPage },
     getDataByPage: productSpecifiesPage,
-  } = usePaginationQuery(paginationQueryEndpoints.getAllSpecifies, {
-    variables: {
-      userId: props.userId,
-      sortBy,
-      sortType,
+  } = usePaginationQuery(
+    props.productId
+      ? paginationQueryEndpoints.getAllSpecifyProductsByProductId
+      : paginationQueryEndpoints.getAllSpecifies,
+    {
+      variables: {
+        productId: props.productId,
+        userId: props.userId,
+        sortBy,
+        sortType,
+      },
+      pageNumber: allProductsPageNumber,
+      defaultValue: { values: [], totalPage: 0 },
     },
-    pageNumber: allProductsPageNumber,
-    defaultValue: { values: [], totalPage: 0 },
-  });
+  );
   const productSpecifies = React.useMemo(() => {
     return productSpecifiesPage(allProductsPageNumber);
   }, [allProductsPageNumber, productSpecifiesPage]);

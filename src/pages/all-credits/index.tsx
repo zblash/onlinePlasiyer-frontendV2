@@ -21,6 +21,9 @@ const StyledActionsWrapper = styled.div`
   align-items: center;
   justify-content: center;
 `;
+const StyledPageHeader = styled.div`
+  display: flex;
+`;
 const commonIconStyle = css`
   cursor: pointer;
   margin: 0 8px;
@@ -98,6 +101,9 @@ function AllCreditsPage(props: React.PropsWithChildren<AllCreditsPageProps>) {
   return (
     <Container>
       <StyledPageContainer>
+        <StyledPageHeader>
+          <h3>Krediler</h3>
+        </StyledPageHeader>
         <UITable
           onSortChange={e => setSortBy(e.value)}
           onSortTypeChange={value => setSortType(value)}
