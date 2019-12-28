@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled from '~/styled';
+import styled, { colors } from '~/styled';
 
 type Size = 'small' | 'medium' | 'large';
 type Position = 'left' | 'right' | 'center';
@@ -33,11 +33,6 @@ const INDEX_TO_POSITION_MAP: Record<number, Position> = {
   2: 'right',
 };
 
-const ButtonGroupColors = {
-  white: '#fff',
-  primary: '#0075ff',
-};
-
 const StyledUserTypesWrapper = styled.div`
   display: flex;
 `;
@@ -49,12 +44,12 @@ const StyledButton = styled.span<ButtonProps>`
   border-bottom-left-radius: ${props => (props.position === 'left' ? 4 : 0)}px;
   border-top-right-radius: ${props => (props.position === 'right' ? 4 : 0)}px;
   border-bottom-right-radius: ${props => (props.position === 'right' ? 4 : 0)}px;
-  border: 1px solid ${ButtonGroupColors.primary};
+  border: 1px solid ${colors.primary};
   border-left-width: ${props => (props.position === 'center' ? 0 : 1)}px;
   border-right-width: ${props => (props.position === 'center' ? 0 : 1)}px;
   padding: ${props => SIZE_TO_PADDING_MAP[props.size]}px 6px;
-  color: ${props => (props.isSelected ? ButtonGroupColors.white : 'currentColor')};
-  background-color: ${props => (props.isSelected ? ButtonGroupColors.primary : ButtonGroupColors.white)};
+  color: ${props => (props.isSelected ? colors.white : 'currentColor')};
+  background-color: ${props => (props.isSelected ? colors.primary : colors.white)};
 `;
 
 function UIButtonGroup<T = string>(props: ButtonGroupProps<T>) {

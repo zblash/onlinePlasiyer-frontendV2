@@ -38,6 +38,7 @@ import { SearchProductsPage } from './search-products';
 import { CreateTicketPage } from './create-ticket';
 import { UserTicketsPage } from './user-tickets';
 import { TicketRepliesPage } from './ticket-replies';
+import { LoginPage } from '~/components/common/login-register/login-page';
 
 interface IRoute {
   path: string;
@@ -47,6 +48,10 @@ interface IRoute {
 }
 
 const routes: IRoute[] = [
+  {
+    path: '/login',
+    component: LoginPage,
+  },
   {
     path: '/',
     component: Home,

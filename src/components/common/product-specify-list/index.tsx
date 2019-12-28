@@ -30,7 +30,11 @@ const commonIconStyle = css`
 /* ProductSpecifyListComponent Component  */
 function ProductSpecifyListComponent(props: React.PropsWithChildren<ProductSpecifyListComponentProps>) {
   /* ProductSpecifyListComponent Variables */
-  const sortList = [{ value: 'totalPrice', label: 'Fiyata Gore' }, { value: 'unitPrice', label: 'Birim Fiyata Gore' }];
+  const sortList = [
+    { value: 'id', label: 'Eklenme Sirasina Gore' },
+    { value: 'totalPrice', label: 'Fiyata Gore' },
+    { value: 'unitPrice', label: 'Birim Fiyata Gore' },
+  ];
   const [allProductsPageNumber, setAllProductPageNumber] = React.useState(1);
   const [sortBy, setSortBy] = React.useState();
   const [sortType, setSortType] = React.useState();

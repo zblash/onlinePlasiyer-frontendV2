@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled from '~/styled';
+import styled, { colors } from '~/styled';
 import { UIInput, UIAutoComplete, UIButtonGroup, UIButton, Loading } from '~/components/ui';
 import { IAddressCityResponse, IAddressStateResponse, UserRoleResponse } from '~/services/helpers/backend-models';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
@@ -67,7 +67,7 @@ const StyledInput = styled(UIInput)<{ hasError: boolean }>`
   justify-content: space-between;
   margin-bottom: 12px;
   padding: 4px;
-  border: 1px solid ${props => (props.hasError ? RegisterPageColors.danger : RegisterPageColors.primary)};
+  border: 1px solid ${props => (props.hasError ? colors.danger : colors.primary)};
   border-radius: 4px;
   color: ${RegisterPageColors.unFocused};
 `;
@@ -79,9 +79,9 @@ const StyledRegisterButton = styled(UIButton)<{ hasError: boolean; disabled: boo
   margin-left: auto;
   align-items: center;
   justify-content: center;
-  border: 1px solid ${props => (props.hasError ? RegisterPageColors.danger : RegisterPageColors.primary)};
-  background-color: ${RegisterPageColors.white};
-  color: ${props => (props.hasError ? RegisterPageColors.danger : RegisterPageColors.primary)};
+  border: 1px solid ${props => (props.hasError ? colors.danger : colors.primary)};
+  background-color: ${colors.white};
+  color: ${props => (props.hasError ? colors.danger : colors.primary)};
   text-align: center;
   cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
   font-size: 12px;
@@ -89,16 +89,11 @@ const StyledRegisterButton = styled(UIButton)<{ hasError: boolean; disabled: boo
   border-radius: 4px;
   opacity: ${props => (props.disabled ? 0.3 : 1)};
   :hover {
-    color: ${props => (props.disabled ? RegisterPageColors.primary : RegisterPageColors.white)};
-    background-color: ${props =>
-      props.disabled
-        ? RegisterPageColors.white
-        : props.hasError
-        ? RegisterPageColors.danger
-        : RegisterPageColors.primary};
+    color: ${props => (props.disabled ? colors.primary : colors.white)};
+    background-color: ${props => (props.disabled ? colors.white : props.hasError ? colors.danger : colors.primary)};
   }
   :active {
-    background-color: ${props => (props.hasError ? RegisterPageColors.dangerDark : RegisterPageColors.primaryDark)};
+    background-color: ${props => (props.hasError ? colors.dangerDark : colors.primaryDark)};
   }
   transition: background-color 0.3s, color 0.3s;
 `;
