@@ -97,6 +97,8 @@ function UpdateOrderPopup(props: React.PropsWithChildren<UpdateOrderPopupProps>)
   const handleSubmit = React.useCallback(() => {
     updateOrder();
     popups.updateOrder.hide();
+    // eslint-disable-next-line
+    location.reload();
   }, [updateOrder, popups]);
   /* UpdateOrderPopup Lifecycle  */
 
