@@ -76,11 +76,12 @@ function AddActiveState(props: React.PropsWithChildren<AddActiveStateProps>) {
   const handleSubmit = React.useCallback(
     e => {
       e.preventDefault();
-      addActiveStateMutation();
-      popups.addActiveState.hide();
-      setUserActiveState(selectedStateId);
+      addActiveStateMutation().then(state => {
+        setUserActiveState(state);
+        popups.addActiveState.hide();
+      });
     },
-    [addActiveStateMutation, popups.addActiveState, selectedStateId, setUserActiveState],
+    [addActiveStateMutation, popups.addActiveState, setUserActiveState],
   );
 
   /* AddActiveState Lifecycle  */

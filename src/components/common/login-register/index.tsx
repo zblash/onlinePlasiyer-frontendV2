@@ -1,8 +1,9 @@
 import * as React from 'react';
-import styled, { mixins, colors } from '~/styled';
+import styled, { mixins, colors, css } from '~/styled';
 import { LoginPage } from './login-page';
 import { RegisterPage } from './register-page';
 import logoPath from '~/assets/images/logo/flogo.png';
+import { UIButton } from '~/components/ui';
 
 /*
   LoginPage Strings
@@ -50,14 +51,19 @@ const StyledLogo = styled.div`
 const StyledDontHaveAccountQuestion = styled.div`
   margin-top: 16px;
 `;
-const StyledHiglightedText = styled.span`
-  cursor: pointer;
+const StyledHiglightedText = styled(UIButton)`
+  background-color: transparent !important;
   color: ${colors.primary};
+  float: left;
+  padding: 0 !important;
   :hover {
     color: ${colors.primaryDark};
+    background-color: transparent !important;
   }
 `;
-
+const floatLeft = css`
+  float: left;
+`;
 const LoginRegisterPage: React.SFC = props => {
   const [pageType, setPageType] = React.useState<'login' | 'register'>('login');
   if (pageType === 'login') {
@@ -67,7 +73,7 @@ const LoginRegisterPage: React.SFC = props => {
           <StyledLogo />
           <LoginPage />
           <StyledDontHaveAccountQuestion>
-            {LoginPageStrings.dontHaveAccountQuestion}&nbsp;
+            <div className={floatLeft}>{LoginPageStrings.dontHaveAccountQuestion}&nbsp;</div>
             <StyledHiglightedText onClick={() => setPageType('register')}>
               {LoginPageStrings.register}
             </StyledHiglightedText>
@@ -83,7 +89,7 @@ const LoginRegisterPage: React.SFC = props => {
         <StyledLogo />
         <RegisterPage onSignup={() => setPageType('login')} />
         <StyledDontHaveAccountQuestion>
-          {LoginPageStrings.haveAccountQuestion}&nbsp;
+          <div className={floatLeft}>{LoginPageStrings.haveAccountQuestion}&nbsp;</div>
           <StyledHiglightedText onClick={() => setPageType('login')}>{LoginPageStrings.login}</StyledHiglightedText>
         </StyledDontHaveAccountQuestion>
       </CenteredCard>
