@@ -181,9 +181,11 @@ function UserPage(props: React.PropsWithChildren<UserPageProps>) {
       <StyledProfilePageWrapper>
         <StyledPageHeader>
           <div>
-            <h2>
-              {user.name}({user.username}) Kullanicisinin Detay Sayfasi
-            </h2>
+            {!userLoading && (
+              <h2>
+                {user.name}({user.username}) Kullanicisinin Detay Sayfasi
+              </h2>
+            )}
           </div>
         </StyledPageHeader>
         {applicationContext.user.isCustomer ? (
