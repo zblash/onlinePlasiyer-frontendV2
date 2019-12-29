@@ -179,11 +179,7 @@ function UserPage(props: React.PropsWithChildren<UserPageProps>) {
   return (
     <Container>
       <StyledProfilePageWrapper>
-        <StyledPageHeader>
-          <h2>
-            {user.name}({user.username}) Kullanicisinin Detay Sayfasi
-          </h2>
-        </StyledPageHeader>
+        <StyledPageHeader />
         {applicationContext.user.isCustomer ? (
           <CreditSummaryComponent userId={user.id} />
         ) : (
