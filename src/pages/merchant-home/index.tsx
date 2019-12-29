@@ -76,8 +76,6 @@ function MerchantHome(props: React.PropsWithChildren<MerchantHomeProps>) {
   return (
     <Container>
       <StyledMerchantHomeWrapper>
-        <AnnouncementComponent />
-        <ObligationComponent />
         <StyledOrderSummaryWrapper>
           <StyledOrderSummaryHeader>
             <h3>Siparis Ozeti</h3>
@@ -114,6 +112,8 @@ function MerchantHome(props: React.PropsWithChildren<MerchantHomeProps>) {
             </StyledOrderSummaryMenu>
           </StyledOrderSummaryContentWrapper>
         </StyledOrderSummaryWrapper>
+        <ObligationComponent />
+        <AnnouncementComponent />
       </StyledMerchantHomeWrapper>
     </Container>
   );

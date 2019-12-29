@@ -187,7 +187,7 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
           <StyledInput id="contents" type="number" value={contents} onChange={e => setContents(parseInt(e, 10))} />
         </StyledCreateProductSpecifyContentElement>
         <StyledCreateProductSpecifyContentElement>
-          <label>Adet</label>
+          <label>Stok Miktari</label>
           <StyledInput id="quantity" type="number" value={quantity} onChange={e => setQuantity(parseInt(e, 10))} />
         </StyledCreateProductSpecifyContentElement>
         <StyledCreateProductSpecifyContentElement>

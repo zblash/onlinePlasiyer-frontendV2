@@ -111,7 +111,13 @@ class QueryEndpoints {
 
   getPaymentMethods: () => Promise<IPaymentMethodsResponse> = () => ApiCall.get('/payment/methods');
 
-  getMyCredit: () => Promise<ICreditResponse> = () => ApiCall.get('/credits/my');
+  getCredit: (s: { id?: string }) => Promise<ICreditResponse> = ({ id }) => {
+    if (id) {
+      return ApiCall.get(`/credits/byUser/${id}`);
+    }
+
+    return ApiCall.get('/credits/my');
+  };
 
   getProductsByFilter: (s: { name: string }) => Promise<Array<IProductResponse>> = ({ name }) =>
     ApiCall.get(`/products/filter?name=${name}`);
@@ -121,11 +127,8 @@ class QueryEndpoints {
   getTicketRepliesByTicketId: (s: { id: string }) => Promise<Array<ITicketReplyResponse>> = ({ id }) =>
     ApiCall.get(`/tickets/${id}/replies`);
 
-  getAllProducts: (s: { sortBy?: string; sortType?: string }) => Promise<Array<IProductResponse>> = ({
-    sortBy,
-    sortType,
-  }) => {
-    return ApiCall.get('/products', { sortBy, sortType, pagination: false });
+  getAllProducts: (s: { userId?: string }) => Promise<Array<IProductResponse>> = ({ userId }) => {
+    return ApiCall.get('/products/byUser', { userId });
   };
 }
 const queryEndpoints = new QueryEndpoints();

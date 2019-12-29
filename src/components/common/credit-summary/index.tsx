@@ -6,7 +6,9 @@ import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 
 /* CreditSummaryComponent Helpers */
-interface CreditSummaryComponentProps {}
+interface CreditSummaryComponentProps {
+  userId?: string;
+}
 
 /* CreditSummaryComponent Constants */
 
@@ -60,11 +62,12 @@ border-radius: 8px;
 function CreditSummaryComponent(props: React.PropsWithChildren<CreditSummaryComponentProps>) {
   /* CreditSummaryComponent Variables */
   const { t } = useTranslation();
-  const { data: creditSummary } = useQuery(queryEndpoints.getMyCredit, {
+  const { data: creditSummary } = useQuery(queryEndpoints.getCredit, {
     defaultValue: {
       creditLimit: 0,
       totalDebt: 0,
     },
+    variables: { id: props.userId },
   });
   /* CreditSummaryComponent Callbacks */
 

@@ -20,7 +20,7 @@ export interface ApplicationContextValues {
     show: () => void;
     hide: () => void;
   };
-  setUserActiveState: (activeState: IAddressStateResponse) => void;
+  setUserActiveState: (activeState: IAddressStateResponse[]) => void;
 }
 
 const initialPermission: Permission = {
