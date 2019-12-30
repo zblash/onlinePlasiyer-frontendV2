@@ -172,7 +172,6 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
   const { data: paymentMethods, loading: methodsLoading } = useQuery(queryEndpoints.getPaymentMethods, {
     defaultValue: {},
   });
-
   const { mutation: setPayment } = useMutation(mutationEndPoints.cartSetPayment, {
     variables: {
       paymentOption: paymentMethod,

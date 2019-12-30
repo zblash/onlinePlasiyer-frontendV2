@@ -185,10 +185,10 @@ class MutationEndpoints {
     name: string;
   }) => Promise<IUserCommonResponse> = (...params) => {
     if (params[0].id) {
-      return ApiCall.put(`/users/infos/${params[0].id}`, ...params);
+      return ApiCall.put(`/users/info/${params[0].id}`, ...params);
     }
 
-    return ApiCall.put('/user/infos', ...params);
+    return ApiCall.put('/user/info', ...params);
   };
 
   updatePassword: (params: { password: string; passwordConfirmation: string }) => Promise<any> = (...params) =>

@@ -101,7 +101,7 @@ class QueryEndpoints {
   getOrderSummary: () => Promise<IOrderSummary> = () => ApiCall.get('/orders/summary');
 
   getUserInfosForAdmin: (s: { id: string }) => Promise<IUserCommonResponse> = ({ id }) =>
-    ApiCall.get(`/users/infos/${id}`);
+    ApiCall.get(`/users/info/${id}`);
 
   getAllNotifications: () => Promise<Array<INotificationResponse>> = () => ApiCall.get('/notifications');
 
