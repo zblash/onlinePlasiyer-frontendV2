@@ -295,7 +295,6 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
     },
     [sellerIds, setCheckoutFlag, setAllCheck],
   );
-  console.log(sellerIds);
   const __ = (
     <Container>
       <CategoryHorizontalListFetcher shouldUseProductsPageLink />
