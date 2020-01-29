@@ -22,6 +22,7 @@ interface ICartItemProp {
   quantity: number;
   sellerName: string;
   totalPrice: number;
+  discountedTotalPrice: number;
 }
 /* CartItem Constants */
 
@@ -146,7 +147,13 @@ const itemQuantityInputDiv = css`
   width: 115px;
   margin auto;
 `;
-
+const marginZero = css`
+  margin: 0;
+`;
+const discount = css`
+  text-decoration: line-through;
+  margin: 0;
+`;
 /* CartItem Component  */
 function CartItem(props: React.PropsWithChildren<CartItemProps>) {
   /* CartItem Variables */
@@ -237,7 +244,12 @@ function CartItem(props: React.PropsWithChildren<CartItemProps>) {
         </div>
       </StyledCartContentItemBoxQuantity>
       <StyledCartContentItemBoxPrice>
-        <strong className={cartItemTotalPrice}>{props.cartItem.totalPrice} TL</strong>
+        <strong className={cartItemTotalPrice}>
+          {props.cartItem.discountedTotalPrice < props.cartItem.totalPrice && (
+            <p className={discount}>{props.cartItem.totalPrice} TL</p>
+          )}
+          <p className={marginZero}>{props.cartItem.discountedTotalPrice} TL</p>
+        </strong>
         <div className={floatRight}>
           <StyledCartContentItemBoxDeleteBtn onClick={removeItemHandler}>Sil</StyledCartContentItemBoxDeleteBtn>
         </div>
