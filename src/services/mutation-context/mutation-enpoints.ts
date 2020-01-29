@@ -15,6 +15,7 @@ import {
   ICreditResponse,
   ITicketResponse,
   ITicketReplyResponse,
+  PromotionType,
 } from '~/services/helpers/backend-models';
 
 interface CreateCategoryVariables {
@@ -87,7 +88,7 @@ class MutationEndpoints {
     name: string;
     status?: boolean;
     tax: number;
-    uploadfile: File;
+    uploadedFile?: File;
   }) => {
     const formData = new FormData();
     Object.keys(params).forEach(key => {
@@ -104,7 +105,7 @@ class MutationEndpoints {
     name: string;
     status?: boolean;
     tax: number;
-    uploadfile?: File;
+    uploadedFile?: File;
   }) => {
     const formData = new FormData();
     const { id, ...data } = params;
@@ -140,6 +141,11 @@ class MutationEndpoints {
     totalPrice: number;
     unitPrice: number;
     unitType: UnitTypeResponse;
+    discount: boolean;
+    discountValue?: number;
+    discountUnit?: number;
+    promotionType?: PromotionType;
+    promotionText?: string;
   }) => ApiCall.post('/products/specify', { ...params, stateList: params.stateIds, stateIds: undefined });
 
   updateSpecifyProduct: (params: {
@@ -152,6 +158,11 @@ class MutationEndpoints {
     totalPrice: number;
     unitPrice: number;
     unitType: UnitTypeResponse;
+    discount: boolean;
+    discountValue?: number;
+    discountUnit?: number;
+    promotionType?: PromotionType;
+    promotionText?: string;
   }) => Promise<ISpecifyProductResponse> = ({ ...params }) => {
     const { id, ...others } = params;
 
@@ -169,7 +180,8 @@ class MutationEndpoints {
 
   clearCard: () => Promise<any> = () => ApiCall.delete('/cart');
 
-  cardCheckout: () => Promise<IOrder[]> = () => ApiCall.post('/cart/checkout/');
+  cardCheckout: (s: { sellerIdList: string[] }) => Promise<IOrder[]> = ({ sellerIdList }) =>
+    ApiCall.post('/cart/checkout/', { sellerIdList });
 
   cartSetPayment: (s: { paymentOption: string }) => Promise<ICardResponse> = ({ paymentOption }) =>
     ApiCall.post('/cart/setPayment', { paymentOption });
