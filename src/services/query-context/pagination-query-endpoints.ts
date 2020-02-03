@@ -20,8 +20,11 @@ class QueryEndpoints {
   getAllSpecifyProductsByProductId: (s: {
     productId: string;
     pageNumber: number;
-  }) => Promise<ISpecifyProductResponse> = ({ productId, pageNumber }) =>
-    paginationQueryGet(`/products/${productId}/specifies`, { pageNumber });
+    sortBy?: string;
+    sortType?: string;
+    userId?: string;
+  }) => Promise<ISpecifyProductResponse> = ({ productId, pageNumber, userId, sortBy, sortType }) =>
+    paginationQueryGet(`/products/${productId}/specifies`, { pageNumber, userId, sortBy, sortType });
 
   getAllProducts: (variables: {
     pageNumber: number;
@@ -30,10 +33,12 @@ class QueryEndpoints {
   }) => Promise<IProductResponse> = ({ pageNumber, sortBy, sortType }) =>
     paginationQueryGet(`/products`, { pageNumber, sortBy, sortType });
 
-  getAllProductsByCategoryId: (s: { categoryId: string; pageNumber: number }) => Promise<IProductResponse> = ({
-    categoryId,
-    pageNumber,
-  }) => paginationQueryGet(`/products/category/${categoryId}`, { pageNumber });
+  getAllProductsByCategoryId: (s: {
+    categoryId: string;
+    pageNumber: number;
+    userId?: string;
+  }) => Promise<IProductResponse> = ({ categoryId, pageNumber, userId }) =>
+    paginationQueryGet(`/products/category/${categoryId}`, { pageNumber, userId });
 
   getAllInvoices: (s: { userId?: string; pageNumber: number }) => Promise<Invoice> = ({ userId, pageNumber }) => {
     if (userId) {
@@ -57,6 +62,7 @@ class QueryEndpoints {
   };
 
   getAllSpecifies: (s: {
+    productId?: string;
     userId?: string;
     pageNumber: number;
     sortBy?: string;

@@ -6,7 +6,9 @@ import { useMemoWithPrevDeps } from '~/utils/hooks';
 import { scrollToRef } from '~/utils/node';
 
 /* ProductListFetcher Helpers */
-interface ProductListFetcherProps extends ProductListComponentProps {}
+interface ProductListFetcherProps extends ProductListComponentProps {
+  selectedUserId?: string;
+}
 
 function ProductListFetcher(props: React.PropsWithChildren<ProductListFetcherProps>) {
   const [expandProductId, setExpandProductId] = React.useState<string>(null);
@@ -16,7 +18,7 @@ function ProductListFetcher(props: React.PropsWithChildren<ProductListFetcherPro
   const { totalPage: productPageTotalPage, values: productsValues } = usePaginationQuery(
     paginationQueryEndpoints.getAllProductsByCategoryId,
     {
-      variables: { categoryId: props.selectedCategoryId },
+      variables: { categoryId: props.selectedCategoryId, userId: props.selectedUserId },
       skip: !props.selectedCategoryId,
       defaultValue: { values: [] },
       pageNumber: productPageNumber,
@@ -26,7 +28,7 @@ function ProductListFetcher(props: React.PropsWithChildren<ProductListFetcherPro
     data: { values: specifyProductsData, totalPage: specifyProductsTotalPage },
     getDataByPage: specifyProductsPage,
   } = usePaginationQuery(paginationQueryEndpoints.getAllSpecifyProductsByProductId, {
-    variables: { productId: expandProductId },
+    variables: { productId: expandProductId, userId: props.selectedUserId },
     defaultValue: { values: [] },
     skip: !expandProductId,
     pageNumber: specifyProductPageNumber,
