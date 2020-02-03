@@ -74,6 +74,8 @@ class QueryEndpoints {
     return ApiCall.get(userTypeRouteMap[role][type]);
   };
 
+  getMerchants: () => Promise<IUserCommonResponse[]> = () => ApiCall.get('/merchants');
+
   getAuthUserActiveStates: () => Promise<IAddressStateResponse[]> = () => ApiCall.get('/user/activeStates');
 
   getCities: () => Promise<IAddressCityResponse[]> = () =>

@@ -116,10 +116,6 @@ class MutationEndpoints {
     return ApiCall.put(`/products/${id}`, formData);
   };
 
-  checkProduct = (params: { barcode: string }) => {
-    return ApiCall.post(`/products/checkProduct/${params.barcode}`);
-  };
-
   hasProduct = (params: { barcode: string }) => {
     return ApiCall.post(`/products/hasProduct/${params.barcode}`).then(data => ({
       id: `has-product-${params.barcode}`,
