@@ -179,8 +179,10 @@ class MutationEndpoints {
   cardCheckout: (s: { sellerIdList: string[] }) => Promise<IOrder[]> = ({ sellerIdList }) =>
     ApiCall.post('/cart/checkout/', { sellerIdList });
 
-  cartSetPayment: (s: { paymentOption: string }) => Promise<ICardResponse> = ({ paymentOption }) =>
-    ApiCall.post('/cart/setPayment', { paymentOption });
+  cartSetPayment: (s: { paymentOption: string; holderId: string }) => Promise<ICardResponse> = ({
+    paymentOption,
+    holderId,
+  }) => ApiCall.post('/cart/setPayment', { paymentOption, holderId });
 
   updateInfos: (params: {
     id?: string;
