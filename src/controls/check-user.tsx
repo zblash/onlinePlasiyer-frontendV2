@@ -15,7 +15,7 @@ function CheckUser(props: Props) {
 
   React.useEffect(() => {
     if (hasToken) {
-      ApiCall.get('/user/getinfos')
+      ApiCall.get('/user/info')
         .then(_user => {
           setUser(_user);
           setIsLoading(false);

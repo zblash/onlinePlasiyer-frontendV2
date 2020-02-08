@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import styled, { colors, css } from '~/styled';
 import { IOrder } from '~/services/helpers/backend-models';
 import { Container, UILink } from '~/components/ui';
+import { useQuery } from '~/services/query-context/context';
+import { queryEndpoints } from '~/services/query-context/query-endpoints';
 
 /* CartCheckoutPage Helpers */
 interface CartCheckoutPageProps {}
@@ -90,6 +92,9 @@ function CartCheckoutPage(props: React.PropsWithChildren<CartCheckoutPageProps>)
   const { t } = useTranslation();
   const location = useLocation<IOrder[]>();
   const routerHistory = useHistory();
+  useQuery(queryEndpoints.getCredit, {
+    defaultValue: {},
+  });
   React.useEffect(() => {
     if (!location.state) {
       routerHistory.push('/');

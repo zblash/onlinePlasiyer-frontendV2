@@ -163,7 +163,7 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
       barcode,
       categoryId,
       name: productName,
-      uploadfile: img,
+      uploadedFile: img,
       tax: taxNumber,
       status: isActive,
     },
@@ -175,7 +175,7 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
       barcode,
       categoryId,
       name: productName,
-      uploadfile: img,
+      uploadedFile: img,
       tax: taxNumber,
       status: isActive,
     },
@@ -286,7 +286,7 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
         }}
         selectedCategoryId={categoryId}
       />
-      <StyledButton disabled={!barcode || !productName || !categoryId || taxNumber < 1 || !imgSrc} onClick={onSubmit}>
+      <StyledButton disabled={!barcode || !productName || !categoryId || taxNumber < 1} onClick={onSubmit}>
         {createLoading ? (
           <Loading color={colors.primary} size={22} className={loadingStyle} />
         ) : (

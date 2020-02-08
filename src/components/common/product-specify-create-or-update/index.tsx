@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useHistory } from 'react-router';
 import Select from 'react-select';
 import styled, { colors, css } from '~/styled';
-import { UIButton, UIInput } from '~/components/ui';
+import { UIButton, UIInput, UICheckbox, UIIcon } from '~/components/ui';
 import { useAlert } from '~/utils/hooks';
 import { usePopupContext } from '~/contexts/popup/context';
 import { useApplicationContext } from '~/app/context';
@@ -11,6 +11,8 @@ import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
 import { refetchFactory } from '~/services/utils';
+import { queryEndpoints } from '~/services/query-context/query-endpoints';
+import { useQuery } from '~/services/query-context/context';
 
 /* ProductSpecifyCreateUpdateComponent Helpers */
 interface ProductSpecifyCreateUpdateComponentProps {
@@ -63,10 +65,35 @@ const StyledButton = styled(UIButton)`
     color: ${colors.primary};
   }
 `;
+const StyledCategoryImg = styled.img`
+  object-fit: cover;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+`;
+
+const StyledCategoryImgWrapper = styled.label`
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 96px;
+  margin-bottom: 24px;
+  border-radius: 50%;
+  border: 2px solid ${colors.primary};
+  cursor: pointer;
+`;
+
+const imageIconStyle = css`
+  padding: 8px;
+`;
 const selectInput = css`
   margin-bottom: 10px;
 `;
-
+const textCenter = css`
+  text-align: center;
+`;
 /* ProductSpecifyCreateUpdateComponent Component  */
 function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<ProductSpecifyCreateUpdateComponentProps>) {
   const initialValues = {
@@ -78,6 +105,11 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
     unitPrice: props.data ? props.data.unitPrice : 0,
     unitType: props.data ? props.data.unitType : null,
     stateIds: props.data ? props.data.states : [],
+    discount: props.data ? props.data.discount : false,
+    promotionType: props.data && props.data.promotion ? props.data.promotion.promotionType : null,
+    discountUnit: props.data && props.data.promotion ? props.data.promotion.discountUnit : 1,
+    promotionText: props.data && props.data.promotion ? props.data.promotion.promotionText : '',
+    discountValue: props.data && props.data.promotion ? props.data.promotion.discountValue : 0,
   };
   const alertContext = useAlert();
   const routerHistory = useHistory();
@@ -97,6 +129,15 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
     })),
   );
   const unitTypeOptions = [{ value: 'AD', label: 'AD' }, { value: 'KG', label: 'KG' }, { value: 'KL', label: 'KL' }];
+  const [discount, setDiscount] = React.useState(initialValues.discount);
+  const [discountValue, setDiscountValue] = React.useState(initialValues.discountValue);
+  const [discountUnit, setDiscountUnit] = React.useState(initialValues.discountUnit);
+  const [promotionType, setPromotionType] = React.useState({
+    value: initialValues.promotionType,
+    label: initialValues.promotionType,
+  });
+  const promotionTypeOptions = [{ value: 'PERCENT', label: 'PERCENT' }, { value: 'PROMOTION', label: 'PROMOTION' }];
+  const [promotionText, setPromotionText] = React.useState(initialValues.promotionText);
   const { mutation: createProductSpecify } = useMutation(mutationEndPoints.createSpecifyProductForAuthUser, {
     variables: {
       barcode,
@@ -107,6 +148,11 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
       totalPrice,
       unitPrice,
       unitType: unitType.value,
+      discount,
+      discountValue,
+      discountUnit,
+      promotionText,
+      promotionType: promotionType.value,
     },
     refetchQueries: [refetchFactory(paginationQueryEndpoints.getAllSpecifies)],
   });
@@ -121,8 +167,18 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
       totalPrice,
       unitPrice,
       unitType: unitType.value,
+      discount,
+      discountValue,
+      discountUnit,
+      promotionText,
+      promotionType: promotionType.value,
     },
     refetchQueries: [refetchFactory(paginationQueryEndpoints.getAllSpecifies)],
+  });
+  const { data: product, loading: productLoading } = useQuery(queryEndpoints.getProductByBarcode, {
+    defaultValue: {},
+    variables: { barcode },
+    skip: !barcode,
   });
   /* CreateProductSpecifyPage Callbacks */
   const handleSubmit = React.useCallback(() => {
@@ -176,18 +232,40 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
     }
   }, [barcode, setBarcode, popup.createProduct]);
 
+  React.useEffect(() => {
+    if (productLoading) {
+      applicationContext.loading.show();
+    } else {
+      applicationContext.loading.hide();
+    }
+  }, [productLoading, applicationContext.loading]);
+
   return (
     <StyledCreateProductSpecifyPageWrapper>
       <StyledCreateProductSpecifyHeader>
-        <h3>Urun Ekle</h3>
+        <h3>{props.isCreate ? 'Urun Ekle' : 'Urun Duzenle'}</h3>
       </StyledCreateProductSpecifyHeader>
+      {!productLoading && product && barcode && (
+        <StyledCreateProductSpecifyContent>
+          <StyledCreateProductSpecifyContentElement>
+            <h3 className={textCenter}>{product.name} URUNU ICIN</h3>
+            <StyledCategoryImgWrapper>
+              {product.photoUrl && <StyledCategoryImg src={product.photoUrl} />}
+              {!product.photoUrl && <UIIcon name="photoCamera" size={42} className={imageIconStyle} />}
+            </StyledCategoryImgWrapper>
+            <p className={textCenter}>
+              Barkod Listesi: {product.barcodeList && product.barcodeList.map(br => `${br}, `)}
+            </p>
+          </StyledCreateProductSpecifyContentElement>
+        </StyledCreateProductSpecifyContent>
+      )}
       <StyledCreateProductSpecifyContent>
         <StyledCreateProductSpecifyContentElement>
           <label>Icerik</label>
           <StyledInput id="contents" type="number" value={contents} onChange={e => setContents(parseInt(e, 10))} />
         </StyledCreateProductSpecifyContentElement>
         <StyledCreateProductSpecifyContentElement>
-          <label>Adet</label>
+          <label>Stok Miktari</label>
           <StyledInput id="quantity" type="number" value={quantity} onChange={e => setQuantity(parseInt(e, 10))} />
         </StyledCreateProductSpecifyContentElement>
         <StyledCreateProductSpecifyContentElement>
@@ -239,6 +317,44 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
           />
         </StyledCreateProductSpecifyContentElement>
         <StyledCreateProductSpecifyContentElement>
+          <UICheckbox
+            value={discount}
+            label="Promosyon/Indirim Uygulanacak mi?"
+            id="product-discount"
+            onChange={isChecked => {
+              setDiscount(isChecked);
+            }}
+          />
+        </StyledCreateProductSpecifyContentElement>
+        {discount && (
+          <StyledCreateProductSpecifyContentElement>
+            <label>Promosyon Basligi</label>
+            <StyledInput id="promotionText" type="text" value={promotionText} onChange={e => setPromotionText(e)} />
+            <label>Gecerli Olacagi Satin Alma</label>
+            <StyledInput
+              id="discountUnit"
+              type="number"
+              value={discountUnit}
+              onChange={e => setDiscountUnit(parseInt(e, 10))}
+            />
+            <label>Promosyon/Indirim Tipi</label>
+            <Select
+              options={promotionTypeOptions}
+              placeholder="Secim Yapin"
+              className={selectInput}
+              value={promotionType}
+              onChange={e => setPromotionType(e)}
+            />
+            <label>Promosyon/Indirim Tutari</label>
+            <StyledInput
+              id="discountValue"
+              type="number"
+              value={discountValue}
+              onChange={e => setDiscountValue(parseInt(e, 10))}
+            />
+          </StyledCreateProductSpecifyContentElement>
+        )}
+        <StyledCreateProductSpecifyContentElement>
           <StyledButton
             disabled={
               selectedStateIds.length === 0 ||
@@ -247,7 +363,8 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
               !totalPrice ||
               !recommendedRetailPrice ||
               !quantity ||
-              !contents
+              !contents ||
+              (discount && (!discountUnit || !discountValue || !promotionText || !promotionType))
             }
             onClick={handleSubmit}
           >

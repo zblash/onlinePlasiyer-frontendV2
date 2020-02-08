@@ -19,10 +19,10 @@ interface InvoicesPageProps {}
 /*
   InvoicesPage Styles
 */
-const StyledPageContainer = styled.div`
-  margin-top: 48px;
+const StyledPageContainer = styled.div``;
+const StyledPageHeader = styled.div`
+  display: flex;
 `;
-
 const InvoicesPage: React.SFC<InvoicesPageProps> = props => {
   const applicationContext = useApplicationContext();
   const {
@@ -37,6 +37,9 @@ const InvoicesPage: React.SFC<InvoicesPageProps> = props => {
     <Container>
       {applicationContext.user.isCustomer && <CategoryHorizontalListFetcher shouldUseProductsPageLink />}
       <StyledPageContainer>
+        <StyledPageHeader>
+          <h3>{applicationContext.user.isAdmin ? 'Tum Faturalar' : 'Faturalarim'}</h3>
+        </StyledPageHeader>
         <InvoiceListComponent invoices={invoices} elementCountOfPage={elementCountOfPage} />
       </StyledPageContainer>
     </Container>

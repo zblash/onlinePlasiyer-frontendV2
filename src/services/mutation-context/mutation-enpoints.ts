@@ -15,6 +15,8 @@ import {
   ICreditResponse,
   ITicketResponse,
   ITicketReplyResponse,
+  PromotionType,
+  IOrderConfirmItem,
 } from '~/services/helpers/backend-models';
 
 interface CreateCategoryVariables {
@@ -87,7 +89,7 @@ class MutationEndpoints {
     name: string;
     status?: boolean;
     tax: number;
-    uploadfile: File;
+    uploadedFile?: File;
   }) => {
     const formData = new FormData();
     Object.keys(params).forEach(key => {
@@ -104,7 +106,7 @@ class MutationEndpoints {
     name: string;
     status?: boolean;
     tax: number;
-    uploadfile?: File;
+    uploadedFile?: File;
   }) => {
     const formData = new FormData();
     const { id, ...data } = params;
@@ -113,10 +115,6 @@ class MutationEndpoints {
     });
 
     return ApiCall.put(`/products/${id}`, formData);
-  };
-
-  checkProduct = (params: { barcode: string }) => {
-    return ApiCall.post(`/products/checkProduct/${params.barcode}`);
   };
 
   hasProduct = (params: { barcode: string }) => {
@@ -140,6 +138,11 @@ class MutationEndpoints {
     totalPrice: number;
     unitPrice: number;
     unitType: UnitTypeResponse;
+    discount: boolean;
+    discountValue?: number;
+    discountUnit?: number;
+    promotionType?: PromotionType;
+    promotionText?: string;
   }) => ApiCall.post('/products/specify', { ...params, stateList: params.stateIds, stateIds: undefined });
 
   updateSpecifyProduct: (params: {
@@ -152,13 +155,18 @@ class MutationEndpoints {
     totalPrice: number;
     unitPrice: number;
     unitType: UnitTypeResponse;
+    discount: boolean;
+    discountValue?: number;
+    discountUnit?: number;
+    promotionType?: PromotionType;
+    promotionText?: string;
   }) => Promise<ISpecifyProductResponse> = ({ ...params }) => {
     const { id, ...others } = params;
 
     return ApiCall.put(`/products/specify/${params.id}`, { ...others });
   };
 
-  addActiveStates: (s: { stateIds: string[] }) => Promise<IAddressStateResponse> = ({ stateIds }) =>
+  addActiveStates: (s: { stateIds: string[] }) => Promise<IAddressStateResponse[]> = ({ stateIds }) =>
     ApiCall.post('/user/activestates', stateIds);
 
   removeItemFromCard: (s: { id: string }) => Promise<any> = ({ id }) =>
@@ -169,10 +177,13 @@ class MutationEndpoints {
 
   clearCard: () => Promise<any> = () => ApiCall.delete('/cart');
 
-  cardCheckout: () => Promise<IOrder[]> = () => ApiCall.post('/cart/checkout/');
+  cardCheckout: (s: { sellerIdList: string[] }) => Promise<IOrder[]> = ({ sellerIdList }) =>
+    ApiCall.post('/cart/checkout/', { sellerIdList });
 
-  cartSetPayment: (s: { paymentOption: string }) => Promise<ICardResponse> = ({ paymentOption }) =>
-    ApiCall.post('/cart/setPayment', { paymentOption });
+  cartSetPayment: (s: { paymentOption: string; holderId: string }) => Promise<ICardResponse> = ({
+    paymentOption,
+    holderId,
+  }) => ApiCall.post('/cart/setPayment', { paymentOption, holderId });
 
   updateInfos: (params: {
     id?: string;
@@ -185,10 +196,10 @@ class MutationEndpoints {
     name: string;
   }) => Promise<IUserCommonResponse> = (...params) => {
     if (params[0].id) {
-      return ApiCall.put(`/users/infos/${params[0].id}`, ...params);
+      return ApiCall.put(`/users/info/${params[0].id}`, ...params);
     }
 
-    return ApiCall.put('/user/infos', ...params);
+    return ApiCall.put('/user/info', ...params);
   };
 
   updatePassword: (params: { password: string; passwordConfirmation: string }) => Promise<any> = (...params) =>
@@ -213,9 +224,8 @@ class MutationEndpoints {
   updateOrder: (params: {
     id: string;
     paidPrice?: number;
-    discount?: number;
     status: TOrderStatus;
-    wayBillDate: string;
+    waybillDate?: string;
   }) => Promise<IOrder> = ({ ...params }) => {
     const { id, ...others } = params;
 
@@ -261,6 +271,9 @@ class MutationEndpoints {
 
   createTicketReply: (params: { id: string; message: string }) => Promise<ITicketReplyResponse> = ({ id, message }) =>
     ApiCall.post(`/tickets/${id}/createreply`, { message });
+
+  orderConfirm: (params: { id: string; items: IOrderConfirmItem[] }) => Promise<IOrder> = ({ id, items }) =>
+    ApiCall.post(`/orders/confirm/${id}`, { items });
 
   deneme = () => Promise.resolve({ id: '12341' });
 }

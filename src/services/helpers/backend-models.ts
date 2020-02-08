@@ -52,6 +52,15 @@ export interface ISpecifyProductResponse {
   states: IAddressStateResponse[];
   productId: string;
   productBarcodeList: string[];
+  discount: boolean;
+  promotion: IProductPromotion;
+}
+
+export interface IProductPromotion {
+  promotionText: string;
+  promotionType: PromotionType;
+  discountValue: number;
+  discountUnit: number;
 }
 
 export interface ICardItemResponse {
@@ -68,6 +77,7 @@ export interface ICardItemResponse {
   totalPrice: number;
   unitPrice: number;
   unitType: UnitTypeResponse;
+  discountedTotalPrice: number;
 }
 
 export interface ICardResponse {
@@ -79,8 +89,10 @@ export interface ICardResponse {
 
 export interface ICartItemDetailResponse {
   id: string;
-  seller: string;
+  sellerId: string;
+  sellerName: string;
   totalPrice: number;
+  discountedTotalPrice: number;
   quantity: number;
   details: ICardItemResponse[];
 }
@@ -185,7 +197,8 @@ export interface INotificationResponse {
 
 export interface IPaymentMethodsResponse {
   id: string;
-  paymentOptions: string[];
+  displayName: string;
+  paymentOption: string;
 }
 
 export interface ITicketResponse {
@@ -203,8 +216,16 @@ export interface ITicketReplyResponse {
   addedTime: Date;
 }
 
+export interface IOrderConfirmItem {
+  id: string;
+  quantity: number;
+  removed: boolean;
+}
+
 export type UserRoleResponse = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';
 
 export type UnitTypeResponse = 'KG' | 'KL' | 'AD';
 
-export type TOrderStatus = 'NEW' | 'FINISHED' | 'PAID' | 'CANCELLED';
+export type TOrderStatus = 'NEW' | 'FINISHED' | 'CONFIRMED' | 'CANCELLED' | 'CANCEL_REQUEST';
+
+export type PromotionType = 'PERCENT' | 'PROMOTION';

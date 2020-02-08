@@ -1,5 +1,4 @@
 import * as React from 'react';
-import lodashDebounce from 'lodash.debounce';
 import styled, { colors, css } from '~/styled';
 import { UIButton } from '~/components/ui';
 import { useMutation } from '~/services/mutation-context/context';
@@ -22,6 +21,7 @@ interface ICartItemProp {
   quantity: number;
   sellerName: string;
   totalPrice: number;
+  discountedTotalPrice: number;
 }
 /* CartItem Constants */
 
@@ -146,10 +146,17 @@ const itemQuantityInputDiv = css`
   width: 115px;
   margin auto;
 `;
-
+const marginZero = css`
+  margin: 0;
+`;
+const discount = css`
+  text-decoration: line-through;
+  margin: 0;
+`;
 /* CartItem Component  */
 function CartItem(props: React.PropsWithChildren<CartItemProps>) {
   /* CartItem Variables */
+  const firstUpdate = React.useRef(true);
   const [quantity, setQuantity] = React.useState(props.cartItem.quantity);
 
   const applicationContext = useApplicationContext();
@@ -171,30 +178,6 @@ function CartItem(props: React.PropsWithChildren<CartItemProps>) {
 
   /* CartItem Callbacks */
 
-  const handleChangeQuantityMutation = React.useCallback(
-    lodashDebounce(() => {
-      applicationContext.loading.show();
-      changeQuantity().finally(() => {
-        applicationContext.loading.hide();
-      });
-    }, 500),
-    [quantity],
-  );
-
-  const handleQuantityChange = React.useCallback((e: any) => {
-    setQuantity(parseInt(e.target.value, 10) > 0 ? e.target.value : 1);
-  }, []);
-
-  const handleQuantityMns = React.useCallback(() => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
-  }, [quantity]);
-
-  const handleQuantityPlus = React.useCallback(() => {
-    setQuantity(quantity + 1);
-  }, [quantity]);
-
   const removeItemHandler = React.useCallback(() => {
     applicationContext.loading.show();
     removeToCart().finally(() => {
@@ -204,10 +187,19 @@ function CartItem(props: React.PropsWithChildren<CartItemProps>) {
 
   /* CartItem Lifecycle  */
   React.useEffect(() => {
-    if (quantity !== props.cartItem.quantity) {
-      handleChangeQuantityMutation();
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+
+      return;
     }
-  }, [handleChangeQuantityMutation, props.cartItem.quantity, quantity]);
+
+    if (quantity > 0) {
+      applicationContext.loading.show();
+      changeQuantity().finally(() => {
+        applicationContext.loading.hide();
+      });
+    }
+  }, [quantity]); // eslint-disable-line
 
   return (
     <StyledCartContentItemBox>
@@ -227,17 +219,22 @@ function CartItem(props: React.PropsWithChildren<CartItemProps>) {
       </StyledCartContentItemBoxDetail>
       <StyledCartContentItemBoxQuantity>
         <div className={itemQuantityInputDiv}>
-          <StyledCartContentItemBoxQuantityInputBtnMinus onClick={handleQuantityMns}>
+          <StyledCartContentItemBoxQuantityInputBtnMinus name="mns" onClick={() => setQuantity(quantity - 1)}>
             -
           </StyledCartContentItemBoxQuantityInputBtnMinus>
-          <StyledCartContentItemBoxQuantityInput type="number" value={quantity} onChange={handleQuantityChange} />
-          <StyledCartContentItemBoxQuantityInputBtnPlus onClick={handleQuantityPlus}>
+          <StyledCartContentItemBoxQuantityInput type="number" name="quantityInp" value={quantity} disabled />
+          <StyledCartContentItemBoxQuantityInputBtnPlus name="pls" onClick={() => setQuantity(quantity + 1)}>
             +
           </StyledCartContentItemBoxQuantityInputBtnPlus>
         </div>
       </StyledCartContentItemBoxQuantity>
       <StyledCartContentItemBoxPrice>
-        <strong className={cartItemTotalPrice}>{props.cartItem.totalPrice} TL</strong>
+        <strong className={cartItemTotalPrice}>
+          {props.cartItem.discountedTotalPrice < props.cartItem.totalPrice && (
+            <p className={discount}>{props.cartItem.totalPrice} TL</p>
+          )}
+          <p className={marginZero}>{props.cartItem.discountedTotalPrice} TL</p>
+        </strong>
         <div className={floatRight}>
           <StyledCartContentItemBoxDeleteBtn onClick={removeItemHandler}>Sil</StyledCartContentItemBoxDeleteBtn>
         </div>

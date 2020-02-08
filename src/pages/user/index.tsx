@@ -8,6 +8,8 @@ import { IAddressCityResponse, IAddressStateResponse } from '~/services/helpers/
 import { ObligationComponent } from '~/components/common/obligation';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
+import { CreditSummaryComponent } from '~/components/common/credit-summary';
+import { useApplicationContext } from '~/app/context';
 
 /* UserPage Helpers */
 interface UserPageProps {}
@@ -106,6 +108,7 @@ const StyledDetailMenuElement = styled(UILink)`
 function UserPage(props: React.PropsWithChildren<UserPageProps>) {
   /* UserPage Variables */
   const { userId } = useParams<RouteParams>();
+  const applicationContext = useApplicationContext();
   const { data: user, loading: userLoading } = useQuery(queryEndpoints.getUserInfosForAdmin, {
     defaultValue: {},
     variables: { id: userId },
@@ -177,11 +180,19 @@ function UserPage(props: React.PropsWithChildren<UserPageProps>) {
     <Container>
       <StyledProfilePageWrapper>
         <StyledPageHeader>
-          <h2>
-            {user.name}({user.username}) Kullanicisinin Detay Sayfasi
-          </h2>
+          <div>
+            {!userLoading && (
+              <h2>
+                {user.name}({user.username}) Kullanicisinin Detay Sayfasi
+              </h2>
+            )}
+          </div>
         </StyledPageHeader>
-        <ObligationComponent userId={user.id} />
+        {applicationContext.user.isCustomer ? (
+          <CreditSummaryComponent userId={user.id} />
+        ) : (
+          <ObligationComponent userId={user.id} />
+        )}
         <StyledInfosFormWrapper>
           <StyledInfosFormHeader>
             <h3>Bilgileri Guncelle</h3>

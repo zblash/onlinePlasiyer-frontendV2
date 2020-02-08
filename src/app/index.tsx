@@ -23,10 +23,10 @@ function App(props: ApplicationProviderProps) {
     isMerchant: props.user.role === 'MERCHANT',
   });
   const setUserActiveState = React.useCallback(
-    (activeState: IAddressStateResponse) => {
-      setUserState({ activeStates: [...userState.activeStates, activeState] });
+    (activeState: IAddressStateResponse[]) => {
+      setUserState({ activeStates: activeState });
     },
-    [setUserState, userState.activeStates],
+    [setUserState],
   );
 
   return (

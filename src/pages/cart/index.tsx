@@ -11,12 +11,18 @@ import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints
 import { refetchFactory } from '~/services/utils';
 import { useApplicationContext } from '~/app/context';
 import { IOrder } from '~/services/helpers/backend-models';
-import { useTranslation } from '~/i18n';
-import { UseTranslationAllKeys } from '~/helpers/static-types';
 
 /* CartPage Helpers */
 interface CartPageProps {}
 
+interface ISellers {
+  id: string;
+  isChecked: boolean;
+  quantity: number;
+  totalPrice: number;
+  discountedTotalPrice: number;
+  paymentMethod: string;
+}
 /* CartPage Constants */
 
 /* CartPage Styles */
@@ -53,6 +59,9 @@ const StyledCartCheckoutBox = styled.div`
 const StyledCartContentHeader = styled.div`
   border-bottom: 1px solid ${colors.lightGray};
   padding-left: 30px;
+  padding-right: 10px;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const StyledCartContentBox = styled.div`
@@ -97,7 +106,7 @@ const StyledCartCheckoutBtn = styled(UIButton)`
   background-color: ${colors.primaryDark};
   color: ${colors.white};
   border-radius: 8px;
-  margin: auto;
+  margin: 0 auto 5px auto;
   width: 75%;
   :active {
     background-color: ${colors.primaryDark};
@@ -121,23 +130,53 @@ const CartItemHeader = styled.div`
   padding: 0 3% 0 3%;
   border-bottom: 1px solid ${colors.lightGray};
 `;
-const PaymentLabel = styled.label`
-  display: inline-block;
-  background-color: ${colors.lightGray};
-  border: 2px solid ${colors.gray};
-  border-radius: 4px;
-  width: 75%;
-  padding: 7px 0 7px 0;
-  margin: 2px auto 2px auto;
-`;
-const PaymentInput = styled.input`
-  opacity: 0;
-  position: fixed;
-  width: 0;
-  &:checked + ${PaymentLabel} {
-    border-color: ${colors.primary};
-    color: ${colors.primary};
+const StyledCheckbox = styled.label`
+  display: flex;
+
+  > input.check {
+    position: absolute;
+    opacity: 0;
   }
+  > input.check:checked + label svg path {
+    stroke-dashoffset: 0;
+  }
+  > input.check:focus + label {
+    transform: scale(1.03);
+  }
+
+  > .check + label {
+    display: block;
+    border: 2px solid #333;
+    width: 16px;
+    height: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  > .check + label:active {
+    transform: scale(1.05);
+    border-radius: 30px;
+  }
+  > .check + label svg {
+    pointer-events: none;
+  }
+  > .check + label svg path {
+    fill: none;
+    stroke: #333;
+    stroke-width: 4px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 101;
+    transition: all 350ms cubic-bezier(1, 0, 0.37, 0.91);
+  }
+`;
+const StyledPaymentSelect = styled.select`
+  border: 1px solid ${colors.lightGray};
+  border-radius: 5px;
+  background: none;
+  margin: 1em 0 1em 0;
+  padding: 5px 10px;
 `;
 const titleText = css`
   float: left;
@@ -151,13 +190,26 @@ const clearCartText = css`
 const titleP = css`
   text-align: center;
 `;
-
+const sellerTab = css`
+  display: flex;
+`;
+const headCheckbox = css`
+  padding: 2% 0 2% 3%;
+`;
+const discount = css`
+  text-decoration: line-through;
+  margin: 0;
+`;
 /* CartPage Component  */
 function CartPage(props: React.PropsWithChildren<CartPageProps>) {
   const applicationContext = useApplicationContext();
-  const { t } = useTranslation();
   const routerHistory = useHistory();
   const [paymentMethod, setPaymentMethod] = React.useState();
+  const [holderId, setHolderId] = React.useState();
+
+  const [checkoutFlag, setCheckoutFlag] = React.useState(false);
+  const [allCheck, setAllCheck] = React.useState(true);
+  const [sellerIds, setSellerIds] = React.useState<Array<ISellers>>([]);
   const { data: cart } = useQuery(queryEndpoints.getCard, {
     defaultValue: {},
   });
@@ -166,19 +218,67 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
   });
 
   const { mutation: checkoutCart } = useMutation(mutationEndPoints.cardCheckout, {
+    variables: { sellerIdList: sellerIds.filter(item => item.isChecked).map(item => item.id) },
     refetchQueries: [refetchFactory(queryEndpoints.getCard, null)],
   });
 
   const { data: paymentMethods, loading: methodsLoading } = useQuery(queryEndpoints.getPaymentMethods, {
-    defaultValue: {},
+    defaultValue: [],
   });
-
   const { mutation: setPayment } = useMutation(mutationEndPoints.cartSetPayment, {
     variables: {
       paymentOption: paymentMethod,
+      holderId,
     },
   });
+  const { data: creditSummary } = useQuery(queryEndpoints.getCredit, {
+    defaultValue: {
+      creditLimit: 0,
+      totalDebt: 0,
+    },
+  });
+  /* CartPage Lifecycle  */
 
+  React.useEffect(() => {
+    if (paymentMethod && holderId) {
+      setPayment();
+    }
+  }, [paymentMethod, holderId]); // eslint-disable-line
+  React.useEffect(() => {
+    const sellers = sellerIds.filter(item => item.isChecked);
+
+    setCheckoutFlag(sellers.length > 0 && sellers.every(item => item.paymentMethod));
+  }, [sellerIds]);
+  React.useEffect(() => {
+    if (cart && cart.items) {
+      const sellers = cart.items.map(item => {
+        return {
+          id: item.id,
+          isChecked: true,
+          quantity: item.quantity,
+          totalPrice: item.totalPrice,
+          discountedTotalPrice: item.discountedTotalPrice,
+          paymentMethod: undefined,
+        };
+      });
+      setSellerIds(sellers);
+    }
+  }, [cart]);
+
+  /* CartPage Functions  */
+  const handleChangePaymentMethod = React.useCallback(
+    (e: any) => {
+      const id = e.target.id.replace('payment-', '');
+      const { value } = e.target;
+      const sellers = sellerIds.map(item => (item.id === id ? { ...item, paymentMethod: value } : item));
+      if (value) {
+        setPaymentMethod(value);
+        setHolderId(id);
+      }
+      setSellerIds(sellers);
+    },
+    [sellerIds],
+  );
   const handleClearCart = React.useCallback(() => {
     applicationContext.loading.show();
     clearCart().finally(() => {
@@ -192,10 +292,19 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
     });
   }, [routerHistory, checkoutCart]);
 
-  const handlePaymentMethod = React.useCallback(e => {
-    setPaymentMethod(e.target.value);
-  }, []);
-
+  const handleSubmitSellers = React.useCallback(
+    e => {
+      const sellers =
+        e.target.name === 'checkAllSellers'
+          ? sellerIds.map(item => {
+              return { ...item, isChecked: e.target.checked };
+            })
+          : sellerIds.map(item => (item.id === e.target.value ? { ...item, isChecked: e.target.checked } : item));
+      setSellerIds(sellers);
+      setAllCheck(sellers.every(item => item.isChecked));
+    },
+    [sellerIds, setAllCheck],
+  );
   const __ = (
     <Container>
       <CategoryHorizontalListFetcher shouldUseProductsPageLink />
@@ -203,6 +312,17 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
         <StyledCartContent>
           <StyledCartContentHeader>
             <h3>Alisveris Sepetim</h3>
+            {creditSummary && (
+              <p>
+                <span>
+                  Sistem'e Olan Borcunuz: <strong>{creditSummary.totalDebt} &#8378; </strong>
+                </span>
+                <br />
+                <span>
+                  Sistem Kredi Limitiniz: <strong>{creditSummary.creditLimit} &#8378; </strong>
+                </span>
+              </p>
+            )}
           </StyledCartContentHeader>
           <StyledCartContentBox>
             <StyledCartContentBoxTitle>
@@ -219,16 +339,68 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
                 <p className={titleP}>Fiyat</p>
               </StyledCartContentBoxTitlePrice>
             </StyledCartContentBoxTitle>
-            {cart.items &&
+            <StyledCartContentBoxTitle>
+              <StyledCheckbox className={headCheckbox}>
+                <input
+                  type="checkbox"
+                  className="check"
+                  name="checkAllSellers"
+                  id="checkboxAll"
+                  checked={allCheck}
+                  onChange={e => handleSubmitSellers(e)}
+                />
+                <label htmlFor="checkboxAll">
+                  <svg viewBox="0,0,50,50">
+                    <path d="M5 30 L 20 45 L 45 5" />
+                  </svg>
+                </label>
+                <label>Tumunu Sec</label>
+              </StyledCheckbox>
+            </StyledCartContentBoxTitle>
+            {cart &&
+              cart.items &&
+              sellerIds.length > 0 &&
               cart.items.map(cartItem => (
                 <CartItemWrapper key={cartItem.id}>
                   <CartItemHeader>
-                    <p>
+                    <p className={sellerTab}>
+                      {sellerIds.length > 0 && (
+                        <StyledCheckbox>
+                          <input
+                            type="checkbox"
+                            className="check"
+                            name={sellerIds.find(item => item.id === cartItem.id).id}
+                            id={cartItem.sellerId}
+                            checked={sellerIds.find(item => item.id === cartItem.id).isChecked}
+                            value={cartItem.id}
+                            onChange={e => handleSubmitSellers(e)}
+                          />
+                          <label htmlFor={cartItem.id}>
+                            <svg viewBox="0,0,50,50">
+                              <path d="M5 30 L 20 45 L 45 5" />
+                            </svg>
+                          </label>
+                        </StyledCheckbox>
+                      )}
                       <span>Satici : </span>
-                      <strong>{cartItem.seller}</strong>
+                      <strong>{cartItem.sellerName}</strong>
                     </p>
+                    {!methodsLoading && (
+                      <div>
+                        <StyledPaymentSelect id={`payment-${cartItem.id}`} onChange={handleChangePaymentMethod}>
+                          <option value="">Odeme Yontemini Secin</option>
+                          {paymentMethods.map(paymentOpt => (
+                            <option value={paymentOpt.paymentOption}>{paymentOpt.displayName}</option>
+                          ))}
+                        </StyledPaymentSelect>
+                      </div>
+                    )}
                     <p>
-                      Toplam : {cartItem.totalPrice} TL ({cartItem.quantity} Adet)
+                      Toplam :
+                      {cartItem.discountedTotalPrice < cartItem.totalPrice && (
+                        <span className={discount}> {cartItem.totalPrice} TL </span>
+                      )}
+                      {cartItem.discountedTotalPrice} TL ({cartItem.quantity} Adet)
                     </p>
                   </CartItemHeader>
                   {cartItem.details.map(detail => (
@@ -239,42 +411,36 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
           </StyledCartContentBox>
         </StyledCartContent>
         <StyledCartRightBox>
-          <StyledCartCheckoutBox>
-            <h3>Odeme Yontemini Sec</h3>
-            {!methodsLoading &&
-              paymentMethods.paymentOptions.map(paymentOpt => (
-                <div key={paymentOpt}>
-                  <PaymentInput
-                    type="radio"
-                    value={paymentOpt}
-                    id={paymentOpt}
-                    checked={paymentMethod === paymentOpt}
-                    onChange={handlePaymentMethod}
-                  />
-                  <PaymentLabel htmlFor={paymentOpt}>{t(`cart.${paymentOpt}` as UseTranslationAllKeys)}</PaymentLabel>
-                </div>
-              ))}
-          </StyledCartCheckoutBox>
-          <StyledCartCheckoutBox>
-            <h3>Genel Toplam ({cart.quantity})</h3>
-            <h2>{cart.totalPrice} TL</h2>
-            <StyledCartCheckoutBtn disabled={!paymentMethod} onClick={handleCartCheckout}>
-              Siparisi Tamamla
-            </StyledCartCheckoutBtn>
-          </StyledCartCheckoutBox>
+          {sellerIds.length > 0 && (
+            <StyledCartCheckoutBox>
+              <h3>
+                Genel Toplam (
+                {sellerIds
+                  .filter(item => item.isChecked)
+                  .map(item => item.quantity)
+                  .reduce((a, c) => {
+                    return a + c;
+                  }, 0)}
+                )
+              </h3>
+              <h2>
+                {sellerIds
+                  .filter(item => item.isChecked)
+                  .map(item => item.discountedTotalPrice)
+                  .reduce((a, c) => {
+                    return a + c;
+                  }, 0)}{' '}
+                TL
+              </h2>
+              <StyledCartCheckoutBtn disabled={!checkoutFlag} onClick={handleCartCheckout}>
+                Siparisleri Onayla
+              </StyledCartCheckoutBtn>
+            </StyledCartCheckoutBox>
+          )}
         </StyledCartRightBox>
       </StyledCartPageWrapper>
     </Container>
   );
-
-  /* CartPage Lifecycle  */
-  React.useEffect(() => {
-    if (paymentMethod) {
-      setPayment();
-    }
-  }, [paymentMethod]); // eslint-disable-line
-
-  /* CartPage Functions  */
 
   return __;
 }

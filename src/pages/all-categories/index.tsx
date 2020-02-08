@@ -45,6 +45,9 @@ const StyledAddButton = styled(UIButton)`
     background-color: ${colors.primary};
   }
 `;
+const StyledPageHeader = styled.div`
+  display: flex;
+`;
 const commonIconStyle = css`
   cursor: pointer;
   margin: 0 8px;
@@ -117,6 +120,9 @@ function AllCategoriesPage(props: React.PropsWithChildren<AllCategoriesPageProps
           {/* // TODO(0): move string object */}
           Ekle <UIIcon name="add" color={colors.white} size={10} className={addIconStyle} />
         </StyledAddButton>
+        <StyledPageHeader>
+          <h3>Tum Kategoriler</h3>
+        </StyledPageHeader>
         <UITable
           id="all-categories-page-table"
           data={categories}

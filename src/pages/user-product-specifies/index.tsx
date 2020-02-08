@@ -12,10 +12,10 @@ interface RouteParams {
 /* UserProductSpecifiesPage Constants */
 
 /* UserProductSpecifiesPage Styles */
-const StyledPageContainer = styled.div`
-  margin-top: 48px;
+const StyledPageContainer = styled.div``;
+const StyledPageHeader = styled.div`
+  display: flex;
 `;
-
 /* UserProductSpecifiesPage Component  */
 function UserProductSpecifiesPage(props: React.PropsWithChildren<UserProductSpecifiesPageProps>) {
   /* UserProductSpecifiesPage Variables */
@@ -28,6 +28,9 @@ function UserProductSpecifiesPage(props: React.PropsWithChildren<UserProductSpec
   return (
     <Container>
       <StyledPageContainer>
+        <StyledPageHeader>
+          <h3>Kullanici Urunleri</h3>
+        </StyledPageHeader>
         <ProductSpecifyListComponent userId={userId} />
       </StyledPageContainer>
     </Container>
