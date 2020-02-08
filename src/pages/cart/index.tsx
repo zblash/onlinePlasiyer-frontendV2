@@ -59,6 +59,9 @@ const StyledCartCheckoutBox = styled.div`
 const StyledCartContentHeader = styled.div`
   border-bottom: 1px solid ${colors.lightGray};
   padding-left: 30px;
+  padding-right: 10px;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const StyledCartContentBox = styled.div`
@@ -168,6 +171,13 @@ const StyledCheckbox = styled.label`
     transition: all 350ms cubic-bezier(1, 0, 0.37, 0.91);
   }
 `;
+const StyledPaymentSelect = styled.select`
+  border: 1px solid ${colors.lightGray};
+  border-radius: 5px;
+  background: none;
+  margin: 1em 0 1em 0;
+  padding: 5px 10px;
+`;
 const titleText = css`
   float: left;
   padding-left: 30px;
@@ -213,7 +223,7 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
   });
 
   const { data: paymentMethods, loading: methodsLoading } = useQuery(queryEndpoints.getPaymentMethods, {
-    defaultValue: {},
+    defaultValue: [],
   });
   const { mutation: setPayment } = useMutation(mutationEndPoints.cartSetPayment, {
     variables: {
@@ -221,7 +231,12 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
       holderId,
     },
   });
-
+  const { data: creditSummary } = useQuery(queryEndpoints.getCredit, {
+    defaultValue: {
+      creditLimit: 0,
+      totalDebt: 0,
+    },
+  });
   /* CartPage Lifecycle  */
 
   React.useEffect(() => {
@@ -253,12 +268,13 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
   /* CartPage Functions  */
   const handleChangePaymentMethod = React.useCallback(
     (e: any) => {
-      let { id } = e.target;
+      const id = e.target.id.replace('payment-', '');
       const { value } = e.target;
-      id = id.replace('payment-', '');
       const sellers = sellerIds.map(item => (item.id === id ? { ...item, paymentMethod: value } : item));
-      setPaymentMethod(value);
-      setHolderId(id);
+      if (value) {
+        setPaymentMethod(value);
+        setHolderId(id);
+      }
       setSellerIds(sellers);
     },
     [sellerIds],
@@ -296,6 +312,17 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
         <StyledCartContent>
           <StyledCartContentHeader>
             <h3>Alisveris Sepetim</h3>
+            {creditSummary && (
+              <p>
+                <span>
+                  Sistem'e Olan Borcunuz: <strong>{creditSummary.totalDebt} &#8378; </strong>
+                </span>
+                <br />
+                <span>
+                  Sistem Kredi Limitiniz: <strong>{creditSummary.creditLimit} &#8378; </strong>
+                </span>
+              </p>
+            )}
           </StyledCartContentHeader>
           <StyledCartContentBox>
             <StyledCartContentBoxTitle>
@@ -360,12 +387,12 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
                     </p>
                     {!methodsLoading && (
                       <div>
-                        <select id={`payment-${cartItem.id}`} onChange={handleChangePaymentMethod}>
-                          <option>Odeme Yontemini Secin</option>
-                          {paymentMethods.paymentOptions.map(paymentOpt => (
-                            <option value={paymentOpt}>{paymentOpt}</option>
+                        <StyledPaymentSelect id={`payment-${cartItem.id}`} onChange={handleChangePaymentMethod}>
+                          <option value="">Odeme Yontemini Secin</option>
+                          {paymentMethods.map(paymentOpt => (
+                            <option value={paymentOpt.paymentOption}>{paymentOpt.displayName}</option>
                           ))}
-                        </select>
+                        </StyledPaymentSelect>
                       </div>
                     )}
                     <p>

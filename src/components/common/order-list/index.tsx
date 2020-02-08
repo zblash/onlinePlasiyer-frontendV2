@@ -19,7 +19,8 @@ const ORDER_STATUS_MAP: Record<TOrderStatus, string> = {
   NEW: 'Yeni',
   FINISHED: 'Teslim Edildi',
   CANCELLED: 'Iptal Edildi',
-  PAID: 'Ödemesi Yapıldı',
+  CONFIRMED: 'Onaylandi',
+  CANCEL_REQUEST: 'Iptal Istegi',
 };
 /* OrderListComponent Styles */
 const StyledActionsWrapper = styled.div`
@@ -91,7 +92,7 @@ function OrderListComponent(props: React.PropsWithChildren<OrderListComponentPro
           title: null,
           itemRenderer: item => (
             <StyledActionsWrapper>
-              {(item.status === 'NEW' || item.status === 'PAID') &&
+              {item.status === 'CONFIRMED' &&
                 (applicationContext.user.isMerchant || applicationContext.user.isAdmin) && (
                   <UIIcon
                     name="edit"

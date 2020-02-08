@@ -16,6 +16,7 @@ import {
   ITicketResponse,
   ITicketReplyResponse,
   PromotionType,
+  IOrderConfirmItem,
 } from '~/services/helpers/backend-models';
 
 interface CreateCategoryVariables {
@@ -223,9 +224,8 @@ class MutationEndpoints {
   updateOrder: (params: {
     id: string;
     paidPrice?: number;
-    discount?: number;
     status: TOrderStatus;
-    wayBillDate: string;
+    waybillDate?: string;
   }) => Promise<IOrder> = ({ ...params }) => {
     const { id, ...others } = params;
 
@@ -271,6 +271,9 @@ class MutationEndpoints {
 
   createTicketReply: (params: { id: string; message: string }) => Promise<ITicketReplyResponse> = ({ id, message }) =>
     ApiCall.post(`/tickets/${id}/createreply`, { message });
+
+  orderConfirm: (params: { id: string; items: IOrderConfirmItem[] }) => Promise<IOrder> = ({ id, items }) =>
+    ApiCall.post(`/orders/confirm/${id}`, { items });
 
   deneme = () => Promise.resolve({ id: '12341' });
 }

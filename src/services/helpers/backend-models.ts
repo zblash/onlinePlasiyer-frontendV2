@@ -197,7 +197,8 @@ export interface INotificationResponse {
 
 export interface IPaymentMethodsResponse {
   id: string;
-  paymentOptions: string[];
+  displayName: string;
+  paymentOption: string;
 }
 
 export interface ITicketResponse {
@@ -215,10 +216,16 @@ export interface ITicketReplyResponse {
   addedTime: Date;
 }
 
+export interface IOrderConfirmItem {
+  id: string;
+  quantity: number;
+  removed: boolean;
+}
+
 export type UserRoleResponse = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';
 
 export type UnitTypeResponse = 'KG' | 'KL' | 'AD';
 
-export type TOrderStatus = 'NEW' | 'FINISHED' | 'PAID' | 'CANCELLED';
+export type TOrderStatus = 'NEW' | 'FINISHED' | 'CONFIRMED' | 'CANCELLED' | 'CANCEL_REQUEST';
 
 export type PromotionType = 'PERCENT' | 'PROMOTION';
