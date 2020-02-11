@@ -7,6 +7,9 @@ import {
   IAnnouncement,
   ICreditResponse,
   ITicketResponse,
+  ICreditActivityResponse,
+  IObligationActivityResponse,
+  IObligationTotals,
 } from '~/services/helpers/backend-models';
 
 function paginationQueryGet(route: string, variables: any) {
@@ -87,6 +90,33 @@ class QueryEndpoints {
   getAllTickets: (s: { pageNumber: number; sortBy?: string; sortType?: string }) => Promise<ITicketResponse> = ({
     ...params
   }) => paginationQueryGet('/tickets', params);
+
+  getAllCreditActivities: (s: {
+    pageNumber: number;
+    sortBy?: string;
+    sortType?: string;
+  }) => Promise<ICreditActivityResponse> = ({ ...params }) => paginationQueryGet('/credits/activities', params);
+
+  getAllObligationActivities: (s: {
+    pageNumber: number;
+    sortBy?: string;
+    sortType?: string;
+    userId?: string;
+  }) => Promise<IObligationActivityResponse> = ({ userId, pageNumber, sortBy, sortType }) => {
+    if (userId) {
+      return paginationQueryGet(`/obligations/activities/byUser/${userId}`, { pageNumber, sortBy, sortType });
+    }
+
+    return paginationQueryGet('/obligations/activities', { pageNumber, sortBy, sortType });
+  };
+
+  getAllObligations: (s: { pageNumber: number; sortBy?: string; sortType?: string }) => Promise<IObligationTotals> = ({
+    pageNumber,
+    sortBy,
+    sortType,
+  }) => {
+    return paginationQueryGet('/obligations', { pageNumber, sortBy, sortType });
+  };
 }
 
 const paginationQueryEndpoints = new QueryEndpoints();

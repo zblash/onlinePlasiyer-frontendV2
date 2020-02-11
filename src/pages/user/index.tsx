@@ -9,7 +9,8 @@ import { ObligationComponent } from '~/components/common/obligation';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { CreditSummaryComponent } from '~/components/common/credit-summary';
-import { useApplicationContext } from '~/app/context';
+import { usePopupContext } from '~/contexts/popup/context';
+import { refetchFactory } from '~/services/utils';
 
 /* UserPage Helpers */
 interface UserPageProps {}
@@ -103,16 +104,22 @@ const StyledDetailMenuElement = styled(UILink)`
   color: ${colors.primaryDark};
   cursor: pointer;
 `;
-
+const StyledCommissionWrapper = styled.div`
+  display: flex;
+  justify-content: space-around;
+`;
+const StyledCommissionButton = styled(UIButton)``;
 /* UserPage Component  */
 function UserPage(props: React.PropsWithChildren<UserPageProps>) {
   /* UserPage Variables */
   const { userId } = useParams<RouteParams>();
-  const applicationContext = useApplicationContext();
+  const popupContext = usePopupContext();
   const { data: user, loading: userLoading } = useQuery(queryEndpoints.getUserInfosForAdmin, {
     defaultValue: {},
     variables: { id: userId },
   });
+  const refetchQuery = refetchFactory(queryEndpoints.getUserInfosForAdmin, { id: userId });
+
   const [name, setName] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [cityName, setCityName] = React.useState('');
@@ -182,13 +189,27 @@ function UserPage(props: React.PropsWithChildren<UserPageProps>) {
         <StyledPageHeader>
           <div>
             {!userLoading && (
-              <h2>
-                {user.name}({user.username}) Kullanicisinin Detay Sayfasi
-              </h2>
+              <>
+                <h2>
+                  {user.name}({user.username}) Kullanicisinin Detay Sayfasi
+                </h2>
+                {user.role === 'MERCHANT' && (
+                  <StyledCommissionWrapper>
+                    <p>Kullanicinin Komisyonu %{user.commission}</p>
+                    <StyledCommissionButton
+                      onClick={() =>
+                        popupContext.setCommission.show({ userId: user.id, commission: user.commission, refetchQuery })
+                      }
+                    >
+                      Degistir
+                    </StyledCommissionButton>
+                  </StyledCommissionWrapper>
+                )}
+              </>
             )}
           </div>
         </StyledPageHeader>
-        {applicationContext.user.isCustomer ? (
+        {user.id && user.role === 'CUSTOMER' ? (
           <CreditSummaryComponent userId={user.id} />
         ) : (
           <ObligationComponent userId={user.id} />

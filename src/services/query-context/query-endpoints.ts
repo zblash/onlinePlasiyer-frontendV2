@@ -111,7 +111,7 @@ class QueryEndpoints {
 
   getAllUsers: () => Promise<Array<IUserCommonResponse>> = () => ApiCall.get('/users');
 
-  getPaymentMethods: () => Promise<IPaymentMethodsResponse> = () => ApiCall.get('/payment/methods');
+  getPaymentMethods: () => Promise<Array<IPaymentMethodsResponse>> = () => ApiCall.get('/payment/methods');
 
   getCredit: (s: { id?: string }) => Promise<ICreditResponse> = ({ id }) => {
     if (id) {

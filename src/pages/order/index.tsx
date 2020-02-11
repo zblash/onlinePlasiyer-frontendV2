@@ -1,16 +1,26 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router';
+import { useParams, useHistory } from 'react-router';
 import styled, { colors, css } from '~/styled';
-import { Container } from '~/components/ui';
+import { Container, UIButton } from '~/components/ui';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { useQuery } from '~/services/query-context/context';
 import { CategoryHorizontalListFetcher } from '~/fetcher-components/common/category-horizontal-list';
+import { IOrderItems } from '~/services/helpers/backend-models';
+import { useMutation } from '~/services/mutation-context/context';
+import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
+import { refetchFactory } from '~/services/utils';
+import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
+import { useApplicationContext } from '~/app/context';
 /* OrderPage Helpers */
 interface OrderPageProps {}
 
 interface RouteParams {
   orderId: string;
+}
+
+interface OrderItem extends IOrderItems {
+  isRemoved: boolean;
 }
 /* OrderPage Constants */
 
@@ -57,48 +67,117 @@ const StyledOrderHeaderRightBoxDetail = styled.div`
   display: flex;
   justify-content: flex-end;
 `;
-const StyledOrderItemWrapper = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  padding 10px;
-  border-bottom: 1px solid ${colors.lightGray}
-`;
-const StyledOrderItemImgWrapper = styled.div`
-  width: 20%;
-  float: left;
-  margin-right: 3%;
-`;
-const StyledOrderItemDescWrapper = styled.div`
-  width: 77%;
-  float: left;
-`;
-const StyledOrderItemDescLeftBox = styled.div`
-  width: 50%;
-  float left;
-  font-size 16px;
-`;
-const orderItemImg = css`
+const StyledOrderItemTable = styled.table`
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin-top: 15px;
   width: 100%;
-  height: 150px;
+  > th,
+  td {
+    text-align: center;
+    padding: 8px;
+  }
+  > tbody > tr:nth-child(odd) {
+    background-color: ${colors.lightGray};
+  }
 `;
-const orderItemTitle = css`
-  margin-top: 0;
+const StyledOrderActionsWrapper = styled.div`
+  margin: 15px 1em 15px 0;
+  width: 20%;
+  float: right;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const StyledOrderActionsButton = styled(UIButton)``;
+
+const cancelButton = css`
+  background-color: ${colors.lightGray};
+`;
+const overFlowAuto = css`
+  overflow-x: auto;
+`;
+const quantityInput = css`
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 4px;
+  width: 75px;
 `;
 /* OrderPage Component  */
 function OrderPage(props: React.PropsWithChildren<OrderPageProps>) {
   /* OrderPage Variables */
   const { t } = useTranslation();
+  const applicationContext = useApplicationContext();
+  const routerHistory = useHistory();
+  const firstRender = React.useRef(true);
+  const [orderItems, setOrderItems] = React.useState<Array<OrderItem>>([]);
   const { orderId } = useParams<RouteParams>();
-  const { data: order } = useQuery(queryEndpoints.getOrder, {
+  const { data: order, loading: orderLoading } = useQuery(queryEndpoints.getOrder, {
     defaultValue: {
       status: 'NEW',
       orderItems: [],
     },
     variables: { id: orderId },
   });
+  const { mutation: confirmOrder } = useMutation(mutationEndPoints.orderConfirm, {
+    variables: {
+      id: orderId,
+      items: orderItems.map(item => {
+        return { id: item.id, quantity: item.quantity, removed: item.isRemoved };
+      }),
+    },
+    refetchQueries: [refetchFactory(paginationQueryEndpoints.getAllOrders, null, true)],
+  });
+  const { mutation: cancelRequest } = useMutation(mutationEndPoints.updateOrder, {
+    variables: {
+      id: orderId,
+      status: 'CANCEL_REQUEST',
+    },
+    refetchQueries: [refetchFactory(paginationQueryEndpoints.getAllOrders, null, true)],
+  });
   /* OrderPage Callbacks */
 
+  const handleItemRemove = React.useCallback(
+    (e: any) => {
+      const { name, checked } = e.target;
+      setOrderItems(orderItems.map(item => (item.id === name ? { ...item, isRemoved: checked } : item)));
+    },
+    [orderItems],
+  );
+  const handleQuantityChange = React.useCallback(
+    (e: any) => {
+      const { name, value } = e.target;
+      setOrderItems(orderItems.map(item => (item.id === name ? { ...item, quantity: value } : item)));
+    },
+    [orderItems],
+  );
+  const handleOrderConfirm = React.useCallback(() => {
+    applicationContext.loading.show();
+    confirmOrder().finally(() => {
+      applicationContext.loading.hide();
+      routerHistory.push('/orders');
+    });
+  }, [applicationContext.loading, confirmOrder, routerHistory]);
+
+  const handleCancelRequest = React.useCallback(() => {
+    applicationContext.loading.show();
+    cancelRequest().finally(() => {
+      applicationContext.loading.hide();
+      routerHistory.push('/orders');
+    });
+  }, [applicationContext.loading, cancelRequest, routerHistory]);
   /* OrderPage Lifecycle  */
+
+  React.useEffect(() => {
+    if (!orderLoading && order.orderItems && firstRender) {
+      firstRender.current = false;
+      setOrderItems(
+        order.orderItems.map(item => {
+          return { ...item, isRemoved: false };
+        }),
+      );
+    }
+  }, [orderLoading, order.orderItems]);
 
   return (
     <Container>
@@ -137,46 +216,56 @@ function OrderPage(props: React.PropsWithChildren<OrderPageProps>) {
             </StyledOrderHeaderRightBoxDetail>
           </StyledOrderHeaderRightBox>
         </StyledOrderHeader>
-        {order.orderItems.map(orderItem => (
-          <StyledOrderItemWrapper key={orderItem.id}>
-            <StyledOrderItemImgWrapper>
-              <img alt={orderItem.productName} className={orderItemImg} src={orderItem.productPhotoUrl} />
-            </StyledOrderItemImgWrapper>
-            <StyledOrderItemDescWrapper>
-              <StyledOrderItemDescLeftBox>
-                <h3 className={orderItemTitle}>{orderItem.productName}</h3>
-                <p>
-                  <span>{t('common.price')} :</span>
-                  <strong>{orderItem.productPrice} TL</strong>
-                </p>
-                <p>
-                  <span>
-                    {orderItem.unitType} {t('common.price')} :{' '}
-                  </span>
-                  <strong>{orderItem.unitPrice} TL</strong>
-                </p>
-                <p>
-                  <span>{t('cart.recommended-sales-price')} : </span>
-                  <strong>{orderItem.recommendedRetailPrice} TL</strong>
-                </p>
-              </StyledOrderItemDescLeftBox>
-              <StyledOrderItemDescLeftBox>
-                <p>
-                  <span>{t('common.total-price')} :</span>
-                  <strong>{orderItem.totalPrice} TL</strong>
-                </p>
-                <p>
-                  <span>{t('order.quantity')} : </span>
-                  <strong>{orderItem.quantity}</strong>
-                </p>
-                <p>
-                  <span>{t('common.barcode')} : </span>
-                  <strong>{orderItem.productBarcodeList.join(',')}</strong>
-                </p>
-              </StyledOrderItemDescLeftBox>
-            </StyledOrderItemDescWrapper>
-          </StyledOrderItemWrapper>
-        ))}
+        <div className={overFlowAuto}>
+          <StyledOrderItemTable>
+            <thead>
+              <tr>
+                <th>Urun Foto</th>
+                <th>Urun Ismi</th>
+                <th>Birim Fiyat</th>
+                <th>Toplam Fiyat</th>
+                <th>T.E.S Fiyat</th>
+                <th>Toplam Siparis</th>
+                <th>Kaldir</th>
+              </tr>
+            </thead>
+            <tbody>
+              {orderItems &&
+                orderItems.map(orderItem => (
+                  <tr key={orderItem.id}>
+                    <td>1</td>
+                    <td>{orderItem.productName}</td>
+                    <td>{orderItem.unitPrice}</td>
+                    <td>{orderItem.totalPrice}</td>
+                    <td>{orderItem.recommendedRetailPrice}</td>
+                    <td>
+                      <input
+                        className={quantityInput}
+                        type="number"
+                        value={orderItem.quantity}
+                        name={orderItem.id}
+                        onChange={handleQuantityChange}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="checkbox"
+                        name={orderItem.id}
+                        checked={orderItem.isRemoved}
+                        onChange={handleItemRemove}
+                      />
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </StyledOrderItemTable>
+          <StyledOrderActionsWrapper>
+            <StyledOrderActionsButton className={cancelButton} onClick={handleCancelRequest}>
+              Iptal Istegi Yolla
+            </StyledOrderActionsButton>
+            <StyledOrderActionsButton onClick={handleOrderConfirm}>Onayla</StyledOrderActionsButton>
+          </StyledOrderActionsWrapper>
+        </div>
       </StyledOrderWrapper>
     </Container>
   );

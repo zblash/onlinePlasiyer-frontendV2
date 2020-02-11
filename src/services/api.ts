@@ -14,6 +14,7 @@ const API_URL = `${URL}/api`;
 const headers = () => ({
   Authorization: TOKEN.get(),
   'Content-Type': 'application/json',
+  'Accept-Language': 'tr',
 });
 const ApiCall = {
   post: (route: string, params = {}) =>

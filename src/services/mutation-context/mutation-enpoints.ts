@@ -16,6 +16,8 @@ import {
   ITicketResponse,
   ITicketReplyResponse,
   PromotionType,
+  IOrderConfirmItem,
+  IObligationTotals,
 } from '~/services/helpers/backend-models';
 
 interface CreateCategoryVariables {
@@ -75,11 +77,7 @@ class MutationEndpoints {
   };
 
   changeUserStatus = ({ id, status }: { id: string; status: boolean }) => {
-    if (status) {
-      return ApiCall.post(`/users/setActive/${id}`);
-    }
-
-    return ApiCall.post(`/users/setPassive/${id}`);
+    return ApiCall.post(`/users/status/${id}/${status}`);
   };
 
   createProduct = (params: {
@@ -179,8 +177,10 @@ class MutationEndpoints {
   cardCheckout: (s: { sellerIdList: string[] }) => Promise<IOrder[]> = ({ sellerIdList }) =>
     ApiCall.post('/cart/checkout/', { sellerIdList });
 
-  cartSetPayment: (s: { paymentOption: string }) => Promise<ICardResponse> = ({ paymentOption }) =>
-    ApiCall.post('/cart/setPayment', { paymentOption });
+  cartSetPayment: (s: { paymentOption: string; holderId: string }) => Promise<ICardResponse> = ({
+    paymentOption,
+    holderId,
+  }) => ApiCall.post('/cart/setPayment', { paymentOption, holderId });
 
   updateInfos: (params: {
     id?: string;
@@ -221,9 +221,8 @@ class MutationEndpoints {
   updateOrder: (params: {
     id: string;
     paidPrice?: number;
-    discount?: number;
     status: TOrderStatus;
-    wayBillDate: string;
+    waybillDate?: string;
   }) => Promise<IOrder> = ({ ...params }) => {
     const { id, ...others } = params;
 
@@ -263,12 +262,30 @@ class MutationEndpoints {
     return ApiCall.put(`/credits/${creditId}`, { ...others });
   };
 
+  editObligation: (params: {
+    obligationId: string;
+    debt: number;
+    receivable: number;
+  }) => Promise<IObligationTotals> = ({ ...params }) => {
+    const { obligationId, ...others } = params;
+
+    return ApiCall.put(`/obligations/${obligationId}`, { ...others });
+  };
+
   createTicket: (params: { title: string; message: string; importanceLevel: string }) => Promise<ITicketResponse> = ({
     ...params
   }) => ApiCall.post('/tickets', { ...params });
 
   createTicketReply: (params: { id: string; message: string }) => Promise<ITicketReplyResponse> = ({ id, message }) =>
     ApiCall.post(`/tickets/${id}/createreply`, { message });
+
+  orderConfirm: (params: { id: string; items: IOrderConfirmItem[] }) => Promise<IOrder> = ({ id, items }) =>
+    ApiCall.post(`/orders/confirm/${id}`, { items });
+
+  updateCommission: (params: { id: string; commission: number }) => Promise<IUserCommonResponse> = ({
+    id,
+    commission,
+  }) => ApiCall.put('/users/commissions', { id, commission });
 
   deneme = () => Promise.resolve({ id: '12341' });
 }

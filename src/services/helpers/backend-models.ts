@@ -107,6 +107,7 @@ export interface IUserCommonResponse {
   taxNumber?: string;
   activeStates: IAddressStateResponse[];
   address: IAddressResponse;
+  commission?: number;
 }
 
 export interface ICategoryResponse {
@@ -166,8 +167,10 @@ export interface Invoice {
 
 export interface IObligationTotals {
   id: string;
-  totalDebts: number;
-  totalReceivables: number;
+  debt: number;
+  receivable: number;
+  userName: string;
+  userId: string;
 }
 
 export interface IAnnouncement {
@@ -197,7 +200,8 @@ export interface INotificationResponse {
 
 export interface IPaymentMethodsResponse {
   id: string;
-  paymentOptions: string[];
+  displayName: string;
+  paymentOption: string;
 }
 
 export interface ITicketResponse {
@@ -215,10 +219,47 @@ export interface ITicketReplyResponse {
   addedTime: Date;
 }
 
+export interface IOrderConfirmItem {
+  id: string;
+  quantity: number;
+  removed: boolean;
+}
+
+export interface ICreditActivityResponse {
+  id: string;
+  documentNo: number;
+  price: number;
+  creditLimit: number;
+  totalDebt: number;
+  creditActivityType: CreditActivityType;
+  creditType: CreditType;
+  customerId: string;
+  customerName: string;
+  merchantId?: string;
+  merchantName?: string;
+  date: Date;
+}
+
+export interface IObligationActivityResponse {
+  id: string;
+  price: number;
+  documentNo: number;
+  userId: string;
+  userName: string;
+  date: Date;
+  obligationActivityType: CreditActivityType;
+  totalDebt: number;
+  totalReceivable: number;
+}
+
 export type UserRoleResponse = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';
 
 export type UnitTypeResponse = 'KG' | 'KL' | 'AD';
 
-export type TOrderStatus = 'NEW' | 'FINISHED' | 'PAID' | 'CANCELLED';
+export type TOrderStatus = 'NEW' | 'FINISHED' | 'CONFIRMED' | 'CANCELLED' | 'CANCEL_REQUEST';
 
 export type PromotionType = 'PERCENT' | 'PROMOTION';
+
+export type CreditActivityType = 'DEBT' | 'CREDIT';
+
+export type CreditType = 'SYSTEM_CREDIT' | 'MERCHANT_CREDIT';

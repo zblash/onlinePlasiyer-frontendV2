@@ -1,6 +1,5 @@
 import * as React from 'react';
 import DatePicker from 'react-datepicker';
-import Select from 'react-select';
 import styled, { colors, css } from '~/styled';
 import { UIInput, UIButton } from '~/components/ui';
 import { IOrder } from '~/services/helpers/backend-models';
@@ -67,38 +66,28 @@ const DatePickerBtn = css`
   width: 100%;
   padding: 4px;
 `;
-const selectInput = css`
-  margin-bottom: 12px;
-`;
+
 /* UpdateOrderPopup Component  */
 function UpdateOrderPopup(props: React.PropsWithChildren<UpdateOrderPopupProps>) {
   /* UpdateOrderPopup Variables */
   const popups = usePopupContext();
   const [date, setDate] = React.useState(new Date());
   const [paidPrice, setPaidPrice] = React.useState<number>();
-  const [discount, setDiscount] = React.useState<number>();
-  const [status, setStatus] = React.useState();
-  const statusOptions = [
-    { value: 'FINISHED', label: 'Teslim Edildi' },
-    { value: 'PAID', label: 'Odemesi Alindi' },
-    { value: 'CANCELLED', label: 'IPTAL' },
-  ];
+
   /* UpdateOrderPopup Callbacks */
   const { mutation: updateOrder } = useMutation(mutationEndPoints.updateOrder, {
     variables: {
       id: props.params.order.id,
-      discount,
       paidPrice,
-      status: status ? status.value : 'FINISHED',
+      status: 'FINISHED',
       // eslint-disable-next-line
-      wayBillDate: date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear(),
+      waybillDate: date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear(),
     },
   });
   const handleSubmit = React.useCallback(() => {
     updateOrder();
     popups.updateOrder.hide();
     // eslint-disable-next-line
-    location.reload();
   }, [updateOrder, popups]);
   /* UpdateOrderPopup Lifecycle  */
 
@@ -115,20 +104,6 @@ function UpdateOrderPopup(props: React.PropsWithChildren<UpdateOrderPopupProps>)
           onChange={e => setPaidPrice(parseInt(e, 10))}
           placeholder="Odenen Tutar"
         />
-        <StyledInput
-          id="order-discount"
-          value={discount}
-          onChange={e => setDiscount(parseInt(e, 10))}
-          placeholder="Yapilan Indirim"
-        />
-        <label>Siparis Durumu</label>
-        <Select
-          options={statusOptions}
-          placeholder="Secim Yapin"
-          className={selectInput}
-          value={status}
-          onChange={e => setStatus(e)}
-        />
         <label>Teslim Tarihi: </label>
         <DatePicker
           selected={date}
@@ -137,7 +112,7 @@ function UpdateOrderPopup(props: React.PropsWithChildren<UpdateOrderPopupProps>)
           dateFormat="dd-MM-yyyy"
           className={DatePickerBtn}
         />
-        <StyledButton disabled={!date || !status} type="button" onClick={handleSubmit}>
+        <StyledButton disabled={!date} type="button" onClick={handleSubmit}>
           Kaydet
         </StyledButton>
       </StyledFormWrapper>
