@@ -25,6 +25,7 @@ interface CreateCategoryVariables {
   name: string;
   isSub: boolean;
   uploadFile: File;
+  commission: number;
 }
 
 interface UpdateCategoryVariables {
@@ -33,6 +34,7 @@ interface UpdateCategoryVariables {
   name: string;
   isSub: boolean;
   uploadFile?: null | File;
+  commission?: number;
 }
 
 class MutationEndpoints {

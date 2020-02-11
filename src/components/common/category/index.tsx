@@ -16,6 +16,7 @@ export interface CategoryFields {
   name: string;
   photoUrl: string;
   parentId?: string;
+  commission?: number;
 }
 
 interface CategoryItemProps {
@@ -169,6 +170,7 @@ const CategoryItem: React.SFC<CategoryItemProps> = props => {
                 name: props.item.name,
                 imgSrc: props.item.photoUrl,
                 id: props.item.id,
+                commission: props.item.commission,
               });
             }}
           />

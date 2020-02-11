@@ -11,6 +11,7 @@ import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints
 import { refetchFactory } from '~/services/utils';
 import { useApplicationContext } from '~/app/context';
 import { IOrder } from '~/services/helpers/backend-models';
+import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
 
 /* CartPage Helpers */
 interface CartPageProps {}
@@ -234,7 +235,10 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
 
   const { mutation: checkoutCart } = useMutation(mutationEndPoints.cardCheckout, {
     variables: { sellerIdList: sellerIds.filter(item => item.isChecked).map(item => item.id) },
-    refetchQueries: [refetchFactory(queryEndpoints.getCard, null)],
+    refetchQueries: [
+      refetchFactory(queryEndpoints.getCard, null),
+      refetchFactory(paginationQueryEndpoints.getAllCredits, null),
+    ],
   });
 
   const { data: paymentMethods, loading: methodsLoading } = useQuery(queryEndpoints.getPaymentMethods, {

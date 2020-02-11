@@ -144,7 +144,7 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
   const popups = usePopupContext();
   const applicationContext = useApplicationContext();
   const [createLoading, setCreateLoading] = React.useState(false);
-  const initialValue = props.params.initialValue || ({ active: false, name: '', tax: 0 } as any);
+  const initialValue = props.params.initialValue || ({ active: false, name: '', tax: 0, commission: 0 } as any);
   const [isBarcodeCorrect, setIsBarcodeCorrect] = React.useState(false);
   const [isBarcodeSaved, setIsBarcodeSaved] = React.useState(false);
   const [barcode, setBarcode] = React.useState(initialValue.barcodeList ? initialValue.barcodeList[0] : '');
@@ -154,6 +154,7 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
   const [productName, setProductName] = React.useState(initialValue.name || '');
   const [taxNumber, setTaxNumber] = React.useState<number>(initialValue.tax);
   const [isActive, setIsActive] = React.useState<boolean>(initialValue.active);
+  const [commission, setCommission] = React.useState<number>(initialValue.commission);
   const refetchQuery = props.params.categoryId
     ? paginationQueryEndpoints.getAllProductsByCategoryId
     : paginationQueryEndpoints.getAllProducts;
@@ -255,6 +256,28 @@ function ProductPopup(props: React.PropsWithChildren<ProductPopupProps>) {
             name="nameTag"
             size={20}
             color={productName ? colors.primary : colors.gray}
+          />
+        }
+      />
+      <StyledInput
+        inputClassName={commonInputStyle}
+        id="product-commission"
+        type="number"
+        step="0.1"
+        name="product-commission"
+        placeholder="Urun Komisyonu"
+        value={commission}
+        onChange={e => {
+          if (parseFloat(e) < 100) {
+            setCommission(parseFloat(e));
+          }
+        }}
+        leftIcon={
+          <UIIcon
+            className={inputIconStyle}
+            name="nameTag"
+            size={20}
+            color={commission ? colors.primary : colors.gray}
           />
         }
       />
