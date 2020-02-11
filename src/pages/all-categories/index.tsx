@@ -80,6 +80,10 @@ function AllCategoriesPage(props: React.PropsWithChildren<AllCategoriesPageProps
         itemRenderer: item => <span>{item.subCategory ? 'Evet' : 'Hayir'}</span>,
       },
       {
+        title: 'Kategori Komisyonu',
+        itemRenderer: item => <span>{item.commission}%</span>,
+      },
+      {
         title: null,
         itemRenderer: item => (
           <StyledActionsWrapper>
@@ -101,6 +105,7 @@ function AllCategoriesPage(props: React.PropsWithChildren<AllCategoriesPageProps
                   name: item.name,
                   imgSrc: item.photoUrl,
                   id: item.id,
+                  commission: item.commission,
                 });
               }}
             />

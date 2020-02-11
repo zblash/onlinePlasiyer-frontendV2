@@ -77,6 +77,7 @@ const SubCategory: React.SFC<SubCategoryProps> = props => {
                 imgSrc: props.photoUrl,
                 isSub: true,
                 parentCategoryId: props.parentId,
+                commission: props.commission,
               });
             }}
           />

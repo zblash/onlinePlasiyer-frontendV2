@@ -29,6 +29,7 @@ export interface IProductResponse {
   name: string;
   photoUrl: string;
   tax: number;
+  commission: number;
 }
 
 export interface ICreditResponse {
@@ -116,6 +117,7 @@ export interface ICategoryResponse {
   parentId: string | null;
   photoUrl: string;
   subCategory: boolean;
+  commission?: number;
 }
 
 export interface IOrderItems {

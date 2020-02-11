@@ -20,6 +20,7 @@ export interface CategoryPopupUpdateCategoryValues {
   isSub: boolean;
   imgSrc: string;
   id: string;
+  commission: number;
 }
 
 type CategoryPopupProps<T> = {
@@ -160,6 +161,7 @@ function _CategoryPopup<T extends 'update' | 'create'>(props: CategoryPopupProps
     name: lodashGet(props.params, 'name', ''),
     isSub: lodashGet(props.params, 'isSub', false),
     parentId: lodashGet(props.params, 'parentCategoryId', null),
+    commission: lodashGet(props.params, 'comission', 0),
   });
   const [imgSrc, setImgSrc] = React.useState(lodashGet(props.params, 'imgSrc'));
   const { mutation: categoryAction, loading } = useMutation(
@@ -209,6 +211,28 @@ function _CategoryPopup<T extends 'update' | 'create'>(props: CategoryPopupProps
             name="nameTag"
             size={20}
             color={state.name ? colors.primary : colors.gray}
+          />
+        }
+      />
+      <StyledInput
+        inputClassName={commonInputStyle}
+        id="category-commission"
+        type="number"
+        step="0.1"
+        name="category-commission"
+        placeholder="Kategori Komisyonu"
+        value={state.commission}
+        onChange={e => {
+          if (parseFloat(e) < 100) {
+            dispatch({ type: 'commission', payload: parseFloat(e) });
+          }
+        }}
+        leftIcon={
+          <UIIcon
+            className={inputIconStyle}
+            name="nameTag"
+            size={20}
+            color={state.commission ? colors.primary : colors.gray}
           />
         }
       />
