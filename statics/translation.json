@@ -39,7 +39,7 @@
       "un-paid-price": "Odenmesi Gereken Fiyat"
     },
     "obligations": {
-      "title": "Toplam Odemeler",
+      "title": "Sistem Kredisi",
       "totalDebts": "Toplam Borc",
       "totalReceivables": "Toplam Alacak",
       "limit": "Kredi"

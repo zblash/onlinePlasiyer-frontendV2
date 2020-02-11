@@ -115,6 +115,14 @@ function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
         ),
       },
       {
+        title: 'Vergi orani',
+        itemRenderer: item => <span>{item.tax} %</span>,
+      },
+      {
+        title: 'Komisyon orani',
+        itemRenderer: item => <span>{item.commission} %</span>,
+      },
+      {
         title: t('all-products-page.table.barcode'),
         itemRenderer: item => item.barcodeList[0],
       },

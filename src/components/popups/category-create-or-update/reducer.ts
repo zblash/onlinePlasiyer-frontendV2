@@ -5,14 +5,16 @@ type CategoryPopupReducerState = {
   parentId?: string;
   uploadFile: File;
   isSub: boolean;
+  commission: number;
 };
 type Action =
   | { type: 'name'; payload: string }
   | { type: 'parentCategory'; payload: string }
   | { type: 'uploadFile'; payload: File }
-  | { type: 'isSub'; payload: boolean };
+  | { type: 'isSub'; payload: boolean }
+  | { type: 'commission'; payload: number };
 
-const defaultState = { name: '', isSub: false, uploadFile: null };
+const defaultState = { name: '', isSub: false, uploadFile: null, commission: 0 };
 
 function reducer(state: CategoryPopupReducerState, action: Action): CategoryPopupReducerState {
   switch (action.type) {
@@ -24,6 +26,8 @@ function reducer(state: CategoryPopupReducerState, action: Action): CategoryPopu
       return { ...state, parentId: action.payload };
     case 'uploadFile':
       return { ...state, uploadFile: action.payload };
+    case 'commission':
+      return { ...state, commission: action.payload };
     default:
       return state;
   }

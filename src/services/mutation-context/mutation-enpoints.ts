@@ -17,6 +17,7 @@ import {
   ITicketReplyResponse,
   PromotionType,
   IOrderConfirmItem,
+  IObligationTotals,
 } from '~/services/helpers/backend-models';
 
 interface CreateCategoryVariables {
@@ -24,6 +25,7 @@ interface CreateCategoryVariables {
   name: string;
   isSub: boolean;
   uploadFile: File;
+  commission: number;
 }
 
 interface UpdateCategoryVariables {
@@ -32,6 +34,7 @@ interface UpdateCategoryVariables {
   name: string;
   isSub: boolean;
   uploadFile?: null | File;
+  commission?: number;
 }
 
 class MutationEndpoints {
@@ -76,11 +79,7 @@ class MutationEndpoints {
   };
 
   changeUserStatus = ({ id, status }: { id: string; status: boolean }) => {
-    if (status) {
-      return ApiCall.post(`/users/setActive/${id}`);
-    }
-
-    return ApiCall.post(`/users/setPassive/${id}`);
+    return ApiCall.post(`/users/status/${id}/${status}`);
   };
 
   createProduct = (params: {
@@ -265,6 +264,16 @@ class MutationEndpoints {
     return ApiCall.put(`/credits/${creditId}`, { ...others });
   };
 
+  editObligation: (params: {
+    obligationId: string;
+    debt: number;
+    receivable: number;
+  }) => Promise<IObligationTotals> = ({ ...params }) => {
+    const { obligationId, ...others } = params;
+
+    return ApiCall.put(`/obligations/${obligationId}`, { ...others });
+  };
+
   createTicket: (params: { title: string; message: string; importanceLevel: string }) => Promise<ITicketResponse> = ({
     ...params
   }) => ApiCall.post('/tickets', { ...params });
@@ -274,6 +283,11 @@ class MutationEndpoints {
 
   orderConfirm: (params: { id: string; items: IOrderConfirmItem[] }) => Promise<IOrder> = ({ id, items }) =>
     ApiCall.post(`/orders/confirm/${id}`, { items });
+
+  updateCommission: (params: { id: string; commission: number }) => Promise<IUserCommonResponse> = ({
+    id,
+    commission,
+  }) => ApiCall.put('/users/commissions', { id, commission });
 
   deneme = () => Promise.resolve({ id: '12341' });
 }

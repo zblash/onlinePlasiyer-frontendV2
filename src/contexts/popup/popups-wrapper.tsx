@@ -13,6 +13,8 @@ import { RemoveBarcodePopup } from '~/components/popups/remove-barcode-popup';
 import { RemoveAnnouncementPopup } from '~/components/popups/remove-announcement-popup';
 import { RemoveNotificationPopup } from '~/components/popups/remove-notification-popup';
 import { EditCreditPopup } from '~/components/popups/edit-credit-popup';
+import { EditObligationPopup } from '~/components/popups/edit-obligation-popup';
+import { SetCommissionPopup } from '~/components/popups/set-commission-popup';
 
 interface PopupsWrapperProps extends PopupContextType {}
 
@@ -35,6 +37,8 @@ function PopupsWrapper(props: PopupsWrapperProps) {
     { ...props.removeAnnouncement, comp: <RemoveAnnouncementPopup params={props.removeAnnouncement.params} /> },
     { ...props.removeNotification, comp: <RemoveNotificationPopup params={props.removeNotification.params} /> },
     { ...props.editCredit, comp: <EditCreditPopup params={props.editCredit.params} /> },
+    { ...props.editObligation, comp: <EditObligationPopup params={props.editObligation.params} /> },
+    { ...props.setCommission, comp: <SetCommissionPopup params={props.setCommission.params} /> },
   ];
 
   return (

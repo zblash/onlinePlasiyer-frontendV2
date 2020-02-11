@@ -123,7 +123,8 @@ function HeaderMenu(props: React.PropsWithChildren<AdminHeaderProps>) {
           <StyledSubNavContentItem to="/all-notifications">Bildirimler</StyledSubNavContentItem>
           <StyledSubNavContentItem to="/create-announcement">Duyuru Ekle</StyledSubNavContentItem>
           <StyledSubNavContentItem to="/announcements">Duyurular</StyledSubNavContentItem>
-          <StyledSubNavContentItem to="/all-credits">Krediler</StyledSubNavContentItem>
+          <StyledSubNavContentItem to="/all-credits">Sistem Kredileri</StyledSubNavContentItem>
+          <StyledSubNavContentItem to="/all-obligations">Sistem Borclari</StyledSubNavContentItem>
           <StyledSubNavContentItem to="/my-tickets">Destek Talepleri</StyledSubNavContentItem>
         </StyledSubNavContent>
       </StyledSubNavs>
@@ -149,7 +150,7 @@ function HeaderMenu(props: React.PropsWithChildren<AdminHeaderProps>) {
         </StyledSubNavContent>
       </StyledSubNavs>
       <StyledSubNavs>
-        <StyledSubNavsLink to="/invoices">Faturalari Gor</StyledSubNavsLink>
+        <StyledSubNavsLink to="/credit-activities">Cari Ekstrelerini Gor</StyledSubNavsLink>
       </StyledSubNavs>
       <StyledSubNavs>
         <StyledSubNavsLink to="/orders">Siparisleri Gor</StyledSubNavsLink>
@@ -173,7 +174,7 @@ function HeaderMenu(props: React.PropsWithChildren<AdminHeaderProps>) {
         <StyledSubNavsLink to="/">Anasayfa </StyledSubNavsLink>
       </StyledSubNavs>
       <StyledSubNavs>
-        <StyledSubNavsLink to="/invoices">Faturalari Gor</StyledSubNavsLink>
+        <StyledSubNavsLink to="/credit-activities">Cari Ekstreleri Gor</StyledSubNavsLink>
       </StyledSubNavs>
       <StyledSubNavs>
         <StyledSubNavsLink to="/orders">Siparisleri Gor</StyledSubNavsLink>

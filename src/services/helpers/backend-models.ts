@@ -29,6 +29,7 @@ export interface IProductResponse {
   name: string;
   photoUrl: string;
   tax: number;
+  commission: number;
 }
 
 export interface ICreditResponse {
@@ -107,6 +108,7 @@ export interface IUserCommonResponse {
   taxNumber?: string;
   activeStates: IAddressStateResponse[];
   address: IAddressResponse;
+  commission?: number;
 }
 
 export interface ICategoryResponse {
@@ -115,6 +117,7 @@ export interface ICategoryResponse {
   parentId: string | null;
   photoUrl: string;
   subCategory: boolean;
+  commission?: number;
 }
 
 export interface IOrderItems {
@@ -166,8 +169,10 @@ export interface Invoice {
 
 export interface IObligationTotals {
   id: string;
-  totalDebts: number;
-  totalReceivables: number;
+  debt: number;
+  receivable: number;
+  userName: string;
+  userId: string;
 }
 
 export interface IAnnouncement {
@@ -222,6 +227,33 @@ export interface IOrderConfirmItem {
   removed: boolean;
 }
 
+export interface ICreditActivityResponse {
+  id: string;
+  documentNo: number;
+  price: number;
+  creditLimit: number;
+  totalDebt: number;
+  creditActivityType: CreditActivityType;
+  creditType: CreditType;
+  customerId: string;
+  customerName: string;
+  merchantId?: string;
+  merchantName?: string;
+  date: Date;
+}
+
+export interface IObligationActivityResponse {
+  id: string;
+  price: number;
+  documentNo: number;
+  userId: string;
+  userName: string;
+  date: Date;
+  obligationActivityType: CreditActivityType;
+  totalDebt: number;
+  totalReceivable: number;
+}
+
 export type UserRoleResponse = 'ADMIN' | 'MERCHANT' | 'CUSTOMER';
 
 export type UnitTypeResponse = 'KG' | 'KL' | 'AD';
@@ -229,3 +261,7 @@ export type UnitTypeResponse = 'KG' | 'KL' | 'AD';
 export type TOrderStatus = 'NEW' | 'FINISHED' | 'CONFIRMED' | 'CANCELLED' | 'CANCEL_REQUEST';
 
 export type PromotionType = 'PERCENT' | 'PROMOTION';
+
+export type CreditActivityType = 'DEBT' | 'CREDIT';
+
+export type CreditType = 'SYSTEM_CREDIT' | 'MERCHANT_CREDIT';
