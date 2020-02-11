@@ -78,7 +78,7 @@ function ObligationComponent(props: React.PropsWithChildren<ObligationComponentP
     },
   });
   /* ObligationComponent Callbacks */
-  console.log(userId);
+
   /* ObligationComponent Lifecycle  */
 
   return (
