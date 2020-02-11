@@ -39,6 +39,9 @@ import { CreateTicketPage } from './create-ticket';
 import { UserTicketsPage } from './user-tickets';
 import { TicketRepliesPage } from './ticket-replies';
 import { LoginPage } from '~/components/common/login-register/login-page';
+import { CreditActivities } from './credit-activities';
+import { ObligationsPage } from './obligation-activities';
+import { AllObligationsPage } from './all-obligations';
 
 interface IRoute {
   path: string;
@@ -121,6 +124,9 @@ const routes: IRoute[] = [
   { path: '/create-ticket', component: CreateTicketPage },
   { path: '/my-tickets', component: UserTicketsPage },
   { path: '/ticket-replies/:ticketId', component: TicketRepliesPage },
+  { path: '/credit-activities', component: CreditActivities },
+  { path: '/obligation-activities/:userId?', component: ObligationsPage, authorize: ['MERCHANT', 'ADMIN'] },
+  { path: '/all-obligations', component: AllObligationsPage, authorize: ['ADMIN'] },
 ];
 
 const Routes = React.memo(() => {

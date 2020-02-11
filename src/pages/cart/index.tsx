@@ -178,6 +178,21 @@ const StyledPaymentSelect = styled.select`
   margin: 1em 0 1em 0;
   padding: 5px 10px;
 `;
+const StyledOrderItemTable = styled.table`
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin-top: 15px;
+  width: 100%;
+  > th,
+  td {
+    text-align: center;
+    padding: 8px;
+    width: 25%;
+  }
+  > tbody > tr:nth-child(odd) {
+    background-color: ${colors.lightGray};
+  }
+`;
 const titleText = css`
   float: left;
   padding-left: 30px;
@@ -390,7 +405,16 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
                         <StyledPaymentSelect id={`payment-${cartItem.id}`} onChange={handleChangePaymentMethod}>
                           <option value="">Odeme Yontemini Secin</option>
                           {paymentMethods.map(paymentOpt => (
-                            <option value={paymentOpt.paymentOption}>{paymentOpt.displayName}</option>
+                            <option
+                              key={paymentOpt.id}
+                              disabled={
+                                paymentOpt.paymentOption === 'SYSTEM_CREDIT' &&
+                                creditSummary.creditLimit < creditSummary.totalDebt + cartItem.totalPrice
+                              }
+                              value={paymentOpt.paymentOption}
+                            >
+                              {paymentOpt.displayName}
+                            </option>
                           ))}
                         </StyledPaymentSelect>
                       </div>
@@ -403,9 +427,24 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
                       {cartItem.discountedTotalPrice} TL ({cartItem.quantity} Adet)
                     </p>
                   </CartItemHeader>
-                  {cartItem.details.map(detail => (
-                    <CartItem key={detail.id} cartItem={detail} />
-                  ))}
+                  <StyledOrderItemTable>
+                    <thead>
+                      <tr>
+                        <th>Urun Foto</th>
+                        <th>Urun Ismi</th>
+                        <th>Satici</th>
+                        <th>Barkod</th>
+                        <th>Toplam Fiyat</th>
+                        <th>Toplam Siparis</th>
+                        <th>Sil</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {cartItem.details.map(detail => (
+                        <CartItem key={detail.id} cartItem={detail} />
+                      ))}
+                    </tbody>
+                  </StyledOrderItemTable>
                 </CartItemWrapper>
               ))}
           </StyledCartContentBox>

@@ -27,49 +27,12 @@ interface ICartItemProp {
 
 /* CartItem Styles */
 
-const StyledCartContentItemBox = styled.div`
-    width: 100%;
-    border-bottom 1px solid ${colors.lightGray};
-    padding: 15px 0 15px 0;
-    float: left;
-`;
-
-const StyledCartContentItemBoxImgDiv = styled.div`
-  width: 19%;
-  float: left;
-  margin-left: 3%;
-  height: 75px;
-`;
-
-const StyledCartContentItemBoxDetail = styled.div`
-  width: 25%;
-  float: left;
-  margin-left: 2%;
-  height: 75px;
-`;
-
-const StyledCartContentItemBoxQuantity = styled.div`
-  width: 19%;
-  float: left;
-  margin-left: 1%;
-  height: 75px;
-  display: flex;
-  align-items: center;
-`;
-
-const StyledCartContentItemBoxPrice = styled.div`
-  width: 29%;
-  float: left;
-  margin-left: 1%;
-  height: 75px;
-  text-align: center;
-`;
-
 const StyledCartContentItemBoxDeleteBtn = styled(UIButton)`
   float: right;
   border-radius: 100px 
   background-color: ${colors.lightGray};
   color: ${colors.dangerDark};
+  border: 1px solid ${colors.gray};
   padding: 4px 8px;
   :hover {
     background-color: ${colors.lightGray};
@@ -120,26 +83,11 @@ const StyledCartContentItemBoxQuantityInputBtnPlus = styled.button`
 const cartItemImg = css`
   width: 100%;
   height: 75px;
-`;
-
-const cartItemTitle = css`
-  font-size: 16px;
-  margin: 0;
-`;
-
-const cartItemBoxP = css`
-  font-size: 12px;
-  width: 100%;
-  margin: 0;
+  border-radius: 10px;
 `;
 
 const cartItemTotalPrice = css`
   font-size: 20px;
-`;
-
-const floatRight = css`
-  float: right;
-  width: 100%;
 `;
 
 const itemQuantityInputDiv = css`
@@ -202,44 +150,44 @@ function CartItem(props: React.PropsWithChildren<CartItemProps>) {
   }, [quantity]); // eslint-disable-line
 
   return (
-    <StyledCartContentItemBox>
-      <StyledCartContentItemBoxImgDiv>
-        <img alt={props.cartItem.productName} className={cartItemImg} src={props.cartItem.productPhotoUrl} />
-      </StyledCartContentItemBoxImgDiv>
-      <StyledCartContentItemBoxDetail>
-        <h3 className={cartItemTitle}>{props.cartItem.productName}</h3>
-        <p className={cartItemBoxP}>
-          <strong>Satici: </strong>
-          {props.cartItem.sellerName}
-        </p>
-        <p className={cartItemBoxP}>
-          <strong>Barkod: </strong>
-          {props.cartItem.productBarcodeList.join(',')}
-        </p>
-      </StyledCartContentItemBoxDetail>
-      <StyledCartContentItemBoxQuantity>
-        <div className={itemQuantityInputDiv}>
-          <StyledCartContentItemBoxQuantityInputBtnMinus name="mns" onClick={() => setQuantity(quantity - 1)}>
-            -
-          </StyledCartContentItemBoxQuantityInputBtnMinus>
-          <StyledCartContentItemBoxQuantityInput type="number" name="quantityInp" value={quantity} disabled />
-          <StyledCartContentItemBoxQuantityInputBtnPlus name="pls" onClick={() => setQuantity(quantity + 1)}>
-            +
-          </StyledCartContentItemBoxQuantityInputBtnPlus>
-        </div>
-      </StyledCartContentItemBoxQuantity>
-      <StyledCartContentItemBoxPrice>
-        <strong className={cartItemTotalPrice}>
-          {props.cartItem.discountedTotalPrice < props.cartItem.totalPrice && (
-            <p className={discount}>{props.cartItem.totalPrice} TL</p>
-          )}
-          <p className={marginZero}>{props.cartItem.discountedTotalPrice} TL</p>
-        </strong>
-        <div className={floatRight}>
+    <>
+      <tr>
+        <td>
+          <img alt={props.cartItem.productName} className={cartItemImg} src={props.cartItem.productPhotoUrl} />
+        </td>
+        <td>
+          <p>{props.cartItem.productName}</p>
+        </td>
+        <td>
+          <p>{props.cartItem.sellerName}</p>
+        </td>
+        <td>
+          <p>{props.cartItem.productBarcodeList[0]}</p>
+        </td>
+        <td>
+          <strong className={cartItemTotalPrice}>
+            {props.cartItem.discountedTotalPrice < props.cartItem.totalPrice && (
+              <p className={discount}>{props.cartItem.totalPrice} TL</p>
+            )}
+            <p className={marginZero}>{props.cartItem.discountedTotalPrice} TL</p>
+          </strong>
+        </td>
+        <td>
+          <div className={itemQuantityInputDiv}>
+            <StyledCartContentItemBoxQuantityInputBtnMinus name="mns" onClick={() => setQuantity(quantity - 1)}>
+              -
+            </StyledCartContentItemBoxQuantityInputBtnMinus>
+            <StyledCartContentItemBoxQuantityInput type="number" name="quantityInp" value={quantity} disabled />
+            <StyledCartContentItemBoxQuantityInputBtnPlus name="pls" onClick={() => setQuantity(quantity + 1)}>
+              +
+            </StyledCartContentItemBoxQuantityInputBtnPlus>
+          </div>
+        </td>
+        <td>
           <StyledCartContentItemBoxDeleteBtn onClick={removeItemHandler}>Sil</StyledCartContentItemBoxDeleteBtn>
-        </div>
-      </StyledCartContentItemBoxPrice>
-    </StyledCartContentItemBox>
+        </td>
+      </tr>
+    </>
   );
 }
 const PureCartItem = React.memo(CartItem);

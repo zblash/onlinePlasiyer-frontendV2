@@ -18,6 +18,7 @@ interface UIInputProps extends StylableProps {
   setRef?: React.RefObject<HTMLInputElement>;
   required?: boolean;
   name?: string;
+  step?: string;
 }
 
 /*
@@ -49,6 +50,7 @@ const _UIInput: React.SFC<UIInputProps> = props => {
     <StyledUIInputWrapper className={props.className} disabled={props.disabled}>
       {props.leftIcon && <StyledLabel htmlFor={props.id}>{props.leftIcon}</StyledLabel>}
       <Input
+        step={props.step}
         ref={props.setRef}
         name={props.name}
         form={props.form}

@@ -9,6 +9,8 @@ import { RemoveBarcodePopupParams } from '~/components/popups/remove-barcode-pop
 import { RemoveAnnouncementPopupParams } from '~/components/popups/remove-announcement-popup';
 import { RemoveNotificationPopupParams } from '~/components/popups/remove-notification-popup';
 import { EditCreditPopupParams } from '~/components/popups/edit-credit-popup';
+import { EditObligationPopupParams } from '~/components/popups/edit-obligation-popup';
+import { SetCommissionPopupParams } from '~/components/popups/set-commission-popup';
 
 export interface Popup<O = undefined> {
   isShown: boolean;
@@ -32,4 +34,6 @@ export interface PopupContextType {
   removeAnnouncement: Popup<RemoveAnnouncementPopupParams>;
   removeNotification: Popup<RemoveNotificationPopupParams>;
   editCredit: Popup<EditCreditPopupParams>;
+  editObligation: Popup<EditObligationPopupParams>;
+  setCommission: Popup<SetCommissionPopupParams>;
 }

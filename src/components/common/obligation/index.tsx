@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useHistory } from 'react-router';
 import styled, { colors, css } from '~/styled';
 import { useTranslation } from '~/i18n';
 import { UIButton } from '~/components/ui';
@@ -63,17 +64,21 @@ border-radius: 8px;
 function ObligationComponent(props: React.PropsWithChildren<ObligationComponentProps>) {
   /* ObligationComponent Variables */
   const { t } = useTranslation();
+  const routerHistory = useHistory();
+  const userId = React.useMemo(() => {
+    return props.userId ? props.userId : '';
+  }, [props.userId]);
   const { data: totalObligation } = useQuery(queryEndpoints.getObligationTotal, {
     defaultValue: {
-      totalDebts: 0,
-      totalReceivables: 0,
+      debt: 0.0,
+      receivable: 0.0,
     },
     variables: {
       id: props.userId,
     },
   });
   /* ObligationComponent Callbacks */
-
+  console.log(userId);
   /* ObligationComponent Lifecycle  */
 
   return (
@@ -82,14 +87,16 @@ function ObligationComponent(props: React.PropsWithChildren<ObligationComponentP
       <StyledTotalObligationElement>
         <StyledTotalObligationElementText>{t('obligations.totalDebts')}</StyledTotalObligationElementText>
         {/* TODO TL Icon move to translation */}
-        <StyledTotalObligationElementText>{totalObligation.totalDebts} &#8378;</StyledTotalObligationElementText>
+        <StyledTotalObligationElementText>{totalObligation.debt} &#8378;</StyledTotalObligationElementText>
       </StyledTotalObligationElement>
       <StyledTotalObligationElement className={styleTotalObligationElementLast}>
         <StyledTotalObligationElementText>{t('obligations.totalReceivables')}</StyledTotalObligationElementText>
         {/* TODO TL Icon move to translation */}
-        <StyledTotalObligationElementText>{totalObligation.totalReceivables} &#8378;</StyledTotalObligationElementText>
+        <StyledTotalObligationElementText>{totalObligation.receivable} &#8378;</StyledTotalObligationElementText>
       </StyledTotalObligationElement>
-      <StyledTotalObligationButton>{t('common.details')}</StyledTotalObligationButton>
+      <StyledTotalObligationButton onClick={() => routerHistory.push(`/obligation-activities/${userId}`)}>
+        {t('common.details')}
+      </StyledTotalObligationButton>
     </StyledTotalObligationWrapper>
   );
 }
