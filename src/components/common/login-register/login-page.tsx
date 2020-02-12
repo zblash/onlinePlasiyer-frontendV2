@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled, { colors } from '~/styled';
 import { UIInput, UIButton, Loading } from '~/components/ui';
 import { login } from '~/services/api';
+import { IExceptionResponse } from '~/services/helpers/backend-models';
 
 /*
   LoginPage Helpers
@@ -74,12 +75,16 @@ const StyledBottomWrapper = styled.div`
   justify-content: space-between;
   padding-right: 24px;
 `;
+const StyledErrorSpan = styled.p`
+  color: ${colors.danger};
+`;
 
 const LoginPage: React.SFC<LoginPageProps> = props => {
   const [password, setPassword] = React.useState('');
   const [username, setUsername] = React.useState('');
   const [hasError, setError] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [errorDetail, setErrorDetail] = React.useState<IExceptionResponse>();
 
   return (
     <form
@@ -90,13 +95,21 @@ const LoginPage: React.SFC<LoginPageProps> = props => {
         } else {
           setError(false);
           setIsLoading(true);
-          login(username, password).catch(() => {
+          login(username, password).catch(error => {
+            setErrorDetail(error.response.data);
             setError(true);
             setIsLoading(false);
           });
         }
       }}
     >
+      {errorDetail && (
+        <>
+          <StyledErrorSpan>{errorDetail.message}</StyledErrorSpan>
+          {errorDetail.subErrors &&
+            errorDetail.subErrors.map(subError => <StyledErrorSpan>{subError.message}</StyledErrorSpan>)}
+        </>
+      )}
       <StyledInput
         placeholder="Kullanici Adi"
         onChange={e => setUsername(e)}

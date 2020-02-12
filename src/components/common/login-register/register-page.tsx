@@ -1,7 +1,12 @@
 import * as React from 'react';
 import styled, { colors } from '~/styled';
 import { UIInput, UIAutoComplete, UIButtonGroup, UIButton, Loading } from '~/components/ui';
-import { IAddressCityResponse, IAddressStateResponse, UserRoleResponse } from '~/services/helpers/backend-models';
+import {
+  IAddressCityResponse,
+  IAddressStateResponse,
+  UserRoleResponse,
+  IExceptionResponse,
+} from '~/services/helpers/backend-models';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { signup } from '~/services/api';
 import { useAlert } from '~/utils/hooks';
@@ -97,7 +102,9 @@ const StyledRegisterButton = styled(UIButton)<{ hasError: boolean; disabled: boo
   }
   transition: background-color 0.3s, color 0.3s;
 `;
-
+const StyledErrorSpan = styled.p`
+  color: ${colors.danger};
+`;
 const RegisterPage: React.SFC<RegisterPageProps> = props => {
   const alertContext = useAlert();
   const [cities, setCities] = React.useState<IAddressCityResponse[]>([]);
@@ -116,6 +123,7 @@ const RegisterPage: React.SFC<RegisterPageProps> = props => {
   const [role, setRole] = React.useState<UserRoleResponse>('ADMIN');
   const [taxNumber, setTaxNumber] = React.useState('');
   const [name, setName] = React.useState('');
+  const [errorDetail, setErrorDetail] = React.useState<IExceptionResponse>();
   const ref = React.useRef();
   const __ = (
     <StyledRegisterPageWrapper>
@@ -144,6 +152,7 @@ const RegisterPage: React.SFC<RegisterPageProps> = props => {
               props.onSignup();
             })
             .catch(error => {
+              setErrorDetail(error.response.data);
               setHasError(true);
             })
             .finally(() => {
@@ -151,6 +160,13 @@ const RegisterPage: React.SFC<RegisterPageProps> = props => {
             });
         }}
       >
+        {errorDetail && (
+          <>
+            <StyledErrorSpan>{errorDetail.message}</StyledErrorSpan>
+            {errorDetail.subErrors &&
+              errorDetail.subErrors.map(subError => <StyledErrorSpan>{subError.message}</StyledErrorSpan>)}
+          </>
+        )}
         <StyledInput
           hasError={hasError}
           id="register-name-surname"
