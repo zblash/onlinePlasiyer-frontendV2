@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useHistory } from 'react-router';
 import Select from 'react-select';
 import styled, { colors, css } from '~/styled';
-import { UIButton, UIInput, UICheckbox } from '~/components/ui';
+import { UIButton, UIInput, UICheckbox, UIIcon } from '~/components/ui';
 import { useAlert } from '~/utils/hooks';
 import { useApplicationContext } from '~/app/context';
 import { ISpecifyProductResponse } from '~/services/helpers/backend-models';
@@ -11,6 +11,8 @@ import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints
 import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
 import { refetchFactory } from '~/services/utils';
 import { CreateProductComponent } from '../create-product';
+import { useQuery } from '~/services/query-context/context';
+import { queryEndpoints } from '~/services/query-context/query-endpoints';
 
 /* ProductSpecifyCreateUpdateComponent Helpers */
 interface ProductSpecifyCreateUpdateComponentProps {
@@ -63,9 +65,34 @@ const StyledButton = styled(UIButton)`
     color: ${colors.primary};
   }
 `;
+const StyledCategoryImg = styled.img`
+  object-fit: cover;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+`;
 
+const StyledCategoryImgWrapper = styled.label`
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 96px;
+  margin-bottom: 24px;
+  border-radius: 50%;
+  border: 2px solid ${colors.primary};
+  cursor: pointer;
+`;
+
+const imageIconStyle = css`
+  padding: 8px;
+`;
 const selectInput = css`
   margin-bottom: 10px;
+`;
+const textCenter = css`
+  text-align: center;
 `;
 /* ProductSpecifyCreateUpdateComponent Component  */
 function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<ProductSpecifyCreateUpdateComponentProps>) {
@@ -110,6 +137,11 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
   });
   const promotionTypeOptions = [{ value: 'PERCENT', label: 'PERCENT' }, { value: 'PROMOTION', label: 'PROMOTION' }];
   const [promotionText, setPromotionText] = React.useState(initialValues.promotionText);
+  const { data: product, loading: productLoading } = useQuery(queryEndpoints.getProductByBarcode, {
+    defaultValue: {},
+    variables: { barcode },
+    skip: !barcode || props.isCreate,
+  });
   const { mutation: createProductSpecify } = useMutation(mutationEndPoints.createSpecifyProductForAuthUser, {
     variables: {
       barcode,
@@ -210,146 +242,168 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
   }, [contents, unitType, unitPrice]);
 
   return (
-    <StyledCreateProductSpecifyPageWrapper>
-      <StyledCreateProductSpecifyHeader>
-        <h3>{props.isCreate ? 'Urun Ekle' : 'Urun Duzenle'}</h3>
-      </StyledCreateProductSpecifyHeader>
-      <CreateProductComponent hasBarcode={b => setBarcode(b)} onCreate={b => setBarcode(b)} />
-
-      <StyledCreateProductSpecifyContent>
-        <StyledCreateProductSpecifyContentElement>
-          <label>Icerik Turu</label>
-          <Select
-            options={unitTypeOptions}
-            placeholder="Secim Yapin"
-            className={selectInput}
-            value={unitType}
-            onChange={e => setUnitType(e)}
-            isDisabled={!barcode}
-          />
-        </StyledCreateProductSpecifyContentElement>
-        <StyledCreateProductSpecifyContentElement>
-          <label>Satis Icerigi</label>
-          <StyledInput
-            id="contents"
-            type="number"
-            readOnly={!barcode}
-            value={contents}
-            onChange={e => setContents(parseInt(e, 10))}
-          />
-        </StyledCreateProductSpecifyContentElement>
-
-        <StyledCreateProductSpecifyContentElement>
-          <label>Adet Fiyati</label>
-          <StyledInput
-            id="unitPrice"
-            type="number"
-            readOnly={!barcode}
-            value={unitPrice}
-            onChange={e => setUnitPrice(parseInt(e, 10))}
-          />
-        </StyledCreateProductSpecifyContentElement>
-        <StyledCreateProductSpecifyContentElement>
-          <label>Toplam Satis Fiyati</label>
-          <StyledInput
-            id="totalPrice"
-            type="number"
-            readOnly
-            value={totalPrice}
-            onChange={e => setTotalPrice(parseInt(e, 10))}
-          />
-        </StyledCreateProductSpecifyContentElement>
-        <StyledCreateProductSpecifyContentElement>
-          <label>Stok Miktari</label>
-          <StyledInput id="quantity" type="number" value={quantity} onChange={e => setQuantity(parseInt(e, 10))} />
-        </StyledCreateProductSpecifyContentElement>
-        <StyledCreateProductSpecifyContentElement>
-          <label>Tavsiye Ettiginiz Satis Fiyati</label>
-          <StyledInput
-            id="rcmdprc"
-            type="number"
-            value={recommendedRetailPrice}
-            readOnly={!barcode}
-            onChange={e => setRecomendedRetailPrice(parseInt(e, 10))}
-          />
-        </StyledCreateProductSpecifyContentElement>
-        <StyledCreateProductSpecifyContentElement>
-          <label>Satis Yapacaginiz Bolgeler</label>
-          <Select
-            isMulti
-            className={selectInput}
-            isSearchable
-            isClearable
-            isDisabled={!barcode}
-            onChange={e => setSelectedStateIds(e)}
-            value={selectedStateIds}
-            options={applicationContext.user.activeStates.map(x => ({
-              value: x.id,
-              label: `${x.cityTitle} - ${x.title}`,
-            }))}
-            placeholder="Secim Yapin"
-          />
-        </StyledCreateProductSpecifyContentElement>
-        <StyledCreateProductSpecifyContentElement>
-          <UICheckbox
-            value={discount}
-            label="Promosyon/Indirim Uygulanacak mi?"
-            id="product-discount"
-            onChange={isChecked => {
-              setDiscount(isChecked);
-            }}
-          />
-        </StyledCreateProductSpecifyContentElement>
-        {discount && (
+    <>
+      {props.isCreate && (
+        <StyledCreateProductSpecifyPageWrapper>
+          <StyledCreateProductSpecifyHeader>
+            <h3>Urun Bilgileri</h3>
+          </StyledCreateProductSpecifyHeader>
+          <CreateProductComponent hasBarcode={b => setBarcode(b)} onCreate={b => setBarcode(b)} />
+        </StyledCreateProductSpecifyPageWrapper>
+      )}
+      <StyledCreateProductSpecifyPageWrapper>
+        <StyledCreateProductSpecifyHeader>
+          <h3>{props.isCreate ? 'Urun Ekle' : 'Urun Duzenle'}</h3>
+        </StyledCreateProductSpecifyHeader>
+        {!props.isCreate && !productLoading && product && barcode && (
+          <StyledCreateProductSpecifyContent>
+            <StyledCreateProductSpecifyContentElement>
+              <h3 className={textCenter}>{product.name} URUNU ICIN</h3>
+              <StyledCategoryImgWrapper>
+                {product.photoUrl && <StyledCategoryImg src={product.photoUrl} />}
+                {!product.photoUrl && <UIIcon name="photoCamera" size={42} className={imageIconStyle} />}
+              </StyledCategoryImgWrapper>
+              <p className={textCenter}>
+                Barkod Listesi: {product.barcodeList && product.barcodeList.map(br => `${br}, `)}
+              </p>
+            </StyledCreateProductSpecifyContentElement>
+          </StyledCreateProductSpecifyContent>
+        )}
+        <StyledCreateProductSpecifyContent>
           <StyledCreateProductSpecifyContentElement>
-            <label>Promosyon Basligi</label>
-            <StyledInput id="promotionText" type="text" value={promotionText} onChange={e => setPromotionText(e)} />
-            <label>Gecerli Olacagi Satin Alma</label>
-            <StyledInput
-              id="discountUnit"
-              type="number"
-              value={discountUnit}
-              readOnly={!barcode}
-              onChange={e => setDiscountUnit(parseInt(e, 10))}
-            />
-            <label>Promosyon/Indirim Tipi</label>
+            <label>Icerik Turu</label>
             <Select
-              options={promotionTypeOptions}
+              options={unitTypeOptions}
               placeholder="Secim Yapin"
               className={selectInput}
-              value={promotionType}
+              value={unitType}
+              onChange={e => setUnitType(e)}
               isDisabled={!barcode}
-              onChange={e => setPromotionType(e)}
-            />
-            <label>Promosyon/Indirim Tutari</label>
-            <StyledInput
-              id="discountValue"
-              type="number"
-              value={discountValue}
-              readOnly={!barcode}
-              onChange={e => setDiscountValue(parseInt(e, 10))}
             />
           </StyledCreateProductSpecifyContentElement>
-        )}
-        <StyledCreateProductSpecifyContentElement>
-          <StyledButton
-            disabled={
-              selectedStateIds.length === 0 ||
-              !unitPrice ||
-              !unitType ||
-              !totalPrice ||
-              !recommendedRetailPrice ||
-              !quantity ||
-              !contents ||
-              (discount && (!discountUnit || !discountValue || !promotionText || !promotionType))
-            }
-            onClick={handleSubmit}
-          >
-            {props.isCreate ? 'Ekle' : 'Duzenle'}
-          </StyledButton>
-        </StyledCreateProductSpecifyContentElement>
-      </StyledCreateProductSpecifyContent>
-    </StyledCreateProductSpecifyPageWrapper>
+          <StyledCreateProductSpecifyContentElement>
+            <label>Satis Icerigi</label>
+            <StyledInput
+              id="contents"
+              type="number"
+              readOnly={!barcode}
+              value={contents}
+              onChange={e => setContents(parseInt(e, 10))}
+            />
+          </StyledCreateProductSpecifyContentElement>
+
+          <StyledCreateProductSpecifyContentElement>
+            <label>Adet Fiyati</label>
+            <StyledInput
+              id="unitPrice"
+              type="number"
+              readOnly={!barcode}
+              value={unitPrice}
+              onChange={e => setUnitPrice(parseInt(e, 10))}
+            />
+          </StyledCreateProductSpecifyContentElement>
+          <StyledCreateProductSpecifyContentElement>
+            <label>Toplam Satis Fiyati</label>
+            <StyledInput
+              id="totalPrice"
+              type="number"
+              readOnly
+              value={totalPrice}
+              onChange={e => setTotalPrice(parseInt(e, 10))}
+            />
+          </StyledCreateProductSpecifyContentElement>
+          <StyledCreateProductSpecifyContentElement>
+            <label>Stok Miktari</label>
+            <StyledInput id="quantity" type="number" value={quantity} onChange={e => setQuantity(parseInt(e, 10))} />
+          </StyledCreateProductSpecifyContentElement>
+          <StyledCreateProductSpecifyContentElement>
+            <label>Tavsiye Ettiginiz Satis Fiyati</label>
+            <StyledInput
+              id="rcmdprc"
+              type="number"
+              value={recommendedRetailPrice}
+              readOnly={!barcode}
+              onChange={e => setRecomendedRetailPrice(parseInt(e, 10))}
+            />
+          </StyledCreateProductSpecifyContentElement>
+          <StyledCreateProductSpecifyContentElement>
+            <label>Satis Yapacaginiz Bolgeler</label>
+            <Select
+              isMulti
+              className={selectInput}
+              isSearchable
+              isClearable
+              isDisabled={!barcode}
+              onChange={e => setSelectedStateIds(e)}
+              value={selectedStateIds}
+              options={applicationContext.user.activeStates.map(x => ({
+                value: x.id,
+                label: `${x.cityTitle} - ${x.title}`,
+              }))}
+              placeholder="Secim Yapin"
+            />
+          </StyledCreateProductSpecifyContentElement>
+          <StyledCreateProductSpecifyContentElement>
+            <UICheckbox
+              value={discount}
+              label="Promosyon/Indirim Uygulanacak mi?"
+              id="product-discount"
+              onChange={isChecked => {
+                setDiscount(isChecked);
+              }}
+            />
+          </StyledCreateProductSpecifyContentElement>
+          {discount && (
+            <StyledCreateProductSpecifyContentElement>
+              <label>Promosyon Basligi</label>
+              <StyledInput id="promotionText" type="text" value={promotionText} onChange={e => setPromotionText(e)} />
+              <label>Gecerli Olacagi Satin Alma</label>
+              <StyledInput
+                id="discountUnit"
+                type="number"
+                value={discountUnit}
+                readOnly={!barcode}
+                onChange={e => setDiscountUnit(parseInt(e, 10))}
+              />
+              <label>Promosyon/Indirim Tipi</label>
+              <Select
+                options={promotionTypeOptions}
+                placeholder="Secim Yapin"
+                className={selectInput}
+                value={promotionType}
+                isDisabled={!barcode}
+                onChange={e => setPromotionType(e)}
+              />
+              <label>Promosyon/Indirim Tutari</label>
+              <StyledInput
+                id="discountValue"
+                type="number"
+                value={discountValue}
+                readOnly={!barcode}
+                onChange={e => setDiscountValue(parseInt(e, 10))}
+              />
+            </StyledCreateProductSpecifyContentElement>
+          )}
+          <StyledCreateProductSpecifyContentElement>
+            <StyledButton
+              disabled={
+                selectedStateIds.length === 0 ||
+                !unitPrice ||
+                !unitType ||
+                !totalPrice ||
+                !recommendedRetailPrice ||
+                !quantity ||
+                !contents ||
+                (discount && (!discountUnit || !discountValue || !promotionText || !promotionType))
+              }
+              onClick={handleSubmit}
+            >
+              {props.isCreate ? 'Ekle' : 'Duzenle'}
+            </StyledButton>
+          </StyledCreateProductSpecifyContentElement>
+        </StyledCreateProductSpecifyContent>
+      </StyledCreateProductSpecifyPageWrapper>
+    </>
   );
 }
 const PureProductSpecifyCreateUpdateComponent = React.memo(ProductSpecifyCreateUpdateComponent);
