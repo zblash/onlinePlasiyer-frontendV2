@@ -1,9 +1,9 @@
 import * as React from 'react';
-import Slider from 'react-slick';
-import styled, { colors } from '~/styled';
+import styled, { colors } from '~/styled/index';
 import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 
+const Slider = React.lazy(() => import('react-slick'));
 /* AnnouncementComponent Helpers */
 interface AnnouncementComponentProps {}
 
@@ -53,18 +53,20 @@ function AnnouncementComponent(props: React.PropsWithChildren<AnnouncementCompon
   /* AnnouncementComponent Lifecycle  */
 
   return (
-    <SliderWrapper>
-      <SliderWrapperTitle>Duyurular</SliderWrapperTitle>
-      <Slider {...settings}>
-        {announcements.map(item => (
-          <div key={item.id}>
-            <h3>{item.title}</h3>
-            <p>{item.message}</p>
-            <SliderImg src={item.fileUrl} />
-          </div>
-        ))}
-      </Slider>
-    </SliderWrapper>
+    <React.Suspense fallback={<div>Loading</div>}>
+      <SliderWrapper>
+        <SliderWrapperTitle>Duyurular</SliderWrapperTitle>
+        <Slider {...settings}>
+          {announcements.map(item => (
+            <div key={item.id}>
+              <h3>{item.title}</h3>
+              <p>{item.message}</p>
+              <SliderImg src={item.fileUrl} />
+            </div>
+          ))}
+        </Slider>
+      </SliderWrapper>
+    </React.Suspense>
   );
 }
 const PureAnnouncementComponent = React.memo(AnnouncementComponent);

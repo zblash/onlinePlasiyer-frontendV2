@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { ApiCallContext } from './context';
 import { ApiCallContextProviderProps, QueryQueue, ApiCallContextType } from './helpers';
-import { getRouteId } from '../utils';
-import { BasicQuery } from '../helpers';
+import { getRouteId } from '../utils/index';
+import { BasicQuery } from '../helpers/index';
 import Queue from '../utils/queue';
 import { useDatabaseObjectsContext } from '../database-object-context/context';
 import { backendObjectFunctions } from '../utils/route-schema';

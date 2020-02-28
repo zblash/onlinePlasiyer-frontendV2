@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { DatabaseObjectContextProvider } from './database-object-context';
-import { MutationContextProvider } from './mutation-context';
-import { QueryContextProvider } from './query-context';
-import { ApiCallContextProvider } from './api-call-context';
+import { DatabaseObjectContextProvider } from './database-object-context/index';
+import { MutationContextProvider } from './mutation-context/index';
+import { QueryContextProvider } from './query-context/index';
+import { ApiCallContextProvider } from './api-call-context/index';
 
 interface ServicesContextProviderProps {}
 

@@ -1,8 +1,8 @@
 import * as React from 'react';
-import styled, { css } from '~/styled';
-import { CategoryFields } from '..';
-import { UIIcon } from '~/components/ui';
-import { SubCategoryListColors } from '.';
+import styled, { css } from '~/styled/index';
+import { CategoryFields } from '../index';
+import { UIIcon } from '~/components/ui/index';
+import { SubCategoryListColors } from './index';
 import { usePopupContext } from '~/contexts/popup/context';
 import { useUserPermissions } from '~/app/context';
 

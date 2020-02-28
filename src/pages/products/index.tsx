@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useParams } from 'react-router';
-
 import styled, { css, colors } from '~/styled';
 import { Container, UIButton, UIIcon, Loading } from '~/components/ui';
 import { usePopupContext } from '~/contexts/popup/context';
@@ -69,6 +68,7 @@ const selectBox = css`
   padding: 7px;
   margin-bottom: 10px;
 `;
+
 const _ProductsPage: React.SFC<ProductsPageProps> = props => {
   const { t } = useTranslation();
   const userPermissions = useUserPermissions();

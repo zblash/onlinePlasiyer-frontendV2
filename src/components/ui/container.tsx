@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled from '~/styled';
+import styled, { globalStyleCreator } from '~/styled';
 
 interface ContainerProps {}
 
@@ -14,10 +14,15 @@ const StyledFullPage = styled.div`
 `;
 
 const Container: React.SFC<ContainerProps> = props => {
+  const GlobalStyle = globalStyleCreator();
+
   return (
-    <StyledFullPage>
-      <ContainerWrapper>{props.children}</ContainerWrapper>
-    </StyledFullPage>
+    <>
+      <StyledFullPage>
+        <GlobalStyle />
+        <ContainerWrapper>{props.children}</ContainerWrapper>
+      </StyledFullPage>
+    </>
   );
 };
 

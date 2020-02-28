@@ -1,11 +1,11 @@
 import * as React from 'react';
-import styled from '~/styled';
-import { Container } from '~/components/ui';
+import styled from '~/styled/index';
+import { Container } from '~/components/ui/index';
 import { CategoryHorizontalListFetcher } from '~/fetcher-components/common/category-horizontal-list';
-import { ObligationComponent } from '~/components/common/obligation';
-import { AnnouncementComponent } from '~/components/common/announcements';
+import { ObligationComponent } from '~/components/common/obligation/index';
+import { AnnouncementComponent } from '~/components/common/announcements/index';
 import { useApplicationContext } from '~/app/context';
-import { CreditSummaryComponent } from '~/components/common/credit-summary';
+import { CreditSummaryComponent } from '~/components/common/credit-summary/index';
 
 /* Home Helpers */
 interface HomeProps {}
