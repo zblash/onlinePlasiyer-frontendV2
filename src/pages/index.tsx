@@ -1,47 +1,105 @@
 import * as React from 'react';
 import { Switch, Route } from 'react-router-dom';
+import { HeaderMenu } from '~/components/common/header-menu/index';
+import { Footer } from '~/components/common/footer/index';
+import { UserRoleResponse } from '../services/helpers/backend-models';
+import { withRequiredRole } from '../components/hoc/with-required-role';
+import { Header } from '~/components/common/header/index';
 
-import { Home } from '../pages/home';
-import { ProductsPage } from '../pages/products';
-import { UsersPage } from '../pages/users';
-import { Page404 } from './404-component';
+const CreateProductPage = React.lazy(() =>
+  import('./create-product').then(module => ({ default: module.CreateProductPage })),
+);
+const UpdateProductPage = React.lazy(() =>
+  import('./update-product').then(module => ({ default: module.UpdateProductPage })),
+);
+const Home = React.lazy(() => import('../pages/home/index').then(module => ({ default: module.Home })));
 
-import { Header } from '~/components/common/header';
-import { OrdersPage } from './orders';
-import { CartPage } from '../pages/cart';
-import { InvoicesPage } from './invoices';
-import { UserRoleResponse } from '~/services/helpers/backend-models';
-import { withRequiredRole } from '~/components/hoc/with-required-role';
-import { AllProductPage } from './all-products';
-import { OrderPage } from './order';
-import { CartCheckoutPage } from './cart-checkout';
-import { InvoicePage } from './invoice';
-import { ProfilePage } from './profile';
-import { CreateProductSpecifyPage } from './create-product-specify';
-import { ProductSpecifiesPage } from './product-specifies';
-import { MerchantHome } from './merchant-home';
-import { CreateUserPage } from './create-user';
-import { AllCategoriesPage } from './all-categories';
-import { UserPage } from './user';
-import { HeaderMenu } from '~/components/common/header-menu';
-import { UserInvoicesPage } from './user-invoices';
-import { UserOrdersPage } from './user-orders';
-import { UserProductSpecifiesPage } from './user-product-specifies';
-import { UpdateProductSpeciyPage } from './update-product-specify';
-import { Footer } from '~/components/common/footer';
-import { CreateAnnouncementPage } from './create-announcement';
-import { AnnouncementsPage } from './announcements';
-import { AllNotificationsPage } from './all-notifications';
-import { CreateNotificationPage } from './create-notification';
-import { AllCreditsPage } from './all-credits';
-import { SearchProductsPage } from './search-products';
-import { CreateTicketPage } from './create-ticket';
-import { UserTicketsPage } from './user-tickets';
-import { TicketRepliesPage } from './ticket-replies';
-import { LoginPage } from '~/components/common/login-register/login-page';
-import { CreditActivities } from './credit-activities';
-import { ObligationsPage } from './obligation-activities';
-import { AllObligationsPage } from './all-obligations';
+const ProductsPage = React.lazy(() =>
+  import('../pages/products/index').then(module => ({ default: module.ProductsPage })),
+);
+const UsersPage = React.lazy(() => import('../pages/users/index').then(module => ({ default: module.UsersPage })));
+const Page404 = React.lazy(() => import('./404-component').then(module => ({ default: module.Page404 })));
+const OrdersPage = React.lazy(() => import('./orders/index').then(module => ({ default: module.OrdersPage })));
+const CartPage = React.lazy(() => import('../pages/cart/index').then(module => ({ default: module.CartPage })));
+const InvoicesPage = React.lazy(() => import('./invoices/index').then(module => ({ default: module.InvoicesPage })));
+
+const AllProductPage = React.lazy(() =>
+  import('./all-products/index').then(module => ({ default: module.AllProductPage })),
+);
+const OrderPage = React.lazy(() => import('./order/index').then(module => ({ default: module.OrderPage })));
+const CartCheckoutPage = React.lazy(() =>
+  import('./cart-checkout/index').then(module => ({ default: module.CartCheckoutPage })),
+);
+const InvoicePage = React.lazy(() => import('./invoice/index').then(module => ({ default: module.InvoicePage })));
+const ProfilePage = React.lazy(() => import('./profile/index').then(module => ({ default: module.ProfilePage })));
+const CreateProductSpecifyPage = React.lazy(() =>
+  import('./create-product-specify/index').then(module => ({ default: module.CreateProductSpecifyPage })),
+);
+const ProductSpecifiesPage = React.lazy(() =>
+  import('./product-specifies/index').then(module => ({ default: module.ProductSpecifiesPage })),
+);
+const MerchantHome = React.lazy(() =>
+  import('./merchant-home/index').then(module => ({ default: module.MerchantHome })),
+);
+const CreateUserPage = React.lazy(() =>
+  import('./create-user/index').then(module => ({ default: module.CreateUserPage })),
+);
+const AllCategoriesPage = React.lazy(() =>
+  import('./all-categories/index').then(module => ({ default: module.AllCategoriesPage })),
+);
+const UserPage = React.lazy(() => import('./user/index').then(module => ({ default: module.UserPage })));
+const UserInvoicesPage = React.lazy(() =>
+  import('./user-invoices/index').then(module => ({ default: module.UserInvoicesPage })),
+);
+const UserOrdersPage = React.lazy(() =>
+  import('./user-orders/index').then(module => ({ default: module.UserOrdersPage })),
+);
+const UserProductSpecifiesPage = React.lazy(() =>
+  import('./user-product-specifies/index').then(module => ({ default: module.UserProductSpecifiesPage })),
+);
+const UpdateProductSpeciyPage = React.lazy(() =>
+  import('./update-product-specify/index').then(module => ({ default: module.UpdateProductSpeciyPage })),
+);
+
+const CreateAnnouncementPage = React.lazy(() =>
+  import('./create-announcement/index').then(module => ({ default: module.CreateAnnouncementPage })),
+);
+const AnnouncementsPage = React.lazy(() =>
+  import('./announcements/index').then(module => ({ default: module.AnnouncementsPage })),
+);
+const AllNotificationsPage = React.lazy(() =>
+  import('./all-notifications/index').then(module => ({ default: module.AllNotificationsPage })),
+);
+const CreateNotificationPage = React.lazy(() =>
+  import('./create-notification/index').then(module => ({ default: module.CreateNotificationPage })),
+);
+const AllCreditsPage = React.lazy(() =>
+  import('./all-credits/index').then(module => ({ default: module.AllCreditsPage })),
+);
+const SearchProductsPage = React.lazy(() =>
+  import('./search-products/index').then(module => ({ default: module.SearchProductsPage })),
+);
+const CreateTicketPage = React.lazy(() =>
+  import('./create-ticket/index').then(module => ({ default: module.CreateTicketPage })),
+);
+const UserTicketsPage = React.lazy(() =>
+  import('./user-tickets/index').then(module => ({ default: module.UserTicketsPage })),
+);
+const TicketRepliesPage = React.lazy(() =>
+  import('./ticket-replies/index').then(module => ({ default: module.TicketRepliesPage })),
+);
+const LoginPage = React.lazy(() =>
+  import('~/components/common/login-register/login-page').then(module => ({ default: module.LoginPage })),
+);
+const CreditActivities = React.lazy(() =>
+  import('./credit-activities/index').then(module => ({ default: module.CreditActivities })),
+);
+const ObligationsPage = React.lazy(() =>
+  import('./obligation-activities/index').then(module => ({ default: module.ObligationsPage })),
+);
+const AllObligationsPage = React.lazy(() =>
+  import('./all-obligations/index').then(module => ({ default: module.AllObligationsPage })),
+);
 
 interface IRoute {
   path: string;
@@ -127,6 +185,8 @@ const routes: IRoute[] = [
   { path: '/credit-activities', component: CreditActivities },
   { path: '/obligation-activities/:userId?', component: ObligationsPage, authorize: ['MERCHANT', 'ADMIN'] },
   { path: '/all-obligations', component: AllObligationsPage, authorize: ['ADMIN'] },
+  { path: '/create-product', component: CreateProductPage, authorize: ['ADMIN'] },
+  { path: '/update-product/:productId', component: UpdateProductPage, authorize: ['ADMIN'] },
 ];
 
 const Routes = React.memo(() => {
@@ -135,19 +195,21 @@ const Routes = React.memo(() => {
       <Header />
       <HeaderMenu />
       <div style={{ minHeight: '100%' }}>
-        <Switch>
-          {routes.map(route => (
-            <Route
-              key={route.path}
-              path={route.path}
-              component={withRequiredRole(route.component, {
-                authorize: route.authorize,
-              })}
-              exact
-            />
-          ))}
-          <Route component={Page404} />
-        </Switch>
+        <React.Suspense fallback={<div>Loading</div>}>
+          <Switch>
+            {routes.map(route => (
+              <Route
+                key={route.path}
+                path={route.path}
+                component={withRequiredRole(route.component, {
+                  authorize: route.authorize,
+                })}
+                exact
+              />
+            ))}
+            <Route component={Page404} />
+          </Switch>
+        </React.Suspense>
       </div>
       <Footer />
     </>

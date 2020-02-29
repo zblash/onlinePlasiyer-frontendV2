@@ -1,4 +1,4 @@
-import { MaybeArray } from '~/helpers';
+import { MaybeArray } from '~/helpers/index';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 

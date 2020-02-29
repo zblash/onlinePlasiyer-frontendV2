@@ -1,3 +1,18 @@
+export interface IExceptionResponse {
+  status: string;
+  timestamp: Date;
+  message: string;
+  path: string;
+  subErrors: ISubErrorResponse[];
+}
+
+export interface ISubErrorResponse {
+  object: string;
+  field: string;
+  rejectedValue: string;
+  message: string;
+}
+
 export interface IAddressStateResponse {
   cityTitle: string;
   code: number;

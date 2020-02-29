@@ -19,6 +19,7 @@ interface UIInputProps extends StylableProps {
   required?: boolean;
   name?: string;
   step?: string;
+  readOnly?: boolean;
 }
 
 /*
@@ -61,6 +62,7 @@ const _UIInput: React.SFC<UIInputProps> = props => {
         required={props.required}
         className={props.inputClassName}
         placeholder={props.placeholder}
+        readOnly={props.readOnly}
         onChange={e => props.onChange && props.onChange(e.target.value)}
       />
       {props.rightIcon && <StyledLabel htmlFor={props.id}>{props.rightIcon}</StyledLabel>}

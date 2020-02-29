@@ -89,6 +89,7 @@ class MutationEndpoints {
     status?: boolean;
     tax: number;
     uploadedFile?: File;
+    commission?: number;
   }) => {
     const formData = new FormData();
     Object.keys(params).forEach(key => {
@@ -106,6 +107,7 @@ class MutationEndpoints {
     status?: boolean;
     tax: number;
     uploadedFile?: File;
+    commission?: number;
   }) => {
     const formData = new FormData();
     const { id, ...data } = params;

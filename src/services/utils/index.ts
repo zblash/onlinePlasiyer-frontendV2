@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { narrowObject, getKeyByValue, objectKeys } from '~/utils';
-import { EndpointsVariablesType } from '../helpers';
+import { narrowObject, getKeyByValue, objectKeys } from '~/utils/index';
+import { EndpointsVariablesType } from '../helpers/index';
 import { RefetchQuery } from '../mutation-context/helpers';
 import { queryEndpoints } from '../query-context/query-endpoints';
 import { paginationQueryEndpoints } from '../query-context/pagination-query-endpoints';

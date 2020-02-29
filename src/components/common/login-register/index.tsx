@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled, { mixins, colors, css } from '~/styled';
+import styled, { mixins, colors, css, globalStyleCreator } from '~/styled';
 import { LoginPage } from './login-page';
 import { RegisterPage } from './register-page';
 import logoPath from '~/assets/images/logo/flogo.png';
@@ -65,10 +65,12 @@ const floatLeft = css`
   float: left;
 `;
 const LoginRegisterPage: React.SFC = props => {
+  const GlobalStyle = globalStyleCreator();
   const [pageType, setPageType] = React.useState<'login' | 'register'>('login');
   if (pageType === 'login') {
     return (
       <Container>
+        <GlobalStyle />
         <CenteredCard>
           <StyledLogo />
           <LoginPage />

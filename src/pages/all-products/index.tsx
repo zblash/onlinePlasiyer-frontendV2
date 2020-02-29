@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useHistory } from 'react-router';
 import styled, { colors, css } from '~/styled';
 import { useTranslation } from '~/i18n';
 import { usePaginationQuery } from '~/services/query-context/use-pagination-quey';
@@ -67,6 +68,7 @@ const addBtnWrapper = css`
 function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
   /* AllProductPage Variables */
   const { t } = useTranslation();
+  const history = useHistory();
   const popupsContext = usePopupContext();
   const applicationContext = useApplicationContext();
   const sortList = [
@@ -151,7 +153,7 @@ function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
               className={commonIconStyle}
               size={16}
               onClick={() => {
-                popupsContext.updateProduct.show({ categoryId: item.categoryId, initialValue: item });
+                history.push(`/update-product/${item.id}`);
               }}
             />
             <UIIcon
@@ -182,10 +184,10 @@ function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
     refetchQuery,
     applicationContext.user.isAdmin,
     popupsContext.deleteProduct,
-    popupsContext.updateProduct,
     t,
     popupsContext.addBarcode,
     popupsContext.removeBarcode,
+    history,
   ]);
 
   /* AllProductPage Callbacks */

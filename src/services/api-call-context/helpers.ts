@@ -1,4 +1,4 @@
-import { BasicQuery } from '../helpers';
+import { BasicQuery } from '../helpers/index';
 import Queue from '../utils/queue';
 
 export interface ApiCallContextProviderProps {}
