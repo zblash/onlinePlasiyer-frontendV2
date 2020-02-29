@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Select from 'react-select';
 import styled, { colors, css } from '~/styled';
-import { UIInput, UIButton, UIIcon } from '~/components/ui';
+import { UIInput, UIButton, UIIcon, UICheckbox } from '~/components/ui';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { useQuery } from '~/services/query-context/context';
@@ -9,11 +9,16 @@ import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { refetchFactory } from '~/services/utils';
 import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
 import { useAlert } from '~/utils/hooks';
-
+import { useApplicationContext } from '~/app/context';
+import { IProductResponse } from '~/services/helpers/backend-models';
+import useCreateProductState from './useCreateProductState';
 /* CreateProductComponent Helpers */
 interface CreateProductComponentProps {
   hasBarcode?: (barcode: string) => void;
   onCreate?: (barcode: string) => void;
+  isAdminPage?: boolean;
+  type?: 'create' | 'update';
+  initialValue?: IProductResponse;
 }
 
 /* CreateProductComponent Constants */
@@ -93,7 +98,9 @@ const StyledCategoryImgWrapper = styled.label`
   border: 2px solid ${colors.primary};
   cursor: pointer;
 `;
-
+const StyledCheckboxText = styled.span`
+  font-size: 14.5px;
+`;
 const imageIconStyle = css`
   padding: 8px;
 `;
@@ -114,28 +121,51 @@ const selectInput = css`
 const overFlow = css`
   overflow: auto;
 `;
+const checkboxStyle = css`
+  margin-bottom: 16px;
+`;
 /* CreateProductComponent Component  */
 function CreateProductComponent(props: React.PropsWithChildren<CreateProductComponentProps>) {
   /* CreateProductComponent Variables */
+  const initialValue =
+    props.initialValue || ({ active: false, name: '', tax: 0, commission: 0, categoryId: '', categoryName: '' } as any);
+  const {
+    barcode,
+    commission,
+    img,
+    imgSrc,
+    isActive,
+    isBarcodeCorrect,
+    isBarcodeSaved,
+    parentCategory,
+    productName,
+    setBarcode,
+    setCommission,
+    setImg,
+    setImgSrc,
+    setIsActive,
+    setIsBarcodeCorrect,
+    setIsBarcodeSaved,
+    setParentCategory,
+    setProductName,
+    setSubCategory,
+    setTax,
+    subCategory,
+    tax,
+  } = useCreateProductState(initialValue);
   const barcodeRef = React.useRef(true);
+  const applicationContext = useApplicationContext();
   const alert = useAlert();
-  const [imgSrc, setImgSrc] = React.useState();
-  const [img, setImg] = React.useState<File>(null);
-  const [barcode, setBarcode] = React.useState('');
-  const [productName, setProductName] = React.useState('');
-  const [isBarcodeSaved, setIsBarcodeSaved] = React.useState(false);
-  const [parentCategory, setParentCategory] = React.useState({ value: '', label: '' });
-  const [subCategory, setSubCategory] = React.useState({ value: '', label: '' });
-  const [tax, setTax] = React.useState({
-    value: 0,
-    label: '0%',
-  });
-  const taxOptions = [
-    { value: 0, label: '0%' },
-    { value: 1, label: '1%' },
-    { value: 8, label: '8%' },
-    { value: 18, label: '18%' },
-  ];
+  const taxOptions = React.useMemo(
+    () => [
+      { value: 0, label: '0%' },
+      { value: 1, label: '1%' },
+      { value: 8, label: '8%' },
+      { value: 18, label: '18%' },
+    ],
+    [],
+  );
+  const isReadOnly = (!isBarcodeSaved || isBarcodeCorrect) && !props.isAdminPage;
   const { mutation: checkProduct } = useMutation(mutationEndPoints.hasProduct, {
     variables: { barcode },
   });
@@ -149,12 +179,29 @@ function CreateProductComponent(props: React.PropsWithChildren<CreateProductComp
       name: productName,
       uploadedFile: img,
       tax: tax.value,
+      commission,
+      status: isActive,
+    },
+  });
+  const { mutation: updateProduct } = useMutation(mutationEndPoints.updateProduct, {
+    refetchQueries: [
+      refetchFactory(paginationQueryEndpoints.getAllProductsByCategoryId, { categoryId: subCategory.value }),
+    ],
+    variables: {
+      id: props.initialValue ? props.initialValue.id : '',
+      barcode,
+      categoryId: subCategory.value,
+      name: productName,
+      uploadedFile: img,
+      tax: tax.value,
+      commission,
+      status: isActive,
     },
   });
   const { data: parentCategories, loading: parentCatLoading } = useQuery(queryEndpoints.getCategories, {
     defaultValue: [],
     variables: { type: 'parent' },
-    skip: !isBarcodeSaved || barcodeRef.current,
+    skip: isBarcodeSaved,
   });
   const { data: subCategories, loading: subCatLoading } = useQuery(queryEndpoints.getSubCategoriesByParentId, {
     defaultValue: [],
@@ -164,42 +211,53 @@ function CreateProductComponent(props: React.PropsWithChildren<CreateProductComp
   const { data: product, loading: productLoading } = useQuery(queryEndpoints.getProductByBarcode, {
     defaultValue: {},
     variables: { barcode },
-    skip: !isBarcodeSaved && barcodeRef.current,
+    skip: (!isBarcodeSaved && barcodeRef.current) || props.isAdminPage,
   });
   /* CreateProductComponent Callbacks */
-  const handleBarcodeSearch = React.useCallback(() => {
-    checkProduct().then(({ hasBarcode }) => {
-      setIsBarcodeSaved(hasBarcode);
+  const handleBarcodeSearch = React.useCallback(async () => {
+    await checkProduct().then(({ hasBarcode }) => {
+      setIsBarcodeSaved(true);
+      setIsBarcodeCorrect(hasBarcode);
       barcodeRef.current = false;
-      if (!hasBarcode) {
-        alert.show('Urun sistemde bulunamadi siz ekleyebilirsiniz.', { type: 'error' });
+      if (!hasBarcode && !props.isAdminPage) {
+        alert.show('Barkod sistemde bulunamadi. Ekleyebilirsiniz', { type: 'error' });
+      }
+      if (hasBarcode && props.isAdminPage && props.type !== 'update') {
+        props.hasBarcode(barcode);
       }
     });
-  }, [alert, checkProduct, barcodeRef]);
+  }, [alert, checkProduct, barcodeRef, props, barcode, setIsBarcodeCorrect, setIsBarcodeSaved]);
 
   const handleSubmit = React.useCallback(() => {
-    if (!isBarcodeSaved && barcodeRef.current) {
+    if (props.type && props.type === 'update') {
+      updateProduct()
+        .then(() => {
+          props.onCreate(barcode);
+          alert.show('Urun tanimlamasi basariyla duzenlendi', { type: 'success' });
+        })
+        .catch(() => {
+          alert.show('Urun Duzenlenirken Hata Olustu', { type: 'error' });
+        });
+    } else if (!isBarcodeSaved) {
       createProduct()
         .then(() => {
           if (props.onCreate) {
             props.onCreate(barcode);
-            alert.show('Urun tanimlamasi basariyla eklendi, devam edebilirsiniz', { type: 'success' });
+            alert.show('Urun tanimlamasi basariyla eklendi', { type: 'success' });
           }
         })
         .catch(() => {
           alert.show('Urun Eklenirken Hata Olustu', { type: 'error' });
         });
-    } else if (isBarcodeSaved && barcode) {
+    } else {
       props.hasBarcode(barcode);
       alert.show('Urun sistemden bulundu, devam edebilirsiniz', { type: 'success' });
-    } else {
-      alert.show('Urun sistemde bulunamadi veya sisteme eklenirken hata olustu', { type: 'error' });
     }
-  }, [alert, barcode, createProduct, isBarcodeSaved, props]);
-
+  }, [alert, barcode, createProduct, isBarcodeSaved, props, updateProduct]);
   /* CreateProductComponent Lifecycle  */
+
   React.useEffect(() => {
-    if (!productLoading && barcode) {
+    if (!productLoading && barcode && !props.isAdminPage) {
       setProductName(product.name);
       setTax({ value: product.tax, label: `${product.tax}%` });
       setSubCategory({ value: product.categoryId, label: product.categoryName });
@@ -209,25 +267,22 @@ function CreateProductComponent(props: React.PropsWithChildren<CreateProductComp
 
   return (
     <StyledContent>
-      <StyledContentElement className={overFlow}>
-        <label className={label}>Barkod Girin</label>
-        <StyledInput className={barcodeInput} id="barcode" value={barcode} onChange={e => setBarcode(e)} />
-        <StyledButton
-          className={barcodeCheckBtn}
-          disabled={!barcode || barcode.length !== 13}
-          onClick={handleBarcodeSearch}
-        >
-          Sorgula
-        </StyledButton>
-      </StyledContentElement>
+      {props.type !== 'update' && (
+        <StyledContentElement className={overFlow}>
+          <label className={label}>Barkod Girin</label>
+          <StyledInput className={barcodeInput} id="barcode" value={barcode} onChange={e => setBarcode(e)} />
+          <StyledButton
+            className={barcodeCheckBtn}
+            disabled={!barcode || barcode.length !== 13}
+            onClick={handleBarcodeSearch}
+          >
+            Sorgula
+          </StyledButton>
+        </StyledContentElement>
+      )}
       <StyledContentElement>
         <label>Urun Ismi</label>
-        <StyledInput
-          id="product-name"
-          readOnly={isBarcodeSaved}
-          value={productName}
-          onChange={e => setProductName(e)}
-        />
+        <StyledInput id="product-name" readOnly={isReadOnly} value={productName} onChange={e => setProductName(e)} />
       </StyledContentElement>
       <StyledContentElement>
         <label>Vergi Orani:</label>
@@ -237,7 +292,7 @@ function CreateProductComponent(props: React.PropsWithChildren<CreateProductComp
           className={selectInput}
           value={tax}
           onChange={e => setTax(e)}
-          isDisabled={isBarcodeSaved}
+          isDisabled={isReadOnly}
         />
       </StyledContentElement>
       <StyledContentElement>
@@ -250,7 +305,7 @@ function CreateProductComponent(props: React.PropsWithChildren<CreateProductComp
           className={selectInput}
           value={parentCategory}
           onChange={e => setParentCategory(e)}
-          isDisabled={isBarcodeSaved || barcodeRef.current || parentCatLoading}
+          isDisabled={isReadOnly || parentCatLoading}
         />
       </StyledContentElement>
       <StyledContentElement>
@@ -263,14 +318,30 @@ function CreateProductComponent(props: React.PropsWithChildren<CreateProductComp
           className={selectInput}
           value={subCategory}
           onChange={e => setSubCategory(e)}
-          isDisabled={isBarcodeSaved || subCatLoading || !parentCategory.value}
+          isDisabled={isReadOnly || subCatLoading || !parentCategory.value}
         />
       </StyledContentElement>
+      {applicationContext.user.isAdmin && (
+        <StyledContentElement>
+          <label>Urun Komisyonu</label>
+          <StyledInput
+            id="commission"
+            type="number"
+            step="0.1"
+            value={commission}
+            onChange={e => {
+              if (parseFloat(e) < 100) {
+                setCommission(parseFloat(e));
+              }
+            }}
+          />
+        </StyledContentElement>
+      )}
       <StyledContentElement>
         <label>Urun Resmi</label>
         <StyledHiddenFilePicker
           hidden
-          disabled={isBarcodeSaved}
+          disabled={isReadOnly}
           id="product-image"
           type="file"
           onChange={event => {
@@ -292,6 +363,19 @@ function CreateProductComponent(props: React.PropsWithChildren<CreateProductComp
           {!imgSrc && <UIIcon name="photoCamera" size={42} className={imageIconStyle} />}
         </StyledCategoryImgWrapper>
       </StyledContentElement>
+      {applicationContext.user.isAdmin && (
+        <StyledContentElement>
+          <UICheckbox
+            value={isActive}
+            id="is-active"
+            className={checkboxStyle}
+            label={<StyledCheckboxText>Aktif Mi?</StyledCheckboxText>}
+            onChange={isChecked => {
+              setIsActive(isChecked);
+            }}
+          />
+        </StyledContentElement>
+      )}
       <StyledContentElement>
         <StyledButton disabled={!productName || !barcode || !tax || !subCategory} onClick={handleSubmit}>
           Devam Et

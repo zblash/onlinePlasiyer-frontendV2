@@ -104,7 +104,7 @@ function HeaderMenu(props: React.PropsWithChildren<AdminHeaderProps>) {
         </StyledSubNavsButton>
         <StyledSubNavContent>
           <StyledSubNavContentItem to="/all-products">Tum Urunleri Gor</StyledSubNavContentItem>
-          <StyledSubNavContentItem to="/all-products">Yeni Urun Ekle</StyledSubNavContentItem>
+          <StyledSubNavContentItem to="/create-product">Yeni Urun Ekle</StyledSubNavContentItem>
         </StyledSubNavContent>
       </StyledSubNavs>
       <StyledSubNavs>

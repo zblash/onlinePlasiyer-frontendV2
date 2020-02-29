@@ -6,6 +6,12 @@ import { UserRoleResponse } from '../services/helpers/backend-models';
 import { withRequiredRole } from '../components/hoc/with-required-role';
 import { Header } from '~/components/common/header/index';
 
+const CreateProductPage = React.lazy(() =>
+  import('./create-product').then(module => ({ default: module.CreateProductPage })),
+);
+const UpdateProductPage = React.lazy(() =>
+  import('./update-product').then(module => ({ default: module.UpdateProductPage })),
+);
 const Home = React.lazy(() => import('../pages/home/index').then(module => ({ default: module.Home })));
 
 const ProductsPage = React.lazy(() =>
@@ -179,6 +185,8 @@ const routes: IRoute[] = [
   { path: '/credit-activities', component: CreditActivities },
   { path: '/obligation-activities/:userId?', component: ObligationsPage, authorize: ['MERCHANT', 'ADMIN'] },
   { path: '/all-obligations', component: AllObligationsPage, authorize: ['ADMIN'] },
+  { path: '/create-product', component: CreateProductPage, authorize: ['ADMIN'] },
+  { path: '/update-product/:productId', component: UpdateProductPage, authorize: ['ADMIN'] },
 ];
 
 const Routes = React.memo(() => {
