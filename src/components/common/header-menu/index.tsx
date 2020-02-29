@@ -92,7 +92,30 @@ function HeaderMenu(props: React.PropsWithChildren<AdminHeaderProps>) {
         </StyledSubNavsButton>
         <StyledSubNavContent>
           <StyledSubNavContentItem to="/users/create">Yeni Ekle</StyledSubNavContentItem>
-          <StyledSubNavContentItem to="/users">Kullanicilari Gor</StyledSubNavContentItem>
+          <StyledSubNavContentItem
+            to="/users"
+            state={{
+              type: 'ADMIN',
+            }}
+          >
+            Yoneticileri Gor
+          </StyledSubNavContentItem>
+          <StyledSubNavContentItem
+            to="/users"
+            state={{
+              type: 'MERCHANT',
+            }}
+          >
+            Saticilari Gor
+          </StyledSubNavContentItem>
+          <StyledSubNavContentItem
+            to="/users"
+            state={{
+              type: 'CUSTOMER',
+            }}
+          >
+            Musterileri Gor
+          </StyledSubNavContentItem>
           <StyledSubNavContentItem to="/orders">Tum Siparisleri Gor</StyledSubNavContentItem>
           <StyledSubNavContentItem to="/invoices">Tum Faturalari Gor</StyledSubNavContentItem>
         </StyledSubNavContent>

@@ -1,14 +1,15 @@
 import * as React from 'react';
+import Select from 'react-select';
 import { useHistory } from 'react-router';
-import styled, { colors } from '~/styled';
-import { UIButton, UIInput, Container, UIAutoComplete, UIButtonGroup } from '~/components/ui';
+import styled, { colors, css } from '~/styled';
+import { UIButton, UIInput, Container, UIButtonGroup } from '~/components/ui';
 import { useAlert } from '~/utils/hooks';
-import { IAddressCityResponse, IAddressStateResponse, UserRoleResponse } from '~/services/helpers/backend-models';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { useApplicationContext } from '~/app/context';
-
+import useCreateUserState from './useCreateUserState';
+import { UserRoleResponse } from '~/services/helpers/backend-models';
 /* CreateUserPage Helpers */
 interface CreateUserPageProps {}
 
@@ -53,33 +54,55 @@ const StyledButton = styled(UIButton)<{ hasError: boolean; disabled: boolean }>`
     background-color: ${colors.primaryDark};
   }
 `;
-
+const selectInput = css`
+  margin-bottom: 10px;
+`;
 /* CreateUserPage Component  */
 function CreateUserPage(props: React.PropsWithChildren<CreateUserPageProps>) {
   /* CreateUserPage Variables */
   const routerHistory = useHistory();
   const alertContext = useAlert();
   const applicationContext = useApplicationContext();
-  const [cities, setCities] = React.useState<IAddressCityResponse[]>([]);
-  const [states, setStates] = React.useState<IAddressStateResponse[]>([]);
-  const [stateAutocomplateValue, setStateAutoComplateValue] = React.useState('');
-  const [cityAutocomplateValue, setCityAutoComplateValue] = React.useState('');
-  const [hasError, setHasError] = React.useState(false);
-
-  const [selectedCityId, setSelectedCityId] = React.useState(null);
-  const [selectedStateId, setSelectedStateId] = React.useState(null);
-  const [details, setDetails] = React.useState('');
-  const [username, setUsername] = React.useState('');
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const [role, setRole] = React.useState<UserRoleResponse>('ADMIN');
-  const [taxNumber, setTaxNumber] = React.useState('');
-  const [name, setName] = React.useState('');
-  const [status, setStatus] = React.useState(false);
+  const {
+    cities,
+    setCities,
+    states,
+    setStates,
+    activeStates,
+    setActiveStates,
+    hasError,
+    setHasError,
+    openActiveStates,
+    setOpenActiveStates,
+    selectedCity,
+    setSelectedCity,
+    selectedState,
+    setSelectedState,
+    selectedActiveCity,
+    setSelectedActiveCity,
+    selectedStateIds,
+    setSelectedStateIds,
+    details,
+    setDetails,
+    username,
+    setUsername,
+    email,
+    setEmail,
+    password,
+    setPassword,
+    role,
+    setRole,
+    taxNumber,
+    setTaxNumber,
+    status,
+    setStatus,
+    name,
+    setName,
+  } = useCreateUserState();
   const { mutation: createUser } = useMutation(mutationEndPoints.createUser, {
     variables: {
-      cityId: selectedCityId,
-      stateId: selectedStateId,
+      cityId: selectedCity ? selectedCity.value : '',
+      stateId: selectedState ? selectedState.value : '',
       details,
       email,
       name,
@@ -90,40 +113,55 @@ function CreateUserPage(props: React.PropsWithChildren<CreateUserPageProps>) {
       status,
     },
   });
+  const { mutation: addActiveState } = useMutation(mutationEndPoints.addActiveStates);
   /* CreateUserPage Callbacks */
 
-  const handleSubmit = React.useCallback(() => {
+  const handleSubmit = React.useCallback(async () => {
     applicationContext.loading.show();
     setHasError(false);
-    createUser()
-      .then(() => {
-        alertContext.show('Uye Basariyla Eklendi', {
-          type: 'success',
-        });
-        routerHistory.push('/users');
-      })
-      .catch(() => {
-        setHasError(true);
-      })
-      .finally(() => {
-        applicationContext.loading.hide();
-      });
-  }, [alertContext, createUser, applicationContext, routerHistory]);
+    try {
+      const createdUser = await createUser();
+      if (selectedStateIds) {
+        await addActiveState({ stateIds: selectedStateIds.map(state => state.value), userId: createdUser.id });
+      }
+      alertContext.show('Kullanici basariyla eklendi', { type: 'success' });
+      routerHistory.push('/users', { type: role });
+    } catch (e) {
+      setHasError(true);
+    } finally {
+      applicationContext.loading.hide();
+    }
+  }, [
+    applicationContext.loading,
+    setHasError,
+    createUser,
+    selectedStateIds,
+    alertContext,
+    routerHistory,
+    role,
+    addActiveState,
+  ]);
 
   /* CreateUserPage Lifecycle  */
   React.useEffect(() => {
     queryEndpoints.getCities().then(citiesResponse => {
       setCities(citiesResponse);
     });
-  }, []);
+  }, [setCities]);
   React.useEffect(() => {
-    if (selectedCityId) {
-      queryEndpoints.getStatesByCityId({ cityId: selectedCityId }).then(statesResponse => {
+    if (selectedCity) {
+      queryEndpoints.getStatesByCityId({ cityId: selectedCity.value }).then(statesResponse => {
         setStates(statesResponse);
       });
     }
-  }, [selectedCityId]);
-
+  }, [selectedCity, setStates]);
+  React.useEffect(() => {
+    if (selectedActiveCity) {
+      queryEndpoints.getStatesByCityId({ cityId: selectedActiveCity.value }).then(statesResponse => {
+        setActiveStates(statesResponse);
+      });
+    }
+  }, [selectedActiveCity, setActiveStates]);
   React.useEffect(() => {
     if (hasError) {
       setHasError(false);
@@ -131,7 +169,19 @@ function CreateUserPage(props: React.PropsWithChildren<CreateUserPageProps>) {
         type: 'error',
       });
     }
-  }, [email, username, name, taxNumber, selectedStateId, selectedCityId, details, password, hasError, alertContext]);
+  }, [
+    email,
+    username,
+    name,
+    taxNumber,
+    selectedState,
+    selectedCity,
+    details,
+    password,
+    hasError,
+    alertContext,
+    setHasError,
+  ]);
 
   return (
     <Container>
@@ -163,63 +213,23 @@ function CreateUserPage(props: React.PropsWithChildren<CreateUserPageProps>) {
 
           <StyledContentElement>
             <label>Sehir</label>
-            <UIAutoComplete
-              items={cities}
-              value={cityAutocomplateValue}
-              shouldItemRender={(item, value) => item.title.toLowerCase().indexOf(value.toLowerCase()) > -1}
-              getItemValue={item => item.title}
-              renderInput={
-                <StyledInput
-                  hasError={hasError}
-                  id="create-user-cities"
-                  value={cityAutocomplateValue}
-                  onChange={setCityAutoComplateValue}
-                />
-              }
-              renderItem={(item, highlighted) => (
-                // TODO: update this element
-                <div
-                  key={item.id}
-                  style={{ backgroundColor: highlighted ? '#eee' : 'transparent', padding: 5, cursor: 'pointer' }}
-                >
-                  {item.title}
-                </div>
-              )}
-              onSelect={item => {
-                setCityAutoComplateValue(item.title);
-                setSelectedCityId(item.id);
-              }}
+            <Select
+              value={selectedCity}
+              onChange={(e: { value: string; label: string }) => setSelectedCity(e)}
+              options={cities.map(city => ({ value: city.id, label: city.title }))}
             />
           </StyledContentElement>
           <StyledContentElement>
             <label>Ilce</label>
-            <UIAutoComplete
-              items={states}
-              value={stateAutocomplateValue}
-              shouldItemRender={(item, value) => item.title.toLowerCase().indexOf(value.toLowerCase()) > -1}
-              getItemValue={item => item.title}
-              renderInput={
-                <StyledInput
-                  hasError={hasError}
-                  disabled={!selectedCityId}
-                  id="create-user-states"
-                  value={stateAutocomplateValue}
-                  onChange={setStateAutoComplateValue}
-                />
-              }
-              renderItem={(item, highlighted) => (
-                // TODO: update this element
-                <div
-                  key={item.id}
-                  style={{ backgroundColor: highlighted ? '#eee' : 'transparent', padding: 5, cursor: 'pointer' }}
-                >
-                  {item.title}
-                </div>
-              )}
-              onSelect={item => {
-                setStateAutoComplateValue(item.title);
-                setSelectedStateId(item.id);
-              }}
+            <Select
+              isDisabled={!selectedCity}
+              onChange={(e: { value: string; label: string }) => setSelectedState(e)}
+              value={selectedState}
+              options={states.map(x => ({
+                value: x.id,
+                label: `${x.title}`,
+              }))}
+              placeholder="Secim Yapin"
             />
           </StyledContentElement>
           <StyledContentElement>
@@ -248,6 +258,41 @@ function CreateUserPage(props: React.PropsWithChildren<CreateUserPageProps>) {
               selectedId={role}
             />
           </StyledContentElement>
+          {role === 'MERCHANT' && (
+            <StyledContentElement>
+              <label>Satis Yapacagi Bolgeleri Secmek Istiyor musunuz?</label>
+              <input
+                type="checkbox"
+                onChange={e => setOpenActiveStates(e.target.checked)}
+                defaultChecked={openActiveStates}
+              />
+            </StyledContentElement>
+          )}
+          {openActiveStates && (
+            <StyledContentElement>
+              <label>Sehir Secin</label>
+              <Select
+                value={selectedActiveCity}
+                onChange={(e: { value: string; label: string }) => setSelectedActiveCity(e)}
+                options={cities.map(city => ({ value: city.id, label: city.title }))}
+              />
+              <label>Satis Yapacaginiz Bolgeler</label>
+              <Select
+                isMulti
+                className={selectInput}
+                isSearchable
+                isClearable
+                isDisabled={!selectedActiveCity}
+                onChange={(e: Array<{ value: string; label: string }>) => setSelectedStateIds(e)}
+                value={selectedStateIds}
+                options={activeStates.map(x => ({
+                  value: x.id,
+                  label: `${x.title}`,
+                }))}
+                placeholder="Secim Yapin"
+              />
+            </StyledContentElement>
+          )}
           <StyledContentElement>
             <label>Onayli mi?</label>
             <input type="checkbox" onChange={e => setStatus(e.target.checked)} defaultChecked={status} />
@@ -257,7 +302,7 @@ function CreateUserPage(props: React.PropsWithChildren<CreateUserPageProps>) {
               onClick={handleSubmit}
               hasError={hasError}
               disabled={
-                !(email && username && name && taxNumber && selectedStateId && selectedCityId && details && password)
+                !(email && username && name && taxNumber && selectedState && selectedCity && details && password)
               }
             >
               Ekle

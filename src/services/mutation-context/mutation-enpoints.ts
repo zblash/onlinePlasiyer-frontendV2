@@ -167,8 +167,16 @@ class MutationEndpoints {
     return ApiCall.put(`/products/specify/${params.id}`, { ...others });
   };
 
-  addActiveStates: (s: { stateIds: string[] }) => Promise<IAddressStateResponse[]> = ({ stateIds }) =>
-    ApiCall.post('/user/activestates', stateIds);
+  addActiveStates: (s: { userId?: string; stateIds: string[] }) => Promise<IAddressStateResponse[]> = ({
+    userId,
+    stateIds,
+  }) => {
+    if (userId) {
+      return ApiCall.post(`/users/activestates/${userId}`, stateIds);
+    }
+
+    return ApiCall.post('/user/activestates', stateIds);
+  };
 
   removeItemFromCard: (s: { id: string }) => Promise<any> = ({ id }) =>
     ApiCall.delete(`/cart/${id}`).then(item => ({ ...item, removed: true }));
