@@ -1,20 +1,21 @@
 import * as React from 'react';
-import styled, { mixins, colors, css, globalStyleCreator } from '~/styled';
-import { LoginPage } from './login-page';
-import { RegisterPage } from './register-page';
-import logoPath from '~/assets/images/logo/flogo.png';
-import { UIButton } from '~/components/ui';
+import { useHistory } from 'react-router';
+import styled, { colors, mixins, css, globalStyleCreator } from '~/styled';
+import { RegisterComponent } from '~/components/common/login-register/register-component';
+import logoPath from '~/assets/images/logo/logo.png';
+import { UILink } from '~/components/ui';
 
-/*
-  LoginPage Strings
-*/
+/* RegisterCPage Helpers */
+interface RegisterPageProps {}
+
+/* RegisterCPage Constants */
 const LoginPageStrings = {
   login: 'Giris Yap',
   dontHaveAccountQuestion: 'Hesabin Yokmu ?',
   haveAccountQuestion: 'Hesabin Varmi ?',
   register: 'Kayit Ol',
 };
-
+/* RegisterCPage Styles */
 const Container = styled.div`
   height: 100%;
   display: flex;
@@ -45,13 +46,13 @@ const StyledLogo = styled.div`
   user-select: none;
   margin: 0 auto 16px auto;
   width: 256px;
-  height: 65px;
+  height: 130px;
 `;
 
 const StyledDontHaveAccountQuestion = styled.div`
   margin-top: 16px;
 `;
-const StyledHiglightedText = styled(UIButton)`
+const StyledHiglightedText = styled(UILink)`
   background-color: transparent !important;
   color: ${colors.primary};
   float: left;
@@ -64,41 +65,29 @@ const StyledHiglightedText = styled(UIButton)`
 const floatLeft = css`
   float: left;
 `;
-const LoginRegisterPage: React.SFC = props => {
+/* RegisterCPage Component  */
+function RegisterPage(props: React.PropsWithChildren<RegisterPageProps>) {
+  /* RegisterCPage Variables */
+  const history = useHistory();
   const GlobalStyle = globalStyleCreator();
-  const [pageType, setPageType] = React.useState<'login' | 'register'>('login');
-  if (pageType === 'login') {
-    return (
-      <Container>
-        <GlobalStyle />
-        <CenteredCard>
-          <StyledLogo />
-          <LoginPage />
-          <StyledDontHaveAccountQuestion>
-            <div className={floatLeft}>{LoginPageStrings.dontHaveAccountQuestion}&nbsp;</div>
-            <StyledHiglightedText onClick={() => setPageType('register')}>
-              {LoginPageStrings.register}
-            </StyledHiglightedText>
-          </StyledDontHaveAccountQuestion>
-        </CenteredCard>
-      </Container>
-    );
-  }
+  /* RegisterCPage Callbacks */
+
+  /* RegisterCPage Lifecycle  */
 
   return (
     <Container>
+      <GlobalStyle />
       <CenteredCard>
         <StyledLogo />
-        <RegisterPage onSignup={() => setPageType('login')} />
+        <RegisterComponent onSignup={() => history.push('/login')} />
         <StyledDontHaveAccountQuestion>
           <div className={floatLeft}>{LoginPageStrings.haveAccountQuestion}&nbsp;</div>
-          <StyledHiglightedText onClick={() => setPageType('login')}>{LoginPageStrings.login}</StyledHiglightedText>
+          <StyledHiglightedText to="/login">{LoginPageStrings.login}</StyledHiglightedText>
         </StyledDontHaveAccountQuestion>
       </CenteredCard>
     </Container>
   );
-};
+}
+const PureRegisterPage = React.memo(RegisterPage);
 
-const _LoginRegisterPage = LoginRegisterPage;
-
-export { _LoginRegisterPage as LoginRegisterPage };
+export { PureRegisterPage as RegisterPage };

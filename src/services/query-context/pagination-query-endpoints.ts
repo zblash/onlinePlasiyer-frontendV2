@@ -33,8 +33,10 @@ class QueryEndpoints {
     pageNumber: number;
     sortBy?: string;
     sortType?: string;
-  }) => Promise<IProductResponse> = ({ pageNumber, sortBy, sortType }) =>
-    paginationQueryGet(`/products`, { pageNumber, sortBy, sortType });
+    userId?: string;
+    categoryId?: string;
+  }) => Promise<IProductResponse> = ({ pageNumber, sortBy, sortType, userId }) =>
+    paginationQueryGet(`/products`, { pageNumber, sortBy, sortType, userId });
 
   getAllProductsByCategoryId: (s: {
     categoryId: string;

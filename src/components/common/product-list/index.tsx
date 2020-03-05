@@ -25,7 +25,7 @@ export interface SpecifyProductData {
 }
 
 export interface ProductListComponentProps {
-  selectedCategoryId: string;
+  selectedCategoryId?: string;
   onChangeExpandProductId?: (id: string) => void;
   onChangeSpecifyProductPage?: (pageNumber: number, totalPageCount: number) => void;
   onChangePage?: (pageNumber: number) => void;

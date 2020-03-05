@@ -4,7 +4,6 @@ import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 import { registerLocale } from 'react-datepicker';
 import tr from 'date-fns/locale/tr';
 import { CheckHealth } from '~/controls/check-health';
-import { CheckUser } from '~/controls/check-user';
 import { ServicesContextProvider } from '~/services/index';
 import App from '~/app/index';
 import { main as i18nMain } from '~/i18n/index';
@@ -30,13 +29,9 @@ render(
   <>
     <AlertProvider template={AlertTemplate} {...options}>
       <CheckHealth>
-        <CheckUser
-          app={user => (
-            <ServicesContextProvider>
-              <App user={user} />
-            </ServicesContextProvider>
-          )}
-        />
+        <ServicesContextProvider>
+          <App />
+        </ServicesContextProvider>
       </CheckHealth>
     </AlertProvider>
   </>,

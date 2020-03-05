@@ -160,7 +160,7 @@ function HeaderMenu(props: React.PropsWithChildren<AdminHeaderProps>) {
         <StyledSubNavsLink to="/merchant/home">Anasayfa </StyledSubNavsLink>
       </StyledSubNavs>
       <StyledSubNavs>
-        <StyledSubNavsLink to="/all-products">Tum Urunler</StyledSubNavsLink>
+        <StyledSubNavsLink to="/merchant/customers">Sistemdeki Musteriler</StyledSubNavsLink>
       </StyledSubNavs>
       <StyledSubNavs>
         <StyledSubNavsButton>
@@ -195,6 +195,9 @@ function HeaderMenu(props: React.PropsWithChildren<AdminHeaderProps>) {
     <StyledAdminHeaderWrapper>
       <StyledSubNavs>
         <StyledSubNavsLink to="/">Anasayfa </StyledSubNavsLink>
+      </StyledSubNavs>
+      <StyledSubNavs>
+        <StyledSubNavsLink to="/merchants">Saticilar </StyledSubNavsLink>
       </StyledSubNavs>
       <StyledSubNavs>
         <StyledSubNavsLink to="/credit-activities">Cari Ekstreleri Gor</StyledSubNavsLink>

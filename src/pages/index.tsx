@@ -88,9 +88,6 @@ const UserTicketsPage = React.lazy(() =>
 const TicketRepliesPage = React.lazy(() =>
   import('./ticket-replies/index').then(module => ({ default: module.TicketRepliesPage })),
 );
-const LoginPage = React.lazy(() =>
-  import('~/components/common/login-register/login-page').then(module => ({ default: module.LoginPage })),
-);
 const CreditActivities = React.lazy(() =>
   import('./credit-activities/index').then(module => ({ default: module.CreditActivities })),
 );
@@ -100,6 +97,13 @@ const ObligationsPage = React.lazy(() =>
 const AllObligationsPage = React.lazy(() =>
   import('./all-obligations/index').then(module => ({ default: module.AllObligationsPage })),
 );
+const CustomersPage = React.lazy(() => import('./customers/index').then(module => ({ default: module.CustomersPage })));
+
+const ProfileMerchantPage = React.lazy(() =>
+  import('./merchant-profile/index').then(module => ({ default: module.MerchantProfileForUserPage })),
+);
+
+const MerchantsPage = React.lazy(() => import('./merchants/index').then(module => ({ default: module.MerchantsPage })));
 
 interface IRoute {
   path: string;
@@ -109,10 +113,6 @@ interface IRoute {
 }
 
 const routes: IRoute[] = [
-  {
-    path: '/login',
-    component: LoginPage,
-  },
   {
     path: '/',
     component: Home,
@@ -187,6 +187,9 @@ const routes: IRoute[] = [
   { path: '/all-obligations', component: AllObligationsPage, authorize: ['ADMIN'] },
   { path: '/create-product', component: CreateProductPage, authorize: ['ADMIN'] },
   { path: '/update-product/:productId', component: UpdateProductPage, authorize: ['ADMIN'] },
+  { path: '/merchant/customers', component: CustomersPage, authorize: ['MERCHANT'] },
+  { path: '/merchants', component: MerchantsPage, authorize: ['CUSTOMER'] },
+  { path: '/merchant/profile/:merchantName/:merchantId', component: ProfileMerchantPage, authorize: ['CUSTOMER'] },
 ];
 
 const Routes = React.memo(() => {

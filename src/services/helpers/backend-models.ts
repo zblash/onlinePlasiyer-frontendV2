@@ -55,6 +55,16 @@ export interface ICreditResponse {
   userName: string;
 }
 
+export interface IUserCreditResponse {
+  id: string;
+  totalDebt: number;
+  creditLimit: number;
+  customerId: string;
+  customerName: string;
+  merchantId: string;
+  merchantName: string;
+}
+
 export interface ISpecifyProductResponse {
   id: string;
   totalPrice: number;

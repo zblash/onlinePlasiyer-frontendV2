@@ -19,6 +19,7 @@ import {
   ICreditResponse,
   ITicketResponse,
   ITicketReplyResponse,
+  IUserCreditResponse,
 } from '~/services/helpers/backend-models';
 import { UserType } from '../helpers/maps';
 
@@ -76,6 +77,8 @@ class QueryEndpoints {
 
   getMerchants: () => Promise<IUserCommonResponse[]> = () => ApiCall.get('/merchants');
 
+  getCustomers: () => Promise<IUserCommonResponse[]> = () => ApiCall.get('/customers');
+
   getAuthUserActiveStates: () => Promise<IAddressStateResponse[]> = () => ApiCall.get('/user/activeStates');
 
   getCities: () => Promise<IAddressCityResponse[]> = () =>
@@ -131,6 +134,10 @@ class QueryEndpoints {
 
   getAllProducts: (s: { userId?: string }) => Promise<Array<IProductResponse>> = ({ userId }) => {
     return ApiCall.get('/products/byUser', { userId });
+  };
+
+  getUsersCreditByUser: (s: { userId: string }) => Promise<IUserCreditResponse> = ({ userId }) => {
+    return ApiCall.get(`/credits/users/byUser/${userId}`);
   };
 }
 const queryEndpoints = new QueryEndpoints();

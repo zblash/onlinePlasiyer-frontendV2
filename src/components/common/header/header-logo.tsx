@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from '~/styled';
-import logoPath from '~/assets/images/logo/logo.png';
+import logoPath from '~/assets/images/logo/flogo.png';
 import { UILink } from '~/components/ui';
 
 const StyledHeaderLogoTitle = styled(UILink)`
