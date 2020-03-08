@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useHistory } from 'react-router';
 import Select from 'react-select';
 import styled, { colors, css } from '~/styled';
-import { UIInput, UIButton } from '~/components/ui';
+import { UIInput, UIButton, Container } from '~/components/ui';
 import { useAlert } from '~/utils/hooks';
 import { useApplicationContext } from '~/app/context';
 import { useMutation } from '~/services/mutation-context/context';
@@ -112,36 +112,38 @@ function CreateNotificationPage(props: React.PropsWithChildren<CreateNotificatio
   }, [getAllUsers]);
 
   return (
-    <StyledPageWrapper>
-      <StyledPageHeader>
-        <h3>Bildirim Ekle</h3>
-      </StyledPageHeader>
-      <StyledContent>
-        <StyledContentElement>
-          <label>Baslik</label>
-          <StyledInput id="contents" type="text" value={title} onChange={setTitle} />
-        </StyledContentElement>
-        <StyledContentElement>
-          <label>Mesaj</label>
-          <StyledInput id="quantity" type="text" value={message} onChange={setMessage} />
-        </StyledContentElement>
-        <StyledContentElement>
-          <label>Kullanici</label>
-          <Select
-            options={usersOptions}
-            placeholder="Secim Yapin"
-            className={selectInput}
-            value={selectedUser}
-            onChange={e => setSelectedUser(e)}
-          />
-        </StyledContentElement>
-        <StyledContentElement>
-          <StyledButton disabled={!title || !message || selectedUser.value === ''} onClick={handleSubmit}>
-            Ekle
-          </StyledButton>
-        </StyledContentElement>
-      </StyledContent>
-    </StyledPageWrapper>
+    <Container>
+      <StyledPageWrapper>
+        <StyledPageHeader>
+          <h3>Bildirim Ekle</h3>
+        </StyledPageHeader>
+        <StyledContent>
+          <StyledContentElement>
+            <label>Baslik</label>
+            <StyledInput id="contents" type="text" value={title} onChange={setTitle} />
+          </StyledContentElement>
+          <StyledContentElement>
+            <label>Mesaj</label>
+            <StyledInput id="quantity" type="text" value={message} onChange={setMessage} />
+          </StyledContentElement>
+          <StyledContentElement>
+            <label>Kullanici</label>
+            <Select
+              options={usersOptions}
+              placeholder="Secim Yapin"
+              className={selectInput}
+              value={selectedUser}
+              onChange={e => setSelectedUser(e)}
+            />
+          </StyledContentElement>
+          <StyledContentElement>
+            <StyledButton disabled={!title || !message || selectedUser.value === ''} onClick={handleSubmit}>
+              Ekle
+            </StyledButton>
+          </StyledContentElement>
+        </StyledContent>
+      </StyledPageWrapper>
+    </Container>
   );
 }
 const PureCreateNotificationPage = React.memo(CreateNotificationPage);

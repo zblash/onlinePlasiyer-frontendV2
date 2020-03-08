@@ -2,7 +2,7 @@ import * as React from 'react';
 import DatePicker from 'react-datepicker';
 import { useHistory } from 'react-router';
 import styled, { colors, css } from '~/styled';
-import { UIInput, UIButton, UIIcon } from '~/components/ui';
+import { UIInput, UIButton, UIIcon, Container } from '~/components/ui';
 import { useAlert } from '~/utils/hooks';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
@@ -142,65 +142,67 @@ function CreateAnnouncementPage(props: React.PropsWithChildren<CreateAnnouncemen
   /* CreateAnnouncementPage Lifecycle  */
 
   return (
-    <StyledPageWrapper>
-      <StyledPageHeader>
-        <h3>Duyuru Ekle</h3>
-      </StyledPageHeader>
-      <StyledContent>
-        <StyledContentElement>
-          <label>Duyuru Dosyasi</label>
-          <StyledHiddenFilePicker
-            hidden
-            id={filePickerInputId}
-            type="file"
-            onChange={event => {
-              if (event.target.files && event.target.files[0]) {
-                const file = event.target.files[0];
-                const reader = new FileReader();
-                reader.onload = e => {
-                  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-                  // @ts-ignore
-                  setImgSrc(e.target.result as string);
-                  setImg(file);
-                };
-                reader.readAsDataURL(file);
-              }
-            }}
-          />
-          <StyledCategoryImgWrapper htmlFor={filePickerInputId}>
-            {imgSrc && <StyledCategoryImg src={imgSrc} />}
-            {!imgSrc && <UIIcon name="photoCamera" size={42} className={imageIconStyle} />}
-          </StyledCategoryImgWrapper>
-        </StyledContentElement>
-        <StyledContentElement>
-          <label>Baslik</label>
-          <StyledInput id="contents" type="text" value={title} onChange={setTitle} />
-        </StyledContentElement>
-        <StyledContentElement>
-          <label>Mesaj</label>
-          <StyledInput id="quantity" type="text" value={message} onChange={setMessage} />
-        </StyledContentElement>
-        <StyledContentElement>
-          <label>Gecerli Olacagi Son Tarih</label>
-          <StyledDatePickerWrapper>
-            <DatePicker
-              selected={lastDate}
-              minDate={new Date()}
-              onChange={selectedDate => setLastDate(selectedDate)}
-              locale="tr"
-              dateFormat="dd-MM-yyyy"
-              className={DatePickerBtn}
+    <Container>
+      <StyledPageWrapper>
+        <StyledPageHeader>
+          <h3>Duyuru Ekle</h3>
+        </StyledPageHeader>
+        <StyledContent>
+          <StyledContentElement>
+            <label>Duyuru Dosyasi</label>
+            <StyledHiddenFilePicker
+              hidden
+              id={filePickerInputId}
+              type="file"
+              onChange={event => {
+                if (event.target.files && event.target.files[0]) {
+                  const file = event.target.files[0];
+                  const reader = new FileReader();
+                  reader.onload = e => {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+                    // @ts-ignore
+                    setImgSrc(e.target.result as string);
+                    setImg(file);
+                  };
+                  reader.readAsDataURL(file);
+                }
+              }}
             />
-          </StyledDatePickerWrapper>
-        </StyledContentElement>
+            <StyledCategoryImgWrapper htmlFor={filePickerInputId}>
+              {imgSrc && <StyledCategoryImg src={imgSrc} />}
+              {!imgSrc && <UIIcon name="photoCamera" size={42} className={imageIconStyle} />}
+            </StyledCategoryImgWrapper>
+          </StyledContentElement>
+          <StyledContentElement>
+            <label>Baslik</label>
+            <StyledInput id="contents" type="text" value={title} onChange={setTitle} />
+          </StyledContentElement>
+          <StyledContentElement>
+            <label>Mesaj</label>
+            <StyledInput id="quantity" type="text" value={message} onChange={setMessage} />
+          </StyledContentElement>
+          <StyledContentElement>
+            <label>Gecerli Olacagi Son Tarih</label>
+            <StyledDatePickerWrapper>
+              <DatePicker
+                selected={lastDate}
+                minDate={new Date()}
+                onChange={selectedDate => setLastDate(selectedDate)}
+                locale="tr"
+                dateFormat="dd-MM-yyyy"
+                className={DatePickerBtn}
+              />
+            </StyledDatePickerWrapper>
+          </StyledContentElement>
 
-        <StyledContentElement>
-          <StyledButton disabled={!title || !img || !message} onClick={handleSubmit}>
-            Ekle
-          </StyledButton>
-        </StyledContentElement>
-      </StyledContent>
-    </StyledPageWrapper>
+          <StyledContentElement>
+            <StyledButton disabled={!title || !img || !message} onClick={handleSubmit}>
+              Ekle
+            </StyledButton>
+          </StyledContentElement>
+        </StyledContent>
+      </StyledPageWrapper>
+    </Container>
   );
 }
 const PureCreateAnnouncementPage = React.memo(CreateAnnouncementPage);

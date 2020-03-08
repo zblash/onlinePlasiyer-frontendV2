@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Redirect } from 'react-router';
 import styled from '~/styled/index';
 import { Container } from '~/components/ui/index';
 import { CategoryHorizontalListFetcher } from '~/fetcher-components/common/category-horizontal-list';
@@ -20,6 +21,9 @@ const HomeWrapper = styled.div``;
 function Home(props: React.PropsWithChildren<HomeProps>) {
   const applicationContext = useApplicationContext();
 
+  if (applicationContext.user.isMerchant) {
+    return <Redirect to="/merchant/home" />;
+  }
   const __ = (
     <Container>
       <CategoryHorizontalListFetcher shouldUseProductsPageLink />

@@ -18,6 +18,7 @@ import {
   PromotionType,
   IOrderConfirmItem,
   IObligationTotals,
+  IUserCreditResponse,
 } from '~/services/helpers/backend-models';
 
 interface CreateCategoryVariables {
@@ -269,6 +270,17 @@ class MutationEndpoints {
   editCredit: (params: { creditId: string; totalDebt: number; creditLimit: number }) => Promise<ICreditResponse> = ({
     ...params
   }) => {
+    const { creditId, ...others } = params;
+
+    return ApiCall.put(`/admin/credits/${creditId}`, { ...others });
+  };
+
+  editUserCredit: (params: {
+    creditId: string;
+    totalDebt: number;
+    creditLimit: number;
+    customerId: string;
+  }) => Promise<IUserCreditResponse> = ({ ...params }) => {
     const { creditId, ...others } = params;
 
     return ApiCall.put(`/credits/${creditId}`, { ...others });

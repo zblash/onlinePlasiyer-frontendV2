@@ -118,7 +118,7 @@ class QueryEndpoints {
 
   getCredit: (s: { id?: string }) => Promise<ICreditResponse> = ({ id }) => {
     if (id) {
-      return ApiCall.get(`/credits/byUser/${id}`);
+      return ApiCall.get(`/admin/credits/byUser/${id}`);
     }
 
     return ApiCall.get('/credits/my');
@@ -137,7 +137,7 @@ class QueryEndpoints {
   };
 
   getUsersCreditByUser: (s: { userId: string }) => Promise<IUserCreditResponse> = ({ userId }) => {
-    return ApiCall.get(`/credits/users/byUser/${userId}`);
+    return ApiCall.get(`/credits/byUser/${userId}`);
   };
 }
 const queryEndpoints = new QueryEndpoints();

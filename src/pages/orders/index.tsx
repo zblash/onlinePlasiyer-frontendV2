@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useParams } from 'react-router';
 import { usePaginationQuery } from '~/services/query-context/use-pagination-quey';
 import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
 import { CategoryHorizontalListFetcher } from '~/fetcher-components/common/category-horizontal-list';
@@ -11,7 +12,9 @@ import { useApplicationContext } from '~/app/context';
   OrdersPage Helpers
 */
 interface OrdersPageProps {}
-
+interface RouteParams {
+  userId: string;
+}
 /*
   OrdersPage Colors // TODO : move theme.json
 */
@@ -28,6 +31,8 @@ const StyledPageHeader = styled.div`
 `;
 const OrdersPage: React.SFC<OrdersPageProps> = props => {
   const applicationContext = useApplicationContext();
+  const { userId } = useParams<RouteParams>();
+  const [customer, setCustomer] = React.useState();
   const [sortBy, setSortBy] = React.useState();
   const [sortType, setSortType] = React.useState();
   const {
@@ -37,9 +42,15 @@ const OrdersPage: React.SFC<OrdersPageProps> = props => {
     variables: {
       sortBy,
       sortType,
+      userId,
+      userName: customer,
     },
     pageNumber: 1,
   });
+
+  const handleChangeCustomer = React.useCallback((e: string) => {
+    setCustomer(e);
+  }, []);
   const __ = (
     <Container>
       {applicationContext.user.isCustomer && <CategoryHorizontalListFetcher shouldUseProductsPageLink />}
@@ -52,6 +63,7 @@ const OrdersPage: React.SFC<OrdersPageProps> = props => {
           setSortType={setSortType}
           orders={orders}
           elementCountOfPage={elementCountOfPage}
+          setCustomer={handleChangeCustomer}
         />
       </StyledPageContainer>
     </Container>

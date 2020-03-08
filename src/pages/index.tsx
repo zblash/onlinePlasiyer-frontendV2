@@ -105,6 +105,10 @@ const ProfileMerchantPage = React.lazy(() =>
 
 const MerchantsPage = React.lazy(() => import('./merchants/index').then(module => ({ default: module.MerchantsPage })));
 
+const MerchantCreditsPage = React.lazy(() =>
+  import('./merchant-credits/index').then(module => ({ default: module.MerchantCredits })),
+);
+
 interface IRoute {
   path: string;
   component: React.ComponentClass | React.FunctionComponent;
@@ -182,14 +186,17 @@ const routes: IRoute[] = [
   { path: '/create-ticket', component: CreateTicketPage },
   { path: '/my-tickets', component: UserTicketsPage },
   { path: '/ticket-replies/:ticketId', component: TicketRepliesPage },
-  { path: '/credit-activities', component: CreditActivities },
+  { path: '/credit-activities/:userId?', component: CreditActivities },
   { path: '/obligation-activities/:userId?', component: ObligationsPage, authorize: ['MERCHANT', 'ADMIN'] },
   { path: '/all-obligations', component: AllObligationsPage, authorize: ['ADMIN'] },
   { path: '/create-product', component: CreateProductPage, authorize: ['ADMIN'] },
   { path: '/update-product/:productId', component: UpdateProductPage, authorize: ['ADMIN'] },
   { path: '/merchant/customers', component: CustomersPage, authorize: ['MERCHANT'] },
+
   { path: '/merchants', component: MerchantsPage, authorize: ['CUSTOMER'] },
   { path: '/merchant/profile/:merchantName/:merchantId', component: ProfileMerchantPage, authorize: ['CUSTOMER'] },
+  { path: '/merchant/credits/:userId?', component: MerchantCreditsPage, authorize: ['MERCHANT'] },
+  { path: '/credits/:userId?', component: MerchantCreditsPage, authorize: ['CUSTOMER'] },
 ];
 
 const Routes = React.memo(() => {

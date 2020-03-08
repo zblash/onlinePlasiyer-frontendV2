@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useParams } from 'react-router';
 import { useTranslation } from '~/i18n';
 import styled, { colors, css } from '~/styled';
-import { UILink, Container, UIButton } from '~/components/ui';
+import { UILink, Container } from '~/components/ui';
 import { ProductListFetcher } from '~/fetcher-components/common/product-list';
 import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
@@ -89,7 +89,7 @@ const StyledTotalObligationElementText = styled.h3``;
 const styleTotalObligationElementLast = css`
   margin-left: 1%;
 `;
-const StyledTotalObligationButton = styled(UIButton)`
+const StyledTotalObligationLink = styled(UILink)`
 display: flex;
 float: right;
 align-items: center;
@@ -146,17 +146,16 @@ function MerchantProfileForUserPage(props: React.PropsWithChildren<MerchantProfi
                 {/* TODO TL Icon move to translation */}
                 <StyledTotalObligationElementText>{credit.creditLimit} &#8378;</StyledTotalObligationElementText>
               </StyledTotalObligationElement>
-              <StyledTotalObligationButton>{t('common.details')}</StyledTotalObligationButton>
+              <StyledTotalObligationLink to={`/credit-activities/${merchantId}`}>
+                {t('common.details')}
+              </StyledTotalObligationLink>
             </StyledTotalObligationWrapper>
           )}
           <StyledDetailMenu>
             <StyledDetailMenuHeader>Detaylar</StyledDetailMenuHeader>
 
             <StyledDetailMenuElementWrapper>
-              <StyledDetailMenuElement to="/user/orders/">Siparislerini Gor</StyledDetailMenuElement>
-            </StyledDetailMenuElementWrapper>
-            <StyledDetailMenuElementWrapper>
-              <StyledDetailMenuElement to="/user/invoices">Faturalarini Gor</StyledDetailMenuElement>
+              <StyledDetailMenuElement to={`/orders/${merchantId}`}>Siparislerini Gor</StyledDetailMenuElement>
             </StyledDetailMenuElementWrapper>
           </StyledDetailMenu>
         </div>

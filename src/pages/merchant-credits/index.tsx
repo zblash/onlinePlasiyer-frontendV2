@@ -1,19 +1,18 @@
 import * as React from 'react';
-import styled, { css, colors } from '~/styled';
+import styled, { colors, css } from '~/styled';
 import { usePopupContext } from '~/contexts/popup/context';
 import { usePaginationQuery } from '~/services/query-context/use-pagination-quey';
 import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
-import { UITable } from '~/components/ui/table';
-import { Container, UIIcon } from '~/components/ui';
 import { refetchFactory } from '~/services/utils';
-import { CreditsFilterComponent } from './filter';
+import { UIIcon, Container, UITable } from '~/components/ui';
+import { CreditsFilterComponent } from '../all-credits/filter';
 
-/* AllCreditsPage Helpers */
-interface AllCreditsPageProps {}
+/* MerchantCredits Helpers */
+interface MerchantCreditsProps {}
 
-/* AllCreditsPage Constants */
+/* MerchantCredits Constants */
 
-/* AllCreditsPage Styles */
+/* MerchantCredits Styles */
 const StyledPageContainer = styled.div`
   margin-top: 48px;
 `;
@@ -29,9 +28,10 @@ const commonIconStyle = css`
   cursor: pointer;
   margin: 0 8px;
 `;
-/* AllCreditsPage Component  */
-function AllCreditsPage(props: React.PropsWithChildren<AllCreditsPageProps>) {
-  /* AllCreditsPage Variables */
+
+/* MerchantCredits Component  */
+function MerchantCredits(props: React.PropsWithChildren<MerchantCreditsProps>) {
+  /* MerchantCredits Variables */
   const sortList = [
     { value: 'id', label: 'Eklenme Sirasina Gore' },
     { value: 'totalDebt', label: 'Borca Gore' },
@@ -40,12 +40,12 @@ function AllCreditsPage(props: React.PropsWithChildren<AllCreditsPageProps>) {
   const popupsContext = usePopupContext();
   const [sortBy, setSortBy] = React.useState();
   const [sortType, setSortType] = React.useState();
-  const [username, setUsername] = React.useState<string>('');
+  const [username, setUsername] = React.useState();
   const [allCreditsPageNumber, setAllCreditsPageNumber] = React.useState(1);
   const {
     data: { values: creditsValues, totalPage },
     getDataByPage: creditsByPage,
-  } = usePaginationQuery(paginationQueryEndpoints.getAllCredits, {
+  } = usePaginationQuery(paginationQueryEndpoints.getAllUserCredits, {
     pageNumber: allCreditsPageNumber,
     variables: {
       sortBy,
@@ -54,14 +54,14 @@ function AllCreditsPage(props: React.PropsWithChildren<AllCreditsPageProps>) {
     },
     defaultValue: { values: [], totalPage: 0 },
   });
-  const refetchQuery = refetchFactory(paginationQueryEndpoints.getAllCredits);
+  const refetchQuery = refetchFactory(paginationQueryEndpoints.getAllUserCredits);
   const credits = React.useMemo(() => {
     return creditsByPage(allCreditsPageNumber);
   }, [creditsByPage, allCreditsPageNumber]);
   const TABLE_DATA_COLUMNS = [
     {
       title: 'Kullanici',
-      itemRenderer: item => item.userName,
+      itemRenderer: item => item.customerName,
     },
     {
       title: 'Toplam Borc',
@@ -88,8 +88,7 @@ function AllCreditsPage(props: React.PropsWithChildren<AllCreditsPageProps>) {
       ),
     },
   ];
-
-  /* AllCreditsPage Callbacks */
+  /* MerchantCredits Callbacks */
   const onChangePage = React.useCallback(
     (pageIndex: number, pageCount: number) => {
       if (allCreditsPageNumber <= totalPage && pageIndex <= pageCount) {
@@ -98,8 +97,7 @@ function AllCreditsPage(props: React.PropsWithChildren<AllCreditsPageProps>) {
     },
     [allCreditsPageNumber, totalPage],
   );
-
-  /* AllCreditsPage Lifecycle  */
+  /* MerchantCredits Lifecycle  */
 
   return (
     <Container>
@@ -112,7 +110,7 @@ function AllCreditsPage(props: React.PropsWithChildren<AllCreditsPageProps>) {
           onSortChange={e => setSortBy(e.value)}
           onSortTypeChange={value => setSortType(value)}
           sortList={sortList}
-          id="all-credits-page-table"
+          id="merchant-credits-page-table"
           data={creditsValues}
           rowCount={credits.elementCountOfPage > 0 ? credits.elementCountOfPage : 15}
           columns={TABLE_DATA_COLUMNS}
@@ -123,6 +121,6 @@ function AllCreditsPage(props: React.PropsWithChildren<AllCreditsPageProps>) {
     </Container>
   );
 }
-const PureAllCreditsPage = React.memo(AllCreditsPage);
+const PureMerchantCredits = React.memo(MerchantCredits);
 
-export { PureAllCreditsPage as AllCreditsPage };
+export { PureMerchantCredits as MerchantCredits };

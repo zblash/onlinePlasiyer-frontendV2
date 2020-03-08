@@ -105,8 +105,14 @@ function MerchantHome(props: React.PropsWithChildren<MerchantHomeProps>) {
               </StyledOrderSummaryItem>
               <StyledOrderSummaryItem>
                 <p>
-                  <i className={orderSummaryItemI}>{orderSummary.paidCount}</i>
-                  Odemesi Alinan Siparis
+                  <i className={orderSummaryItemI}>{orderSummary.cancelRequestCount}</i>
+                  Iptal Isteginde Olan Siparis
+                </p>
+              </StyledOrderSummaryItem>
+              <StyledOrderSummaryItem>
+                <p>
+                  <i className={orderSummaryItemI}>{orderSummary.submittedCount}</i>
+                  Tamamlanan Siparis
                 </p>
               </StyledOrderSummaryItem>
             </StyledOrderSummaryMenu>

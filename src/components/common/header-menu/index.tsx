@@ -173,7 +173,14 @@ function HeaderMenu(props: React.PropsWithChildren<AdminHeaderProps>) {
         </StyledSubNavContent>
       </StyledSubNavs>
       <StyledSubNavs>
-        <StyledSubNavsLink to="/credit-activities">Cari Ekstrelerini Gor</StyledSubNavsLink>
+        <StyledSubNavsButton>
+          Cari Islemler
+          <UIIcon size={10} name="chevronDown" className={iconStyle} />
+        </StyledSubNavsButton>
+        <StyledSubNavContent>
+          <StyledSubNavContentItem to="/merchant/credits">Cariler</StyledSubNavContentItem>
+          <StyledSubNavContentItem to="/credit-activities">Cari Ekstrelerini Gor</StyledSubNavContentItem>
+        </StyledSubNavContent>
       </StyledSubNavs>
       <StyledSubNavs>
         <StyledSubNavsLink to="/orders">Siparisleri Gor</StyledSubNavsLink>
@@ -200,7 +207,14 @@ function HeaderMenu(props: React.PropsWithChildren<AdminHeaderProps>) {
         <StyledSubNavsLink to="/merchants">Saticilar </StyledSubNavsLink>
       </StyledSubNavs>
       <StyledSubNavs>
-        <StyledSubNavsLink to="/credit-activities">Cari Ekstreleri Gor</StyledSubNavsLink>
+        <StyledSubNavsButton>
+          Cari Islemler
+          <UIIcon size={10} name="chevronDown" className={iconStyle} />
+        </StyledSubNavsButton>
+        <StyledSubNavContent>
+          <StyledSubNavContentItem to="/credits">Cariler</StyledSubNavContentItem>
+          <StyledSubNavContentItem to="/credit-activities">Cari Ekstrelerini Gor</StyledSubNavContentItem>
+        </StyledSubNavContent>
       </StyledSubNavs>
       <StyledSubNavs>
         <StyledSubNavsLink to="/orders">Siparisleri Gor</StyledSubNavsLink>

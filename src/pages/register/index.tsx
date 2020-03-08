@@ -17,7 +17,6 @@ const LoginPageStrings = {
 };
 /* RegisterCPage Styles */
 const Container = styled.div`
-  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -25,7 +24,8 @@ const Container = styled.div`
 `;
 
 const CenteredCard = styled.div`
-  padding: 70px;
+  padding: 30px 60px 30px 60px;
+  margin: 30px 0 30px 0;
   background-color: #fff;
   border-radius: 4px;
   box-shadow: 0 1px 3px 0 rgba(21, 27, 38, 0.15);
