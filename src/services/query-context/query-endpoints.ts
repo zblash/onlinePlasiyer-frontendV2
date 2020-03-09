@@ -56,19 +56,19 @@ class QueryEndpoints {
   getUsers: (s: { role: UserRoleResponse; type: UserType }) => Promise<IUserCommonResponse[]> = ({ type, role }) => {
     const userTypeRouteMap: Record<UserRoleResponse, Record<UserType, string>> = {
       CUSTOMER: {
-        active: '/users/customer?status=true',
-        all: '/users/customer',
-        passive: '/users/customer?status=false',
+        active: '/admin/users/customer?status=true',
+        all: '/admin/users/customer',
+        passive: '/admin/users/customer?status=false',
       },
       MERCHANT: {
-        active: '/users/merchant?status=true',
-        passive: '/users/merchant?status=false',
-        all: '/users/merchant',
+        active: '/admin/users/merchant?status=true',
+        passive: '/admin/users/merchant?status=false',
+        all: '/admin/users/merchant',
       },
       ADMIN: {
-        active: '/users/admin?status=true',
-        passive: '/users/admin?status=false',
-        all: '/users/admin',
+        active: '/admin/users/admin?status=true',
+        passive: '/admin/users/admin?status=false',
+        all: '/admin/users/admin',
       },
     };
 

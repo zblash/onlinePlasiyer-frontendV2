@@ -80,7 +80,7 @@ class MutationEndpoints {
   };
 
   changeUserStatus = ({ id, status }: { id: string; status: boolean }) => {
-    return ApiCall.post(`/users/status/${id}/${status}`);
+    return ApiCall.post(`/api/users/status/${id}/${status}`);
   };
 
   createProduct = (params: {
@@ -173,7 +173,7 @@ class MutationEndpoints {
     stateIds,
   }) => {
     if (userId) {
-      return ApiCall.post(`/users/activestates/${userId}`, stateIds);
+      return ApiCall.post(`/admin/users/activestates/${userId}`, stateIds);
     }
 
     return ApiCall.post('/user/activestates', stateIds);
@@ -206,7 +206,7 @@ class MutationEndpoints {
     name: string;
   }) => Promise<IUserCommonResponse> = (...params) => {
     if (params[0].id) {
-      return ApiCall.put(`/users/info/${params[0].id}`, ...params);
+      return ApiCall.put(`/admin/users/info/${params[0].id}`, ...params);
     }
 
     return ApiCall.put('/user/info', ...params);
@@ -229,7 +229,7 @@ class MutationEndpoints {
     roleType: UserRoleResponse;
     status: boolean;
     taxNumber: string;
-  }) => Promise<IUserRegisterResponse> = (...params) => ApiCall.post('/users', ...params);
+  }) => Promise<IUserRegisterResponse> = (...params) => ApiCall.post('/admin/users', ...params);
 
   updateOrder: (params: {
     id: string;
@@ -309,7 +309,7 @@ class MutationEndpoints {
   updateCommission: (params: { id: string; commission: number }) => Promise<IUserCommonResponse> = ({
     id,
     commission,
-  }) => ApiCall.put('/users/commissions', { id, commission });
+  }) => ApiCall.put('/admin/users/commissions', { id, commission });
 
   deneme = () => Promise.resolve({ id: '12341' });
 }
