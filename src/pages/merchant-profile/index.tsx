@@ -163,7 +163,7 @@ function MerchantProfileForUserPage(props: React.PropsWithChildren<MerchantProfi
           <StyledProductsHeader>
             <h2>Satistaki Urunler</h2>
           </StyledProductsHeader>
-          <ProductListFetcher selectedUserId="384c5d1e-c9d7-477b-baa4-6e0057242978" isMerchantProfile />
+          <ProductListFetcher selectedUserId={merchantId} isMerchantProfile />
         </StyledProductsWrapper>
       </StyledProfilePageWrapper>
     </Container>

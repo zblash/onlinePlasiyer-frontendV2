@@ -297,9 +297,10 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
             <StyledInput
               id="unitPrice"
               type="number"
+              step="0.01"
               readOnly={!barcode}
               value={unitPrice}
-              onChange={e => setUnitPrice(parseInt(e, 10))}
+              onChange={e => setUnitPrice(parseFloat(e))}
             />
           </StyledCreateProductSpecifyContentElement>
           <StyledCreateProductSpecifyContentElement>
@@ -321,9 +322,10 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
             <StyledInput
               id="rcmdprc"
               type="number"
+              step="0.01"
               value={recommendedRetailPrice}
               readOnly={!barcode}
-              onChange={e => setRecomendedRetailPrice(parseInt(e, 10))}
+              onChange={e => setRecomendedRetailPrice(parseFloat(e))}
             />
           </StyledCreateProductSpecifyContentElement>
           <StyledCreateProductSpecifyContentElement>
@@ -378,9 +380,10 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
               <StyledInput
                 id="discountValue"
                 type="number"
+                step="0.01"
                 value={discountValue}
                 readOnly={!barcode}
-                onChange={e => setDiscountValue(parseInt(e, 10))}
+                onChange={e => setDiscountValue(parseFloat(e))}
               />
             </StyledCreateProductSpecifyContentElement>
           )}
