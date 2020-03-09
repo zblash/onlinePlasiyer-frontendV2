@@ -1,13 +1,13 @@
 import * as React from 'react';
-import styled, { mixins, colors, css } from '~/styled';
-import { LoginPage } from './login-page';
-import { RegisterPage } from './register-page';
-import logoPath from '~/assets/images/logo/flogo.png';
-import { UIButton } from '~/components/ui';
+import styled, { colors, mixins, css, globalStyleCreator } from '~/styled';
+import logoPath from '~/assets/images/logo/logo.png';
+import { UILink } from '~/components/ui';
+import { LoginComponent } from '~/components/common/login-register/login-component';
 
-/*
-  LoginPage Strings
-*/
+/* LoginPage Helpers */
+interface LoginPageProps {}
+
+/* LoginPage Constants */
 const LoginPageStrings = {
   login: 'Giris Yap',
   dontHaveAccountQuestion: 'Hesabin Yokmu ?',
@@ -45,13 +45,13 @@ const StyledLogo = styled.div`
   user-select: none;
   margin: 0 auto 16px auto;
   width: 256px;
-  height: 65px;
+  height: 130px;
 `;
 
 const StyledDontHaveAccountQuestion = styled.div`
   margin-top: 16px;
 `;
-const StyledHiglightedText = styled(UIButton)`
+const StyledHiglightedText = styled(UILink)`
   background-color: transparent !important;
   color: ${colors.primary};
   float: left;
@@ -64,39 +64,33 @@ const StyledHiglightedText = styled(UIButton)`
 const floatLeft = css`
   float: left;
 `;
-const LoginRegisterPage: React.SFC = props => {
-  const [pageType, setPageType] = React.useState<'login' | 'register'>('login');
-  if (pageType === 'login') {
-    return (
-      <Container>
-        <CenteredCard>
-          <StyledLogo />
-          <LoginPage />
-          <StyledDontHaveAccountQuestion>
-            <div className={floatLeft}>{LoginPageStrings.dontHaveAccountQuestion}&nbsp;</div>
-            <StyledHiglightedText onClick={() => setPageType('register')}>
-              {LoginPageStrings.register}
-            </StyledHiglightedText>
-          </StyledDontHaveAccountQuestion>
-        </CenteredCard>
-      </Container>
-    );
-  }
+/* LoginPage Component  */
+function LoginPage(props: React.PropsWithChildren<LoginPageProps>) {
+  /* LoginPage Variables */
+  const GlobalStyle = globalStyleCreator();
+  /* LoginPage Callbacks */
+
+  /* LoginPage Lifecycle  */
 
   return (
     <Container>
+      <GlobalStyle />
       <CenteredCard>
         <StyledLogo />
-        <RegisterPage onSignup={() => setPageType('login')} />
+        <LoginComponent />
+
         <StyledDontHaveAccountQuestion>
-          <div className={floatLeft}>{LoginPageStrings.haveAccountQuestion}&nbsp;</div>
-          <StyledHiglightedText onClick={() => setPageType('login')}>{LoginPageStrings.login}</StyledHiglightedText>
+          <div className={floatLeft}>{LoginPageStrings.dontHaveAccountQuestion}&nbsp;</div>
+          <StyledHiglightedText to="/register">{LoginPageStrings.register}</StyledHiglightedText>
+        </StyledDontHaveAccountQuestion>
+        <StyledDontHaveAccountQuestion>
+          <div className={floatLeft}>Sifrenizi mi unuttunuz?&nbsp;</div>
+          <StyledHiglightedText to="/register">Sifre sifirla</StyledHiglightedText>
         </StyledDontHaveAccountQuestion>
       </CenteredCard>
     </Container>
   );
-};
+}
+const PureLoginPage = React.memo(LoginPage);
 
-const _LoginRegisterPage = LoginRegisterPage;
-
-export { _LoginRegisterPage as LoginRegisterPage };
+export { PureLoginPage as LoginPage };

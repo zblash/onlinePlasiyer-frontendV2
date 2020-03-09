@@ -58,6 +58,7 @@ const StyledLink = styled(UILink)`
   flex-direction: column;
   color: ${colors.whiteSolid};
 `;
+
 const _Header: React.SFC<HeaderProps> = props => {
   const userPermissions = useUserPermissions();
   const applicationContext = useApplicationContext();

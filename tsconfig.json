@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
+    "moduleResolution": "node",
     "outDir": "./dist/",
     "sourceMap": true,
     "noEmit": true,
     "noImplicitAny": false,
-    "module": "commonjs",
+    "module": "esnext",
     "target": "es5",
     "jsx": "react",
-    "lib": ["es5", "es6", "dom"],
+    "lib": ["es5", "es6", "ES2017", "dom"],
     "esModuleInterop": true,
     "skipLibCheck": true,
     "baseUrl": ".",
@@ -21,4 +22,5 @@
     "reportFiles": ["./src/**/*"]
   },
   "exclude": ["./node_modules/*"]
+  
 }

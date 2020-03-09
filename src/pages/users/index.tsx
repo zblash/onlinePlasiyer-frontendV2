@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useHistory } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 import styled, { css, colors } from '~/styled';
 import { Container, UITable, UIIcon, UIButtonGroup } from '~/components/ui';
 import { useQuery } from '~/services/query-context/context';
@@ -51,13 +51,6 @@ const StyledTopFilterWrapper = styled.div`
   display: flex;
   margin-bottom: 24px;
 `;
-const StyledUserRoleFilterWrapper = styled.div`
-  display: flex;
-  margin-right: 16px;
-  flex-direction: column;
-  align-items: center;
-  justify-conent: center;
-`;
 
 const StyledUserTypeFilterWrapper = styled.div`
   display: flex;
@@ -88,16 +81,15 @@ const StyledPageHeader = styled.div`
 `;
 const UsersPage: React.SFC<UsersPageProps> = props => {
   const routerHistory = useHistory();
-  const [userRole, setUserRole] = React.useState<UserRoleResponse>('CUSTOMER');
+  const location: UserRoleResponse = useLocation().state.type;
   const [type, setType] = React.useState<UserType>('all');
-  const userOptions = React.useMemo(
-    () => ({
-      variables: { role: userRole, type },
-      defaultValue: [],
-    }),
-    [type, userRole],
-  );
-  const { data: users } = useQuery(queryEndpoints.getUsers, userOptions);
+  const { data: users } = useQuery(queryEndpoints.getUsers, {
+    variables: {
+      role: location,
+      type,
+    },
+    defaultValue: [],
+  });
 
   const { mutation: changeUserStatus, loading } = useMutation(mutationEndPoints.changeUserStatus);
 
@@ -108,32 +100,6 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
           <h3>Kayitli Kullanicilar</h3>
         </StyledPageHeader>
         <StyledTopFilterWrapper>
-          <StyledUserRoleFilterWrapper>
-            <StyledFilterQuestion>{UsersPageStrings.wichUserQuestion}</StyledFilterQuestion>
-            <UIButtonGroup<UserRoleResponse>
-              onItemClick={id => {
-                if (id === 'ADMIN') {
-                  setType('all');
-                }
-                setUserRole(id);
-              }}
-              options={[
-                {
-                  id: 'CUSTOMER',
-                  text: UsersPageStrings.customers,
-                },
-                {
-                  id: 'ADMIN',
-                  text: UsersPageStrings.admin,
-                },
-                {
-                  id: 'MERCHANT',
-                  text: UsersPageStrings.merchants,
-                },
-              ]}
-              selectedId={userRole}
-            />
-          </StyledUserRoleFilterWrapper>
           <StyledUserTypeFilterWrapper>
             <StyledFilterQuestion>{UsersPageStrings.wichUserQuestion}</StyledFilterQuestion>
             <UIButtonGroup<UserType>
@@ -142,7 +108,7 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
                 {
                   id: 'active',
                   text: UsersPageStrings.activeUserType,
-                  disabled: userRole === 'ADMIN',
+                  disabled: location === 'ADMIN',
                 },
                 {
                   id: 'all',
@@ -151,7 +117,7 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
                 {
                   id: 'passive',
                   text: UsersPageStrings.passiveUserType,
-                  disabled: userRole === 'ADMIN',
+                  disabled: location === 'ADMIN',
                 },
               ]}
               onItemClick={id => setType(id)}
@@ -159,7 +125,7 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
           </StyledUserTypeFilterWrapper>
         </StyledTopFilterWrapper>
         <UITable
-          id={`${type}${userRole}`}
+          id={`users-${type}`}
           data={users}
           rowCount={12}
           columns={[
@@ -178,7 +144,7 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
               title: UsersPageStrings.email,
             },
           ].concat(
-            userRole === 'ADMIN'
+            location === 'ADMIN'
               ? []
               : [
                   {

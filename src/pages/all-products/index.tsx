@@ -1,9 +1,10 @@
 import * as React from 'react';
+import { useHistory } from 'react-router';
 import styled, { colors, css } from '~/styled';
 import { useTranslation } from '~/i18n';
 import { usePaginationQuery } from '~/services/query-context/use-pagination-quey';
 import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
-import { Container, UIIcon, UIButton } from '~/components/ui';
+import { Container, UIIcon } from '~/components/ui';
 import { UITableColumns, UITable } from '~/components/ui/table';
 import { IProductResponse } from '~/services/helpers/backend-models';
 import { usePopupContext } from '~/contexts/popup/context';
@@ -31,23 +32,7 @@ const StyledActionsWrapper = styled.div`
   align-items: center;
   justify-content: center;
 `;
-const StyledAddButton = styled(UIButton)`
-  float: right;
-  margin-bottom: 15px;
-  display: flex;
-  align-items: center;
-  transition: background-color 0.3s;
-  background-color: ${colors.lightGray};
-  color: ${colors.white};
-  padding: 4px 8px;
-  border-radius: 8px;
-  :active {
-    background-color: ${colors.primaryDark} !important;
-  }
-  :hover {
-    background-color: ${colors.primary};
-  }
-`;
+
 const StyledPageHeader = styled.div`
   display: flex;
 `;
@@ -55,18 +40,13 @@ const commonIconStyle = css`
   cursor: pointer;
   margin: 0 8px;
 `;
-const addIconStyle = css`
-  margin-left: 8px;
-`;
-const addBtnWrapper = css`
-  width: 100%;
-  display: inline-block;
-`;
+
 /* AllProductPage Component  */
 
 function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
   /* AllProductPage Variables */
   const { t } = useTranslation();
+  const history = useHistory();
   const popupsContext = usePopupContext();
   const applicationContext = useApplicationContext();
   const sortList = [
@@ -151,7 +131,7 @@ function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
               className={commonIconStyle}
               size={16}
               onClick={() => {
-                popupsContext.updateProduct.show({ categoryId: item.categoryId, initialValue: item });
+                history.push(`/update-product/${item.id}`);
               }}
             />
             <UIIcon
@@ -182,10 +162,10 @@ function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
     refetchQuery,
     applicationContext.user.isAdmin,
     popupsContext.deleteProduct,
-    popupsContext.updateProduct,
     t,
     popupsContext.addBarcode,
     popupsContext.removeBarcode,
+    history,
   ]);
 
   /* AllProductPage Callbacks */
@@ -203,13 +183,6 @@ function AllProductPage(props: React.PropsWithChildren<AllProductPageProps>) {
   return (
     <Container>
       <StyledPageContainer>
-        {applicationContext.user.isAdmin && (
-          <div className={addBtnWrapper}>
-            <StyledAddButton onClick={() => popupsContext.createProduct.show({})}>
-              {t('common.add')} <UIIcon name="add" color={colors.white} size={10} className={addIconStyle} />
-            </StyledAddButton>
-          </div>
-        )}
         <StyledPageHeader>
           <h3>Tum Urunler</h3>
         </StyledPageHeader>

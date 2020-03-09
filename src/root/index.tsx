@@ -3,19 +3,16 @@ import { render } from 'react-dom';
 import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 import { registerLocale } from 'react-datepicker';
 import tr from 'date-fns/locale/tr';
-import { globalStyleCreator } from '~/styled';
 import { CheckHealth } from '~/controls/check-health';
-import { CheckUser } from '~/controls/check-user';
-import { ServicesContextProvider } from '~/services';
-import App from '~/app';
-import { main as i18nMain } from '~/i18n';
+import { ServicesContextProvider } from '~/services/index';
+import App from '~/app/index';
+import { main as i18nMain } from '~/i18n/index';
 import '~/assets/style';
-import AlertTemplate from '~/contexts/alert-template';
+import AlertTemplate from '~/contexts/alert-template/index';
 import 'react-datepicker/dist/react-datepicker.css';
 
 registerLocale('tr', tr);
 const rootEl = document.getElementById('root');
-const GlobalStyle = globalStyleCreator();
 const options = {
   position: positions.BOTTOM_RIGHT,
   timeout: 5000,
@@ -30,16 +27,11 @@ i18nMain();
 
 render(
   <>
-    <GlobalStyle />
     <AlertProvider template={AlertTemplate} {...options}>
       <CheckHealth>
-        <CheckUser
-          app={user => (
-            <ServicesContextProvider>
-              <App user={user} />
-            </ServicesContextProvider>
-          )}
-        />
+        <ServicesContextProvider>
+          <App />
+        </ServicesContextProvider>
       </CheckHealth>
     </AlertProvider>
   </>,

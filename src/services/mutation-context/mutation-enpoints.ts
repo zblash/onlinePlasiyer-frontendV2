@@ -18,6 +18,7 @@ import {
   PromotionType,
   IOrderConfirmItem,
   IObligationTotals,
+  IUserCreditResponse,
 } from '~/services/helpers/backend-models';
 
 interface CreateCategoryVariables {
@@ -89,6 +90,7 @@ class MutationEndpoints {
     status?: boolean;
     tax: number;
     uploadedFile?: File;
+    commission?: number;
   }) => {
     const formData = new FormData();
     Object.keys(params).forEach(key => {
@@ -106,6 +108,7 @@ class MutationEndpoints {
     status?: boolean;
     tax: number;
     uploadedFile?: File;
+    commission?: number;
   }) => {
     const formData = new FormData();
     const { id, ...data } = params;
@@ -165,8 +168,16 @@ class MutationEndpoints {
     return ApiCall.put(`/products/specify/${params.id}`, { ...others });
   };
 
-  addActiveStates: (s: { stateIds: string[] }) => Promise<IAddressStateResponse[]> = ({ stateIds }) =>
-    ApiCall.post('/user/activestates', stateIds);
+  addActiveStates: (s: { userId?: string; stateIds: string[] }) => Promise<IAddressStateResponse[]> = ({
+    userId,
+    stateIds,
+  }) => {
+    if (userId) {
+      return ApiCall.post(`/users/activestates/${userId}`, stateIds);
+    }
+
+    return ApiCall.post('/user/activestates', stateIds);
+  };
 
   removeItemFromCard: (s: { id: string }) => Promise<any> = ({ id }) =>
     ApiCall.delete(`/cart/${id}`).then(item => ({ ...item, removed: true }));
@@ -259,6 +270,17 @@ class MutationEndpoints {
   editCredit: (params: { creditId: string; totalDebt: number; creditLimit: number }) => Promise<ICreditResponse> = ({
     ...params
   }) => {
+    const { creditId, ...others } = params;
+
+    return ApiCall.put(`/admin/credits/${creditId}`, { ...others });
+  };
+
+  editUserCredit: (params: {
+    creditId: string;
+    totalDebt: number;
+    creditLimit: number;
+    customerId: string;
+  }) => Promise<IUserCreditResponse> = ({ ...params }) => {
     const { creditId, ...others } = params;
 
     return ApiCall.put(`/credits/${creditId}`, { ...others });

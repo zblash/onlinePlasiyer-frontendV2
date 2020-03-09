@@ -6,6 +6,7 @@ import { paginationQueryEndpoints } from '~/services/query-context/pagination-qu
 import { UITable } from '~/components/ui/table';
 import { Container, UIIcon } from '~/components/ui';
 import { refetchFactory } from '~/services/utils';
+import { CreditsFilterComponent } from './filter';
 
 /* AllCreditsPage Helpers */
 interface AllCreditsPageProps {}
@@ -39,6 +40,7 @@ function AllCreditsPage(props: React.PropsWithChildren<AllCreditsPageProps>) {
   const popupsContext = usePopupContext();
   const [sortBy, setSortBy] = React.useState();
   const [sortType, setSortType] = React.useState();
+  const [username, setUsername] = React.useState<string>('');
   const [allCreditsPageNumber, setAllCreditsPageNumber] = React.useState(1);
   const {
     data: { values: creditsValues, totalPage },
@@ -48,6 +50,7 @@ function AllCreditsPage(props: React.PropsWithChildren<AllCreditsPageProps>) {
     variables: {
       sortBy,
       sortType,
+      userName: username,
     },
     defaultValue: { values: [], totalPage: 0 },
   });
@@ -104,6 +107,7 @@ function AllCreditsPage(props: React.PropsWithChildren<AllCreditsPageProps>) {
         <StyledPageHeader>
           <h3>Krediler</h3>
         </StyledPageHeader>
+        <CreditsFilterComponent setCustomer={e => setUsername(e)} />
         <UITable
           onSortChange={e => setSortBy(e.value)}
           onSortTypeChange={value => setSortType(value)}

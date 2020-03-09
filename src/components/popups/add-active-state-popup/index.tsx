@@ -1,7 +1,8 @@
 import * as React from 'react';
+import Select from 'react-select';
 import styled, { colors } from '~/styled';
 import { IAddressCityResponse, IAddressStateResponse } from '~/services/helpers/backend-models';
-import { UIAutoComplete, UIInput, UIButton } from '~/components/ui';
+import { UIButton } from '~/components/ui';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
@@ -29,14 +30,6 @@ const StyledAddActiveStateHeader = styled.div`
 const StyledAddActiveStateFormWrapper = styled.div`
   margin-top: 10px;
 `;
-const StyledInput = styled(UIInput)`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  padding: 4px;
-  border: 1px solid ${colors.lightGray};
-  border-radius: 4px;
-`;
 const StyledButton = styled(UIButton)`
 display: flex;
 float: right;
@@ -61,14 +54,11 @@ function AddActiveState(props: React.PropsWithChildren<AddActiveStateProps>) {
   const { setUserActiveState } = useApplicationContext();
   const [cities, setCities] = React.useState<IAddressCityResponse[]>([]);
   const [states, setStates] = React.useState<IAddressStateResponse[]>([]);
-  const [stateAutocomplateValue, setStateAutoComplateValue] = React.useState('');
-  const [cityAutocomplateValue, setCityAutoComplateValue] = React.useState('');
-
-  const [selectedCityId, setSelectedCityId] = React.useState(null);
-  const [selectedStateId, setSelectedStateId] = React.useState(null);
+  const [selectedCity, setSelectedCity] = React.useState<{ value: string; label: string }>();
+  const [selectedStateIds, setSelectedStateIds] = React.useState<Array<{ value: string; label: string }>>();
   const { mutation: addActiveStateMutation } = useMutation(mutationEndPoints.addActiveStates, {
     variables: {
-      stateIds: [selectedStateId],
+      stateIds: selectedStateIds ? selectedStateIds.map(state => state.value) : null,
     },
   });
   /* AddActiveState Callbacks */
@@ -91,12 +81,12 @@ function AddActiveState(props: React.PropsWithChildren<AddActiveStateProps>) {
     });
   }, []);
   React.useEffect(() => {
-    if (selectedCityId) {
-      queryEndpoints.getStatesByCityId({ cityId: selectedCityId }).then(statesResponse => {
+    if (selectedCity) {
+      queryEndpoints.getStatesByCityId({ cityId: selectedCity.value }).then(statesResponse => {
         setStates(statesResponse);
       });
     }
-  }, [selectedCityId]);
+  }, [selectedCity]);
 
   return (
     <StyledAddActiveStateWrapper>
@@ -104,60 +94,25 @@ function AddActiveState(props: React.PropsWithChildren<AddActiveStateProps>) {
         <p>Satis Yapacaginiz Bolgeyi Ekleyin</p>
       </StyledAddActiveStateHeader>
       <StyledAddActiveStateFormWrapper>
-        <UIAutoComplete
-          items={cities}
-          value={cityAutocomplateValue}
-          shouldItemRender={(item, value) => item.title.toLowerCase().indexOf(value.toLowerCase()) > -1}
-          getItemValue={item => item.title}
-          renderInput={
-            <StyledInput
-              id="activeState-cities"
-              value={cityAutocomplateValue}
-              onChange={setCityAutoComplateValue}
-              placeholder="Sehir Secin"
-            />
-          }
-          renderItem={(item, highlighted) => (
-            // TODO: update this element
-            <div
-              key={item.id}
-              style={{ backgroundColor: highlighted ? '#eee' : 'transparent', padding: 5, cursor: 'pointer' }}
-            >
-              {item.title}
-            </div>
-          )}
-          onSelect={item => {
-            setCityAutoComplateValue(item.title);
-            setSelectedCityId(item.id);
-          }}
+        <label>Sehir Secin</label>
+        <Select
+          value={selectedCity}
+          onChange={(e: { value: string; label: string }) => setSelectedCity(e)}
+          options={cities.map(city => ({ value: city.id, label: city.title }))}
         />
-        <UIAutoComplete
-          items={states}
-          value={stateAutocomplateValue}
-          shouldItemRender={(item, value) => item.title.toLowerCase().indexOf(value.toLowerCase()) > -1}
-          getItemValue={item => item.title}
-          renderInput={
-            <StyledInput
-              disabled={!selectedCityId}
-              id="activeState-states"
-              value={stateAutocomplateValue}
-              onChange={setStateAutoComplateValue}
-              placeholder="Ilce Secin"
-            />
-          }
-          renderItem={(item, highlighted) => (
-            // TODO: update this element
-            <div
-              key={item.id}
-              style={{ backgroundColor: highlighted ? '#eee' : 'transparent', padding: 5, cursor: 'pointer' }}
-            >
-              {item.title}
-            </div>
-          )}
-          onSelect={item => {
-            setStateAutoComplateValue(item.title);
-            setSelectedStateId(item.id);
-          }}
+        <label>Satis Yapacaginiz Bolgeler</label>
+        <Select
+          isMulti
+          isSearchable
+          isClearable
+          isDisabled={!selectedCity}
+          onChange={(e: Array<{ value: string; label: string }>) => setSelectedStateIds(e)}
+          value={selectedStateIds}
+          options={states.map(x => ({
+            value: x.id,
+            label: `${x.title}`,
+          }))}
+          placeholder="Secim Yapin"
         />
         <StyledButton type="button" onClick={handleSubmit}>
           Kaydet

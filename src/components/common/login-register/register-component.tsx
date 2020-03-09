@@ -1,6 +1,7 @@
 import * as React from 'react';
+import Select from 'react-select';
 import styled, { colors } from '~/styled';
-import { UIInput, UIAutoComplete, UIButtonGroup, UIButton, Loading } from '~/components/ui';
+import { UIInput, UIButtonGroup, UIButton, Loading } from '~/components/ui';
 import {
   IAddressCityResponse,
   IAddressStateResponse,
@@ -11,16 +12,16 @@ import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { signup } from '~/services/api';
 import { useAlert } from '~/utils/hooks';
 /*
-  RegisterPage Helpers
+  RegisterComponent Helpers
 */
-interface RegisterPageProps {
+interface RegisterComponentProps {
   onSignup: Function;
 }
 
 /*
-  RegisterPage Colors // TODO : move theme.json
+  RegisterComponent Colors // TODO : move theme.json
 */
-const RegisterPageColors = {
+const RegisterComponentColors = {
   white: '#fff',
   primary: '#0075ff',
   danger: '#e2574c',
@@ -30,9 +31,9 @@ const RegisterPageColors = {
 };
 
 /*
-  RegisterPage Strings
+  RegisterComponent Strings
 */
-const RegisterPageStrings = {
+const RegisterComponentStrings = {
   username: 'Kullanici Adi',
   nameSurname: 'Isim Soyisim',
   password: 'Sifre',
@@ -49,16 +50,13 @@ const RegisterPageStrings = {
 };
 
 /*
-  RegisterPage Styles
+  RegisterComponent Styles
 */
 
-const StyledRegisterPageWrapper = styled.div`
+const StyledRegisterComponentWrapper = styled.div`
   padding: 16px;
 `;
-const StyledCityWrapper = styled.div`
-  display: inline-block;
-  margin-right: 8px;
-`;
+
 const StyledUserTypeWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -67,14 +65,19 @@ const StyledUserTypeWrapper = styled.div`
 const StyledMemberTypeSpan = styled.span`
   margin-right: 8px;
 `;
+
 const StyledInput = styled(UIInput)<{ hasError: boolean }>`
   display: flex;
   justify-content: space-between;
   margin-bottom: 12px;
-  padding: 4px;
+  padding: 9px;
   border: 1px solid ${props => (props.hasError ? colors.danger : colors.primary)};
   border-radius: 4px;
-  color: ${RegisterPageColors.unFocused};
+  color: ${RegisterComponentColors.unFocused};
+`;
+const StyledSelectWrapper = styled.div`
+  width: 100%;
+  margin-bottom: 12px;
 `;
 const StyledRegisterButton = styled(UIButton)<{ hasError: boolean; disabled: boolean }>`
   line-height: 24px;
@@ -102,20 +105,20 @@ const StyledRegisterButton = styled(UIButton)<{ hasError: boolean; disabled: boo
   }
   transition: background-color 0.3s, color 0.3s;
 `;
+
 const StyledErrorSpan = styled.p`
   color: ${colors.danger};
 `;
-const RegisterPage: React.SFC<RegisterPageProps> = props => {
+
+const RegisterComponent: React.SFC<RegisterComponentProps> = props => {
   const alertContext = useAlert();
   const [cities, setCities] = React.useState<IAddressCityResponse[]>([]);
   const [states, setStates] = React.useState<IAddressStateResponse[]>([]);
-  const [stateAutocomplateValue, setStateAutoComplateValue] = React.useState('');
-  const [cityAutocomplateValue, setCityAutoComplateValue] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [hasError, setHasError] = React.useState(false);
 
-  const [selectedCityId, setSelectedCityId] = React.useState(null);
-  const [selectedStateId, setSelectedStateId] = React.useState(null);
+  const [selectedCity, setSelectedCity] = React.useState<{ value: string; label: string }>();
+  const [selectedState, setSelectedState] = React.useState<{ value: string; label: string }>();
   const [details, setDetails] = React.useState('');
   const [username, setUsername] = React.useState('');
   const [email, setEmail] = React.useState('');
@@ -126,7 +129,7 @@ const RegisterPage: React.SFC<RegisterPageProps> = props => {
   const [errorDetail, setErrorDetail] = React.useState<IExceptionResponse>();
   const ref = React.useRef();
   const __ = (
-    <StyledRegisterPageWrapper>
+    <StyledRegisterComponentWrapper>
       <form
         ref={ref}
         onSubmit={e => {
@@ -135,8 +138,8 @@ const RegisterPage: React.SFC<RegisterPageProps> = props => {
           setLoading(true);
           setHasError(false);
           signup({
-            cityId: selectedCityId,
-            stateId: selectedStateId,
+            cityId: selectedCity.value,
+            stateId: selectedState.value,
             details,
             email,
             name,
@@ -170,14 +173,14 @@ const RegisterPage: React.SFC<RegisterPageProps> = props => {
         <StyledInput
           hasError={hasError}
           id="register-name-surname"
-          placeholder={RegisterPageStrings.nameSurname}
+          placeholder={RegisterComponentStrings.nameSurname}
           required
           onChange={setName}
         />
         <StyledInput
           hasError={hasError}
           id="register-username"
-          placeholder={RegisterPageStrings.username}
+          placeholder={RegisterComponentStrings.username}
           required
           onChange={setUsername}
         />
@@ -186,7 +189,7 @@ const RegisterPage: React.SFC<RegisterPageProps> = props => {
           id="register-password"
           type="password"
           required
-          placeholder={RegisterPageStrings.password}
+          placeholder={RegisterComponentStrings.password}
           onChange={setPassword}
         />
         <StyledInput
@@ -194,99 +197,64 @@ const RegisterPage: React.SFC<RegisterPageProps> = props => {
           id="register-mail"
           required
           type="email"
-          placeholder={RegisterPageStrings.email}
+          placeholder={RegisterComponentStrings.email}
           onChange={setEmail}
         />
 
         <StyledInput
           hasError={hasError}
           id="register-taxNumber"
-          placeholder={RegisterPageStrings.taxNumber}
+          placeholder={RegisterComponentStrings.taxNumber}
           required
           onChange={setTaxNumber}
         />
-        <StyledCityWrapper>
-          <UIAutoComplete
-            items={cities}
-            value={cityAutocomplateValue}
-            shouldItemRender={(item, value) => item.title.toLowerCase().indexOf(value.toLowerCase()) > -1}
-            getItemValue={item => item.title}
-            renderInput={
-              <StyledInput
-                hasError={hasError}
-                id="register-cities"
-                value={cityAutocomplateValue}
-                onChange={setCityAutoComplateValue}
-                placeholder={RegisterPageStrings.city}
-              />
-            }
-            renderItem={(item, highlighted) => (
-              // TODO: update this element
-              <div
-                key={item.id}
-                style={{ backgroundColor: highlighted ? '#eee' : 'transparent', padding: 5, cursor: 'pointer' }}
-              >
-                {item.title}
-              </div>
-            )}
-            onSelect={item => {
-              setCityAutoComplateValue(item.title);
-              setSelectedCityId(item.id);
-            }}
+        <StyledSelectWrapper>
+          <Select
+            isSearchable
+            isClearable
+            value={selectedCity}
+            onChange={(e: { value: string; label: string }) => setSelectedCity(e)}
+            options={cities.map(city => ({ value: city.id, label: city.title }))}
+            placeholder="Ilinizi Secin"
           />
-        </StyledCityWrapper>
-        <UIAutoComplete
-          items={states}
-          value={stateAutocomplateValue}
-          shouldItemRender={(item, value) => item.title.toLowerCase().indexOf(value.toLowerCase()) > -1}
-          getItemValue={item => item.title}
-          renderInput={
-            <StyledInput
-              hasError={hasError}
-              disabled={!selectedCityId}
-              id="register-states"
-              value={stateAutocomplateValue}
-              onChange={setStateAutoComplateValue}
-              placeholder={RegisterPageStrings.state}
-            />
-          }
-          renderItem={(item, highlighted) => (
-            // TODO: update this element
-            <div
-              key={item.id}
-              style={{ backgroundColor: highlighted ? '#eee' : 'transparent', padding: 5, cursor: 'pointer' }}
-            >
-              {item.title}
-            </div>
-          )}
-          onSelect={item => {
-            setStateAutoComplateValue(item.title);
-            setSelectedStateId(item.id);
-          }}
-        />
+        </StyledSelectWrapper>
+        <StyledSelectWrapper>
+          <Select
+            isSearchable
+            isClearable
+            isDisabled={!selectedCity}
+            onChange={(e: { value: string; label: string }) => setSelectedState(e)}
+            value={selectedState}
+            options={states.map(x => ({
+              value: x.id,
+              label: `${x.title}`,
+            }))}
+            placeholder="Ilcenizi Secin"
+          />
+        </StyledSelectWrapper>
         <StyledInput
           hasError={hasError}
           id="register-address-details"
-          placeholder={RegisterPageStrings.details}
+          placeholder={RegisterComponentStrings.details}
           onChange={setDetails}
         />
         <StyledUserTypeWrapper>
-          <StyledMemberTypeSpan>{RegisterPageStrings.memberType}</StyledMemberTypeSpan>
+          <StyledMemberTypeSpan>{RegisterComponentStrings.memberType}</StyledMemberTypeSpan>
           <UIButtonGroup<UserRoleResponse>
             size="small"
             onItemClick={id => setRole(id)}
             options={[
               {
                 id: 'CUSTOMER',
-                text: RegisterPageStrings.customer,
+                text: RegisterComponentStrings.customer,
               },
               {
                 id: 'ADMIN',
-                text: RegisterPageStrings.admin,
+                text: RegisterComponentStrings.admin,
               },
               {
                 id: 'MERCHANT',
-                text: RegisterPageStrings.merchant,
+                text: RegisterComponentStrings.merchant,
               },
             ]}
             selectedId={role}
@@ -294,19 +262,17 @@ const RegisterPage: React.SFC<RegisterPageProps> = props => {
           <StyledRegisterButton
             type="submit"
             hasError={hasError}
-            disabled={
-              !(email && username && name && taxNumber && selectedStateId && selectedCityId && details && password)
-            }
+            disabled={!(email && username && name && taxNumber && selectedState && selectedCity && details && password)}
           >
-            {loading ? <Loading color="currentColor" size={24} /> : RegisterPageStrings.register}
+            {loading ? <Loading color="currentColor" size={24} /> : RegisterComponentStrings.register}
           </StyledRegisterButton>
         </StyledUserTypeWrapper>
       </form>
-    </StyledRegisterPageWrapper>
+    </StyledRegisterComponentWrapper>
   );
 
   /*
-  RegisterPage Lifecycle
+  RegisterComponent Lifecycle
   */
   React.useEffect(() => {
     queryEndpoints.getCities().then(citiesResponse => {
@@ -314,12 +280,12 @@ const RegisterPage: React.SFC<RegisterPageProps> = props => {
     });
   }, []);
   React.useEffect(() => {
-    if (selectedCityId) {
-      queryEndpoints.getStatesByCityId({ cityId: selectedCityId }).then(statesResponse => {
+    if (selectedCity) {
+      queryEndpoints.getStatesByCityId({ cityId: selectedCity.value }).then(statesResponse => {
         setStates(statesResponse);
       });
     }
-  }, [selectedCityId]);
+  }, [selectedCity]);
 
   React.useEffect(() => {
     if (hasError) {
@@ -328,14 +294,14 @@ const RegisterPage: React.SFC<RegisterPageProps> = props => {
         type: 'error',
       });
     }
-  }, [email, username, name, taxNumber, selectedStateId, selectedCityId, details, password, hasError, alertContext]);
+  }, [email, username, name, taxNumber, selectedState, selectedCity, details, password, hasError, alertContext]);
   /*
-  RegisterPage Functions
+  RegisterComponent Functions
   */
 
   return __;
 };
 
-const _RegisterPage = RegisterPage;
+const _RegisterComponent = RegisterComponent;
 
-export { _RegisterPage as RegisterPage };
+export { _RegisterComponent as RegisterComponent };

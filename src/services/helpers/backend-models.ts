@@ -51,8 +51,18 @@ export interface ICreditResponse {
   id: string;
   totalDebt: number;
   creditLimit: number;
-  userId: string;
-  userName: string;
+  customerId: string;
+  customerName: string;
+}
+
+export interface IUserCreditResponse {
+  id: string;
+  totalDebt: number;
+  creditLimit: number;
+  customerId: string;
+  customerName: string;
+  merchantId: string;
+  merchantName: string;
 }
 
 export interface ISpecifyProductResponse {
@@ -168,7 +178,8 @@ export interface IOrderSummary {
   newCount: number;
   finishedCount: number;
   cancelledCount: number;
-  paidCount: number;
+  cancelRequestCount: number;
+  submittedCount: number;
 }
 
 export interface Invoice {

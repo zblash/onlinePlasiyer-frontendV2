@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useParams } from 'react-router';
 import { usePaginationQuery } from '~/services/query-context/use-pagination-quey';
 import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
 import { CategoryHorizontalListFetcher } from '~/fetcher-components/common/category-horizontal-list';
@@ -11,7 +12,9 @@ import { useApplicationContext } from '~/app/context';
   OrdersPage Helpers
 */
 interface OrdersPageProps {}
-
+interface RouteParams {
+  userId: string;
+}
 /*
   OrdersPage Colors // TODO : move theme.json
 */
@@ -28,8 +31,11 @@ const StyledPageHeader = styled.div`
 `;
 const OrdersPage: React.SFC<OrdersPageProps> = props => {
   const applicationContext = useApplicationContext();
+  const { userId } = useParams<RouteParams>();
+  const [customer, setCustomer] = React.useState();
   const [sortBy, setSortBy] = React.useState();
   const [sortType, setSortType] = React.useState();
+  const [date, setDate] = React.useState<string>();
   const {
     data: { values: orders, elementCountOfPage },
   } = usePaginationQuery(paginationQueryEndpoints.getAllOrders, {
@@ -37,9 +43,20 @@ const OrdersPage: React.SFC<OrdersPageProps> = props => {
     variables: {
       sortBy,
       sortType,
+      userId,
+      userName: customer,
+      startDate: date,
     },
     pageNumber: 1,
   });
+
+  const handleChangeCustomer = React.useCallback((e: string) => {
+    setCustomer(e);
+  }, []);
+  const handleChangeDate = React.useCallback((e: Date) => {
+    setDate(`${e.getDate()}-${e.getMonth() + 1}-${e.getFullYear()}`);
+  }, []);
+
   const __ = (
     <Container>
       {applicationContext.user.isCustomer && <CategoryHorizontalListFetcher shouldUseProductsPageLink />}
@@ -52,6 +69,8 @@ const OrdersPage: React.SFC<OrdersPageProps> = props => {
           setSortType={setSortType}
           orders={orders}
           elementCountOfPage={elementCountOfPage}
+          setCustomer={handleChangeCustomer}
+          setDate={handleChangeDate}
         />
       </StyledPageContainer>
     </Container>

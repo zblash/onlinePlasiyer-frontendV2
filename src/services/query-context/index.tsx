@@ -2,15 +2,15 @@ import * as React from 'react';
 import deepEqual from 'deep-equal';
 import { QueryContext } from './context';
 import { QueryHandlerParams, QueryContextType } from './helpers';
-import { getRouteId, deepMergeIdObjects } from '../utils';
+import { getRouteId, deepMergeIdObjects } from '../utils/index';
 import { useDatabaseObjectsContext } from '../database-object-context/context';
 import { backendObjectFunctions } from '../utils/route-schema';
 import { RefetchQuery } from '../mutation-context/helpers';
-import { asyncMap, objectForeach, isArray } from '~/utils';
+import { asyncMap, objectForeach, isArray } from '~/utils/index';
 import { useApiCallContext } from '../api-call-context/context';
 import { useObjectState } from '~/utils/hooks';
-import { MaybeArray } from '~/helpers';
-import { RouteSchema } from '../helpers';
+import { MaybeArray } from '~/helpers/index';
+import { RouteSchema } from '../helpers/index';
 
 interface QueryContextProviderProps {}
 

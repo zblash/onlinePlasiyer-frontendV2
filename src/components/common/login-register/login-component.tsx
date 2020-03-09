@@ -5,15 +5,15 @@ import { login } from '~/services/api';
 import { IExceptionResponse } from '~/services/helpers/backend-models';
 
 /*
-  LoginPage Helpers
+  LoginComponent Helpers
 */
-interface LoginPageProps {}
+interface LoginComponentProps {}
 
 /*
-  LoginPage Colors // TODO : move theme.json
+  LoginComponent Colors // TODO : move theme.json
 */
 
-const LoginPageColors = {
+const LoginComponentColors = {
   primary: '#0075ff',
   wrapperBackground: '#fff',
   unFocused: '#797979',
@@ -24,16 +24,16 @@ const LoginPageColors = {
 };
 
 /*
-  LoginPage Strings
+  LoginComponent Strings
 */
-const LoginPageStrings = {
+const LoginComponentStrings = {
   login: 'Giris Yap',
   dontHaveAccountQuestion: 'Hesabin Yokmu ?',
   register: 'Kayit Ol',
 };
 
 /*
-  LoginPage Styles
+  LoginComponent Styles
 */
 const StyledInput = styled(UIInput)<{ hasError: boolean }>`
   display: flex;
@@ -42,7 +42,7 @@ const StyledInput = styled(UIInput)<{ hasError: boolean }>`
   padding: 4px;
   border: 1px solid ${props => (props.hasError ? colors.danger : colors.primary)};
   border-radius: 4px;
-  color: ${LoginPageColors.unFocused};
+  color: ${LoginComponentColors.unFocused};
 `;
 const StyledLoginButton = styled(UIButton)<{ hasError: boolean }>`
   display: flex;
@@ -50,7 +50,7 @@ const StyledLoginButton = styled(UIButton)<{ hasError: boolean }>`
   align-items: center;
   justify-content: center;
   border: 1px solid ${props => (props.hasError ? colors.danger : colors.primary)};
-  background-color: ${LoginPageColors.white};
+  background-color: ${LoginComponentColors.white};
   color: ${props => (props.hasError ? colors.danger : colors.primary)};
   text-align: center;
   cursor: pointer;
@@ -79,7 +79,7 @@ const StyledErrorSpan = styled.p`
   color: ${colors.danger};
 `;
 
-const LoginPage: React.SFC<LoginPageProps> = props => {
+const LoginComponent: React.SFC<LoginComponentProps> = props => {
   const [password, setPassword] = React.useState('');
   const [username, setUsername] = React.useState('');
   const [hasError, setError] = React.useState(false);
@@ -125,11 +125,11 @@ const LoginPage: React.SFC<LoginPageProps> = props => {
       />
       <StyledBottomWrapper>
         <StyledLoginButton hasError={hasError} type="submit">
-          {isLoading ? <Loading color="currentColor" size={24} /> : LoginPageStrings.login}
+          {isLoading ? <Loading color="currentColor" size={24} /> : LoginComponentStrings.login}
         </StyledLoginButton>
       </StyledBottomWrapper>
     </form>
   );
 };
 
-export { LoginPage };
+export { LoginComponent };
