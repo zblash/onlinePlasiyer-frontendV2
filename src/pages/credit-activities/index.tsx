@@ -7,6 +7,7 @@ import { paginationQueryEndpoints } from '~/services/query-context/pagination-qu
 import { useApplicationContext } from '~/app/context';
 import { ICreditActivityResponse } from '~/services/helpers/backend-models';
 import { UITableColumns } from '~/components/ui/table';
+import { CreditActivitiesFilterComponent } from './filter';
 
 /* CreditActivities Helpers */
 interface CreditActivitiesProps {}
@@ -33,16 +34,31 @@ function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>)
   ];
   const [sortBy, setSortBy] = React.useState();
   const [sortType, setSortType] = React.useState();
+  const [userName, setUserName] = React.useState<string>();
+  const [lastDate, setLastDate] = React.useState<string>();
+  const [startDate, setStartDate] = React.useState<string>();
   const [allCreditActivityPageNumber, setAllCreditActivityPageNumber] = React.useState(1);
+
+  const query = React.useMemo(() => {
+    if (applicationContext.user.isAdmin) {
+      return paginationQueryEndpoints.getAllCreditActivities;
+    }
+
+    return paginationQueryEndpoints.getAllUsersCreditActivities;
+  }, [applicationContext.user]);
+
   const {
     data: { values: creditsValues, totalPage },
     getDataByPage: creditsByPage,
-  } = usePaginationQuery(paginationQueryEndpoints.getAllCreditActivities, {
+  } = usePaginationQuery(query, {
     pageNumber: allCreditActivityPageNumber,
     variables: {
       sortBy,
       sortType,
       userId,
+      userName,
+      startDate,
+      lastDate,
     },
     defaultValue: { values: [], totalPage: 0 },
   });
@@ -99,6 +115,16 @@ function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>)
     },
     [allCreditActivityPageNumber, totalPage],
   );
+
+  const handleUserFilterChange = React.useCallback((e: string) => {
+    setUserName(e);
+  }, []);
+  const handleLastDateFilterChange = React.useCallback((e: Date) => {
+    setLastDate(`${e.getDate()}-${e.getMonth() + 1}-${e.getFullYear()}`);
+  }, []);
+  const handleStartDateFilterChange = React.useCallback((e: Date) => {
+    setStartDate(`${e.getDate()}-${e.getMonth() + 1}-${e.getFullYear()}`);
+  }, []);
   /* CreditActivities Lifecycle  */
 
   return (
@@ -107,6 +133,11 @@ function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>)
         <StyledPageHeader>
           <h3>Cari Ekstralar</h3>
         </StyledPageHeader>
+        <CreditActivitiesFilterComponent
+          setCustomer={handleUserFilterChange}
+          setLastDate={handleLastDateFilterChange}
+          setStartDate={handleStartDateFilterChange}
+        />
         <UITable
           id="credit-activities-page-table"
           onSortChange={e => setSortBy(e.value)}

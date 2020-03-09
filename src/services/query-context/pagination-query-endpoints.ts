@@ -104,12 +104,25 @@ class QueryEndpoints {
   }) => Promise<IUserCreditResponse> = ({ pageNumber, sortBy, sortType, userName, userId }) =>
     paginationQueryGet('/credits', { pageNumber, sortBy, sortType, userName, userId });
 
+  getAllUsersCreditActivities: (s: {
+    pageNumber: number;
+    sortBy?: string;
+    sortType?: string;
+    startDate?: string;
+    userId?: string;
+    userName?: string;
+    lastDate?: string;
+  }) => Promise<ICreditActivityResponse> = ({ ...params }) => paginationQueryGet('/credits/activities', params);
+
   getAllCreditActivities: (s: {
     pageNumber: number;
     sortBy?: string;
     sortType?: string;
     userId?: string;
-  }) => Promise<ICreditActivityResponse> = ({ ...params }) => paginationQueryGet('/credits/activities', params);
+    userName?: string;
+    startDate?: string;
+    lastDate?: string;
+  }) => Promise<ICreditActivityResponse> = ({ ...params }) => paginationQueryGet('/admin/credits/activities', params);
 
   getAllObligationActivities: (s: {
     pageNumber: number;
