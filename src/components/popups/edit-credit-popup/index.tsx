@@ -114,17 +114,19 @@ function EditCreditPopup(props: React.PropsWithChildren<EditCreditPopupProps>) {
             id="edit-credit-total-debt"
             type="number"
             value={totalDebt}
+            step="0.1"
             required
-            onChange={e => setTotalDebt(parseInt(e, 10))}
+            onChange={e => setTotalDebt(parseFloat(e))}
             placeholder="Toplam Borc"
           />
           <label>Kredi Limiti</label>
           <StyledInput
             id="edit-credit-credit-limit"
             type="number"
+            step="0.1"
             value={creditLimit}
             required
-            onChange={e => setCreditLimit(parseInt(e, 10))}
+            onChange={e => setCreditLimit(parseFloat(e))}
             placeholder="Kredi Limiti"
           />
           <StyledButton type="submit" disabled={!totalDebt || !creditLimit}>

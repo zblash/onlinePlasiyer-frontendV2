@@ -57,11 +57,12 @@ class QueryEndpoints {
   getAllOrders: (s: {
     userId?: string;
     userName?: string;
+    startDate?: string;
     pageNumber: number;
     sortBy?: string;
     sortType?: string;
-  }) => Promise<IOrder> = ({ userId, userName, pageNumber, sortBy, sortType }) => {
-    return paginationQueryGet('/orders', { pageNumber, sortBy, sortType, userId, userName });
+  }) => Promise<IOrder> = ({ userId, userName, startDate, pageNumber, sortBy, sortType }) => {
+    return paginationQueryGet('/orders', { pageNumber, sortBy, sortType, userId, userName, startDate });
   };
 
   getAllSpecifies: (s: {

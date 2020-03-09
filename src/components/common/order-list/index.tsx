@@ -14,6 +14,7 @@ interface OrderListComponentProps {
   setSortBy: (e: any) => void;
   setSortType: (e: any) => void;
   setCustomer?: (e: string) => void;
+  setDate?: (e: Date) => void;
 }
 
 /* OrderListComponent Constants */
@@ -61,7 +62,7 @@ function OrderListComponent(props: React.PropsWithChildren<OrderListComponentPro
 
   return (
     <Container>
-      {props.setCustomer && <OrderListFilterComponent setCustomer={props.setCustomer} />}
+      {props.setCustomer && <OrderListFilterComponent setCustomer={props.setCustomer} setLastDate={props.setDate} />}
       <UITable
         id="orders-page-table"
         data={props.orders}

@@ -35,6 +35,7 @@ const OrdersPage: React.SFC<OrdersPageProps> = props => {
   const [customer, setCustomer] = React.useState();
   const [sortBy, setSortBy] = React.useState();
   const [sortType, setSortType] = React.useState();
+  const [date, setDate] = React.useState<string>();
   const {
     data: { values: orders, elementCountOfPage },
   } = usePaginationQuery(paginationQueryEndpoints.getAllOrders, {
@@ -44,6 +45,7 @@ const OrdersPage: React.SFC<OrdersPageProps> = props => {
       sortType,
       userId,
       userName: customer,
+      startDate: date,
     },
     pageNumber: 1,
   });
@@ -51,6 +53,10 @@ const OrdersPage: React.SFC<OrdersPageProps> = props => {
   const handleChangeCustomer = React.useCallback((e: string) => {
     setCustomer(e);
   }, []);
+  const handleChangeDate = React.useCallback((e: Date) => {
+    setDate(`${e.getDate()}-${e.getMonth() + 1}-${e.getFullYear()}`);
+  }, []);
+
   const __ = (
     <Container>
       {applicationContext.user.isCustomer && <CategoryHorizontalListFetcher shouldUseProductsPageLink />}
@@ -64,6 +70,7 @@ const OrdersPage: React.SFC<OrdersPageProps> = props => {
           orders={orders}
           elementCountOfPage={elementCountOfPage}
           setCustomer={handleChangeCustomer}
+          setDate={handleChangeDate}
         />
       </StyledPageContainer>
     </Container>
