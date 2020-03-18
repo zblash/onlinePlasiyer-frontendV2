@@ -7,6 +7,7 @@ import { OrderListComponent } from '~/components/common/order-list';
 import { Container } from '~/components/ui';
 import styled from '~/styled';
 import { useApplicationContext } from '~/app/context';
+import { twoDigit } from '~/utils';
 
 /*
   OrdersPage Helpers
@@ -54,7 +55,7 @@ const OrdersPage: React.SFC<OrdersPageProps> = props => {
     setCustomer(e);
   }, []);
   const handleChangeDate = React.useCallback((e: Date) => {
-    setDate(`${e.getDate()}-${e.getMonth() + 1}-${e.getFullYear()}`);
+    setDate(`${twoDigit(e.getDate())}-${twoDigit(e.getMonth() + 1)}-${e.getFullYear()}`);
   }, []);
 
   const __ = (

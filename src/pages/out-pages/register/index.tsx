@@ -18,6 +18,7 @@ const LoginPageStrings = {
 /* RegisterCPage Styles */
 const Container = styled.div`
   display: flex;
+  height: 100%;
   align-items: center;
   justify-content: center;
   background-color: ${colors.primary};

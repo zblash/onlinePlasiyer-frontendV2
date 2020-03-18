@@ -109,8 +109,7 @@ class QueryEndpoints {
     sortBy?: string;
     sortType?: string;
     startDate?: string;
-    userId?: string;
-    userName?: string;
+    creditId?: string;
     lastDate?: string;
   }) => Promise<ICreditActivityResponse> = ({ ...params }) => paginationQueryGet('/credits/activities', params);
 
@@ -118,8 +117,7 @@ class QueryEndpoints {
     pageNumber: number;
     sortBy?: string;
     sortType?: string;
-    userId?: string;
-    userName?: string;
+    creditId?: string;
     startDate?: string;
     lastDate?: string;
   }) => Promise<ICreditActivityResponse> = ({ ...params }) => paginationQueryGet('/admin/credits/activities', params);

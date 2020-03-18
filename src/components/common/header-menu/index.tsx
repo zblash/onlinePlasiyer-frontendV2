@@ -179,7 +179,8 @@ function HeaderMenu(props: React.PropsWithChildren<AdminHeaderProps>) {
         </StyledSubNavsButton>
         <StyledSubNavContent>
           <StyledSubNavContentItem to="/merchant/credits">Cariler</StyledSubNavContentItem>
-          <StyledSubNavContentItem to="/credit-activities">Cari Ekstrelerini Gor</StyledSubNavContentItem>
+          <StyledSubNavContentItem to="/credit-activities">Cari Ekstreleri</StyledSubNavContentItem>
+          <StyledSubNavContentItem to="/obligation-activities">Sistem Cari Ekstreleri</StyledSubNavContentItem>
         </StyledSubNavContent>
       </StyledSubNavs>
       <StyledSubNavs>

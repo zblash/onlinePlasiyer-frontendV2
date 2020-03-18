@@ -194,7 +194,7 @@ function OrderPage(props: React.PropsWithChildren<OrderPageProps>) {
             </p>
             <p>
               <span>{t('order.code')} : </span>
-              <strong>{order.id}</strong>
+              <strong>{order.code}</strong>
             </p>
           </StyledOrderHeaderLeftBox>
           <StyledOrderHeaderRightBox>
@@ -220,13 +220,13 @@ function OrderPage(props: React.PropsWithChildren<OrderPageProps>) {
           <StyledOrderItemTable>
             <thead>
               <tr>
-                <th>Urun Foto</th>
+                <th>Adet</th>
                 <th>Urun Ismi</th>
                 <th>Birim Fiyat</th>
                 <th>Toplam Fiyat</th>
                 <th>T.E.S Fiyat</th>
                 <th>Toplam Siparis</th>
-                <th>Kaldir</th>
+                {!applicationContext.user.isCustomer && <th>Kaldir</th>}
               </tr>
             </thead>
             <tbody>
@@ -244,27 +244,32 @@ function OrderPage(props: React.PropsWithChildren<OrderPageProps>) {
                         type="number"
                         value={orderItem.quantity}
                         name={orderItem.id}
+                        readOnly={applicationContext.user.isCustomer}
                         onChange={handleQuantityChange}
                       />
                     </td>
-                    <td>
-                      <input
-                        type="checkbox"
-                        name={orderItem.id}
-                        checked={orderItem.isRemoved}
-                        onChange={handleItemRemove}
-                      />
-                    </td>
+                    {!applicationContext.user.isCustomer && (
+                      <td>
+                        <input
+                          type="checkbox"
+                          name={orderItem.id}
+                          checked={orderItem.isRemoved}
+                          onChange={handleItemRemove}
+                        />
+                      </td>
+                    )}
                   </tr>
                 ))}
             </tbody>
           </StyledOrderItemTable>
-          <StyledOrderActionsWrapper>
-            <StyledOrderActionsButton className={cancelButton} onClick={handleCancelRequest}>
-              Iptal Istegi Yolla
-            </StyledOrderActionsButton>
-            <StyledOrderActionsButton onClick={handleOrderConfirm}>Onayla</StyledOrderActionsButton>
-          </StyledOrderActionsWrapper>
+          {applicationContext.user.isMerchant && (
+            <StyledOrderActionsWrapper>
+              <StyledOrderActionsButton className={cancelButton} onClick={handleCancelRequest}>
+                Iptal Istegi Yolla
+              </StyledOrderActionsButton>
+              <StyledOrderActionsButton onClick={handleOrderConfirm}>Onayla</StyledOrderActionsButton>
+            </StyledOrderActionsWrapper>
+          )}
         </div>
       </StyledOrderWrapper>
     </Container>

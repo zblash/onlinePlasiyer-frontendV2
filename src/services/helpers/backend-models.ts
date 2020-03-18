@@ -102,6 +102,7 @@ export interface ICardItemResponse {
   sellerName: string;
   totalPrice: number;
   unitPrice: number;
+  unitContents: number;
   unitType: UnitTypeResponse;
   discountedTotalPrice: number;
 }
@@ -163,6 +164,7 @@ export interface IOrderItems {
 
 export interface IOrder {
   buyerName: string;
+  code: number;
   id: string;
   orderDate: string;
   orderItems: IOrderItems[];

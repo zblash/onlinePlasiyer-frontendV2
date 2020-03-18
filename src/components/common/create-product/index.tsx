@@ -211,7 +211,7 @@ function CreateProductComponent(props: React.PropsWithChildren<CreateProductComp
   const { data: product, loading: productLoading } = useQuery(queryEndpoints.getProductByBarcode, {
     defaultValue: {},
     variables: { barcode },
-    skip: (!isBarcodeSaved && barcodeRef.current) || props.isAdminPage,
+    skip: !isBarcodeSaved || !isBarcodeCorrect,
   });
   /* CreateProductComponent Callbacks */
   const handleBarcodeSearch = React.useCallback(async () => {
@@ -238,7 +238,7 @@ function CreateProductComponent(props: React.PropsWithChildren<CreateProductComp
         .catch(() => {
           alert.show('Urun Duzenlenirken Hata Olustu', { type: 'error' });
         });
-    } else if (!isBarcodeSaved) {
+    } else if (!isBarcodeCorrect) {
       createProduct()
         .then(() => {
           if (props.onCreate) {
@@ -253,7 +253,7 @@ function CreateProductComponent(props: React.PropsWithChildren<CreateProductComp
       props.hasBarcode(barcode);
       alert.show('Urun sistemden bulundu, devam edebilirsiniz', { type: 'success' });
     }
-  }, [alert, barcode, createProduct, isBarcodeSaved, props, updateProduct]);
+  }, [alert, barcode, createProduct, isBarcodeCorrect, props, updateProduct]);
   /* CreateProductComponent Lifecycle  */
 
   React.useEffect(() => {
