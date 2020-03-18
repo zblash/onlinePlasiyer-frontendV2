@@ -42,7 +42,7 @@ function CreditsFilterComponent(props: React.PropsWithChildren<CreditsFilterComp
   return (
     <StyledFilterWrapper>
       <StyledNameLabel>Kullanici Ismiyle Ara: </StyledNameLabel>
-      <StyledNameInput placeholder="Musteri ismi" id="name-filter" value={customer} onChange={handleFilterNameChange} />
+      <StyledNameInput id="name-filter" value={customer} onChange={handleFilterNameChange} />
       <StyledNameInputBtn onClick={e => props.setCustomer(customer)}>Ara</StyledNameInputBtn>
     </StyledFilterWrapper>
   );

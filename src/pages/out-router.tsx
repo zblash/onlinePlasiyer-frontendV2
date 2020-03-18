@@ -1,13 +1,15 @@
 import React from 'react';
-import { Switch, Route } from 'react-router';
+import { Switch, Route, Redirect } from 'react-router';
 
 interface IRoute {
   path: string;
   component: React.ComponentClass | React.FunctionComponent;
 }
 
-const LoginPage = React.lazy(() => import('./login').then(module => ({ default: module.LoginPage })));
-const RegisterPage = React.lazy(() => import('./register').then(module => ({ default: module.RegisterPage })));
+const LoginPage = React.lazy(() => import('./out-pages/login').then(module => ({ default: module.LoginPage })));
+const RegisterPage = React.lazy(() =>
+  import('./out-pages/register').then(module => ({ default: module.RegisterPage })),
+);
 const routes: IRoute[] = [
   { path: '/', component: LoginPage },
   { path: '/login', component: LoginPage },
@@ -20,6 +22,7 @@ const OutRouter = React.memo(() => {
         {routes.map(route => (
           <Route key={route.path} path={route.path} component={route.component} exact />
         ))}
+        <Redirect from="*" to="/login" />
       </Switch>
     </React.Suspense>
   );

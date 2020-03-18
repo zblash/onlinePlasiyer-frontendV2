@@ -7,108 +7,116 @@ import { withRequiredRole } from '../components/hoc/with-required-role';
 import { Header } from '~/components/common/header/index';
 
 const CreateProductPage = React.lazy(() =>
-  import('./create-product').then(module => ({ default: module.CreateProductPage })),
+  import('./admin-pages/create-product').then(module => ({ default: module.CreateProductPage })),
 );
 const UpdateProductPage = React.lazy(() =>
-  import('./update-product').then(module => ({ default: module.UpdateProductPage })),
+  import('./admin-pages/update-product').then(module => ({ default: module.UpdateProductPage })),
 );
-const Home = React.lazy(() => import('../pages/home/index').then(module => ({ default: module.Home })));
+const Home = React.lazy(() => import('./customer-pages/home/index').then(module => ({ default: module.Home })));
 
 const ProductsPage = React.lazy(() =>
-  import('../pages/products/index').then(module => ({ default: module.ProductsPage })),
+  import('./common-pages/products/index').then(module => ({ default: module.ProductsPage })),
 );
-const UsersPage = React.lazy(() => import('../pages/users/index').then(module => ({ default: module.UsersPage })));
+const UsersPage = React.lazy(() => import('./admin-pages/users/index').then(module => ({ default: module.UsersPage })));
 const Page404 = React.lazy(() => import('./404-component').then(module => ({ default: module.Page404 })));
-const OrdersPage = React.lazy(() => import('./orders/index').then(module => ({ default: module.OrdersPage })));
-const CartPage = React.lazy(() => import('../pages/cart/index').then(module => ({ default: module.CartPage })));
-const InvoicesPage = React.lazy(() => import('./invoices/index').then(module => ({ default: module.InvoicesPage })));
+const OrdersPage = React.lazy(() =>
+  import('./common-pages/orders/index').then(module => ({ default: module.OrdersPage })),
+);
+const CartPage = React.lazy(() => import('./customer-pages/cart/index').then(module => ({ default: module.CartPage })));
 
 const AllProductPage = React.lazy(() =>
-  import('./all-products/index').then(module => ({ default: module.AllProductPage })),
+  import('./common-pages/all-products/index').then(module => ({ default: module.AllProductPage })),
 );
-const OrderPage = React.lazy(() => import('./order/index').then(module => ({ default: module.OrderPage })));
+const OrderPage = React.lazy(() =>
+  import('./common-pages/order/index').then(module => ({ default: module.OrderPage })),
+);
 const CartCheckoutPage = React.lazy(() =>
-  import('./cart-checkout/index').then(module => ({ default: module.CartCheckoutPage })),
+  import('./customer-pages/cart-checkout/index').then(module => ({ default: module.CartCheckoutPage })),
 );
-const InvoicePage = React.lazy(() => import('./invoice/index').then(module => ({ default: module.InvoicePage })));
-const ProfilePage = React.lazy(() => import('./profile/index').then(module => ({ default: module.ProfilePage })));
+const ProfilePage = React.lazy(() =>
+  import('./common-pages/profile/index').then(module => ({ default: module.ProfilePage })),
+);
 const CreateProductSpecifyPage = React.lazy(() =>
-  import('./create-product-specify/index').then(module => ({ default: module.CreateProductSpecifyPage })),
+  import('./common-pages/create-product-specify/index').then(module => ({ default: module.CreateProductSpecifyPage })),
 );
 const ProductSpecifiesPage = React.lazy(() =>
-  import('./product-specifies/index').then(module => ({ default: module.ProductSpecifiesPage })),
+  import('./common-pages/product-specifies/index').then(module => ({ default: module.ProductSpecifiesPage })),
 );
 const MerchantHome = React.lazy(() =>
-  import('./merchant-home/index').then(module => ({ default: module.MerchantHome })),
+  import('./merchant-pages/merchant-home/index').then(module => ({ default: module.MerchantHome })),
 );
 const CreateUserPage = React.lazy(() =>
-  import('./create-user/index').then(module => ({ default: module.CreateUserPage })),
+  import('./admin-pages/create-user/index').then(module => ({ default: module.CreateUserPage })),
 );
 const AllCategoriesPage = React.lazy(() =>
-  import('./all-categories/index').then(module => ({ default: module.AllCategoriesPage })),
+  import('./admin-pages/all-categories/index').then(module => ({ default: module.AllCategoriesPage })),
 );
-const UserPage = React.lazy(() => import('./user/index').then(module => ({ default: module.UserPage })));
-const UserInvoicesPage = React.lazy(() =>
-  import('./user-invoices/index').then(module => ({ default: module.UserInvoicesPage })),
-);
+const UserPage = React.lazy(() => import('./admin-pages/user/index').then(module => ({ default: module.UserPage })));
+
 const UserOrdersPage = React.lazy(() =>
-  import('./user-orders/index').then(module => ({ default: module.UserOrdersPage })),
+  import('./admin-pages/user-orders/index').then(module => ({ default: module.UserOrdersPage })),
 );
 const UserProductSpecifiesPage = React.lazy(() =>
-  import('./user-product-specifies/index').then(module => ({ default: module.UserProductSpecifiesPage })),
+  import('./admin-pages/user-product-specifies/index').then(module => ({ default: module.UserProductSpecifiesPage })),
 );
 const UpdateProductSpeciyPage = React.lazy(() =>
-  import('./update-product-specify/index').then(module => ({ default: module.UpdateProductSpeciyPage })),
+  import('./common-pages/update-product-specify/index').then(module => ({ default: module.UpdateProductSpeciyPage })),
 );
 
 const CreateAnnouncementPage = React.lazy(() =>
-  import('./create-announcement/index').then(module => ({ default: module.CreateAnnouncementPage })),
+  import('./admin-pages/create-announcement/index').then(module => ({ default: module.CreateAnnouncementPage })),
 );
 const AnnouncementsPage = React.lazy(() =>
-  import('./announcements/index').then(module => ({ default: module.AnnouncementsPage })),
+  import('./admin-pages/announcements/index').then(module => ({ default: module.AnnouncementsPage })),
 );
 const AllNotificationsPage = React.lazy(() =>
-  import('./all-notifications/index').then(module => ({ default: module.AllNotificationsPage })),
+  import('./admin-pages/all-notifications/index').then(module => ({ default: module.AllNotificationsPage })),
 );
 const CreateNotificationPage = React.lazy(() =>
-  import('./create-notification/index').then(module => ({ default: module.CreateNotificationPage })),
+  import('./admin-pages/create-notification/index').then(module => ({ default: module.CreateNotificationPage })),
 );
 const AllCreditsPage = React.lazy(() =>
-  import('./all-credits/index').then(module => ({ default: module.AllCreditsPage })),
+  import('./admin-pages/all-credits/index').then(module => ({ default: module.AllCreditsPage })),
 );
 const SearchProductsPage = React.lazy(() =>
-  import('./search-products/index').then(module => ({ default: module.SearchProductsPage })),
+  import('./common-pages/search-products/index').then(module => ({ default: module.SearchProductsPage })),
 );
 const CreateTicketPage = React.lazy(() =>
-  import('./create-ticket/index').then(module => ({ default: module.CreateTicketPage })),
+  import('./common-pages/create-ticket/index').then(module => ({ default: module.CreateTicketPage })),
 );
 const UserTicketsPage = React.lazy(() =>
-  import('./user-tickets/index').then(module => ({ default: module.UserTicketsPage })),
+  import('./admin-pages/user-tickets/index').then(module => ({ default: module.UserTicketsPage })),
 );
 const TicketRepliesPage = React.lazy(() =>
-  import('./ticket-replies/index').then(module => ({ default: module.TicketRepliesPage })),
+  import('./admin-pages/ticket-replies/index').then(module => ({ default: module.TicketRepliesPage })),
 );
 const CreditActivities = React.lazy(() =>
-  import('./credit-activities/index').then(module => ({ default: module.CreditActivities })),
+  import('./common-pages/credit-activities/index').then(module => ({ default: module.CreditActivities })),
 );
 const ObligationsPage = React.lazy(() =>
-  import('./obligation-activities/index').then(module => ({ default: module.ObligationsPage })),
+  import('./common-pages/obligation-activities/index').then(module => ({ default: module.ObligationsPage })),
 );
 const AllObligationsPage = React.lazy(() =>
-  import('./all-obligations/index').then(module => ({ default: module.AllObligationsPage })),
+  import('./admin-pages/all-obligations/index').then(module => ({ default: module.AllObligationsPage })),
 );
-const CustomersPage = React.lazy(() => import('./customers/index').then(module => ({ default: module.CustomersPage })));
+const CustomersPage = React.lazy(() =>
+  import('./merchant-pages/customers/index').then(module => ({ default: module.CustomersPage })),
+);
 
 const ProfileMerchantPage = React.lazy(() =>
-  import('./merchant-profile/index').then(module => ({ default: module.MerchantProfileForUserPage })),
+  import('./customer-pages/merchant-profile/index').then(module => ({ default: module.MerchantProfileForUserPage })),
 );
 
-const MerchantsPage = React.lazy(() => import('./merchants/index').then(module => ({ default: module.MerchantsPage })));
+const MerchantsPage = React.lazy(() =>
+  import('./customer-pages/merchants/index').then(module => ({ default: module.MerchantsPage })),
+);
 
 const MerchantCreditsPage = React.lazy(() =>
-  import('./merchant-credits/index').then(module => ({ default: module.MerchantCredits })),
+  import('./common-pages/merchant-credits/index').then(module => ({ default: module.MerchantCredits })),
 );
-
+const CustomerProfilePage = React.lazy(() =>
+  import('./merchant-pages/customer-profile/index').then(module => ({ default: module.CustomerProfilePage })),
+);
 interface IRoute {
   path: string;
   component: React.ComponentClass | React.FunctionComponent;
@@ -117,64 +125,18 @@ interface IRoute {
 }
 
 const routes: IRoute[] = [
-  {
-    path: '/',
-    component: Home,
-  },
-  {
-    path: '/users',
-    component: UsersPage,
-    authorize: ['ADMIN'],
-  },
-  {
-    path: '/cart',
-    component: CartPage,
-    authorize: ['CUSTOMER'],
-  },
-  {
-    path: '/cart/checkout',
-    component: CartCheckoutPage,
-    authorize: ['CUSTOMER'],
-  },
-  {
-    path: '/products/:categoryId?',
-    component: ProductsPage,
-  },
-  {
-    path: '/orders/:userId?',
-    component: OrdersPage,
-  },
-  {
-    path: '/user/orders/:userId',
-    component: UserOrdersPage,
-    authorize: ['ADMIN'],
-  },
-  {
-    path: '/order/:orderId',
-    component: OrderPage,
-  },
-  { path: '/invoices', component: InvoicesPage },
-  {
-    path: '/user/invoices/:userId',
-    component: UserInvoicesPage,
-    authorize: ['ADMIN'],
-  },
-  {
-    path: '/invoice/:invoiceId',
-    component: InvoicePage,
-  },
-  {
-    path: '/profile',
-    component: ProfilePage,
-  },
-  { path: '/all-categories', component: AllCategoriesPage, authorize: ['ADMIN'] },
+  { path: '/', component: Home },
+  { path: '/search/:productId', component: SearchProductsPage },
+  { path: '/create-ticket', component: CreateTicketPage },
+  { path: '/my-tickets', component: UserTicketsPage },
+  { path: '/ticket-replies/:ticketId', component: TicketRepliesPage },
+  { path: '/credit-activities/:creditId?', component: CreditActivities },
+  { path: '/products/:categoryId?', component: ProductsPage },
+  { path: '/orders/:userId?', component: OrdersPage },
+  { path: '/order/:orderId', component: OrderPage },
+  { path: '/profile', component: ProfilePage },
 
-  { path: '/all-products', component: AllProductPage, authorize: ['ADMIN', 'MERCHANT'] },
-  { path: '/add-product-specify', component: CreateProductSpecifyPage, authorize: ['MERCHANT', 'ADMIN'] },
-  { path: '/edit-product-specify/:specifyId', component: UpdateProductSpeciyPage, authorize: ['MERCHANT', 'ADMIN'] },
-  { path: '/product-specifies', component: ProductSpecifiesPage, authorize: ['ADMIN', 'MERCHANT'] },
-  { path: '/user/product-specifies/:userId', component: UserProductSpecifiesPage, authorize: ['ADMIN'] },
-  { path: '/merchant/home', component: MerchantHome, authorize: ['MERCHANT'] },
+  { path: '/users', component: UsersPage, authorize: ['ADMIN'] },
   { path: '/users/create', component: CreateUserPage, authorize: ['ADMIN'] },
   { path: '/user/:userId', component: UserPage, authorize: ['ADMIN'] },
   { path: '/create-announcement', component: CreateAnnouncementPage, authorize: ['ADMIN'] },
@@ -182,21 +144,29 @@ const routes: IRoute[] = [
   { path: '/all-notifications', component: AllNotificationsPage, authorize: ['ADMIN'] },
   { path: '/create-notification', component: CreateNotificationPage, authorize: ['ADMIN'] },
   { path: '/all-credits', component: AllCreditsPage, authorize: ['ADMIN'] },
-  { path: '/search/:productId', component: SearchProductsPage },
-  { path: '/create-ticket', component: CreateTicketPage },
-  { path: '/my-tickets', component: UserTicketsPage },
-  { path: '/ticket-replies/:ticketId', component: TicketRepliesPage },
-  { path: '/credit-activities/:userId?', component: CreditActivities },
-  { path: '/obligation-activities/:userId?', component: ObligationsPage, authorize: ['MERCHANT', 'ADMIN'] },
   { path: '/all-obligations', component: AllObligationsPage, authorize: ['ADMIN'] },
   { path: '/create-product', component: CreateProductPage, authorize: ['ADMIN'] },
   { path: '/update-product/:productId', component: UpdateProductPage, authorize: ['ADMIN'] },
-  { path: '/merchant/customers', component: CustomersPage, authorize: ['MERCHANT'] },
+  { path: '/all-categories', component: AllCategoriesPage, authorize: ['ADMIN'] },
+  { path: '/user/product-specifies/:userId', component: UserProductSpecifiesPage, authorize: ['ADMIN'] },
+  { path: '/user/orders/:userId', component: UserOrdersPage, authorize: ['ADMIN'] },
 
-  { path: '/merchants', component: MerchantsPage, authorize: ['CUSTOMER'] },
+  { path: '/cart', component: CartPage, authorize: ['CUSTOMER'] },
+  { path: '/cart/checkout', component: CartCheckoutPage, authorize: ['CUSTOMER'] },
   { path: '/merchant/profile/:merchantName/:merchantId', component: ProfileMerchantPage, authorize: ['CUSTOMER'] },
-  { path: '/merchant/credits/:userId?', component: MerchantCreditsPage, authorize: ['MERCHANT'] },
   { path: '/credits/:userId?', component: MerchantCreditsPage, authorize: ['CUSTOMER'] },
+  { path: '/merchants', component: MerchantsPage, authorize: ['CUSTOMER'] },
+
+  { path: '/merchant/customer/:customerName/:customerId', component: CustomerProfilePage, authorize: ['MERCHANT'] },
+  { path: '/merchant/customers', component: CustomersPage, authorize: ['MERCHANT'] },
+  { path: '/merchant/credits/:userId?', component: MerchantCreditsPage, authorize: ['MERCHANT'] },
+  { path: '/merchant/home', component: MerchantHome, authorize: ['MERCHANT'] },
+
+  { path: '/all-products', component: AllProductPage, authorize: ['ADMIN', 'MERCHANT'] },
+  { path: '/add-product-specify', component: CreateProductSpecifyPage, authorize: ['ADMIN', 'MERCHANT'] },
+  { path: '/edit-product-specify/:specifyId', component: UpdateProductSpeciyPage, authorize: ['ADMIN', 'MERCHANT'] },
+  { path: '/product-specifies', component: ProductSpecifiesPage, authorize: ['ADMIN', 'MERCHANT'] },
+  { path: '/obligation-activities/:userId?', component: ObligationsPage, authorize: ['ADMIN', 'MERCHANT'] },
 ];
 
 const Routes = React.memo(() => {

@@ -12,6 +12,7 @@ import { refetchFactory } from '~/services/utils';
 import { useApplicationContext } from '~/app/context';
 import { IOrder } from '~/services/helpers/backend-models';
 import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
+import { useAlert } from '~/utils/hooks';
 
 /* CartPage Helpers */
 interface CartPageProps {}
@@ -35,15 +36,16 @@ const StyledCartPageWrapper = styled.div`
 `;
 
 const StyledCartContent = styled.div`
-  width: 70%;
+  width: 80%;
   float: left;
   border: 1px solid ${colors.lightGray};
   border-radius: 6px;
+  overflow: auto;
   background-color: ${colors.white};
 `;
 
 const StyledCartRightBox = styled.div`
-  width: 25%;
+  width: 17%;
   float: right;
 `;
 
@@ -91,6 +93,7 @@ const StyledCartContentBoxTitleQuantity = styled.div`
   height: 55px;
   border-right: 1px solid ${colors.lightGray};
   align-items: center;
+  text-align: center;
 `;
 
 const StyledCartContentBoxTitlePrice = styled.div`
@@ -188,7 +191,7 @@ const StyledOrderItemTable = styled.table`
   td {
     text-align: center;
     padding: 8px;
-    width: 25%;
+    width: 11%;
   }
   > tbody > tr:nth-child(odd) {
     background-color: ${colors.lightGray};
@@ -199,9 +202,8 @@ const titleText = css`
   padding-left: 30px;
 `;
 const clearCartText = css`
-  float: left;
-  padding-left: 30px;
   cursor: pointer;
+  color: ${colors.danger};
 `;
 const titleP = css`
   text-align: center;
@@ -220,6 +222,7 @@ const discount = css`
 function CartPage(props: React.PropsWithChildren<CartPageProps>) {
   const applicationContext = useApplicationContext();
   const routerHistory = useHistory();
+  const alert = useAlert();
   const [paymentMethod, setPaymentMethod] = React.useState();
   const [holderId, setHolderId] = React.useState();
 
@@ -260,7 +263,10 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
 
   React.useEffect(() => {
     if (paymentMethod && holderId) {
-      setPayment();
+      setPayment().catch(error => {
+        alert.show(error.response.data.message, { type: 'error' });
+        setCheckoutFlag(false);
+      });
     }
   }, [paymentMethod, holderId]); // eslint-disable-line
   React.useEffect(() => {
@@ -347,12 +353,11 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
             <StyledCartContentBoxTitle>
               <StyledCartContentBoxTitleDetail>
                 <p className={titleText}>Sepette {cart.quantity} urun var</p>
+              </StyledCartContentBoxTitleDetail>
+              <StyledCartContentBoxTitleQuantity>
                 <p className={clearCartText} onClick={handleClearCart}>
                   Sepeti Temizle
                 </p>
-              </StyledCartContentBoxTitleDetail>
-              <StyledCartContentBoxTitleQuantity>
-                <p className={titleP}>Adet</p>
               </StyledCartContentBoxTitleQuantity>
               <StyledCartContentBoxTitlePrice>
                 <p className={titleP}>Fiyat</p>
@@ -436,8 +441,10 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
                       <tr>
                         <th>Urun Foto</th>
                         <th>Urun Ismi</th>
-                        <th>Satici</th>
-                        <th>Barkod</th>
+                        <th>Birim</th>
+                        <th>Birim Fiyat</th>
+                        <th>Birim Icerigi</th>
+                        <th>T.E.S Fiyat</th>
                         <th>Toplam Fiyat</th>
                         <th>Toplam Siparis</th>
                         <th>Sil</th>

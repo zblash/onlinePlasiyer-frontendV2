@@ -5,7 +5,6 @@ import { UIButton } from '~/components/ui';
 
 /* CreditActivitiesFilterComponent Helpers */
 interface CreditActivitiesFilterComponentProps {
-  setCustomer: (e: string) => void;
   setLastDate: (e: Date) => void;
   setStartDate: (e: Date) => void;
 }
@@ -18,13 +17,7 @@ const StyledFilterWrapper = styled.div`
   justify-content: space-between;
   margin-bottom: 10px;
 `;
-const StyledNameInput = styled.input`
-  float: left;  
-  border: 1px solid ${colors.lightGray};
-  border-radius: 6px;
-  padding 7px 9px;
-  margin-right: 5px;
-`;
+
 const StyledNameInputBtn = styled(UIButton)`
   padding: 0 65px;
 `;
@@ -44,58 +37,45 @@ const DatePickerBtn = css`
 /* CreditActivitiesFilterComponent Component  */
 function CreditActivitiesFilterComponent(props: React.PropsWithChildren<CreditActivitiesFilterComponentProps>) {
   /* CreditActivitiesFilterComponent Variables */
-  const [user, setUser] = React.useState<string>('');
   const [lastDate, setLastDate] = React.useState<Date>();
   const [startDate, setStartDate] = React.useState<Date>();
   /* CreditActivitiesFilterComponent Callbacks */
-  const handleFilterNameChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setUser(e.target.value);
-  }, []);
-
   const handleFilter = React.useCallback(() => {
-    if (user) {
-      props.setCustomer(user);
-    }
-
     if (lastDate) {
       props.setLastDate(lastDate);
     }
 
     if (startDate) {
-      props.setStartDate(lastDate);
+      props.setStartDate(startDate);
     }
-  }, [user, lastDate, startDate, props]);
+  }, [lastDate, startDate, props]);
   /* CreditActivitiesFilterComponent Lifecycle  */
 
   return (
     <StyledFilterWrapper>
       <div>
-        <StyledNameLabel>Kullanici Ismi: </StyledNameLabel>
-        <StyledNameInput placeholder="Kullanici ismi" id="name-filter" value={user} onChange={handleFilterNameChange} />
-      </div>
-      <div>
-        <StyledNameLabel>Tarih: </StyledNameLabel>
+        <StyledNameLabel>Baslangic Tarihi: </StyledNameLabel>
         <DatePicker
           selected={startDate}
           maxDate={new Date()}
           onChange={selectedDate => setStartDate(selectedDate)}
           locale="tr"
-          dateFormat="yyyy-MM-dd"
+          dateFormat="dd-MM-yyyy"
           className={DatePickerBtn}
         />
       </div>
       <div>
-        <StyledNameLabel>Tarih: </StyledNameLabel>
+        <StyledNameLabel>Son Tarih: </StyledNameLabel>
         <DatePicker
           selected={lastDate}
           maxDate={new Date()}
           onChange={selectedDate => setLastDate(selectedDate)}
           locale="tr"
-          dateFormat="yyyy-MM-dd"
+          dateFormat="dd-MM-yyyy"
           className={DatePickerBtn}
         />
       </div>
-      <StyledNameInputBtn disabled={!user} onClick={handleFilter}>
+      <StyledNameInputBtn disabled={!startDate || !lastDate} onClick={handleFilter}>
         Filtrele
       </StyledNameInputBtn>
     </StyledFilterWrapper>

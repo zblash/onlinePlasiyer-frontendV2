@@ -41,8 +41,8 @@ function CustomersPage(props: React.PropsWithChildren<CustomersPageProps>) {
   });
   /* CustomersPage Callbacks */
   const handleUser = React.useCallback(
-    (id: string) => {
-      routerHistory.push(`/user/${id}`);
+    (username: string, id: string) => {
+      routerHistory.push(`/merchant/customer/${username}/${id}`);
     },
     [routerHistory],
   );
@@ -62,7 +62,7 @@ function CustomersPage(props: React.PropsWithChildren<CustomersPageProps>) {
           columns={[
             {
               itemRenderer: item => (
-                <StyledUserLink onClick={() => handleUser(item.id)}>{item.username}</StyledUserLink>
+                <StyledUserLink onClick={() => handleUser(item.username, item.id)}>{item.username}</StyledUserLink>
               ),
               title: UsersPageStrings.username,
             },

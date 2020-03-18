@@ -8,11 +8,12 @@ import { useApplicationContext } from '~/app/context';
 import { ICreditActivityResponse } from '~/services/helpers/backend-models';
 import { UITableColumns } from '~/components/ui/table';
 import { CreditActivitiesFilterComponent } from './filter';
+import { twoDigit } from '~/utils';
 
 /* CreditActivities Helpers */
 interface CreditActivitiesProps {}
 interface RouteParams {
-  userId?: string;
+  creditId?: string;
 }
 /* CreditActivities Constants */
 
@@ -26,7 +27,7 @@ const StyledPageHeader = styled.div`
 function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>) {
   /* CreditActivities Variables */
   const applicationContext = useApplicationContext();
-  const { userId } = useParams<RouteParams>();
+  const { creditId } = useParams<RouteParams>();
   const sortList = [
     { value: 'id', label: 'Eklenme Sirasina Gore' },
     { value: 'date', label: 'Tarihe Gore' },
@@ -34,7 +35,6 @@ function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>)
   ];
   const [sortBy, setSortBy] = React.useState();
   const [sortType, setSortType] = React.useState();
-  const [userName, setUserName] = React.useState<string>();
   const [lastDate, setLastDate] = React.useState<string>();
   const [startDate, setStartDate] = React.useState<string>();
   const [allCreditActivityPageNumber, setAllCreditActivityPageNumber] = React.useState(1);
@@ -55,8 +55,7 @@ function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>)
     variables: {
       sortBy,
       sortType,
-      userId,
-      userName,
+      creditId,
       startDate,
       lastDate,
     },
@@ -71,10 +70,7 @@ function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>)
         title: 'Belge No',
         itemRenderer: item => item.documentNo,
       },
-      {
-        title: 'Kreditor',
-        itemRenderer: item => (item.creditType === 'MERCHANT_CREDIT' ? item.merchantName : 'Sistem'),
-      },
+
       {
         title: 'Tarih',
         itemRenderer: item => item.date,
@@ -96,10 +92,16 @@ function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>)
         itemRenderer: item => item.creditLimit,
       },
     ];
-    if (applicationContext.user.isMerchant) {
-      columns.push({
+    if (applicationContext.user.isMerchant || applicationContext.user.isAdmin) {
+      columns.unshift({
         title: 'Musteri',
         itemRenderer: item => item.customerName,
+      });
+    }
+    if (applicationContext.user.isCustomer || applicationContext.user.isAdmin) {
+      columns.unshift({
+        title: 'Kreditor',
+        itemRenderer: item => (item.creditType === 'MERCHANT_CREDIT' ? item.merchantName : 'Sistem'),
       });
     }
 
@@ -116,15 +118,13 @@ function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>)
     [allCreditActivityPageNumber, totalPage],
   );
 
-  const handleUserFilterChange = React.useCallback((e: string) => {
-    setUserName(e);
-  }, []);
   const handleLastDateFilterChange = React.useCallback((e: Date) => {
-    setLastDate(`${e.getDate()}-${e.getMonth() + 1}-${e.getFullYear()}`);
+    setLastDate(`${twoDigit(e.getDate())}-${twoDigit(e.getMonth() + 1)}-${e.getFullYear()}`);
   }, []);
   const handleStartDateFilterChange = React.useCallback((e: Date) => {
-    setStartDate(`${e.getDate()}-${e.getMonth() + 1}-${e.getFullYear()}`);
+    setStartDate(`${twoDigit(e.getDate())}-${twoDigit(e.getMonth() + 1)}-${e.getFullYear()}`);
   }, []);
+
   /* CreditActivities Lifecycle  */
 
   return (
@@ -134,7 +134,6 @@ function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>)
           <h3>Cari Ekstralar</h3>
         </StyledPageHeader>
         <CreditActivitiesFilterComponent
-          setCustomer={handleUserFilterChange}
           setLastDate={handleLastDateFilterChange}
           setStartDate={handleStartDateFilterChange}
         />
