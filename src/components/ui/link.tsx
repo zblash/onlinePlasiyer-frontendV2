@@ -7,6 +7,7 @@ import styled, { StylableProps } from '~/styled';
 */
 interface LinkProps extends StylableProps {
   to: string;
+  state?: object;
   activeClassName?: string;
   onClick?: () => void;
 }
@@ -32,7 +33,7 @@ const _Link: React.SFC<LinkProps> = props => {
   return (
     <StyledLinkWrapper
       className={props.className}
-      to={props.to}
+      to={{ pathname: props.to, state: props.state }}
       activeClassName={props.activeClassName}
       onClick={props.onClick}
     >

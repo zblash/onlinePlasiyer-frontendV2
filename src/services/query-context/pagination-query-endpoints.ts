@@ -10,6 +10,7 @@ import {
   ICreditActivityResponse,
   IObligationActivityResponse,
   IObligationTotals,
+  IUserCreditResponse,
 } from '~/services/helpers/backend-models';
 
 function paginationQueryGet(route: string, variables: any) {
@@ -33,8 +34,10 @@ class QueryEndpoints {
     pageNumber: number;
     sortBy?: string;
     sortType?: string;
-  }) => Promise<IProductResponse> = ({ pageNumber, sortBy, sortType }) =>
-    paginationQueryGet(`/products`, { pageNumber, sortBy, sortType });
+    userId?: string;
+    categoryId?: string;
+  }) => Promise<IProductResponse> = ({ pageNumber, sortBy, sortType, userId }) =>
+    paginationQueryGet(`/products`, { pageNumber, sortBy, sortType, userId });
 
   getAllProductsByCategoryId: (s: {
     categoryId: string;
@@ -51,17 +54,15 @@ class QueryEndpoints {
     return paginationQueryGet('/invoices', { pageNumber });
   };
 
-  getAllOrders: (s: { userId?: string; pageNumber: number; sortBy?: string; sortType?: string }) => Promise<IOrder> = ({
-    userId,
-    pageNumber,
-    sortBy,
-    sortType,
-  }) => {
-    if (userId) {
-      return paginationQueryGet(`/orders/byUser/${userId}`, { pageNumber, sortBy, sortType });
-    }
-
-    return paginationQueryGet('/orders', { pageNumber, sortBy, sortType });
+  getAllOrders: (s: {
+    userId?: string;
+    userName?: string;
+    startDate?: string;
+    pageNumber: number;
+    sortBy?: string;
+    sortType?: string;
+  }) => Promise<IOrder> = ({ userId, userName, startDate, pageNumber, sortBy, sortType }) => {
+    return paginationQueryGet('/orders', { pageNumber, sortBy, sortType, userId, userName, startDate });
   };
 
   getAllSpecifies: (s: {
@@ -81,21 +82,45 @@ class QueryEndpoints {
   getAllAnnouncements: (s: { pageNumber: number }) => Promise<IAnnouncement> = ({ pageNumber }) =>
     paginationQueryGet(`/announcements/all`, { pageNumber });
 
-  getAllCredits: (s: { pageNumber: number; sortBy?: string; sortType?: string }) => Promise<ICreditResponse> = ({
-    pageNumber,
-    sortBy,
-    sortType,
-  }) => paginationQueryGet('/credits', { pageNumber, sortBy, sortType });
+  getAllCredits: (s: {
+    pageNumber: number;
+    sortBy?: string;
+    sortType?: string;
+    userName?: string;
+    userId?: string;
+  }) => Promise<ICreditResponse> = ({ pageNumber, sortBy, sortType, userName, userId }) =>
+    paginationQueryGet('/admin/credits', { pageNumber, sortBy, sortType, userName, userId });
 
   getAllTickets: (s: { pageNumber: number; sortBy?: string; sortType?: string }) => Promise<ITicketResponse> = ({
     ...params
   }) => paginationQueryGet('/tickets', params);
 
+  getAllUserCredits: (s: {
+    pageNumber: number;
+    sortBy?: string;
+    sortType?: string;
+    userName?: string;
+    userId?: string;
+  }) => Promise<IUserCreditResponse> = ({ pageNumber, sortBy, sortType, userName, userId }) =>
+    paginationQueryGet('/credits', { pageNumber, sortBy, sortType, userName, userId });
+
+  getAllUsersCreditActivities: (s: {
+    pageNumber: number;
+    sortBy?: string;
+    sortType?: string;
+    startDate?: string;
+    creditId?: string;
+    lastDate?: string;
+  }) => Promise<ICreditActivityResponse> = ({ ...params }) => paginationQueryGet('/credits/activities', params);
+
   getAllCreditActivities: (s: {
     pageNumber: number;
     sortBy?: string;
     sortType?: string;
-  }) => Promise<ICreditActivityResponse> = ({ ...params }) => paginationQueryGet('/credits/activities', params);
+    creditId?: string;
+    startDate?: string;
+    lastDate?: string;
+  }) => Promise<ICreditActivityResponse> = ({ ...params }) => paginationQueryGet('/admin/credits/activities', params);
 
   getAllObligationActivities: (s: {
     pageNumber: number;

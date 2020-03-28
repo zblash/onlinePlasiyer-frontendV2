@@ -51,8 +51,18 @@ export interface ICreditResponse {
   id: string;
   totalDebt: number;
   creditLimit: number;
-  userId: string;
-  userName: string;
+  customerId: string;
+  customerName: string;
+}
+
+export interface IUserCreditResponse {
+  id: string;
+  totalDebt: number;
+  creditLimit: number;
+  customerId: string;
+  customerName: string;
+  merchantId: string;
+  merchantName: string;
 }
 
 export interface ISpecifyProductResponse {
@@ -92,6 +102,7 @@ export interface ICardItemResponse {
   sellerName: string;
   totalPrice: number;
   unitPrice: number;
+  unitContents: number;
   unitType: UnitTypeResponse;
   discountedTotalPrice: number;
 }
@@ -153,6 +164,7 @@ export interface IOrderItems {
 
 export interface IOrder {
   buyerName: string;
+  code: number;
   id: string;
   orderDate: string;
   orderItems: IOrderItems[];
@@ -168,7 +180,8 @@ export interface IOrderSummary {
   newCount: number;
   finishedCount: number;
   cancelledCount: number;
-  paidCount: number;
+  cancelRequestCount: number;
+  submittedCount: number;
 }
 
 export interface Invoice {

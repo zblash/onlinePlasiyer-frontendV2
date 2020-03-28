@@ -92,7 +92,30 @@ function HeaderMenu(props: React.PropsWithChildren<AdminHeaderProps>) {
         </StyledSubNavsButton>
         <StyledSubNavContent>
           <StyledSubNavContentItem to="/users/create">Yeni Ekle</StyledSubNavContentItem>
-          <StyledSubNavContentItem to="/users">Kullanicilari Gor</StyledSubNavContentItem>
+          <StyledSubNavContentItem
+            to="/users"
+            state={{
+              type: 'ADMIN',
+            }}
+          >
+            Yoneticileri Gor
+          </StyledSubNavContentItem>
+          <StyledSubNavContentItem
+            to="/users"
+            state={{
+              type: 'MERCHANT',
+            }}
+          >
+            Saticilari Gor
+          </StyledSubNavContentItem>
+          <StyledSubNavContentItem
+            to="/users"
+            state={{
+              type: 'CUSTOMER',
+            }}
+          >
+            Musterileri Gor
+          </StyledSubNavContentItem>
           <StyledSubNavContentItem to="/orders">Tum Siparisleri Gor</StyledSubNavContentItem>
           <StyledSubNavContentItem to="/invoices">Tum Faturalari Gor</StyledSubNavContentItem>
         </StyledSubNavContent>
@@ -137,7 +160,7 @@ function HeaderMenu(props: React.PropsWithChildren<AdminHeaderProps>) {
         <StyledSubNavsLink to="/merchant/home">Anasayfa </StyledSubNavsLink>
       </StyledSubNavs>
       <StyledSubNavs>
-        <StyledSubNavsLink to="/all-products">Tum Urunler</StyledSubNavsLink>
+        <StyledSubNavsLink to="/merchant/customers">Sistemdeki Musteriler</StyledSubNavsLink>
       </StyledSubNavs>
       <StyledSubNavs>
         <StyledSubNavsButton>
@@ -150,7 +173,15 @@ function HeaderMenu(props: React.PropsWithChildren<AdminHeaderProps>) {
         </StyledSubNavContent>
       </StyledSubNavs>
       <StyledSubNavs>
-        <StyledSubNavsLink to="/credit-activities">Cari Ekstrelerini Gor</StyledSubNavsLink>
+        <StyledSubNavsButton>
+          Cari Islemler
+          <UIIcon size={10} name="chevronDown" className={iconStyle} />
+        </StyledSubNavsButton>
+        <StyledSubNavContent>
+          <StyledSubNavContentItem to="/merchant/credits">Cariler</StyledSubNavContentItem>
+          <StyledSubNavContentItem to="/credit-activities">Cari Ekstreleri</StyledSubNavContentItem>
+          <StyledSubNavContentItem to="/obligation-activities">Sistem Cari Ekstreleri</StyledSubNavContentItem>
+        </StyledSubNavContent>
       </StyledSubNavs>
       <StyledSubNavs>
         <StyledSubNavsLink to="/orders">Siparisleri Gor</StyledSubNavsLink>
@@ -174,7 +205,17 @@ function HeaderMenu(props: React.PropsWithChildren<AdminHeaderProps>) {
         <StyledSubNavsLink to="/">Anasayfa </StyledSubNavsLink>
       </StyledSubNavs>
       <StyledSubNavs>
-        <StyledSubNavsLink to="/credit-activities">Cari Ekstreleri Gor</StyledSubNavsLink>
+        <StyledSubNavsLink to="/merchants">Saticilar </StyledSubNavsLink>
+      </StyledSubNavs>
+      <StyledSubNavs>
+        <StyledSubNavsButton>
+          Cari Islemler
+          <UIIcon size={10} name="chevronDown" className={iconStyle} />
+        </StyledSubNavsButton>
+        <StyledSubNavContent>
+          <StyledSubNavContentItem to="/credits">Cariler</StyledSubNavContentItem>
+          <StyledSubNavContentItem to="/credit-activities">Cari Ekstrelerini Gor</StyledSubNavContentItem>
+        </StyledSubNavContent>
       </StyledSubNavs>
       <StyledSubNavs>
         <StyledSubNavsLink to="/orders">Siparisleri Gor</StyledSubNavsLink>

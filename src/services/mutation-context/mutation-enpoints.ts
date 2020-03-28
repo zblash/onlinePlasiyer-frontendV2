@@ -18,6 +18,7 @@ import {
   PromotionType,
   IOrderConfirmItem,
   IObligationTotals,
+  IUserCreditResponse,
 } from '~/services/helpers/backend-models';
 
 interface CreateCategoryVariables {
@@ -79,7 +80,7 @@ class MutationEndpoints {
   };
 
   changeUserStatus = ({ id, status }: { id: string; status: boolean }) => {
-    return ApiCall.post(`/users/status/${id}/${status}`);
+    return ApiCall.post(`/api/users/status/${id}/${status}`);
   };
 
   createProduct = (params: {
@@ -167,8 +168,16 @@ class MutationEndpoints {
     return ApiCall.put(`/products/specify/${params.id}`, { ...others });
   };
 
-  addActiveStates: (s: { stateIds: string[] }) => Promise<IAddressStateResponse[]> = ({ stateIds }) =>
-    ApiCall.post('/user/activestates', stateIds);
+  addActiveStates: (s: { userId?: string; stateIds: string[] }) => Promise<IAddressStateResponse[]> = ({
+    userId,
+    stateIds,
+  }) => {
+    if (userId) {
+      return ApiCall.post(`/admin/users/activestates/${userId}`, stateIds);
+    }
+
+    return ApiCall.post('/user/activestates', stateIds);
+  };
 
   removeItemFromCard: (s: { id: string }) => Promise<any> = ({ id }) =>
     ApiCall.delete(`/cart/${id}`).then(item => ({ ...item, removed: true }));
@@ -197,7 +206,7 @@ class MutationEndpoints {
     name: string;
   }) => Promise<IUserCommonResponse> = (...params) => {
     if (params[0].id) {
-      return ApiCall.put(`/users/info/${params[0].id}`, ...params);
+      return ApiCall.put(`/admin/users/info/${params[0].id}`, ...params);
     }
 
     return ApiCall.put('/user/info', ...params);
@@ -220,7 +229,7 @@ class MutationEndpoints {
     roleType: UserRoleResponse;
     status: boolean;
     taxNumber: string;
-  }) => Promise<IUserRegisterResponse> = (...params) => ApiCall.post('/users', ...params);
+  }) => Promise<IUserRegisterResponse> = (...params) => ApiCall.post('/admin/users', ...params);
 
   updateOrder: (params: {
     id: string;
@@ -263,6 +272,17 @@ class MutationEndpoints {
   }) => {
     const { creditId, ...others } = params;
 
+    return ApiCall.put(`/admin/credits/${creditId}`, { ...others });
+  };
+
+  editUserCredit: (params: {
+    creditId: string;
+    totalDebt: number;
+    creditLimit: number;
+    customerId: string;
+  }) => Promise<IUserCreditResponse> = ({ ...params }) => {
+    const { creditId, ...others } = params;
+
     return ApiCall.put(`/credits/${creditId}`, { ...others });
   };
 
@@ -289,7 +309,7 @@ class MutationEndpoints {
   updateCommission: (params: { id: string; commission: number }) => Promise<IUserCommonResponse> = ({
     id,
     commission,
-  }) => ApiCall.put('/users/commissions', { id, commission });
+  }) => ApiCall.put('/admin/users/commissions', { id, commission });
 
   deneme = () => Promise.resolve({ id: '12341' });
 }

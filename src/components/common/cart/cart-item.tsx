@@ -6,29 +6,19 @@ import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { refetchFactory } from '~/services/utils';
 import { useApplicationContext } from '~/app/context';
+import { ICardItemResponse } from '~/services/helpers/backend-models';
 
 /* CartItem Helpers */
 interface CartItemProps {
-  cartItem: ICartItemProp;
+  cartItem: ICardItemResponse;
 }
 
-interface ICartItemProp {
-  id: string;
-  productBarcodeList: string[];
-  productName: string;
-  productId: string;
-  productPhotoUrl: string;
-  quantity: number;
-  sellerName: string;
-  totalPrice: number;
-  discountedTotalPrice: number;
-}
 /* CartItem Constants */
 
 /* CartItem Styles */
 
 const StyledCartContentItemBoxDeleteBtn = styled(UIButton)`
-  float: right;
+  display: inherit;
   border-radius: 100px 
   background-color: ${colors.lightGray};
   color: ${colors.dangerDark};
@@ -159,10 +149,16 @@ function CartItem(props: React.PropsWithChildren<CartItemProps>) {
           <p>{props.cartItem.productName}</p>
         </td>
         <td>
-          <p>{props.cartItem.sellerName}</p>
+          <p>{props.cartItem.unitType}</p>
         </td>
         <td>
-          <p>{props.cartItem.productBarcodeList[0]}</p>
+          <p>{props.cartItem.unitContents}</p>
+        </td>
+        <td>
+          <p>{props.cartItem.unitPrice} TL</p>
+        </td>
+        <td>
+          <p>{props.cartItem.recommendedRetailPrice} TL</p>
         </td>
         <td>
           <strong className={cartItemTotalPrice}>

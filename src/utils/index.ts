@@ -2,6 +2,10 @@ import { MaybeArray } from '~/helpers/index';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+export function twoDigit(n: any) {
+  return (n < 10 ? '0' : '') + n;
+}
+
 export function makeid(length: number) {
   let result = '';
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';

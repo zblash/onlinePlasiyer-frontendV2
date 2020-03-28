@@ -8,6 +8,7 @@ import { scrollToRef } from '~/utils/node';
 /* ProductListFetcher Helpers */
 interface ProductListFetcherProps extends ProductListComponentProps {
   selectedUserId?: string;
+  isMerchantProfile?: boolean;
 }
 
 function ProductListFetcher(props: React.PropsWithChildren<ProductListFetcherProps>) {
@@ -15,14 +16,35 @@ function ProductListFetcher(props: React.PropsWithChildren<ProductListFetcherPro
   const wrapperRef = React.useRef();
   const [productPageNumber, setProductPageNumber] = React.useState(1);
   const [specifyProductPageNumber, setSpecifyProductPageNumber] = React.useState(1);
+
+  const query = React.useMemo(
+    () =>
+      props.isMerchantProfile
+        ? paginationQueryEndpoints.getAllProducts
+        : paginationQueryEndpoints.getAllProductsByCategoryId,
+    [props.isMerchantProfile],
+  );
+
+  const queryOptions = React.useMemo(
+    () =>
+      props.isMerchantProfile
+        ? {
+            variables: { userId: props.selectedUserId },
+            defaultValue: { values: [] },
+            pageNumber: productPageNumber,
+          }
+        : {
+            variables: { categoryId: props.selectedCategoryId, userId: props.selectedUserId },
+            skip: !props.selectedCategoryId,
+            defaultValue: { values: [] },
+            pageNumber: productPageNumber,
+          },
+    [productPageNumber, props.isMerchantProfile, props.selectedCategoryId, props.selectedUserId],
+  );
+
   const { totalPage: productPageTotalPage, values: productsValues } = usePaginationQuery(
-    paginationQueryEndpoints.getAllProductsByCategoryId,
-    {
-      variables: { categoryId: props.selectedCategoryId, userId: props.selectedUserId },
-      skip: !props.selectedCategoryId,
-      defaultValue: { values: [] },
-      pageNumber: productPageNumber,
-    },
+    query,
+    queryOptions,
   ).getDataByPage(productPageNumber);
   const {
     data: { values: specifyProductsData, totalPage: specifyProductsTotalPage },

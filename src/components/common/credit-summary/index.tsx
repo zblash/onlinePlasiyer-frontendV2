@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled, { colors, css } from '~/styled';
 import { useTranslation } from '~/i18n';
-import { UIButton } from '~/components/ui';
+import { UILink } from '~/components/ui';
 import { useQuery } from '~/services/query-context/context';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 
@@ -41,7 +41,7 @@ const StyledTotalObligationElementText = styled.h3``;
 const styleTotalObligationElementLast = css`
   margin-left: 1%;
 `;
-const StyledTotalObligationButton = styled(UIButton)`
+const StyledTotalObligationLink = styled(UILink)`
 display: flex;
 float: right;
 align-items: center;
@@ -86,7 +86,9 @@ function CreditSummaryComponent(props: React.PropsWithChildren<CreditSummaryComp
         {/* TODO TL Icon move to translation */}
         <StyledTotalObligationElementText>{creditSummary.creditLimit} &#8378;</StyledTotalObligationElementText>
       </StyledTotalObligationElement>
-      <StyledTotalObligationButton>{t('common.details')}</StyledTotalObligationButton>
+      <StyledTotalObligationLink to={`/credit-activities/${creditSummary.id}`}>
+        {t('common.details')}
+      </StyledTotalObligationLink>
     </StyledTotalObligationWrapper>
   );
 }

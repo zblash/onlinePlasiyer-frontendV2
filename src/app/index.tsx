@@ -2,55 +2,75 @@ import * as React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { ApplicationContext } from './context';
 import Routes from '~/pages';
-import { ApplicationProviderProps } from './helpers';
 import { PopupContextProvider } from '~/contexts/popup';
 import getPermissions from './getPermissions';
 import { FullScreenLoading } from '~/components/common/full-screen-loading';
 import { css } from '~/styled';
-import { useObjectState } from '~/utils/hooks';
 import { IAddressStateResponse } from '~/services/helpers/backend-models';
+import { hasToken, ApiCall } from '~/services/api';
+import OutRouter from '~/pages/out-router';
 
 const opacityLoading = css`
   opacity: 0.7;
 `;
 
-function App(props: ApplicationProviderProps) {
+function App() {
   const [loading, setLoading] = React.useState(false);
-  const [userState, setUserState] = useObjectState({
-    ...props.user,
-    isAdmin: props.user.role === 'ADMIN',
-    isCustomer: props.user.role === 'CUSTOMER',
-    isMerchant: props.user.role === 'MERCHANT',
-  });
+  const [userState, setUserState] = React.useState();
+  const [userInfoError, setUserInfoError] = React.useState(false);
   const setUserActiveState = React.useCallback(
     (activeState: IAddressStateResponse[]) => {
-      setUserState({ activeStates: activeState });
+      setUserState(prevState => ({ ...prevState, activeStates: activeState }));
     },
     [setUserState],
   );
 
+  React.useEffect(() => {
+    if (hasToken) {
+      ApiCall.get('/user/info')
+        .then(_user => {
+          setUserState({
+            ..._user,
+            isAdmin: _user.role === 'ADMIN',
+            isCustomer: _user.role === 'CUSTOMER',
+            isMerchant: _user.role === 'MERCHANT',
+          });
+          setLoading(false);
+        })
+        .catch(() => {
+          setUserInfoError(true);
+          setLoading(false);
+        });
+    } else {
+      setUserInfoError(true);
+    }
+  }, []); //eslint-disable-line
+
   return (
     <BrowserRouter>
-      <ApplicationContext.Provider
-        value={{
-          user: userState,
-          permissions: getPermissions(props.user),
-          loading: {
-            show: () => {
-              setLoading(true);
+      {!userInfoError && userState && (
+        <ApplicationContext.Provider
+          value={{
+            user: userState,
+            permissions: getPermissions(userState),
+            loading: {
+              show: () => {
+                setLoading(true);
+              },
+              hide: () => {
+                setLoading(false);
+              },
             },
-            hide: () => {
-              setLoading(false);
-            },
-          },
-          setUserActiveState,
-        }}
-      >
-        <PopupContextProvider>
-          <Routes />
-          {loading && <FullScreenLoading className={opacityLoading} />}
-        </PopupContextProvider>
-      </ApplicationContext.Provider>
+            setUserActiveState,
+          }}
+        >
+          <PopupContextProvider>
+            <Routes />
+            {loading && <FullScreenLoading className={opacityLoading} />}
+          </PopupContextProvider>
+        </ApplicationContext.Provider>
+      )}
+      {userInfoError && !userState && <OutRouter />}
     </BrowserRouter>
   );
 }

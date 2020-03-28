@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled, { colors } from '~/styled';
-import { ICreditResponse } from '~/services/helpers/backend-models';
+import { ICreditResponse, IUserCreditResponse } from '~/services/helpers/backend-models';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { useAlert } from '~/utils/hooks';
@@ -9,7 +9,7 @@ import { UIInput, UIButton } from '~/components/ui';
 
 /* EditCreditPopup Helpers */
 export interface EditCreditPopupParams {
-  credit: ICreditResponse;
+  credit: IUserCreditResponse | ICreditResponse;
   refetchQuery?: any;
 }
 interface EditCreditPopupProps {
@@ -75,16 +75,30 @@ function EditCreditPopup(props: React.PropsWithChildren<EditCreditPopupProps>) {
     },
     refetchQueries: [props.params.refetchQuery],
   });
+  const { mutation: editUserCredit } = useMutation(mutationEndPoints.editUserCredit, {
+    variables: {
+      creditId: props.params.credit.id,
+      totalDebt,
+      creditLimit,
+      customerId: props.params.credit.customerId,
+    },
+    refetchQueries: [props.params.refetchQuery],
+  });
   /* EditCreditPopup Callbacks */
 
   const handleSubmit = React.useCallback(
     e => {
       e.preventDefault();
-      editCredit();
+      if (!('merchantId' in props.params.credit)) {
+        editCredit();
+      } else {
+        editUserCredit();
+      }
+
       alert.show('Kredi Guncellendi', { type: 'success' });
       popups.editCredit.hide();
     },
-    [editCredit, popups, alert],
+    [editCredit, popups, alert, editUserCredit, props.params.credit],
   );
   /* EditCreditPopup Lifecycle  */
 
@@ -100,17 +114,19 @@ function EditCreditPopup(props: React.PropsWithChildren<EditCreditPopupProps>) {
             id="edit-credit-total-debt"
             type="number"
             value={totalDebt}
+            step="0.1"
             required
-            onChange={e => setTotalDebt(parseInt(e, 10))}
+            onChange={e => setTotalDebt(parseFloat(e))}
             placeholder="Toplam Borc"
           />
           <label>Kredi Limiti</label>
           <StyledInput
             id="edit-credit-credit-limit"
             type="number"
+            step="0.1"
             value={creditLimit}
             required
-            onChange={e => setCreditLimit(parseInt(e, 10))}
+            onChange={e => setCreditLimit(parseFloat(e))}
             placeholder="Kredi Limiti"
           />
           <StyledButton type="submit" disabled={!totalDebt || !creditLimit}>
