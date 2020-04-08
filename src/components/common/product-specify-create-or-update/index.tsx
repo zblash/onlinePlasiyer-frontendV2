@@ -106,7 +106,6 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
     unitType: props.data ? props.data.unitType : null,
     stateIds: props.data ? props.data.states : [],
     discount: props.data ? props.data.discount : false,
-    promotionType: props.data && props.data.promotion ? props.data.promotion.promotionType : null,
     discountUnit: props.data && props.data.promotion ? props.data.promotion.discountUnit : 1,
     promotionText: props.data && props.data.promotion ? props.data.promotion.promotionText : '',
     discountValue: props.data && props.data.promotion ? props.data.promotion.discountValue : 0,
@@ -131,11 +130,6 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
   const [discount, setDiscount] = React.useState(initialValues.discount);
   const [discountValue, setDiscountValue] = React.useState(initialValues.discountValue);
   const [discountUnit, setDiscountUnit] = React.useState(initialValues.discountUnit);
-  const [promotionType, setPromotionType] = React.useState({
-    value: initialValues.promotionType,
-    label: initialValues.promotionType,
-  });
-  const promotionTypeOptions = [{ value: 'PERCENT', label: 'PERCENT' }, { value: 'PROMOTION', label: 'PROMOTION' }];
   const [promotionText, setPromotionText] = React.useState(initialValues.promotionText);
   const { data: product, loading: productLoading } = useQuery(queryEndpoints.getProductByBarcode, {
     defaultValue: {},
@@ -156,7 +150,6 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
       discountValue,
       discountUnit,
       promotionText,
-      promotionType: promotionType.value,
     },
     refetchQueries: [refetchFactory(paginationQueryEndpoints.getAllSpecifies)],
   });
@@ -175,7 +168,6 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
       discountValue,
       discountUnit,
       promotionText,
-      promotionType: promotionType.value,
     },
     refetchQueries: [refetchFactory(paginationQueryEndpoints.getAllSpecifies)],
   });
@@ -235,7 +227,7 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
     if (unitType && unitPrice) {
       let price = unitPrice;
       if ((unitType.value === 'KG' || unitType.value === 'KL') && contents) {
-        price = contents * unitPrice;
+        price = parseFloat((contents * unitPrice).toFixed(2));
       }
       setTotalPrice(price);
     }
@@ -367,23 +359,18 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
                 readOnly={!barcode}
                 onChange={e => setDiscountUnit(parseInt(e, 10))}
               />
-              <label>Promosyon/Indirim Tipi</label>
-              <Select
-                options={promotionTypeOptions}
-                placeholder="Secim Yapin"
-                className={selectInput}
-                value={promotionType}
-                isDisabled={!barcode}
-                onChange={e => setPromotionType(e)}
-              />
-              <label>Promosyon/Indirim Tutari</label>
+              <label>Promosyon/Indirim Tutari (Yuzdelik Olarak)</label>
               <StyledInput
                 id="discountValue"
                 type="number"
                 step="0.01"
                 value={discountValue}
                 readOnly={!barcode}
-                onChange={e => setDiscountValue(parseFloat(e))}
+                onChange={e => {
+                  if (parseFloat(e) < 100 && parseFloat(e) > 0) {
+                    setDiscountValue(parseFloat(e));
+                  }
+                }}
               />
             </StyledCreateProductSpecifyContentElement>
           )}
@@ -397,7 +384,7 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
                 !recommendedRetailPrice ||
                 !quantity ||
                 !contents ||
-                (discount && (!discountUnit || !discountValue || !promotionText || !promotionType))
+                (discount && (!discountUnit || !discountValue || !promotionText))
               }
               onClick={handleSubmit}
             >
