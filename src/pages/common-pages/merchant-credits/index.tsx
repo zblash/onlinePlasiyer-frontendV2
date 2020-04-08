@@ -45,7 +45,7 @@ function MerchantCredits(props: React.PropsWithChildren<MerchantCreditsProps>) {
   const popupsContext = usePopupContext();
   const [sortBy, setSortBy] = React.useState();
   const [sortType, setSortType] = React.useState();
-  const [username, setUsername] = React.useState();
+  const [username, setUsername] = React.useState<string>();
   const [allCreditsPageNumber, setAllCreditsPageNumber] = React.useState(1);
   const {
     data: { values: creditsValues, totalPage },
