@@ -213,6 +213,10 @@ function OrderPage(props: React.PropsWithChildren<OrderPageProps>) {
                 <span>{t('order.status-text')} : </span>
                 <strong>{t(`order.status.${order.status.toString().toLowerCase()}`)}</strong>
               </p>
+              <p>
+                <span>Odeme Yontemi : </span>
+                <strong>{order.paymentType}</strong>
+              </p>
             </StyledOrderHeaderRightBoxDetail>
           </StyledOrderHeaderRightBox>
         </StyledOrderHeader>
@@ -262,7 +266,7 @@ function OrderPage(props: React.PropsWithChildren<OrderPageProps>) {
                 ))}
             </tbody>
           </StyledOrderItemTable>
-          {applicationContext.user.isMerchant && (
+          {applicationContext.user.isMerchant && (order.status === 'CANCEL_REQUEST' || order.status === 'NEW') && (
             <StyledOrderActionsWrapper>
               <StyledOrderActionsButton className={cancelButton} onClick={handleCancelRequest}>
                 Iptal Istegi Yolla
