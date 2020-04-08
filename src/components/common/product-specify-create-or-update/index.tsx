@@ -134,7 +134,10 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
   const [discount, setDiscount] = React.useState(initialValues.discount);
   const [discountValue, setDiscountValue] = React.useState(initialValues.discountValue);
   const [discountUnit, setDiscountUnit] = React.useState(initialValues.discountUnit);
+<<<<<<< HEAD
 
+=======
+>>>>>>> heroku
   const [promotionText, setPromotionText] = React.useState(initialValues.promotionText);
   const { data: product, loading: productLoading } = useQuery(queryEndpoints.getProductByBarcode, {
     defaultValue: {},
@@ -364,8 +367,12 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
                 readOnly={!barcode}
                 onChange={e => setDiscountUnit(parseInt(e, 10))}
               />
+<<<<<<< HEAD
 
               <label>Promosyon/Indirim Orani (Yuzdelik)</label>
+=======
+              <label>Promosyon/Indirim Tutari (Yuzdelik Olarak)</label>
+>>>>>>> heroku
               <StyledInput
                 id="discountValue"
                 type="number"
