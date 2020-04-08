@@ -15,7 +15,6 @@ import {
   ICreditResponse,
   ITicketResponse,
   ITicketReplyResponse,
-  PromotionType,
   IOrderConfirmItem,
   IObligationTotals,
   IUserCreditResponse,
@@ -143,7 +142,6 @@ class MutationEndpoints {
     discount: boolean;
     discountValue?: number;
     discountUnit?: number;
-    promotionType?: PromotionType;
     promotionText?: string;
   }) => ApiCall.post('/products/specify', { ...params, stateList: params.stateIds, stateIds: undefined });
 
@@ -160,7 +158,6 @@ class MutationEndpoints {
     discount: boolean;
     discountValue?: number;
     discountUnit?: number;
-    promotionType?: PromotionType;
     promotionText?: string;
   }) => Promise<ISpecifyProductResponse> = ({ ...params }) => {
     const { id, ...others } = params;
