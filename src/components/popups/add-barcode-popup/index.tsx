@@ -97,7 +97,7 @@ function AddBarcodePopup(props: React.PropsWithChildren<AddBarcodePopupProps>) {
   const { t } = useTranslation();
   const popups = usePopupContext();
   const alert = useAlert();
-  const [barcode, setBarcode] = React.useState();
+  const [barcode, setBarcode] = React.useState<string>();
   const [isBarcodeSaved, setIsBarcodeSaved] = React.useState(false);
   const { mutation: checkProduct, loading: checkProductLoading } = useMutation(mutationEndPoints.hasProduct, {
     variables: { barcode },

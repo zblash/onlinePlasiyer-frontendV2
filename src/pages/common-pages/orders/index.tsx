@@ -33,7 +33,7 @@ const StyledPageHeader = styled.div`
 const OrdersPage: React.SFC<OrdersPageProps> = props => {
   const applicationContext = useApplicationContext();
   const { userId } = useParams<RouteParams>();
-  const [customer, setCustomer] = React.useState();
+  const [customer, setCustomer] = React.useState<string>();
   const [sortBy, setSortBy] = React.useState();
   const [sortType, setSortType] = React.useState();
   const [date, setDate] = React.useState<string>();

@@ -44,7 +44,7 @@ const _ProductsPage: React.SFC<ProductsPageProps> = props => {
   const { data: users, loading: usersLoading } = useQuery(queryEndpoints.getMerchants, {
     defaultValue: [],
   });
-  const [selectedUserId, setSelectedUserId] = React.useState();
+  const [selectedUserId, setSelectedUserId] = React.useState<string>();
 
   const __ = (
     <Container>
