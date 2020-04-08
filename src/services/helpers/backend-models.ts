@@ -84,7 +84,6 @@ export interface ISpecifyProductResponse {
 
 export interface IProductPromotion {
   promotionText: string;
-  promotionType: PromotionType;
   discountValue: number;
   discountUnit: number;
 }
@@ -170,6 +169,7 @@ export interface IOrder {
   orderItems: IOrderItems[];
   sellerName: string;
   status: TOrderStatus;
+  paymentType: TPaymentOption;
   totalPrice: number;
   waybillDate: string | null;
   buyerAddress: IAddressResponse;
@@ -288,7 +288,7 @@ export type UnitTypeResponse = 'KG' | 'KL' | 'AD';
 
 export type TOrderStatus = 'NEW' | 'FINISHED' | 'CONFIRMED' | 'CANCELLED' | 'CANCEL_REQUEST';
 
-export type PromotionType = 'PERCENT' | 'PROMOTION';
+export type TPaymentOption = 'SYSTEM_CREDIT' | 'MERCHANT_CREDIT' | 'COD';
 
 export type CreditActivityType = 'DEBT' | 'CREDIT';
 
