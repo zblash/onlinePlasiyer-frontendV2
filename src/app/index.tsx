@@ -9,6 +9,7 @@ import { css } from '~/styled';
 import { IAddressStateResponse } from '~/services/helpers/backend-models';
 import { hasToken, ApiCall } from '~/services/api';
 import OutRouter from '~/pages/out-router';
+import { User } from '~/services/helpers/maps';
 
 const opacityLoading = css`
   opacity: 0.7;
@@ -16,7 +17,7 @@ const opacityLoading = css`
 
 function App() {
   const [loading, setLoading] = React.useState(false);
-  const [userState, setUserState] = React.useState();
+  const [userState, setUserState] = React.useState<User>();
   const [userInfoError, setUserInfoError] = React.useState(false);
   const setUserActiveState = React.useCallback(
     (activeState: IAddressStateResponse[]) => {
