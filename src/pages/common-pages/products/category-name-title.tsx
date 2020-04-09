@@ -33,7 +33,10 @@ function CategoryNameTitle(props: React.PropsWithChildren<CategoryNameTitleProps
   /* CategoryNameTitle Lifecycle  */
   React.useEffect(() => {
     setSelectedCategoryName(
-      lodashGet(allCategories.find(category => category.id === props.selectedCategoryId), 'name'),
+      lodashGet(
+        allCategories.find(category => category.id === props.selectedCategoryId),
+        'name',
+      ),
     );
   }, [allCategories, props.selectedCategoryId]);
 

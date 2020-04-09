@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 import axios from 'axios';
 import { TOKEN_KEY } from '~/utils/constants';
 import { UserRoleResponse } from './helpers/backend-models';
@@ -8,7 +9,7 @@ export const TOKEN = {
   remove: () => localStorage.removeItem(TOKEN_KEY),
 };
 
-export const URL = 'https://onlineplasiyer-backend.herokuapp.com';
+export const URL = 'http://localhost:8080';
 const API_URL = `${URL}/api`;
 
 const headers = () => ({

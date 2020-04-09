@@ -16,7 +16,7 @@ import { EditCreditPopup } from '~/components/popups/edit-credit-popup';
 import { EditObligationPopup } from '~/components/popups/edit-obligation-popup';
 import { SetCommissionPopup } from '~/components/popups/set-commission-popup';
 
-interface PopupsWrapperProps extends PopupContextType {}
+type PopupsWrapperProps = PopupContextType;
 
 function PopupsWrapper(props: PopupsWrapperProps) {
   const popupMapArray = [

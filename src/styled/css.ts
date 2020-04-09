@@ -59,7 +59,7 @@ ${globals.join('\n')}
 `;
 
 const _css: {
-  (_styles: TemplateStringsArray, ...args: (ExpressTypes)[]): string;
+  (_styles: TemplateStringsArray, ...args: ExpressTypes[]): string;
   styled: typeof styledCss;
   global: typeof globalCss;
   keyframes: typeof keyframes;

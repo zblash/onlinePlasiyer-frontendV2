@@ -4,7 +4,6 @@ import { UIIcon, UILink } from '~/components/ui';
 import { useApplicationContext } from '~/app/context';
 
 /* AdminHeader Helpers */
-interface AdminHeaderProps {}
 
 /* AdminHeader Constants */
 
@@ -71,7 +70,7 @@ const iconStyle = css`
   margin-left: 8px;
 `;
 /* AdminHeader Component  */
-function HeaderMenu(props: React.PropsWithChildren<AdminHeaderProps>) {
+function HeaderMenu() {
   /* AdminHeader Variables */
 
   /* AdminHeader Callbacks */

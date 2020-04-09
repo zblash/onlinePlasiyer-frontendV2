@@ -7,7 +7,7 @@ import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { useQuery } from '~/services/query-context/context';
 
 /* CategoryHorizontalListFetcher Helpers */
-interface CategoryHorizontalListFetcherProps extends CategoryHorizontalListComponentProps {}
+type CategoryHorizontalListFetcherProps = CategoryHorizontalListComponentProps;
 
 function CategoryHorizontalListFetcher(props: React.PropsWithChildren<CategoryHorizontalListFetcherProps>) {
   const [expandedCategoryId, setExpandedCategoryId] = React.useState(null);

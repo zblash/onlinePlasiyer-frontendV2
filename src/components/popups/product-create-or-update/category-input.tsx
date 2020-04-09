@@ -90,7 +90,11 @@ const CategoryInput: React.SFC<CategoryInputProps> = props => {
     if (props.selectedCategoryId) {
       const foundCategory = Array.from(allCategories);
       setAutoCompleteValue(
-        lodashGet(foundCategory.find(category => category.id === props.selectedCategoryId), 'name', ''),
+        lodashGet(
+          foundCategory.find(category => category.id === props.selectedCategoryId),
+          'name',
+          '',
+        ),
       );
     }
   }, [allCategories, props.selectedCategoryId]);

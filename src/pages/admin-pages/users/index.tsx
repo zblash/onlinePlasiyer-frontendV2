@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 import * as React from 'react';
 import { useHistory, useLocation } from 'react-router';
 import styled, { css, colors } from '~/styled';
@@ -7,7 +8,6 @@ import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { queryEndpoints } from '~/services/query-context/query-endpoints';
 import { UserType } from '~/services/helpers/maps';
-import { UserRoleResponse } from '~/services/helpers/backend-models';
 
 /*
   UsersPage Helpers
@@ -79,13 +79,13 @@ const iconStyle = css`
 const StyledPageHeader = styled.div`
   display: flex;
 `;
-const UsersPage: React.SFC<UsersPageProps> = props => {
+const UsersPage: React.SFC<UsersPageProps> = () => {
   const routerHistory = useHistory();
-  const location: UserRoleResponse = useLocation().state.type;
+  const location = useLocation().state;
   const [type, setType] = React.useState<UserType>('all');
   const { data: users } = useQuery(queryEndpoints.getUsers, {
     variables: {
-      role: location,
+      role: location['type'],
       type,
     },
     defaultValue: [],
@@ -108,7 +108,7 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
                 {
                   id: 'active',
                   text: UsersPageStrings.activeUserType,
-                  disabled: location === 'ADMIN',
+                  disabled: location['type'] === 'ADMIN',
                 },
                 {
                   id: 'all',
@@ -117,7 +117,7 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
                 {
                   id: 'passive',
                   text: UsersPageStrings.passiveUserType,
-                  disabled: location === 'ADMIN',
+                  disabled: location['type'] === 'ADMIN',
                 },
               ]}
               onItemClick={id => setType(id)}
@@ -130,7 +130,7 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
           rowCount={12}
           columns={[
             {
-              itemRenderer: item => (
+              itemRenderer: (item: { id: string; username: React.ReactNode }) => (
                 <StyledUserLink onClick={() => handleUser(item.id)}>{item.username}</StyledUserLink>
               ),
               title: UsersPageStrings.username,
@@ -144,7 +144,7 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
               title: UsersPageStrings.email,
             },
           ].concat(
-            location === 'ADMIN'
+            location['type'] === 'ADMIN'
               ? []
               : [
                   {
@@ -163,7 +163,7 @@ const UsersPage: React.SFC<UsersPageProps> = props => {
                             className={iconStyle}
                             name={loading ? 'loading' : iconName}
                             color={item.status ? UsersPageColors.danger : UsersPageColors.primary}
-                            onClick={e => {
+                            onClick={() => {
                               changeUserStatus({ id: item.id, status: !item.status });
                             }}
                           />
