@@ -173,7 +173,16 @@ function CartItem(props: React.PropsWithChildren<CartItemProps>) {
             <StyledCartContentItemBoxQuantityInputBtnMinus name="mns" onClick={() => setQuantity(quantity - 1)}>
               -
             </StyledCartContentItemBoxQuantityInputBtnMinus>
-            <StyledCartContentItemBoxQuantityInput type="number" name="quantityInp" value={quantity} disabled />
+            <StyledCartContentItemBoxQuantityInput
+              type="number"
+              name="quantityInp"
+              value={quantity}
+              onChange={e => {
+                if (parseInt(e.target.value, 10) > 0) {
+                  setQuantity(parseInt(e.target.value, 10));
+                }
+              }}
+            />
             <StyledCartContentItemBoxQuantityInputBtnPlus name="pls" onClick={() => setQuantity(quantity + 1)}>
               +
             </StyledCartContentItemBoxQuantityInputBtnPlus>
