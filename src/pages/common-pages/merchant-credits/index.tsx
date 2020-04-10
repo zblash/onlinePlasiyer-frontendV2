@@ -67,7 +67,11 @@ function MerchantCredits(props: React.PropsWithChildren<MerchantCreditsProps>) {
     const table = [
       {
         title: applicationContext.user.isMerchant ? 'Musteri' : 'Satici',
-        itemRenderer: item => <StyledLink to={`/credit-activities/${item.id}`}>{item.customerName}</StyledLink>,
+        itemRenderer: item => (
+          <StyledLink to={`/credit-activities/${item.id}`}>
+            {applicationContext.user.isMerchant ? item.customerName : item.merchantName}
+          </StyledLink>
+        ),
       },
       {
         title: 'Toplam Borc',
