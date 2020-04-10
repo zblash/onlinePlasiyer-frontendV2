@@ -340,11 +340,11 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
             {creditSummary && (
               <p>
                 <span>
-                  Sistem'e Olan Borcunuz: <strong>{creditSummary.totalDebt} &#8378; </strong>
+                  Sistem'e Olan Borcunuz: <strong>{creditSummary.totalDebt.toFixed(2)} &#8378; </strong>
                 </span>
                 <br />
                 <span>
-                  Sistem Kredi Limitiniz: <strong>{creditSummary.creditLimit} &#8378; </strong>
+                  Sistem Kredi Limitiniz: <strong>{creditSummary.creditLimit.toFixed(2)} &#8378; </strong>
                 </span>
               </p>
             )}
@@ -479,7 +479,8 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
                   .map(item => item.discountedTotalPrice)
                   .reduce((a, c) => {
                     return a + c;
-                  }, 0)}{' '}
+                  }, 0)
+                  .toFixed(2)}{' '}
                 TL
               </h2>
               <StyledCartCheckoutBtn disabled={!checkoutFlag} onClick={handleCartCheckout}>
