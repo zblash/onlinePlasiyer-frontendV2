@@ -146,7 +146,7 @@ function MerchantProfileForUserPage(props: React.PropsWithChildren<MerchantProfi
                 {/* TODO TL Icon move to translation */}
                 <StyledTotalObligationElementText>{credit.creditLimit} &#8378;</StyledTotalObligationElementText>
               </StyledTotalObligationElement>
-              <StyledTotalObligationLink to={`/credit-activities/${merchantId}`}>
+              <StyledTotalObligationLink to={`/credit-activities/${credit.id}`}>
                 {t('common.details')}
               </StyledTotalObligationLink>
             </StyledTotalObligationWrapper>

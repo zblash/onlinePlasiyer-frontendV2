@@ -137,7 +137,7 @@ function CustomerProfilePage(props: React.PropsWithChildren<CustomerProfilePageP
               </>
             )}
             {(!credit || error || creditLoading) && <p>Kredi saglamiyorsunuz. Kredi saglamak icin TIKLAYIN</p>}
-            <StyledTotalObligationLink to={`/credit-activities/${customerId}`}>
+            <StyledTotalObligationLink to={`/credit-activities/${credit.id}`}>
               {t('common.details')}
             </StyledTotalObligationLink>
           </StyledTotalObligationWrapper>

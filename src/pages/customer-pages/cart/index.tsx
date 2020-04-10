@@ -442,8 +442,8 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
                         <th>Urun Foto</th>
                         <th>Urun Ismi</th>
                         <th>Birim</th>
+                        <th>B. Icerik Adeti</th>
                         <th>Birim Fiyat</th>
-                        <th>Birim Icerigi</th>
                         <th>T.E.S Fiyat</th>
                         <th>Toplam Fiyat</th>
                         <th>Toplam Siparis</th>
