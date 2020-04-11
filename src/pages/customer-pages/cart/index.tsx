@@ -225,7 +225,6 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
   const alert = useAlert();
   const [paymentMethod, setPaymentMethod] = React.useState();
   const [holderId, setHolderId] = React.useState();
-
   const [checkoutFlag, setCheckoutFlag] = React.useState(false);
   const [allCheck, setAllCheck] = React.useState(true);
   const [sellerIds, setSellerIds] = React.useState<Array<ISellers>>([]);
