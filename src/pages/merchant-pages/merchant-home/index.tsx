@@ -94,7 +94,7 @@ function MerchantHome(props: React.PropsWithChildren<MerchantHomeProps>) {
               <StyledOrderSummaryItem>
                 <p>
                   <i className={orderSummaryItemI}>{orderSummary.finishedCount}</i>
-                  Gonderilen Siparis
+                  Tamamlanan Siparis
                 </p>
               </StyledOrderSummaryItem>
               <StyledOrderSummaryItem>
@@ -112,7 +112,7 @@ function MerchantHome(props: React.PropsWithChildren<MerchantHomeProps>) {
               <StyledOrderSummaryItem>
                 <p>
                   <i className={orderSummaryItemI}>{orderSummary.submittedCount}</i>
-                  Tamamlanan Siparis
+                  Onaylanan Siparis
                 </p>
               </StyledOrderSummaryItem>
             </StyledOrderSummaryMenu>
