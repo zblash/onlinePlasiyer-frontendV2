@@ -18,6 +18,7 @@ import {
   IOrderConfirmItem,
   IObligationTotals,
   IUserCreditResponse,
+  CreditPaymentType,
 } from '~/services/helpers/backend-models';
 
 interface CreateCategoryVariables {
@@ -232,6 +233,7 @@ class MutationEndpoints {
     id: string;
     paidPrice?: number;
     status: TOrderStatus;
+    paymentType?: CreditPaymentType;
     waybillDate?: string;
   }) => Promise<IOrder> = ({ ...params }) => {
     const { id, ...others } = params;
