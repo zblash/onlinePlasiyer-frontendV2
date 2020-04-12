@@ -27,7 +27,7 @@ const StyledPageHeader = styled.div`
 function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>) {
   /* CreditActivities Variables */
   const applicationContext = useApplicationContext();
-  const { creditId } = useParams<RouteParams>();
+  //const { creditId } = useParams<RouteParams>();
   const sortList = [
     { value: 'id', label: 'Eklenme Sirasina Gore' },
     { value: 'date', label: 'Tarihe Gore' },
@@ -55,7 +55,6 @@ function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>)
     variables: {
       sortBy,
       sortType,
-      creditId,
       startDate,
       lastDate,
     },
@@ -77,18 +76,26 @@ function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>)
       },
       {
         title: 'Islem Tipi',
-        itemRenderer: item => item.creditActivityType,
+        itemRenderer: item => item.activityType,
       },
       {
-        title: 'Islem Tutari',
+        title: 'Odeme Yontemi',
+        itemRenderer: item => item.creditPaymentType,
+      },
+      {
+        title: 'Fatura Tutari',
         itemRenderer: item => item.price,
       },
       {
         title: 'Borc',
-        itemRenderer: item => item.totalDebt,
+        itemRenderer: item => item.currentDebt,
       },
       {
-        title: 'Toplam Bakiye',
+        title: 'Alacak',
+        itemRenderer: item => item.currentReceivable,
+      },
+      {
+        title: 'Bakiye',
         itemRenderer: item => item.creditLimit,
       },
     ];
