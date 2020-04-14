@@ -27,6 +27,8 @@ const closedRules = {
   'jsx-a11y/click-events-have-key-events': 0,
   'no-nested-ternary': 0,
   'react/jsx-curly-newline': 0,
+  'import/extensions': 0,
+  '@typescript-eslint/no-empty-function': 0,
 };
 const errorRules = {
   eqeqeq: 2,

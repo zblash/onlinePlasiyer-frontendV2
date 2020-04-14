@@ -6,7 +6,7 @@ import { DefaultLoading } from './default-loading';
 /*
   FullScreenLoading Helpers
 */
-interface FullScreenLoadingProps extends StylableProps {}
+type FullScreenLoadingProps = StylableProps;
 
 /*
   FullScreenLoading Colors // TODO : move theme.json

@@ -95,7 +95,11 @@ const _ParentCategoryInput: React.SFC<ParentCategoryInputProps> = props => {
   React.useEffect(() => {
     if (props.selectedCategoryId) {
       setAutoCompleteValue(
-        lodashGet(parentCategories.find(category => category.id === props.selectedCategoryId), 'name', ''),
+        lodashGet(
+          parentCategories.find(category => category.id === props.selectedCategoryId),
+          'name',
+          '',
+        ),
       );
     }
   }, [parentCategories, props.selectedCategoryId]);

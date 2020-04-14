@@ -155,17 +155,17 @@ function CartItem(props: React.PropsWithChildren<CartItemProps>) {
           <p>{props.cartItem.unitContents}</p>
         </td>
         <td>
-          <p>{props.cartItem.unitPrice} TL</p>
+          <p>{props.cartItem.unitPrice.toFixed(2)} TL</p>
         </td>
         <td>
-          <p>{props.cartItem.recommendedRetailPrice} TL</p>
+          <p>{props.cartItem.recommendedRetailPrice.toFixed(2)} TL</p>
         </td>
         <td>
           <strong className={cartItemTotalPrice}>
             {props.cartItem.discountedTotalPrice < props.cartItem.totalPrice && (
-              <p className={discount}>{props.cartItem.totalPrice} TL</p>
+              <p className={discount}>{props.cartItem.totalPrice.toFixed(2)} TL</p>
             )}
-            <p className={marginZero}>{props.cartItem.discountedTotalPrice} TL</p>
+            <p className={marginZero}>{props.cartItem.discountedTotalPrice.toFixed(2)} TL</p>
           </strong>
         </td>
         <td>
@@ -173,7 +173,16 @@ function CartItem(props: React.PropsWithChildren<CartItemProps>) {
             <StyledCartContentItemBoxQuantityInputBtnMinus name="mns" onClick={() => setQuantity(quantity - 1)}>
               -
             </StyledCartContentItemBoxQuantityInputBtnMinus>
-            <StyledCartContentItemBoxQuantityInput type="number" name="quantityInp" value={quantity} disabled />
+            <StyledCartContentItemBoxQuantityInput
+              type="number"
+              name="quantityInp"
+              value={quantity}
+              onChange={e => {
+                if (parseInt(e.target.value, 10) > 0) {
+                  setQuantity(parseInt(e.target.value, 10));
+                }
+              }}
+            />
             <StyledCartContentItemBoxQuantityInputBtnPlus name="pls" onClick={() => setQuantity(quantity + 1)}>
               +
             </StyledCartContentItemBoxQuantityInputBtnPlus>

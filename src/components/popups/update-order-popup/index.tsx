@@ -1,8 +1,9 @@
 import * as React from 'react';
+import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import styled, { colors, css } from '~/styled';
 import { UIInput, UIButton } from '~/components/ui';
-import { IOrder } from '~/services/helpers/backend-models';
+import { IOrder, CreditPaymentType } from '~/services/helpers/backend-models';
 import { useMutation } from '~/services/mutation-context/context';
 import { mutationEndPoints } from '~/services/mutation-context/mutation-enpoints';
 import { usePopupContext } from '~/contexts/popup/context';
@@ -72,7 +73,17 @@ function UpdateOrderPopup(props: React.PropsWithChildren<UpdateOrderPopupProps>)
   /* UpdateOrderPopup Variables */
   const popups = usePopupContext();
   const [date, setDate] = React.useState(new Date());
+  const [paymentType, setPaymentType] = React.useState<{ value: CreditPaymentType; label: string }>();
   const [paidPrice, setPaidPrice] = React.useState<number>();
+
+  const paymentTypes = React.useMemo(() => {
+    const array: Array<{ value: CreditPaymentType; label: string }> = [
+      { value: 'CASH', label: 'Nakit' },
+      { value: 'CREDIT_CARD', label: 'Kredi Karti' },
+    ];
+
+    return array;
+  }, []);
 
   /* UpdateOrderPopup Callbacks */
   const { mutation: updateOrder } = useMutation(mutationEndPoints.updateOrder, {
@@ -80,6 +91,7 @@ function UpdateOrderPopup(props: React.PropsWithChildren<UpdateOrderPopupProps>)
       id: props.params.order.id,
       paidPrice,
       status: 'FINISHED',
+      paymentType: paymentType ? paymentType.value : null,
       // eslint-disable-next-line
       waybillDate: date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear(),
     },
@@ -100,6 +112,7 @@ function UpdateOrderPopup(props: React.PropsWithChildren<UpdateOrderPopupProps>)
         <StyledInput
           id="order-paid-price"
           type="number"
+          step="0.01"
           value={paidPrice}
           onChange={e => setPaidPrice(parseInt(e, 10))}
           placeholder="Odenen Tutar"
@@ -112,6 +125,18 @@ function UpdateOrderPopup(props: React.PropsWithChildren<UpdateOrderPopupProps>)
           dateFormat="dd-MM-yyyy"
           className={DatePickerBtn}
         />
+        {props.params.order.paymentType === 'SYSTEM_CREDIT' && paidPrice && (
+          <>
+            <label>Aldiginiz Odeme Tipi</label>
+            <Select
+              isClearable
+              onChange={e => setPaymentType(e)}
+              value={paymentType}
+              options={paymentTypes}
+              placeholder="Secim Yapin"
+            />
+          </>
+        )}
         <StyledButton disabled={!date} type="button" onClick={handleSubmit}>
           Kaydet
         </StyledButton>

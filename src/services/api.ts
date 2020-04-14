@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 import axios from 'axios';
 import { TOKEN_KEY } from '~/utils/constants';
 import { UserRoleResponse } from './helpers/backend-models';

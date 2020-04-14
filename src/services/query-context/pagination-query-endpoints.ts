@@ -109,7 +109,6 @@ class QueryEndpoints {
     sortBy?: string;
     sortType?: string;
     startDate?: string;
-    creditId?: string;
     lastDate?: string;
   }) => Promise<ICreditActivityResponse> = ({ ...params }) => paginationQueryGet('/credits/activities', params);
 

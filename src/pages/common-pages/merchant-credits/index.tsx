@@ -45,7 +45,7 @@ function MerchantCredits(props: React.PropsWithChildren<MerchantCreditsProps>) {
   const popupsContext = usePopupContext();
   const [sortBy, setSortBy] = React.useState();
   const [sortType, setSortType] = React.useState();
-  const [username, setUsername] = React.useState();
+  const [username, setUsername] = React.useState<string>();
   const [allCreditsPageNumber, setAllCreditsPageNumber] = React.useState(1);
   const {
     data: { values: creditsValues, totalPage },
@@ -67,7 +67,11 @@ function MerchantCredits(props: React.PropsWithChildren<MerchantCreditsProps>) {
     const table = [
       {
         title: applicationContext.user.isMerchant ? 'Musteri' : 'Satici',
-        itemRenderer: item => <StyledLink to={`/credit-activities/${item.id}`}>{item.customerName}</StyledLink>,
+        itemRenderer: item => (
+          <StyledLink to={`/credit-activities/${item.id}`}>
+            {applicationContext.user.isMerchant ? item.customerName : item.merchantName}
+          </StyledLink>
+        ),
       },
       {
         title: 'Toplam Borc',

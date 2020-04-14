@@ -225,7 +225,6 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
   const alert = useAlert();
   const [paymentMethod, setPaymentMethod] = React.useState();
   const [holderId, setHolderId] = React.useState();
-
   const [checkoutFlag, setCheckoutFlag] = React.useState(false);
   const [allCheck, setAllCheck] = React.useState(true);
   const [sellerIds, setSellerIds] = React.useState<Array<ISellers>>([]);
@@ -340,11 +339,11 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
             {creditSummary && (
               <p>
                 <span>
-                  Sistem'e Olan Borcunuz: <strong>{creditSummary.totalDebt} &#8378; </strong>
+                  Sistem'e Olan Borcunuz: <strong>{creditSummary.totalDebt.toFixed(2)} &#8378; </strong>
                 </span>
                 <br />
                 <span>
-                  Sistem Kredi Limitiniz: <strong>{creditSummary.creditLimit} &#8378; </strong>
+                  Sistem Kredi Limitiniz: <strong>{creditSummary.creditLimit.toFixed(2)} &#8378; </strong>
                 </span>
               </p>
             )}
@@ -442,8 +441,8 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
                         <th>Urun Foto</th>
                         <th>Urun Ismi</th>
                         <th>Birim</th>
+                        <th>B. Icerik Adeti</th>
                         <th>Birim Fiyat</th>
-                        <th>Birim Icerigi</th>
                         <th>T.E.S Fiyat</th>
                         <th>Toplam Fiyat</th>
                         <th>Toplam Siparis</th>
@@ -479,7 +478,8 @@ function CartPage(props: React.PropsWithChildren<CartPageProps>) {
                   .map(item => item.discountedTotalPrice)
                   .reduce((a, c) => {
                     return a + c;
-                  }, 0)}{' '}
+                  }, 0)
+                  .toFixed(2)}{' '}
                 TL
               </h2>
               <StyledCartCheckoutBtn disabled={!checkoutFlag} onClick={handleCartCheckout}>

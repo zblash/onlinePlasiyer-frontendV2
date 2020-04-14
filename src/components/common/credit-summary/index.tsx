@@ -79,12 +79,16 @@ function CreditSummaryComponent(props: React.PropsWithChildren<CreditSummaryComp
       <StyledTotalObligationElement>
         <StyledTotalObligationElementText>{t('obligations.totalDebts')}</StyledTotalObligationElementText>
         {/* TODO TL Icon move to translation */}
-        <StyledTotalObligationElementText>{creditSummary.totalDebt} &#8378;</StyledTotalObligationElementText>
+        <StyledTotalObligationElementText>
+          {creditSummary.totalDebt.toFixed(2)} &#8378;
+        </StyledTotalObligationElementText>
       </StyledTotalObligationElement>
       <StyledTotalObligationElement className={styleTotalObligationElementLast}>
         <StyledTotalObligationElementText>{t('obligations.limit')}</StyledTotalObligationElementText>
         {/* TODO TL Icon move to translation */}
-        <StyledTotalObligationElementText>{creditSummary.creditLimit} &#8378;</StyledTotalObligationElementText>
+        <StyledTotalObligationElementText>
+          {creditSummary.creditLimit.toFixed(2)} &#8378;
+        </StyledTotalObligationElementText>
       </StyledTotalObligationElement>
       <StyledTotalObligationLink to={`/credit-activities/${creditSummary.id}`}>
         {t('common.details')}

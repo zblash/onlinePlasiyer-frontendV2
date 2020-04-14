@@ -32,7 +32,7 @@ function ProductSpecifiesPage(props: React.PropsWithChildren<ProductSpecifiesPag
   /* ProductSpecifiesPage Variables */
   const applicationContext = useApplicationContext();
   const { data: products, loading: productLoading } = useQuery(queryEndpoints.getAllProducts, { defaultValue: [] });
-  const [selectedProductId, setSelectedProducId] = React.useState();
+  const [selectedProductId, setSelectedProducId] = React.useState<string>();
   /* ProductSpecifiesPage Callbacks */
 
   /* ProductSpecifiesPage Lifecycle  */

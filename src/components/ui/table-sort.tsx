@@ -36,7 +36,10 @@ const StyledButton = styled(UIButton)`
 /* TableSort Component  */
 function TableSort(props: React.PropsWithChildren<TableSortProps>) {
   /* TableSort Variables */
-  const sortTypes = [{ value: 'desc', label: 'Azalan' }, { value: 'asc', label: 'Artan' }];
+  const sortTypes = [
+    { value: 'desc', label: 'Azalan' },
+    { value: 'asc', label: 'Artan' },
+  ];
   /* TableSort Callbacks */
 
   const handleSortChange = React.useCallback(

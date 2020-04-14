@@ -87,12 +87,14 @@ function ObligationComponent(props: React.PropsWithChildren<ObligationComponentP
       <StyledTotalObligationElement>
         <StyledTotalObligationElementText>{t('obligations.totalDebts')}</StyledTotalObligationElementText>
         {/* TODO TL Icon move to translation */}
-        <StyledTotalObligationElementText>{totalObligation.debt} &#8378;</StyledTotalObligationElementText>
+        <StyledTotalObligationElementText>{totalObligation.debt.toFixed(2)} &#8378;</StyledTotalObligationElementText>
       </StyledTotalObligationElement>
       <StyledTotalObligationElement className={styleTotalObligationElementLast}>
         <StyledTotalObligationElementText>{t('obligations.totalReceivables')}</StyledTotalObligationElementText>
         {/* TODO TL Icon move to translation */}
-        <StyledTotalObligationElementText>{totalObligation.receivable} &#8378;</StyledTotalObligationElementText>
+        <StyledTotalObligationElementText>
+          {totalObligation.receivable.toFixed(2)} &#8378;
+        </StyledTotalObligationElementText>
       </StyledTotalObligationElement>
       <StyledTotalObligationButton onClick={() => routerHistory.push(`/obligation-activities/${userId}`)}>
         {t('common.details')}

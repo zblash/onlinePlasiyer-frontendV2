@@ -126,7 +126,11 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
       label: `${x.cityTitle} - ${x.title}`,
     })),
   );
-  const unitTypeOptions = [{ value: 'AD', label: 'AD' }, { value: 'KG', label: 'KG' }, { value: 'KL', label: 'KL' }];
+  const unitTypeOptions = [
+    { value: 'AD', label: 'AD' },
+    { value: 'KG', label: 'KG' },
+    { value: 'KL', label: 'KL' },
+  ];
   const [discount, setDiscount] = React.useState(initialValues.discount);
   const [discountValue, setDiscountValue] = React.useState(initialValues.discountValue);
   const [discountUnit, setDiscountUnit] = React.useState(initialValues.discountUnit);
@@ -359,7 +363,7 @@ function ProductSpecifyCreateUpdateComponent(props: React.PropsWithChildren<Prod
                 readOnly={!barcode}
                 onChange={e => setDiscountUnit(parseInt(e, 10))}
               />
-              <label>Promosyon/Indirim Tutari (Yuzdelik Olarak)</label>
+              <label>Promosyon/Indirim Orani (Yuzdelik Olarak)</label>
               <StyledInput
                 id="discountValue"
                 type="number"

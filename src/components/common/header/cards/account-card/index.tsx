@@ -9,7 +9,7 @@ import { useWindowEvent } from '~/utils/hooks';
 /*
   AccountCard Helpers
 */
-interface AccountCardProps extends HeaderCardProps {}
+type AccountCardProps = HeaderCardProps;
 
 /*
   AccountCard Colors // TODO : move theme.json
