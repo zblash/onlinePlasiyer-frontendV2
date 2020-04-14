@@ -91,7 +91,7 @@ function UpdateOrderPopup(props: React.PropsWithChildren<UpdateOrderPopupProps>)
       id: props.params.order.id,
       paidPrice,
       status: 'FINISHED',
-      paymentType: paymentType.value,
+      paymentType: paymentType ? paymentType.value : null,
       // eslint-disable-next-line
       waybillDate: date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear(),
     },
