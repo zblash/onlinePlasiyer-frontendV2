@@ -26,7 +26,7 @@ const StyledTotalObligationWrapperTitle = styled.h3`
 `;
 
 const StyledTotalObligationElement = styled.div`
-  width: 44%;
+  width: 28%;
   text-align: center;
   vertical-align: middle;
   transition: background-color 0.3s;
@@ -81,6 +81,13 @@ function CreditSummaryComponent(props: React.PropsWithChildren<CreditSummaryComp
         {/* TODO TL Icon move to translation */}
         <StyledTotalObligationElementText>
           {creditSummary.totalDebt.toFixed(2)} &#8378;
+        </StyledTotalObligationElementText>
+      </StyledTotalObligationElement>
+      <StyledTotalObligationElement>
+        <StyledTotalObligationElementText>Kullanilabilir Limit</StyledTotalObligationElementText>
+        {/* TODO TL Icon move to translation */}
+        <StyledTotalObligationElementText>
+          {(creditSummary.creditLimit - creditSummary.totalDebt).toFixed(2)} &#8378;
         </StyledTotalObligationElementText>
       </StyledTotalObligationElement>
       <StyledTotalObligationElement className={styleTotalObligationElementLast}>

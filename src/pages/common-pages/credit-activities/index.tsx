@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useParams } from 'react-router';
 import styled from '~/styled';
 import { Container, UITable } from '~/components/ui';
 import { usePaginationQuery } from '~/services/query-context/use-pagination-quey';
@@ -27,7 +26,9 @@ const StyledPageHeader = styled.div`
 function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>) {
   /* CreditActivities Variables */
   const applicationContext = useApplicationContext();
-  //const { creditId } = useParams<RouteParams>();
+
+  // const { creditId } = useParams<RouteParams>();
+
   const sortList = [
     { value: 'id', label: 'Eklenme Sirasina Gore' },
     { value: 'date', label: 'Tarihe Gore' },
@@ -87,16 +88,12 @@ function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>)
         itemRenderer: item => item.price,
       },
       {
-        title: 'Borc',
-        itemRenderer: item => item.currentDebt,
+        title: 'Odenen Tutar',
+        itemRenderer: item => item.paidPrice,
       },
       {
-        title: 'Alacak',
-        itemRenderer: item => item.currentReceivable,
-      },
-      {
-        title: 'Bakiye',
-        itemRenderer: item => item.creditLimit,
+        title: 'Kalan Borc',
+        itemRenderer: item => item.currentReceivable + item.creditLimit - item.currentDebt,
       },
     ];
     if (applicationContext.user.isMerchant || applicationContext.user.isAdmin) {
