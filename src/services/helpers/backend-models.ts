@@ -259,6 +259,7 @@ export interface ICreditActivityResponse {
   id: string;
   documentNo: number;
   price: number;
+  paidPrice: number;
   creditLimit: number;
   currentDebt: number;
   currentReceivable: number;
