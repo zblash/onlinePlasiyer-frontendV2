@@ -277,6 +277,9 @@ export interface IObligationActivityResponse {
   documentNo: number;
   userId: string;
   userName: string;
+  customerName: string;
+  orderTotalPrice: number;
+  orderCommissionPrice: number;
   date: Date;
   obligationActivityType: CreditActivityType;
   totalDebt: number;
