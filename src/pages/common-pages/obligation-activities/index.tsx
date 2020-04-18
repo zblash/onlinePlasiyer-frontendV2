@@ -64,11 +64,19 @@ function ObligationsPage(props: React.PropsWithChildren<ObligationsPageProps>) {
         itemRenderer: item => item.obligationActivityType,
       },
       {
-        title: 'Islem Tutari',
-        itemRenderer: item => item.price,
+        title: 'Musteri',
+        itemRenderer: item => item.customerName,
       },
       {
-        title: 'Borc',
+        title: 'Fatura Tutari',
+        itemRenderer: item => item.orderTotalPrice,
+      },
+      {
+        title: 'Komisyon Tutari',
+        itemRenderer: item => item.orderCommissionPrice,
+      },
+      {
+        title: 'Toplam Borc',
         itemRenderer: item => item.totalDebt,
       },
       {
