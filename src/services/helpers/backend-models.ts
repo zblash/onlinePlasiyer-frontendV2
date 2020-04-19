@@ -264,7 +264,7 @@ export interface ICreditActivityResponse {
   currentDebt: number;
   currentReceivable: number;
   activityType: ActivityType;
-  creditPaymentType: CreditPaymentType;
+  paymentType: CreditPaymentType;
   customerId: string;
   customerName: string;
   merchantId?: string;

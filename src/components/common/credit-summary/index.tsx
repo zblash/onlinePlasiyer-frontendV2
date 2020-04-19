@@ -97,7 +97,7 @@ function CreditSummaryComponent(props: React.PropsWithChildren<CreditSummaryComp
           {creditSummary.creditLimit.toFixed(2)} &#8378;
         </StyledTotalObligationElementText>
       </StyledTotalObligationElement>
-      <StyledTotalObligationLink to={`/credit-activities/${creditSummary.id}`}>
+      <StyledTotalObligationLink to="/credit-activities" state={{ activityType: 'SYSTEM_CREDIT' }}>
         {t('common.details')}
       </StyledTotalObligationLink>
     </StyledTotalObligationWrapper>
