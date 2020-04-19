@@ -93,7 +93,7 @@ function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>)
       },
       {
         title: 'Kalan Borc',
-        itemRenderer: item => item.currentReceivable + item.creditLimit - item.currentDebt,
+        itemRenderer: item => item.currentDebt,
       },
     ];
     if (applicationContext.user.isMerchant || applicationContext.user.isAdmin) {
@@ -105,7 +105,7 @@ function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>)
     if (applicationContext.user.isCustomer || applicationContext.user.isAdmin) {
       columns.unshift({
         title: 'Kreditor',
-        itemRenderer: item => (item.creditType === 'MERCHANT_CREDIT' ? item.merchantName : 'Sistem'),
+        itemRenderer: item => (item.merchantName ? item.merchantName : 'Sistem'),
       });
     }
 
