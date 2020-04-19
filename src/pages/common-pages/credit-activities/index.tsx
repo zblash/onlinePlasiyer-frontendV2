@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useParams, useLocation } from 'react-router';
 import styled from '~/styled';
 import { Container, UITable } from '~/components/ui';
 import { usePaginationQuery } from '~/services/query-context/use-pagination-quey';
@@ -26,8 +27,9 @@ const StyledPageHeader = styled.div`
 function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>) {
   /* CreditActivities Variables */
   const applicationContext = useApplicationContext();
-
-  // const { creditId } = useParams<RouteParams>();
+  // eslint-disable-next-line dot-notation
+  const [activityType, setActivityType] = React.useState(useLocation().state['activityType']);
+  const { creditId } = useParams<RouteParams>();
 
   const sortList = [
     { value: 'id', label: 'Eklenme Sirasina Gore' },
@@ -58,6 +60,8 @@ function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>)
       sortType,
       startDate,
       lastDate,
+      userId: creditId,
+      activityType,
     },
     defaultValue: { values: [], totalPage: 0 },
   });
@@ -81,7 +85,7 @@ function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>)
       },
       {
         title: 'Odeme Yontemi',
-        itemRenderer: item => item.creditPaymentType,
+        itemRenderer: item => item.paymentType,
       },
       {
         title: 'Fatura Tutari',
