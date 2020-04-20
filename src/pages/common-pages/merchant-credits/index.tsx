@@ -64,12 +64,13 @@ function MerchantCredits(props: React.PropsWithChildren<MerchantCreditsProps>) {
     return creditsByPage(allCreditsPageNumber);
   }, [creditsByPage, allCreditsPageNumber]);
   const TABLE_DATA_COLUMNS = React.useMemo(() => {
+    const { isMerchant } = applicationContext.user;
     const table = [
       {
-        title: applicationContext.user.isMerchant ? 'Musteri' : 'Satici',
+        title: isMerchant ? 'Musteri' : 'Satici',
         itemRenderer: item => (
-          <StyledLink to={`/credit-activities/${item.id}`}>
-            {applicationContext.user.isMerchant ? item.customerName : item.merchantName}
+          <StyledLink to={`/credit-activities/${isMerchant ? item.customerId : item.merchantId}`}>
+            {isMerchant ? item.customerName : item.merchantName}
           </StyledLink>
         ),
       },
@@ -82,7 +83,7 @@ function MerchantCredits(props: React.PropsWithChildren<MerchantCreditsProps>) {
         itemRenderer: item => item.creditLimit,
       },
     ];
-    if (applicationContext.user.isMerchant) {
+    if (isMerchant) {
       table.push({
         title: null,
         itemRenderer: item => (

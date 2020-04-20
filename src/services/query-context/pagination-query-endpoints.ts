@@ -11,6 +11,8 @@ import {
   IObligationActivityResponse,
   IObligationTotals,
   IUserCreditResponse,
+  ActivityType,
+  TOrderStatus,
 } from '~/services/helpers/backend-models';
 
 function paginationQueryGet(route: string, variables: any) {
@@ -61,8 +63,9 @@ class QueryEndpoints {
     pageNumber: number;
     sortBy?: string;
     sortType?: string;
-  }) => Promise<IOrder> = ({ userId, userName, startDate, pageNumber, sortBy, sortType }) => {
-    return paginationQueryGet('/orders', { pageNumber, sortBy, sortType, userId, userName, startDate });
+    status?: TOrderStatus;
+  }) => Promise<IOrder> = ({ userId, userName, startDate, pageNumber, sortBy, sortType, status }) => {
+    return paginationQueryGet('/orders', { pageNumber, sortBy, sortType, userId, userName, startDate, status });
   };
 
   getAllSpecifies: (s: {
@@ -110,6 +113,8 @@ class QueryEndpoints {
     sortType?: string;
     startDate?: string;
     lastDate?: string;
+    userId?: string;
+    activityType?: ActivityType;
   }) => Promise<ICreditActivityResponse> = ({ ...params }) => paginationQueryGet('/credits/activities', params);
 
   getAllCreditActivities: (s: {
@@ -119,6 +124,8 @@ class QueryEndpoints {
     creditId?: string;
     startDate?: string;
     lastDate?: string;
+    userId?: string;
+    activityType?: ActivityType;
   }) => Promise<ICreditActivityResponse> = ({ ...params }) => paginationQueryGet('/admin/credits/activities', params);
 
   getAllObligationActivities: (s: {

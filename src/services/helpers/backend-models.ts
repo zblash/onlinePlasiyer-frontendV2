@@ -264,7 +264,7 @@ export interface ICreditActivityResponse {
   currentDebt: number;
   currentReceivable: number;
   activityType: ActivityType;
-  creditPaymentType: CreditPaymentType;
+  paymentType: CreditPaymentType;
   customerId: string;
   customerName: string;
   merchantId?: string;
@@ -301,4 +301,4 @@ export type CreditType = 'SYSTEM_CREDIT' | 'MERCHANT_CREDIT';
 
 export type ActivityType = 'SYSTEM_CREDIT' | 'MERCHANT_CREDIT' | 'ORDER' | 'ORDER_CANCEL';
 
-export type CreditPaymentType = 'CASH' | 'CREDIT_CARD';
+export type CreditPaymentType = 'CASH' | 'CREDIT_CARD' | 'RUNNING_ACCOUNT';

@@ -1,5 +1,6 @@
+/* eslint-disable dot-notation */
 import * as React from 'react';
-import { useParams } from 'react-router';
+import { useParams, useLocation } from 'react-router';
 import { usePaginationQuery } from '~/services/query-context/use-pagination-quey';
 import { paginationQueryEndpoints } from '~/services/query-context/pagination-query-endpoints';
 import { CategoryHorizontalListFetcher } from '~/fetcher-components/common/category-horizontal-list';
@@ -37,6 +38,10 @@ const OrdersPage: React.SFC<OrdersPageProps> = props => {
   const [sortBy, setSortBy] = React.useState();
   const [sortType, setSortType] = React.useState();
   const [date, setDate] = React.useState<string>();
+  const locationState = useLocation().state;
+  const [status, setStatus] = React.useState(
+    locationState && locationState['status'] ? locationState['status'] : undefined,
+  );
   const {
     data: { values: orders, elementCountOfPage },
   } = usePaginationQuery(paginationQueryEndpoints.getAllOrders, {
@@ -47,6 +52,7 @@ const OrdersPage: React.SFC<OrdersPageProps> = props => {
       userId,
       userName: customer,
       startDate: date,
+      status,
     },
     pageNumber: 1,
   });

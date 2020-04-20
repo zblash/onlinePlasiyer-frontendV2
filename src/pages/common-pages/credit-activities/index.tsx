@@ -1,4 +1,6 @@
+/* eslint-disable dot-notation */
 import * as React from 'react';
+import { useParams, useLocation } from 'react-router';
 import styled from '~/styled';
 import { Container, UITable } from '~/components/ui';
 import { usePaginationQuery } from '~/services/query-context/use-pagination-quey';
@@ -26,8 +28,11 @@ const StyledPageHeader = styled.div`
 function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>) {
   /* CreditActivities Variables */
   const applicationContext = useApplicationContext();
-
-  // const { creditId } = useParams<RouteParams>();
+  const locationState = useLocation().state;
+  const [activityType, setActivityType] = React.useState(
+    locationState && locationState['activityType'] ? locationState['activityType'] : undefined,
+  );
+  const { creditId } = useParams<RouteParams>();
 
   const sortList = [
     { value: 'id', label: 'Eklenme Sirasina Gore' },
@@ -58,6 +63,8 @@ function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>)
       sortType,
       startDate,
       lastDate,
+      userId: creditId,
+      activityType,
     },
     defaultValue: { values: [], totalPage: 0 },
   });
@@ -81,7 +88,7 @@ function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>)
       },
       {
         title: 'Odeme Yontemi',
-        itemRenderer: item => item.creditPaymentType,
+        itemRenderer: item => item.paymentType,
       },
       {
         title: 'Fatura Tutari',
@@ -93,7 +100,7 @@ function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>)
       },
       {
         title: 'Kalan Borc',
-        itemRenderer: item => item.currentReceivable + item.creditLimit - item.currentDebt,
+        itemRenderer: item => item.currentDebt,
       },
     ];
     if (applicationContext.user.isMerchant || applicationContext.user.isAdmin) {
@@ -105,7 +112,7 @@ function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>)
     if (applicationContext.user.isCustomer || applicationContext.user.isAdmin) {
       columns.unshift({
         title: 'Kreditor',
-        itemRenderer: item => (item.creditType === 'MERCHANT_CREDIT' ? item.merchantName : 'Sistem'),
+        itemRenderer: item => (item.merchantName ? item.merchantName : 'Sistem'),
       });
     }
 
