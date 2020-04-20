@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 import * as React from 'react';
 import { useParams, useLocation } from 'react-router';
 import styled from '~/styled';
@@ -27,8 +28,10 @@ const StyledPageHeader = styled.div`
 function CreditActivities(props: React.PropsWithChildren<CreditActivitiesProps>) {
   /* CreditActivities Variables */
   const applicationContext = useApplicationContext();
-  // eslint-disable-next-line dot-notation
-  const [activityType, setActivityType] = React.useState(useLocation().state['activityType']);
+  const locationState = useLocation().state;
+  const [activityType, setActivityType] = React.useState(
+    locationState && locationState['activityType'] ? locationState['activityType'] : undefined,
+  );
   const { creditId } = useParams<RouteParams>();
 
   const sortList = [
