@@ -87,31 +87,41 @@ function MerchantHome(props: React.PropsWithChildren<MerchantHomeProps>) {
             <StyledOrderSummaryMenu>
               <StyledOrderSummaryItem>
                 <p>
-                  <i className={orderSummaryItemI}>{orderSummary.newCount}</i>
+                  <StyledLink to="/orders" state={{ status: 'NEW' }} className={orderSummaryItemI}>
+                    {orderSummary.newCount}
+                  </StyledLink>
                   Yeni Siparis
                 </p>
               </StyledOrderSummaryItem>
               <StyledOrderSummaryItem>
                 <p>
-                  <i className={orderSummaryItemI}>{orderSummary.finishedCount}</i>
+                  <StyledLink to="/orders" state={{ status: 'FINISHED' }} className={orderSummaryItemI}>
+                    {orderSummary.finishedCount}
+                  </StyledLink>
                   Tamamlanan Siparis
                 </p>
               </StyledOrderSummaryItem>
               <StyledOrderSummaryItem>
                 <p>
-                  <i className={orderSummaryItemI}>{orderSummary.cancelledCount}</i>
+                  <StyledLink to="/orders" state={{ status: 'CANCELLED' }} className={orderSummaryItemI}>
+                    {orderSummary.cancelledCount}
+                  </StyledLink>
                   Iptal Olan Siparis
                 </p>
               </StyledOrderSummaryItem>
               <StyledOrderSummaryItem>
                 <p>
-                  <i className={orderSummaryItemI}>{orderSummary.cancelRequestCount}</i>
+                  <StyledLink to="/orders" state={{ status: 'CANCEL_REQUEST' }} className={orderSummaryItemI}>
+                    {orderSummary.cancelRequestCount}
+                  </StyledLink>
                   Iptal Isteginde Olan Siparis
                 </p>
               </StyledOrderSummaryItem>
               <StyledOrderSummaryItem>
                 <p>
-                  <i className={orderSummaryItemI}>{orderSummary.submittedCount}</i>
+                  <StyledLink to="/orders" state={{ status: 'CONFIRMED' }} className={orderSummaryItemI}>
+                    {orderSummary.submittedCount}
+                  </StyledLink>
                   Onaylanan Siparis
                 </p>
               </StyledOrderSummaryItem>
