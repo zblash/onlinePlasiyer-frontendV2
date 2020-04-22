@@ -12,6 +12,22 @@ export type UITableColumns<T> = {
   itemRenderer: string | number | ((item: T) => React.ReactElement | string | number);
 };
 
+export type UITableFilterInput = {
+  id: string;
+  type?: 'text' | 'password' | 'email' | 'number' | 'select';
+  inputClassName?: string;
+  placeholder?: string;
+  onChange?: (v: string) => void;
+  value?: string | number;
+  disabled?: boolean;
+  form?: string;
+  setRef?: React.RefObject<HTMLInputElement>;
+  required?: boolean;
+  name?: string;
+  step?: string;
+  readOnly?: boolean;
+};
+
 interface UiTableProps<T> extends StylableProps {
   data: T[];
   columns: UITableColumns<T>[];
@@ -23,6 +39,8 @@ interface UiTableProps<T> extends StylableProps {
   onSortChange?: (e) => void;
   onSortTypeChange?: (value) => void;
   sortList?: any[];
+  filter?: boolean;
+  filterInputs?: UITableFilterInput[];
 }
 
 /*
@@ -127,6 +145,27 @@ const StyledPageInfoSpan = styled.span`
   user-select: none;
 `;
 
+const StyledFilterWrapper = styled.div`
+  width: 100%;
+  border: 1px solid ${colors.lightGray};
+  border-radius: 5px;
+  height: 150px;
+`;
+
+const StyledFilterInputColumn = styled.div`
+  width: 45%;
+  float: left;
+  margin-left: 2%;
+`;
+
+const StyledFilterInput = styled.input`
+  float: left;  
+  border: 1px solid ${colors.lightGray};
+  border-radius: 6px;
+  padding 7px 9px;
+  margin-right: 5px;
+`;
+
 const iconStyle = css`
   background-color: ${colors.primary};
   border-radius: 50%;
@@ -193,6 +232,38 @@ function UITable<T>(props: UiTableProps<T>) {
 
   return (
     <UiTableWrapper className={props.className}>
+      {props.filter && props.filterInputs && (
+        <StyledFilterWrapper>
+          {props.filterInputs.map(input => {
+            let inputt;
+            if (input.type !== 'select') {
+              inputt = (
+                <>
+                  <StyledFilterInput
+                    step={input.step}
+                    ref={input.setRef}
+                    name={input.name}
+                    form={input.form}
+                    value={input.value}
+                    type={input.type}
+                    disabled={input.disabled}
+                    id={input.id}
+                    required={input.required}
+                    className={input.inputClassName}
+                    placeholder={input.placeholder}
+                    readOnly={input.readOnly}
+                    onChange={e => input.onChange && input.onChange(e.target.value)}
+                  />
+                </>
+              );
+            } else {
+              inputt = <p>Nope</p>;
+            }
+
+            return <StyledFilterInputColumn>{inputt}</StyledFilterInputColumn>;
+          })}
+        </StyledFilterWrapper>
+      )}
       {props.sortList && props.onSortChange && props.onSortTypeChange && (
         <TableSort
           onSortChange={props.onSortChange}
