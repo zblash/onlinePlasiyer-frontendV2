@@ -6,6 +6,7 @@ import { UITable, UIIcon, UILink, Container } from '~/components/ui';
 import { useApplicationContext } from '~/app/context';
 import { usePopupContext } from '~/contexts/popup/context';
 import { OrderListFilterComponent } from './filter';
+import { UITableFilterInput } from '~/components/ui/table';
 
 /* OrderListComponent Helpers */
 interface OrderListComponentProps {
@@ -50,6 +51,7 @@ function OrderListComponent(props: React.PropsWithChildren<OrderListComponentPro
     { value: 'totalPrice', label: 'Fiyata Gore' },
     { value: 'status', label: 'Durumuna Gore' },
   ];
+  const filterInputs: UITableFilterInput[] = [{ id: 'dneme', type: 'text' }];
   /* OrderListComponent Callbacks */
   const handleEditClick = React.useCallback(
     item => {
@@ -64,6 +66,8 @@ function OrderListComponent(props: React.PropsWithChildren<OrderListComponentPro
     <Container>
       {props.setCustomer && <OrderListFilterComponent setCustomer={props.setCustomer} setLastDate={props.setDate} />}
       <UITable
+        filter
+        filterInputs={filterInputs}
         id="orders-page-table"
         data={props.orders}
         onSortChange={e => props.setSortBy(e.value)}
