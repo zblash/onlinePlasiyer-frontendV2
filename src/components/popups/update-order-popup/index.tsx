@@ -91,9 +91,11 @@ function UpdateOrderPopup(props: React.PropsWithChildren<UpdateOrderPopupProps>)
       id: props.params.order.id,
       paidPrice,
       status: 'FINISHED',
-      paymentType: paymentType ? paymentType.value : null,
+      paymentType: paymentType ? paymentType.value : undefined,
       // eslint-disable-next-line
-      waybillDate: date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear(),
+      waybillDate: `${date.getDate()}-${
+        date.getMonth() + 1 > 9 ? date.getMonth() + 1 : '0'.concat((date.getMonth() + 1).toString())
+      }-${date.getFullYear()}`,
     },
   });
   const handleSubmit = React.useCallback(() => {
