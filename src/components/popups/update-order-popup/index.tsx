@@ -79,7 +79,7 @@ function UpdateOrderPopup(props: React.PropsWithChildren<UpdateOrderPopupProps>)
   const paymentTypes = React.useMemo(() => {
     const array: Array<{ value: CreditPaymentType; label: string }> = [
       { value: 'CASH', label: 'Nakit' },
-      { value: 'CREDIT_CARD', label: 'Kredi Karti' },
+      { value: 'CREDIT_CARD', label: 'Kredi Kartı' },
     ];
 
     return array;
@@ -91,7 +91,7 @@ function UpdateOrderPopup(props: React.PropsWithChildren<UpdateOrderPopupProps>)
       id: props.params.order.id,
       paidPrice,
       status: 'FINISHED',
-      paymentType: paymentType ? paymentType.value : null,
+      paymentType: paymentType ? paymentType.value : undefined,
       // eslint-disable-next-line
       waybillDate: date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear(),
     },
