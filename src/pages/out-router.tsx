@@ -5,13 +5,13 @@ interface IRoute {
   path: string;
   component: React.ComponentClass | React.FunctionComponent;
 }
-
+const OutHomePage = React.lazy(() => import('./out-pages/out-home').then(module => ({ default: module.OutHomePage })));
 const LoginPage = React.lazy(() => import('./out-pages/login').then(module => ({ default: module.LoginPage })));
 const RegisterPage = React.lazy(() =>
   import('./out-pages/register').then(module => ({ default: module.RegisterPage })),
 );
 const routes: IRoute[] = [
-  { path: '/', component: LoginPage },
+  { path: '/', component: OutHomePage },
   { path: '/login', component: LoginPage },
   { path: '/register', component: RegisterPage },
 ];
