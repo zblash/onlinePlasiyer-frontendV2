@@ -57,6 +57,7 @@ function OutHomePage(props: React.PropsWithChildren<OutHomePageProps>) {
         <StyledLogo />
         <a href="https://onlineplasiyer-customer.herokuapp.com/">Musteri Paneli</a>
         <a href="https://onlineplasiyer-merchant.herokuapp.com/">Toptanci Paneli</a>
+        <a href="https://onlineplasiyer-admin.herokuapp.com/">Admin Paneli</a>
       </CenteredCard>
     </Container>
   );
